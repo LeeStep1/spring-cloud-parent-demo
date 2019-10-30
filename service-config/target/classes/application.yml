@@ -1,0 +1,39 @@
+server:
+  port: 9099
+spring:
+  application:
+    name: service-config
+  rabbitmq:
+    host: 101.201.235.239
+    port: 5672
+    username: guest
+    password: guest
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/LeeStep1/spring-cloud-config-demo
+          search-paths: /configApplication
+          username: 395722278@qq.com
+          password: ly395722278jay
+      label: master
+    bus:
+      enabled: true
+      trace:
+        enabled: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: bus-refresh
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+  client:
+    service-url:
+      defaultZone: http://localhost:9090/eureka
+
+
+

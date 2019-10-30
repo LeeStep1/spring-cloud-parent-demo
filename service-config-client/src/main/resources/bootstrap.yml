@@ -1,0 +1,37 @@
+server:
+  port: 9097
+
+spring:
+  application:
+    name: service-config-client
+  rabbitmq:
+      host: 101.201.235.239
+      port: 5672
+      username: guest
+      password: guest
+  cloud:
+    config:
+      name: application
+      label: master
+#      uri: http://200.200.3.25:9096/
+      profile: dev
+      discovery:
+        enabled: true
+        service-id: service-config
+    bus:
+      enabled: true
+      trace:
+        enabled: true
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+  client:
+    service-url:
+      defaultZone: http://localhost:9090/eureka
+management:
+  endpoints:
+    web:
+      exposure:
+        include: bus-refresh
