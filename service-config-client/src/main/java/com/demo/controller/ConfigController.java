@@ -21,6 +21,6 @@ public class ConfigController {
 
     @GetMapping("/firstDemo")
     public String firstDemo(){
-        return versionss;
+        return version;
     }
 }
