@@ -22,6 +22,6 @@ public class FirstTestController {
 
     @GetMapping("/sayHello")
     public String sayHello(){
-        return "Hi,gitHub test" + name + " : " + port;
+        return "Hi,gitHub test " + name + " : " + port;
     }
 }
