@@ -1,0 +1,8 @@
+spring:
+  cloud:
+    nacos:
+      config:
+        server-addr: 139.129.103.212:8848
+spring:
+  application:
+    name: nacos_config
