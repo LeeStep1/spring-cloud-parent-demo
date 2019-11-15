@@ -13,7 +13,8 @@
         <module>service-config-client</module>
 		<module>nacos_config</module>
 		<module>nacos_consume</module>
-	</modules>
+        <module>nacos_zull</module>
+    </modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -37,6 +38,14 @@
 				<artifactId>spring-cloud-dependencies</artifactId>
 				<!-- <version>Camden.SR6</version>-->
 				<version>Finchley.SR1</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>com.alibaba.cloud</groupId>
+				<artifactId>spring-cloud-alibaba-dependencies</artifactId>
+				<version>2.0.0.RELEASE</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
