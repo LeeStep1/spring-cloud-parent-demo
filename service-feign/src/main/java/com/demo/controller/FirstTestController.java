@@ -18,7 +18,7 @@ public class FirstTestController {
     @Autowired
     private FirstTestFeign firstTestFeign;
 
-    @GetMapping("feignSayHello")
+    @GetMapping("/feignSayHello")
     public String feignSayHello(){
         return firstTestFeign.sayHello();
     }

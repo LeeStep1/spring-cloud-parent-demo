@@ -2,7 +2,8 @@ spring:
   cloud:
     nacos:
       config:
+        prefix: nacos_feign
         server-addr: 139.129.103.212:8848
         file-extension: yml
         namespace: 4fdded16-3c53-4842-a762-fbe956e668f8
-        prefix: nacos_getway
+

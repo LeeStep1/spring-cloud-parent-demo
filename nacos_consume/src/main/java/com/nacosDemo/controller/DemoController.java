@@ -20,9 +20,13 @@ public class DemoController {
     @Value("${refresh.name}")
     private String refreshName;
 
+    @Value("${server.port}")
+    private String port;
+
     @GetMapping("/firstDemo/{string}")
     public String firstDemo(@PathVariable(value = "string") String string){
         System.out.println("refreshName====================" + refreshName);
-        return string;
+        String ss = "请求的端口..........." + port;
+        return ss;
     }
 }
