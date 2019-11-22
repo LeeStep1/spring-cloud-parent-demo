@@ -1,0 +1,11 @@
+spring:
+  cloud:
+    nacos:
+      config:
+        namespace: 4fdded16-3c53-4842-a762-fbe956e668f8
+        prefix: service-mq
+        file-extension: yml
+        server-addr: 139.129.103.212:8848
+      discovery:
+        namespace:
+        server-addr:
