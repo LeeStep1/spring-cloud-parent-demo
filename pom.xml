@@ -14,6 +14,9 @@
 		<module>nacos_config</module>
 		<module>nacos_consume</module>
         <module>nacos_zull</module>
+        <module>nacos_feign</module>
+        <module>dashboard</module>
+        <module>service_mq</module>
     </modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -49,6 +52,11 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>fastjson</artifactId>
+				<version>1.2.49</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -63,11 +71,14 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.18</version>
+            <scope>provided</scope>
+        </dependency>
+
 	</dependencies>
-
-
-
-
 
 	<build>
 		<plugins>

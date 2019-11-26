@@ -4,5 +4,5 @@ spring:
       config:
         server-addr: 139.129.103.212:8848
         file-extension: yml
-  application:
-    name: nacos_consume
+        prefix: nacos_consume
+        namespace: 4fdded16-3c53-4842-a762-fbe956e668f8
