@@ -110,7 +110,7 @@ public class DemoController {
     }
 
     /**
-     * 发送延迟队列
+     * 发送延迟队列(针对消息过期)
      * @author liyang
      * @date 2019-11-26
      * @param routing : routing
@@ -135,4 +135,26 @@ public class DemoController {
         return direct.getContent();
     }
 
+    /**
+     * 发送延迟队列(针对队列过期)
+     * @author liyang
+     * @date 2019-11-26
+     * @param routing : routing
+     * @return : null
+     */
+    @GetMapping("/sendToDelayQueueMessage/{routing}")
+    public String sendToDelayQueueMessage(@PathVariable(value = "routing") String routing){
+        DirectMessage direct = new DirectMessage();
+        direct.setId(1L);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String date = simpleDateFormat.format(new Date());
+        direct.setContent(date + "  发送延迟消息");
+        direct.setTitle("routing是==============" + routing);
+
+        String directStr = JSON.toJSONString(direct);
+
+        rabbitTemplate.convertAndSend("delayTilQueueExchange",routing,directStr);
+
+        return direct.getContent();
+    }
 }

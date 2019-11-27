@@ -70,7 +70,7 @@ public class RabbitConfig {
     }
 
     /**
-     * 延迟队列接收队列
+     * 延迟队列接收队列(针对消息过期)
      * @return
      */
     @Bean
@@ -79,6 +79,19 @@ public class RabbitConfig {
         arguments.put("x-dead-letter-exchange","directExchangeProcess");
         arguments.put("x-dead-letter-routing-key","delay.delayProcess");
         return new Queue("delayTilMessage",true,false,false,arguments);
+    }
+
+    /**
+     * 延迟队列接收队列(针对队列过期)
+     * @return
+     */
+    @Bean
+    public Queue delayTilMessageQueue(){
+        Map<String, Object> arguments = new HashMap<>();
+        arguments.put("x-dead-letter-exchange","directExchangeProcess");
+        arguments.put("x-dead-letter-routing-key","delay.delayProcess");
+        arguments.put("x-message-ttl",20000);
+        return new Queue("delayTilMessageQueue",true,false,false,arguments);
     }
 
     /**
@@ -118,12 +131,21 @@ public class RabbitConfig {
     }
 
     /**
-     * 延迟消息接收交换机
+     * 延迟消息接收交换机（针对消息过期）
      * @return
      */
     @Bean
     DirectExchange delayTilExchange(){
         return new DirectExchange("delayTilExchange");
+    }
+
+    /**
+     * 延迟消息接收交换机（针对队列过期）
+     * @return
+     */
+    @Bean
+    DirectExchange delayTilQueueExchange(){
+        return new DirectExchange("delayTilQueueExchange");
     }
 
     /**
@@ -202,7 +224,7 @@ public class RabbitConfig {
     }
 
     /**
-     * 延迟接收队列绑定
+     * 延迟接收队列绑定（针对消息过期）
      * @param delayTilMessage
      * @param delayTilExchange
      * @return
@@ -221,6 +243,17 @@ public class RabbitConfig {
     @Bean
     Binding bindingDelayExchangeProcessMessage(Queue directQueueProcess,DirectExchange directExchangeProcess){
         return BindingBuilder.bind(directQueueProcess).to(directExchangeProcess).with("delay.delayProcess");
+    }
+
+    /**
+     * 延迟接收队列绑定（针对队列过期）
+     * @param delayTilMessageQueue
+     * @param delayTilQueueExchange
+     * @return
+     */
+    @Bean
+    Binding bindingDelayQueueExchangeMessage(Queue delayTilMessageQueue,DirectExchange delayTilQueueExchange){
+        return BindingBuilder.bind(delayTilMessageQueue).to(delayTilQueueExchange).with("delay.delayTilQueue");
     }
 
 }
