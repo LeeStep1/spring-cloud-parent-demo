@@ -2,6 +2,9 @@ package com.nacosDemo.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.nacosDemo.bean.DirectMessage;
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -154,6 +157,35 @@ public class DemoController {
         String directStr = JSON.toJSONString(direct);
 
         rabbitTemplate.convertAndSend("delayTilQueueExchange",routing,directStr);
+
+        return direct.getContent();
+    }
+
+    /**
+     * 延迟队列插件发送
+     * @author liyang
+     * @date 2019-11-27
+     * @param routing : routing
+     * @return : String
+    */
+    @GetMapping("/sendToDelayPlusMessage/{routing}")
+    public String sendToDelayPlusMessage(@PathVariable(value = "routing") String routing){
+        DirectMessage direct = new DirectMessage();
+        direct.setId(1L);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String date = simpleDateFormat.format(new Date());
+        direct.setContent(date + "  发送延迟消息");
+        direct.setTitle("routing是==============" + routing);
+
+        String directStr = JSON.toJSONString(direct);
+
+        rabbitTemplate.convertAndSend("directDelayPlusExchange", routing, directStr, new MessagePostProcessor() {
+            @Override
+            public Message postProcessMessage(Message message) throws AmqpException {
+                message.getMessageProperties().setDelay(20000);
+                return message;
+            }
+        });
 
         return direct.getContent();
     }

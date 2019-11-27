@@ -104,6 +104,15 @@ public class RabbitConfig {
     }
 
     /**
+     * 延迟插件队列
+     * @return
+     */
+    @Bean
+    public Queue directDelayPlusQueue(){
+        return new Queue("directDelayPlusQueue");
+    }
+
+    /**
      * 一个directExchange
      * @return
      */
@@ -155,6 +164,17 @@ public class RabbitConfig {
     @Bean
     DirectExchange directExchangeProcess(){
         return new DirectExchange("directExchangeProcess");
+    }
+
+    /**
+     * 这是一个延迟交换机
+     * @return
+     */
+    @Bean
+    CustomExchange directDelayPlusExchange(){
+        Map<String,Object> args = new HashMap<>();
+        args.put("x-delayed-type", "direct");
+        return new CustomExchange("directDelayPlusExchange","x-delayed-message",true,false,args);
     }
 
     /**
@@ -254,6 +274,17 @@ public class RabbitConfig {
     @Bean
     Binding bindingDelayQueueExchangeMessage(Queue delayTilMessageQueue,DirectExchange delayTilQueueExchange){
         return BindingBuilder.bind(delayTilMessageQueue).to(delayTilQueueExchange).with("delay.delayTilQueue");
+    }
+
+    /**
+     * 延迟交换机与队列绑定
+     * @param directDelayPlusQueue
+     * @param directDelayPlusExchange
+     * @return
+     */
+    @Bean
+    Binding bindingDelayPlusExchange(Queue directDelayPlusQueue,CustomExchange directDelayPlusExchange){
+        return BindingBuilder.bind(directDelayPlusQueue).to(directDelayPlusExchange).with("delay.delayPlus").noargs();
     }
 
 }
