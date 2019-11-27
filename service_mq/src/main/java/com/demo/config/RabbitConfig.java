@@ -4,6 +4,9 @@ import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @description:
  * @author: liyang
@@ -67,6 +70,27 @@ public class RabbitConfig {
     }
 
     /**
+     * 延迟队列接收队列
+     * @return
+     */
+    @Bean
+    public Queue delayTilMessage(){
+        Map<String, Object> arguments = new HashMap<>();
+        arguments.put("x-dead-letter-exchange","directExchangeProcess");
+        arguments.put("x-dead-letter-routing-key","delay.delayProcess");
+        return new Queue("delayTilMessage",true,false,false,arguments);
+    }
+
+    /**
+     * 延迟队列消费队列
+     * @return
+     */
+    @Bean
+    public Queue directQueueProcess(){
+        return new Queue("directQueueProcess");
+    }
+
+    /**
      * 一个directExchange
      * @return
      */
@@ -94,7 +118,25 @@ public class RabbitConfig {
     }
 
     /**
-     * 队列路由绑定
+     * 延迟消息接收交换机
+     * @return
+     */
+    @Bean
+    DirectExchange delayTilExchange(){
+        return new DirectExchange("delayTilExchange");
+    }
+
+    /**
+     * 延迟队列消费交换机
+     * @return
+     */
+    @Bean
+    DirectExchange directExchangeProcess(){
+        return new DirectExchange("directExchangeProcess");
+    }
+
+    /**
+     * direct队列路由绑定
      * @param directMessage
      * @param directExchange
      * @return
@@ -105,7 +147,7 @@ public class RabbitConfig {
     }
 
     /**
-     * 队列路由绑定
+     * direct队列路由绑定
      * @param directMessage2
      * @param directExchange
      * @return
@@ -115,25 +157,70 @@ public class RabbitConfig {
         return BindingBuilder.bind(directMessage2).to(directExchange).with("direct.demo2");
     }
 
+    /**
+     * fanout队列路由绑定
+     * @param fanoutMessage :
+     * @param fanoutExchange :
+     * @return :
+    */
     @Bean
     Binding bindingFanoutExchangeMessage(Queue fanoutMessage,FanoutExchange fanoutExchange){
         return BindingBuilder.bind(fanoutMessage).to(fanoutExchange);
     }
 
+    /**
+     * fanout队列路由绑定
+     * @param fanoutMessage2
+     * @param fanoutExchange
+     * @return
+     */
     @Bean
     Binding bindingFanoutExchangeMessage2(Queue fanoutMessage2,FanoutExchange fanoutExchange){
         return BindingBuilder.bind(fanoutMessage2).to(fanoutExchange);
     }
 
+    /**
+     * Topice消息绑定
+     * @param topicMessage
+     * @param topicExchange
+     * @return
+     */
     @Bean
     Binding bindingTopiceExchangeMessage(Queue topicMessage,TopicExchange topicExchange){
         return BindingBuilder.bind(topicMessage).to(topicExchange).with("*.topic.*");
     }
 
+    /**
+     * Topice消息绑定
+     * @param topicMessage2
+     * @param topicExchange
+     * @return
+     */
     @Bean
     Binding bindingTopiceExchangeMessage2(Queue topicMessage2,TopicExchange topicExchange){
         return BindingBuilder.bind(topicMessage2).to(topicExchange).with("demo.topic.*");
     }
 
+    /**
+     * 延迟接收队列绑定
+     * @param delayTilMessage
+     * @param delayTilExchange
+     * @return
+     */
+    @Bean
+    Binding bindingDelayExchangeMessage(Queue delayTilMessage,DirectExchange delayTilExchange){
+        return BindingBuilder.bind(delayTilMessage).to(delayTilExchange).with("delay.delayTilMessage");
+    }
+
+    /**
+     * 延迟队列消费绑定
+     * @param directQueueProcess
+     * @param directExchangeProcess
+     * @return
+     */
+    @Bean
+    Binding bindingDelayExchangeProcessMessage(Queue directQueueProcess,DirectExchange directExchangeProcess){
+        return BindingBuilder.bind(directQueueProcess).to(directExchangeProcess).with("delay.delayProcess");
+    }
 
 }

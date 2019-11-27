@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * @description:
  * @author: liyang
@@ -40,6 +43,13 @@ public class DemoController {
         return ss;
     }
 
+    /**
+     * dircet队列消费
+     * @author liyang
+     * @date 2019-11-26
+     * @param string :
+     * @return : null
+    */
     @GetMapping("/sendToDirectMessage/{string}")
     public String sendToDirectMessage(@PathVariable(value = "string") String string){
         System.out.println("host++++++++++++++++++++" + service);
@@ -55,6 +65,13 @@ public class DemoController {
         return "成功";
     }
 
+    /**
+     * fanout队列消费
+     * @author liyang
+     * @date 2019-11-26
+     * @param string :
+     * @return : null
+    */
     @GetMapping("/sendToFanoutMessage/{string}")
     public String sendToFanoutMessage(@PathVariable(value = "string") String string){
         System.out.println("host++++++++++++++++++++" + service);
@@ -70,6 +87,13 @@ public class DemoController {
         return "成功";
     }
 
+    /**
+     * topic队列消费
+     * @author liyang
+     * @date 2019-11-26
+     * @param routing : 队列的routing
+     * @return : null
+    */
     @GetMapping("/sendToTopicMessage/{string}")
     public String sendToTopicMessage(@PathVariable(value = "string") String routing){
         System.out.println("host++++++++++++++++++++" + service);
@@ -83,6 +107,32 @@ public class DemoController {
         rabbitTemplate.convertAndSend("topicExchange",routing,directStr);
 
         return "成功";
+    }
+
+    /**
+     * 发送延迟队列
+     * @author liyang
+     * @date 2019-11-26
+     * @param routing : routing
+     * @return : null
+    */
+    @GetMapping("/sendToDelayMessage/{routing}")
+    public String sendToDelayMessage(@PathVariable(value = "routing") String routing){
+        DirectMessage direct = new DirectMessage();
+        direct.setId(1L);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String date = simpleDateFormat.format(new Date());
+        direct.setContent(date + "  发送延迟消息");
+        direct.setTitle("routing是==============" + routing);
+
+        String directStr = JSON.toJSONString(direct);
+
+        rabbitTemplate.convertAndSend("delayTilExchange",routing,directStr,message -> {
+            message.getMessageProperties().setExpiration("20000");
+            return message;
+        });
+
+        return direct.getContent();
     }
 
 }
