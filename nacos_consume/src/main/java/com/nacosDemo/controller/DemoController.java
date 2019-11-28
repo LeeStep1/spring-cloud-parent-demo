@@ -2,6 +2,9 @@ package com.nacosDemo.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.nacosDemo.bean.DirectMessage;
+import com.nacosDemo.commonEnum.RedisKey;
+import com.nacosDemo.until.CacheUtil;
+import com.nacosDemo.until.RedisKeyUntil;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessagePostProcessor;
@@ -16,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static com.nacosDemo.commonEnum.RedisKey.DELAY_INFORMATION;
 
 /**
  * @description:
@@ -38,6 +43,12 @@ public class DemoController {
 
     @Value("${spring.rabbitmq.host}")
     private String service;
+
+    /**
+     * redis 工具类
+     */
+    @Autowired
+    private CacheUtil cacheUtil;
 
     @GetMapping("/firstDemo/{string}")
     public String firstDemo(@PathVariable(value = "string") String string){
@@ -188,5 +199,28 @@ public class DemoController {
         });
 
         return direct.getContent();
+    }
+
+    /**
+     * 发送redis
+     * @author liyang
+     * @date 2019-11-28
+     * @return : null
+    */
+    @GetMapping("/sendToRedis")
+    public String redisDelayDemo(){
+        DirectMessage direct = new DirectMessage();
+        direct.setId(1L);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String date = simpleDateFormat.format(new Date());
+        direct.setContent(date + "  发送延迟消息");
+
+        String directStr = JSON.toJSONString(direct);
+
+        cacheUtil.set(RedisKeyUntil.getRedisKey(RedisKey.DELAY_INFORMATION,"1"),directStr,20000);
+
+        System.out.println(date + "  发送至redis");
+
+        return date;
     }
 }
