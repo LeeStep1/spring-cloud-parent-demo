@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * @description:
+ * @description: redis中消息失效监听
  * @author: liyang
  * @date: 2019-11-28
  **/
@@ -27,11 +27,18 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
      */
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        // 用户做自己的业务处理即可,注意message.toString()可以获取失效的key
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String date = simpleDateFormat.format(new Date());
-
         String expiredKey = message.toString();
-        System.out.println(date + " +++++++++++++++   失效的key是+++++++++++++" + expiredKey);
+        String informationKey = expiredKey.substring(0,expiredKey.indexOf(":"));
+
+        //只有固定业务的rediskey才执行
+        if(informationKey.equals("information")){
+
+            // 用户做自己的业务处理即可,注意message.toString()可以获取失效的key
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String date = simpleDateFormat.format(new Date());
+
+            System.out.println(date + " +++++++++++++++   失效的key是+++++++++++++" + expiredKey);
+        }
+
     }
 }

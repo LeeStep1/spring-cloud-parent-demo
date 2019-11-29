@@ -217,9 +217,14 @@ public class DemoController {
 
         String directStr = JSON.toJSONString(direct);
 
-        cacheUtil.set(RedisKeyUntil.getRedisKey(RedisKey.DELAY_INFORMATION,"1"),directStr,20000);
+        cacheUtil.set("token:123",directStr,20);
 
-        System.out.println(date + "  发送至redis");
+        for(int i = 1;i<=10;i++){
+            SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String date1 = simpleDateFormat1.format(new Date());
+            cacheUtil.set(RedisKeyUntil.getRedisKey(RedisKey.DELAY_INFORMATION,String.valueOf(i)),directStr,20);
+            System.out.println(date1 + "  发送至redis");
+        }
 
         return date;
     }
