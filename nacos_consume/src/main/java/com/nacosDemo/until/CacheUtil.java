@@ -1,21 +1,18 @@
 package com.nacosDemo.until;
 
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.script.DefaultRedisScript;
-import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @Description:
- * @Author: mifei
- * @Date: 2018-10-10
+ * 分布式锁
+ * @author Liyang
+ * @create 2019-11-29 17:02
  **/
 @Component
 public class CacheUtil {

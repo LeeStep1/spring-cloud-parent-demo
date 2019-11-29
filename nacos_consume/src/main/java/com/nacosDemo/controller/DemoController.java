@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.nacosDemo.bean.DirectMessage;
 import com.nacosDemo.commonEnum.RedisKey;
 import com.nacosDemo.until.CacheUtil;
+import com.nacosDemo.until.DistributedLock;
 import com.nacosDemo.until.RedisKeyUntil;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.Message;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 import static com.nacosDemo.commonEnum.RedisKey.DELAY_INFORMATION;
 
@@ -49,6 +51,9 @@ public class DemoController {
      */
     @Autowired
     private CacheUtil cacheUtil;
+
+    @Autowired
+    private DistributedLock distributedLock;
 
     @GetMapping("/firstDemo/{string}")
     public String firstDemo(@PathVariable(value = "string") String string){
@@ -207,8 +212,8 @@ public class DemoController {
      * @date 2019-11-28
      * @return : null
     */
-    @GetMapping("/sendToRedis")
-    public String redisDelayDemo(){
+    @GetMapping("/sendToRedis/{str}")
+    public String redisDelayDemo(@PathVariable(value = "str") String str){
         DirectMessage direct = new DirectMessage();
         direct.setId(1L);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -217,14 +222,25 @@ public class DemoController {
 
         String directStr = JSON.toJSONString(direct);
 
-        cacheUtil.set("token:123",directStr,20);
+//        cacheUtil.set("token:123",directStr,20);
 
-        for(int i = 1;i<=10;i++){
-            SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String date1 = simpleDateFormat1.format(new Date());
-            cacheUtil.set(RedisKeyUntil.getRedisKey(RedisKey.DELAY_INFORMATION,String.valueOf(i)),directStr,20);
-            System.out.println(date1 + "  发送至redis");
-        }
+//        SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        String date1 = simpleDateFormat1.format(new Date());
+        cacheUtil.set(RedisKeyUntil.getRedisKey(RedisKey.DELAY_INFORMATION,str),directStr,20);
+//        String uuid = UUID.randomUUID().toString();
+
+//        //获取分布式锁
+//        boolean b = distributedLock.setLock("demo:1",uuid,600000);
+//        System.out.println("上锁1     "+b);
+//        try {
+//            Thread.sleep(10000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        boolean b2 = distributedLock.setLock("demo:1",uuid,10000);
+//        System.out.println("上锁2     "+b2);
+//
+        System.out.println(date + "  发送至redis");
 
         return date;
     }
