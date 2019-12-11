@@ -101,10 +101,9 @@ public class RedisConfig extends CachingConfigurerSupport {
         //端口号
         JedisConnectionFactory.setPort(port);
         //如果Redis设置有密码
-        //JedisConnectionFactory.setPassword(password);
+        JedisConnectionFactory.setPassword(password);
         //客户端超时时间单位是毫秒
         JedisConnectionFactory.setTimeout(5000);
-        JedisConnectionFactory.setPassword(password);
         return JedisConnectionFactory;
     }
 
