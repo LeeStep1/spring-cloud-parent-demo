@@ -54,10 +54,7 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
 
         //只有固定业务的rediskey才执行
         if(informationKey.equals("information")){
-//            System.out.println("开始加锁+++++++++");
-//            redissionUntil.lock("demo:1",40);
-//            RLock rLock = redissionUntil.getLock("demo:1");
-//            System.out.println("获取到的锁是+++++++++" + rLock);
+
             redissionUntil.lock("demo:1",20);
             System.out.println("上锁.......");
 
@@ -65,13 +62,12 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
             System.out.println("不是匹配的键....");
         }
 
-        //获取分布式锁(简易)
-//        String uuid = UUID.randomUUID().toString();
-//        boolean b = distributedLock.setLock("demo:1",uuid,600000);
-//        if(b){
-//            //只有固定业务的rediskey才执行
-//            if(informationKey.equals("information")){
-//
+        //只有固定业务的rediskey才执行
+//        if(informationKey.equals("information")){
+//            //获取分布式锁(简易)
+//            String uuid = UUID.randomUUID().toString();
+//            boolean b = distributedLock.setLock("demo:1",uuid,600000);
+//            if(b){
 //                // 用户做自己的业务处理即可,注意message.toString()可以获取失效的key
 //                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 //                String date = simpleDateFormat.format(new Date());
@@ -80,11 +76,12 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
 //
 //                boolean result = distributedLock.releaseLock("demo:1",uuid);
 //                System.out.println(" +++++++++++++++8082 释放锁..........." + result);
+//            }else {
+//                System.out.println(" +++++++++++++++8082 没取到锁..........." );
 //            }
-//        }else {
-//            System.out.println(" +++++++++++++++8082 没取到锁..........." );
 //        }
         System.out.println("执行结束.......");
+
     }
 
 }
