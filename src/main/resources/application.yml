@@ -1,0 +1,113 @@
+server:
+  port: 80
+  servlet:
+    context-path: /quotation
+  tomcat:
+    uri-encoding: UTF-8
+    max-threads: 200
+    max-connections: 1000
+spring:
+  jackson:
+    serialization:
+      write-dates-as-timestamps: true
+    defaultPropertyInclusion: always
+  datasource:
+    url: jdbc:mysql://101.201.235.239:3306/quotation
+    #url: jdbc:mysql://localhost:3306/quotation
+    username: develop
+    #username: root
+    #使用远程的配置中心的参数
+    password: bit2019!Q2w3e
+    #password: root
+    # 使用druid数据源
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    filters: stat
+    maxActive: 20
+    initialSize: 1
+    maxWait: 60000
+    minIdle: 1
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: select 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxOpenPreparedStatements: 20
+    initConnectionSqls: set names utf8mb4;
+  servlet:
+      multipart:
+        enabled: true
+        max-file-size: 10MB
+        max-request-size: 10MB
+redis:
+   hostName: 101.201.235.239
+   port: 6379
+   timeout: 30
+   maxIdle : 300
+   maxTotal: 1000
+   maxWaitMillis: 1000
+   minEvictableIdleTimeMillis : 300000
+   numTestsPerEvictionRun : 1024
+   timeBetweenEvictionRunsMillis : 30000
+   testOnBorrow : true
+   testWhileIdle : true
+   passWord: bit2019
+mybatis:
+  mapper-locations: classpath:mybatis-mapper/*.xml
+  config-location:  classpath:mybatis-config.xml
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: countSql
+logging:
+  level:
+     com.bit.module.manager.dao : debug
+     com.bit.module.website.dao : debug
+
+#atToken过期时间
+atToken:
+  expire: 86400
+
+#rtToken过期时间
+rtToken:
+  expire: 604800
+
+token:
+   expireTime: 300
+
+upload:
+  imagesPath: D:/fileUpload/
+  mapUrl: /images
+  maxFileSize: 10MB
+  maxRequestSize: 10MB
+
+wxapp:
+  resident:
+    appid: 1
+    secret: 1
+  admin:
+    appid: 1
+    secret: 1
+#
+publicApp:
+#  #生产appid: wx52a8537e630038aa
+  #生产secret: 3c903210c39731168ed3192a3de5aff5
+  appid: 1
+  secret: 1
+filter:
+   authUrl:  /fileLocalDisk,/public
+   noFilterUrl: /manager/user/login
+   #noFilterUrl: /manager/user/login,/manager/user/demo,/fileLocalDisk,/images,/resident/user/login,/resident/user/publicOpenId,/resident/user/residentInfo,/resident/reportInformation/allOrganization
+template:
+  managerTemplateId: wldmDtP3QLSSPmaydvJ1q39MfEB9w_eubNf_0FMqmpc
+  #生产managerTemplateId: 3X71PNGIlpfkBmsrNgu5-16e9UG2D7pT4ruLPDpN4lY
+  managerUrl:  /pages/report-detail/report-detail?id={0}
+  #生产residentTemplateId: dDsc_RXmsvouGawhktf8fEnprR-pPIfKPZWYPSR0iJM
+  residentTemplateId: ZzzpTSogvHfO3luOZ-HfnWLCTvQUS39BsuHrVr4f5J0
+  residentUrl:  /pages/report-detail/report-detail?id={0}
+logging:
+   level:
+      com.bit.module.manager.dao : debug

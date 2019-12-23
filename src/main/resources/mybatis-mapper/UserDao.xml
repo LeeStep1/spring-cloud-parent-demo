@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bit.module.manager.dao.UserDao">
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="User_columns">
+	    <![CDATA[
+			id as id,
+			username as username,
+			password as password,
+			salt as salt,
+			real_name as real_name,
+			mobile as mobile,
+			insert_time as insert_time,
+			update_time as update_time,
+			role as role,
+			status as status,
+			token as token,
+			open_id as open_id
+	    ]]>
+	</sql>
+
+
+	<!-- 翻页查询 -->
+	<select id="findByConditionPage" resultType="com.bit.module.manager.bean.User" parameterType="com.bit.module.manager.bean.User">
+		select <include refid="User_columns" />
+		from t_user a
+		<where>
+			<if test="id != null and id != '' " >and a.id =#{id,jdbcType=BIGINT}</if>
+			<if test="userName != null and userName != '' " >and a.username like "%"#{userName,jdbcType=VARCHAR}"%"</if>
+			<if test="realName != null and realName != '' " >and a.real_name like "%"#{realName,jdbcType=VARCHAR}"%"</if>
+			<if test="mobile != null and mobile != '' " >and a.mobile like "%"#{mobile,jdbcType=VARCHAR}"%"</if>
+
+		</where>
+	</select>
+
+	<!-- 查询全部 -->
+	<select id="findAll" parameterType="com.bit.module.manager.vo.PortalUserVo"
+			resultType="com.bit.module.manager.bean.User">
+		select
+			t.id id,
+			t.user_name user_name,
+			t.real_name real_name,
+			t.mobile mobile,
+			t.insert_time insert_time,
+			t.update_time update_time,
+			t.STATUS STATUS
+		FROM
+			t_user t
+			LEFT JOIN t_user_role tp ON t.id = tp.user_id
+			LEFT JOIN t_role tpr ON tp.role_id = tpr.id
+		<where>
+			<if test="portalUserVo.userName != null and portalUserVo.userName != ''">
+				and t.user_name LIKE CONCAT('%',#{portalUserVo.userName},'%')
+			</if>
+
+			<if test="portalUserVo.realName != null and portalUserVo.realName != ''">
+				and t.real_name LIKE CONCAT('%',#{portalUserVo.realName},'%')
+			</if>
+
+			<if test="portalUserVo.mobile != null and portalUserVo.mobile != ''">
+				and t.mobile LIKE CONCAT('%',#{portalUserVo.mobile})
+			</if>
+
+			<if test="portalUserVo.status != null">
+				and t.status = #{portalUserVo.status}
+			</if>
+
+			<if test="portalUserVo.roleId != null">
+				and t.role_id = #{portalUserVo.roleId}
+			</if>
+		</where>
+		ORDER BY
+		insert_time DESC
+	</select>
+
+	<!-- 查询单条记录 -->
+	<select id="findById" resultType="com.bit.module.manager.bean.User" parameterType="com.bit.module.manager.bean.User">
+		select <include refid="User_columns" />
+		from t_user
+		where
+		id =#{id,jdbcType=BIGINT}
+	</select>
+
+	<!-- 根据用户名查询 -->
+	<select id="findByUsername" resultType="com.bit.module.manager.vo.UserVo">
+		select
+		u.id as id,
+		u.user_name as userName,
+		u.pass_word as passWord,
+		u.salt as salt,
+		u.real_name as realName,
+		u.mobile as mobile,
+		u.insert_time as insertTime,
+		u.update_time as updateTime,
+		u.status as status,
+		u.token as token,
+		u.open_id as openId,
+		ro.id as roleId,
+		ro.role_name as roleName
+		   from t_user u , t_user_role r,t_role ro
+		where
+		     u.id=r.user_id
+		     and ro.id=r.role_id
+		<if test="role != null">
+			and  r.role_id =#{role,jdbcType=INTEGER}
+		</if>
+		<if test="userName !=null">
+			and  u.user_name= #{userName,jdbcType=VARCHAR}
+		</if>
+
+	</select>
+
+	<!-- 根据ID查询用户详情 -->
+	<select id="findUserSql" parameterType="java.lang.Long"
+			resultType="com.bit.module.manager.bean.User">
+		select
+			t.*
+		FROM
+			t_user t
+
+		WHERE
+			t.id = #{id}
+	</select>
+
+	<!-- 添加一条记录 -->
+	<insert id="addUser" parameterType="com.bit.module.manager.bean.User" keyProperty="id" useGeneratedKeys="true" keyColumn="id">
+		insert INTO t_user (
+			user_name ,
+			real_name ,
+			mobile ,
+			pass_word ,
+			salt ,
+			insert_time,
+			update_time ,
+			status,
+			open_id
+		) VALUES (
+			#{userName,jdbcType=VARCHAR},
+			#{realName,jdbcType=VARCHAR},
+			#{mobile,jdbcType=VARCHAR},
+			#{passWord,jdbcType=VARCHAR},
+			#{salt,jdbcType=VARCHAR},
+			#{insertTime,jdbcType=TINYINT},
+			#{updateTime,jdbcType=TIMESTAMP},
+			#{status,jdbcType=TINYINT},
+			#{openId,jdbcType=VARCHAR}
+		)
+	</insert>
+
+
+	<!-- 添加一条记录 -->
+	<insert id="addUserRelRole" parameterType="com.bit.module.manager.bean.UserRelRole" keyProperty="id" useGeneratedKeys="true" keyColumn="id">
+		insert INTO t_user_role (
+		role_id ,
+		user_id
+		) VALUES (
+
+		#{roleId,jdbcType=INTEGER},
+		#{userId,jdbcType=BIGINT}
+
+		)
+	</insert>
+	<select id="findRoleByUserId" resultType="com.bit.module.manager.bean.Role">
+
+		SELECT  r.*
+
+		   FROM  t_user_role tor , t_role r
+
+		WHERE
+		   tor.role_id=r.id
+
+		 <if test="userId !=null">
+			 AND tor.user_id=#{userId,jdbcType=BIGINT}
+		 </if>
+
+	</select>
+	<!-- 修改一条记录 -->
+	<update id="update" parameterType="com.bit.module.manager.bean.User">
+		update t_user
+		<set>
+			<if test="userName != null">
+				user_name =#{userName,jdbcType=VARCHAR},
+			</if>
+			<if test="realName != null">
+				real_name =#{realName,jdbcType=VARCHAR},
+			</if>
+			<if test="mobile != null">
+				mobile =#{mobile,jdbcType=VARCHAR},
+			</if>
+			<if test="passWord != null">
+				pass_word =#{passWord,jdbcType=VARCHAR},
+			</if>
+			<if test="salt != null">
+				salt =#{salt,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				update_time =#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="status != null">
+				status =#{status,jdbcType=TINYINT},
+			</if>
+			<if test="openId != null">
+				open_id =#{openId,jdbcType=VARCHAR},
+			</if>
+			<if test="token != null">
+				token =#{token,jdbcType=VARCHAR}
+			</if>
+		</set>
+		where  id = #{id,jdbcType=BIGINT}
+	</update>
+
+
+	<!-- 删除一条记录 -->
+	<delete id="delete" parameterType="com.bit.module.manager.bean.User">
+		delete from t_user where id = #{id,jdbcType=BIGINT}
+	</delete>
+
+
+	<!-- 删除一条记录 -->
+	<delete id="deleteUserRole">
+		delete from t_user_role where user_id = #{userId,jdbcType=BIGINT}
+	</delete>
+	<!-- 根据用户ID查询用户 -->
+	<select id="findByUserId" parameterType="java.lang.Long" resultType="com.bit.module.manager.bean.User">
+		select <include refid="User_columns" />
+		from t_protal_user
+		where id = #{id}
+	</select>
+
+    <select id="findRoles" resultType="com.bit.module.manager.bean.Role">
+           SELECT  * from t_role
+    </select>
+
+</mapper>
