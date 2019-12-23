@@ -37,29 +37,20 @@ public class WxUserComponent {
     /**登录授权**/
     private final  String  Jscode2sessionUrl="https://api.weixin.qq.com/sns/jscode2session?appid={0}&secret={1}&js_code={2}&grant_type=authorization_code";
 
+
     /**
      * 居民端appid
      */
-    @Value("${wxapp.resident.appid}")
-    private String residnetAppid;
+    @Value("${wxapp.customer.appid}")
+    private String customerAppid;
+
 
     /**
      * 居民端secret
      */
-    @Value("${wxapp.resident.secret}")
-    private String residnetSecret;
+    @Value("${wxapp.customer.secret}")
+    private String customerSecret;
 
-    /**
-     * 管理端appid
-     */
-    @Value("${wxapp.admin.appid}")
-    private String adminAppid;
-
-    /**
-     * 管理端secret
-     */
-    @Value("${wxapp.admin.secret}")
-    private String adminSecret;
 
     /**
      * 跳转工具类
@@ -76,14 +67,14 @@ public class WxUserComponent {
     public WxLoginRs getSessionKeyAndOpenId(String code,Integer tid){
         String appid = null;
         String secret = null;
-        if(tid.equals(TERMINALURL_MANAGER.getTid())){
+        /*if(tid.equals(TERMINALURL_MANAGER.getTid())){
             appid = adminAppid;
             secret= adminSecret;
         }else if(tid.equals(TERMINALURL_RESIDENT.getTid())) {
             appid = residnetAppid;
             secret= residnetSecret;
-        }
-         String params[]={appid,secret,code};
+        }*/
+         String params[]={customerAppid,customerSecret,code};
          String targetUrl=MessageFormat.format(Jscode2sessionUrl,params);
          log.info("请求微信人员登录接口：{}",targetUrl);
          String ss = restTemplate.getForObject(targetUrl,String.class);

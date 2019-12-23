@@ -124,13 +124,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!--微信小程序推送-->
-        <dependency>
-            <groupId>com.github.binarywang</groupId>
-            <artifactId>weixin-java-miniapp</artifactId>
-            <version>3.4.0</version>
-        </dependency>
-
         <dependency>
             <groupId>dom4j</groupId>
             <artifactId>dom4j</artifactId>
@@ -148,14 +141,6 @@
             <artifactId>dsx</artifactId>
             <version>0.10.0</version>
         </dependency>
-
-        <!--微信模版消息推送三方sdk-->
-        <dependency>
-            <groupId>com.github.binarywang</groupId>
-            <artifactId>weixin-java-mp</artifactId>
-            <version>3.3.0</version>
-        </dependency>
-
     </dependencies>
 
     <build>

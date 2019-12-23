@@ -88,18 +88,15 @@ upload:
   maxRequestSize: 10MB
 
 wxapp:
-  resident:
-    appid: 1
-    secret: 1
-  admin:
-    appid: 1
-    secret: 1
-#
+  customer:
+    appid: wxc85b36d4480113fc
+    secret: fa0e32e62ccc3cb337e365f99b2ba124
+#公众号
 publicApp:
 #  #生产appid: wx52a8537e630038aa
   #生产secret: 3c903210c39731168ed3192a3de5aff5
-  appid: 1
-  secret: 1
+  appid: wxc85b36d4480113fc
+  secret: fa0e32e62ccc3cb337e365f99b2ba124
 filter:
    authUrl:  /fileLocalDisk,/public
    noFilterUrl: /manager/user/login
