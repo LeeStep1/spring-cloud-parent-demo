@@ -21,9 +21,9 @@ import org.springframework.web.client.RestTemplate;
 @ServletComponentScan
 @EnableAsync
 @EnableScheduling
-public class CommunityWxappApplication {
+public class QuotationApplication {
     public static void main(String[] args) {
         
-        SpringApplication.run(CommunityWxappApplication.class, args);
+        SpringApplication.run(QuotationApplication.class, args);
     }
 }
