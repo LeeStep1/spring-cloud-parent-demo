@@ -10,11 +10,13 @@ package com.bit.module.equation.bean;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
  */
 @Data
+@TableName("t_base_price_equation")
 public class BasePriceEquation {
     @TableId(type = IdType.AUTO)
     private Long id;

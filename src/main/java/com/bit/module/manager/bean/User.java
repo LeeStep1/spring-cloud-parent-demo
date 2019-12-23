@@ -1,5 +1,6 @@
 package com.bit.module.manager.bean;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
@@ -11,6 +12,7 @@ import java.util.Date;
  * @date: 2019-06-11
  **/
 @Data
+@TableName("t_user")
 public class User {
 
     /**

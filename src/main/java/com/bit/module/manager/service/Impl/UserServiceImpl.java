@@ -1,6 +1,9 @@
 package com.bit.module.manager.service.Impl;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bit.base.dto.UserInfo;
 import com.bit.base.exception.BusinessException;
 import com.bit.base.service.BaseService;
@@ -9,22 +12,27 @@ import com.bit.common.consts.Const;
 import com.bit.common.consts.RedisKey;
 import com.bit.common.informationEnum.TidUrlEnum;
 import com.bit.common.informationEnum.UserRoleEnum;
-import com.bit.module.manager.bean.*;
+import com.bit.module.manager.bean.Role;
+import com.bit.module.manager.bean.User;
+import com.bit.module.manager.bean.UserLogin;
+import com.bit.module.manager.bean.UserRelRole;
 import com.bit.module.manager.dao.UserDao;
 import com.bit.module.manager.service.UserService;
 import com.bit.module.manager.vo.PortalUserVo;
 import com.bit.module.manager.vo.RefreshTokenVO;
 import com.bit.module.manager.vo.UserVo;
 import com.bit.utils.*;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.*;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static com.bit.common.informationEnum.UserStatusEnum.DISABLE_FLAG;
 import static com.bit.common.informationEnum.UserStatusEnum.USING_FLAG;
 
@@ -210,12 +218,12 @@ public class UserServiceImpl extends BaseService implements UserService {
     */
     @Override
     public BaseVo findAll(PortalUserVo portalUserVo) {
-        PageHelper.startPage(portalUserVo.getPageNum(), portalUserVo.getPageSize());
-        List<User> portalUserLIst = userDao.findAll(portalUserVo);
-        PageInfo<User> pageInfo = new PageInfo<User>(portalUserLIst);
+
+        Page<User> page = new Page<>(portalUserVo.getPageNum(), portalUserVo.getPageSize());
+        IPage<User> userIPage = userDao.selectPage(page,new QueryWrapper<User>());
 
         BaseVo baseVo = new BaseVo();
-        baseVo.setData(pageInfo);
+        baseVo.setData(userIPage);
         return baseVo;
     }
 

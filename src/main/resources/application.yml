@@ -67,6 +67,9 @@ logging:
      com.bit.module.manager.dao : debug
      com.bit.module.website.dao : debug
 
+mybatis-plus:
+  mapper-locations: classpath:mybatis-mapper/*.xml
+
 #atToken过期时间
 atToken:
   expire: 86400

@@ -1,5 +1,8 @@
 package com.bit.module.manager.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.bit.module.equation.bean.Equation;
 import com.bit.module.manager.bean.Role;
 import com.bit.module.manager.bean.User;
 import com.bit.module.manager.bean.UserRelRole;
@@ -16,7 +19,7 @@ import java.util.List;
  *
  */
 @Repository
-public interface UserDao {
+public interface UserDao extends BaseMapper<User> {
 
 	/**
 	 * 根据条件查询User
@@ -30,7 +33,7 @@ public interface UserDao {
 	 * 查询所有User
 	 * @return
 	 */
-	List<User> findAll(@Param("portalUserVo") PortalUserVo portalUserVo);
+	Page<User> findAll(@Param("pg") Page<User> page, @Param("portalUserVo") PortalUserVo portalUserVo);
 
 	/**
 	 * 通过主键查询单个User

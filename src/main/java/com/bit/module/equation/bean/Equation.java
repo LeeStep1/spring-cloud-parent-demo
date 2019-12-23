@@ -16,11 +16,19 @@ import lombok.Data;
 /**
  */
 @Data
-@TableName("t_base_price_equation_rel")
-public class BasePriceEquationRel {
+@TableName("t_base_price_equation")
+public class Equation {
+
     @TableId(type = IdType.AUTO)
     private Long id;
     private String type;
-    private String params;
-    private String val;
+    /**
+     * 第一个公式
+     */
+    private String equation;
+    private String coefficient;
+    private String equation3;
+    private String price;
+    private String category;
+
 }
