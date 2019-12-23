@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bit.module.manager.dao.AreaDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.bit.module.miniapp.bean.Area" id="areaMap">
+        <result property="arCode" column="ar_code"/>
+        <result property="arName" column="ar_name"/>
+        <result property="arType" column="ar_type"/>
+        <result property="parentCode" column="parent_code"/>
+        <result property="arLeavel" column="ar_leavel"/>
+        <result property="tonsPrice" column="tons_price"/>
+        <result property="installCoefficient" column="install_coefficient"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+                ar_code,
+                ar_name,
+                ar_type,
+                parent_code,
+                ar_leavel,
+                tons_price,
+                install_coefficient
+    </sql>
+
+    <!-- 根据主键查询数据 -->
+    <select id="getAreaById" parameterType="Integer" resultMap="areaMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_area
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+
+    <!-- 多参数查询数据 -->
+    <select id="findByParam" parameterType="com.bit.module.miniapp.bean.Area" resultMap="areaMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_area
+        <where>
+            <if test="arName!=null and arName!=''">
+                and ar_name = #{arName,jdbcType=VARCHAR}
+            </if>
+            <if test="arType!=null and arType!=''">
+                and ar_type = #{arType,jdbcType=VARCHAR}
+            </if>
+            <if test="parentCode!=null and parentCode!=''">
+                and parent_code = #{parentCode,jdbcType=VARCHAR}
+            </if>
+            <if test="arLeavel!=null">
+                and ar_leavel = #{arLeavel,jdbcType=INTEGER}
+            </if>
+            <if test="tonsPrice!=null">
+                and tons_price = #{tonsPrice,jdbcType=INTEGER}
+            </if>
+
+        </where>
+    </select>
+
+
+    <!-- 新增数据 -->
+    <insert id="addArea" parameterType="com.bit.module.miniapp.bean.Area" keyColumn="id"
+            useGeneratedKeys="true">
+        insert into t_area
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="arName!=null and arName!=''">
+                ar_name,
+            </if>
+            <if test="arType!=null and arType!=''">
+                ar_type,
+            </if>
+            <if test="parentCode!=null and parentCode!=''">
+                parent_code,
+            </if>
+            <if test="arLeavel!=null">
+                ar_leavel,
+            </if>
+            <if test="tonsPrice!=null">
+                tons_price,
+            </if>
+            <if test="installCoefficient!=null">
+                install_coefficient,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="arName!=null and arName!=''">
+                #{arName,jdbcType=VARCHAR},
+            </if>
+            <if test="arType!=null and arType!=''">
+                #{arType,jdbcType=VARCHAR},
+            </if>
+            <if test="parentCode!=null and parentCode!=''">
+                #{parentCode,jdbcType=VARCHAR},
+            </if>
+            <if test="arLeavel!=null">
+                #{arLeavel,jdbcType=INTEGER},
+            </if>
+            <if test="tonsPrice!=null">
+                #{tonsPrice,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+
+    <!-- 编辑数据 -->
+    <update id="updateArea" parameterType="com.bit.module.miniapp.bean.Area">
+        update t_area
+        <trim prefix="set" suffixOverrides=",">
+            <if test="arName!=null and arName!=''">
+                ar_name = #{arName,jdbcType=VARCHAR},
+            </if>
+            <if test="arType!=null and arType!=''">
+                ar_type = #{arType,jdbcType=VARCHAR},
+            </if>
+            <if test="parentCode!=null and parentCode!=''">
+                parent_code = #{parentCode,jdbcType=VARCHAR},
+            </if>
+            <if test="arLeavel!=null">
+                ar_leavel = #{arLeavel,jdbcType=INTEGER},
+            </if>
+            <if test="tonsPrice!=null">
+                tons_price = #{tonsPrice,jdbcType=INTEGER},
+            </if>
+        </trim>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+
+</mapper>

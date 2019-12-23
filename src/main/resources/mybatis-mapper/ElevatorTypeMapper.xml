@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bit.module.manager.dao.ElevatorTypeDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.bit.module.miniapp.bean.ElevatorType" id="elevatorTypeMap">
+        <result property="id" column="id"/>
+        <result property="typeName" column="type_name"/>
+        <result property="type" column="type"/>
+        <result property="series" column="series"/>
+        <result property="key" column="key"/>
+        <result property="picture" column="picture"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+         id,
+         type_name,
+         `type`,
+         series,
+         `key`,
+         picture
+    </sql>
+
+    <!-- 根据主键查询数据 -->
+    <select id="getElevatorTypeById" parameterType="Long" resultMap="elevatorTypeMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_elevator_type
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <!-- 多参数查询数据 -->
+    <select id="findByParam" parameterType="com.bit.module.miniapp.bean.ElevatorType" resultMap="elevatorTypeMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_elevator_type
+        <where>
+            <if test="typeName!=null and typeName!=''">
+                and type_name = #{typeName,jdbcType=VARCHAR}
+            </if>
+            <if test="type!=null">
+                and type = #{type,jdbcType=INTEGER}
+            </if>
+            <if test="series!=null and series!=''">
+                and series = #{series,jdbcType=VARCHAR}
+            </if>
+            <if test="key!=null and key!=''">
+                and key = #{key,jdbcType=VARCHAR}
+            </if>
+            <if test="picture!=null and picture!=''">
+                and picture = #{picture,jdbcType=VARCHAR}
+            </if>
+
+        </where>
+    </select>
+
+
+    <!-- 新增数据 -->
+    <insert id="addElevatorType" parameterType="com.bit.module.miniapp.bean.ElevatorType" keyColumn="id"
+            useGeneratedKeys="true">
+        insert into t_elevator_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="typeName!=null and typeName!=''">
+                type_name,
+            </if>
+            <if test="type!=null">
+                type,
+            </if>
+            <if test="series!=null and series!=''">
+                series,
+            </if>
+            <if test="key!=null and key!=''">
+                key,
+            </if>
+            <if test="picture!=null and picture!=''">
+                picture,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="typeName!=null and typeName!=''">
+                #{typeName,jdbcType=VARCHAR},
+            </if>
+            <if test="type!=null">
+                #{type,jdbcType=INTEGER},
+            </if>
+            <if test="series!=null and series!=''">
+                #{series,jdbcType=VARCHAR},
+            </if>
+            <if test="key!=null and key!=''">
+                #{key,jdbcType=VARCHAR},
+            </if>
+            <if test="picture!=null and picture!=''">
+                #{picture,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+
+    <!-- 编辑数据 -->
+    <update id="updateElevatorType" parameterType="com.bit.module.miniapp.bean.ElevatorType">
+        update t_elevator_type
+        <trim prefix="set" suffixOverrides=",">
+            <if test="typeName!=null and typeName!=''">
+                type_name = #{typeName,jdbcType=VARCHAR},
+            </if>
+            <if test="type!=null">
+                `type` = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="series!=null and series!=''">
+                series = #{series,jdbcType=VARCHAR},
+            </if>
+            <if test="key!=null and key!=''">
+                `key` = #{key,jdbcType=VARCHAR},
+            </if>
+            <if test="picture!=null and picture!=''">
+                picture = #{picture,jdbcType=VARCHAR},
+            </if>
+        </trim>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+
+    <!-- 删除数据 -->
+    <delete id="delElevatorTypeById" parameterType="long">
+        delete from t_elevator_type where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+</mapper>

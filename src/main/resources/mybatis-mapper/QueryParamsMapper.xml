@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bit.module.manager.dao.QueryParamsDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.bit.module.miniapp.bean.QueryParams" id="queryParamsMap">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="key" column="key"/>
+        <result property="value" column="value"/>
+        <result property="category" column="category"/>
+        <result property="level" column="level"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+                id,
+                title,
+                `key`,
+                `value`,
+                category,
+                `level`
+    </sql>
+
+
+    <!-- 多参数查询数据 -->
+    <select id="findByParam" parameterType="com.bit.module.miniapp.bean.QueryParams" resultMap="queryParamsMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_query_params
+        <where>
+            <if test="title!=null and title!=''">
+                and title = #{title,jdbcType=VARCHAR}
+            </if>
+            <if test="key!=null and key!=''">
+                and `key` = #{key,jdbcType=VARCHAR}
+            </if>
+            <if test="value!=null and value!=''">
+                and `value` = #{value,jdbcType=VARCHAR}
+            </if>
+            <if test="category!=null and category!=''">
+                and category = #{category,jdbcType=VARCHAR}
+            </if>
+            <if test="level!=null">
+                and `level` = #{level,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+
+    <select id="getEleParams" parameterType="com.bit.module.miniapp.bean.QueryParams" resultMap="queryParamsMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_query_params
+        <where>
+            <if test="key!=null and key!=''">
+            and id LIKE concat(
+            (
+              SELECT id FROM t_query_params WHERE `value` = #{key,jdbcType=VARCHAR}
+            )
+            ,"%")
+            </if>
+            <if test="level!=null">
+                and `level` = #{level,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+
+
+</mapper>
