@@ -39,7 +39,7 @@
 	<select id="findAll" parameterType="com.bit.module.manager.vo.PortalUserVo"
 			resultType="com.bit.module.manager.bean.User">
 		select
-			t.id id,
+			DISTINCT (t.id) id,
 			t.user_name user_name,
 			t.real_name real_name,
 			t.mobile mobile,

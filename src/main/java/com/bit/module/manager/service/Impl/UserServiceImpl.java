@@ -220,8 +220,7 @@ public class UserServiceImpl extends BaseService implements UserService {
     public BaseVo findAll(PortalUserVo portalUserVo) {
 
         Page<User> page = new Page<>(portalUserVo.getPageNum(), portalUserVo.getPageSize());
-        IPage<User> userIPage = userDao.selectPage(page,new QueryWrapper<User>());
-
+        IPage<User> userIPage = userDao.findAll(page,portalUserVo);
         BaseVo baseVo = new BaseVo();
         baseVo.setData(userIPage);
         return baseVo;
