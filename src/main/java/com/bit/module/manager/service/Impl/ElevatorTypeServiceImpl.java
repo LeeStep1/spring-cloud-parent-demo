@@ -1,5 +1,6 @@
 package com.bit.module.manager.service.Impl;
 
+import com.bit.base.service.BaseService;
 import com.bit.base.vo.BaseVo;
 import com.bit.module.manager.bean.FileInfo;
 import com.bit.module.manager.dao.ElevatorTypeDao;
@@ -16,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service("elevatorTypeService")
-public class ElevatorTypeServiceImpl implements ElevatorTypeService {
+public class ElevatorTypeServiceImpl extends BaseService implements ElevatorTypeService {
 
 	@Autowired
 	private ElevatorTypeDao elevatorTypeDao;
@@ -93,7 +94,6 @@ public class ElevatorTypeServiceImpl implements ElevatorTypeService {
 		baseVo.setData(elevatorTypeVO);
 		return baseVo;
 	}
-
 
 
 }

@@ -138,4 +138,14 @@ public class UserController {
     public BaseVo findRoles(){
         return userService.findRoles();
     }
+
+    /**
+     * 停用用户
+     * @param userId
+     * @return
+     */
+    @GetMapping("/suspend/{userId}")
+    public BaseVo suspendUser(@PathVariable(value = "userId")Long userId){
+		return userService.suspendUser(userId);
+    }
 }

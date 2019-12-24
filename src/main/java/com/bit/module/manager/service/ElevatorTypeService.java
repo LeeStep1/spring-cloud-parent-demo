@@ -56,7 +56,5 @@ public interface ElevatorTypeService {
 	 * @return ElevatorType
 	 */
     BaseVo reflectById(Long id);
-
-
 }
 

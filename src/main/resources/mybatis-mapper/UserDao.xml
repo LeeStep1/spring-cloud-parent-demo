@@ -7,16 +7,14 @@
 	<sql id="User_columns">
 	    <![CDATA[
 			id as id,
-			username as username,
-			password as password,
-			salt as salt,
+			user_name as user_name,
 			real_name as real_name,
 			mobile as mobile,
+			pass_word as pass_word,
+			salt as salt,
 			insert_time as insert_time,
 			update_time as update_time,
-			role as role,
 			status as status,
-			token as token,
 			open_id as open_id
 	    ]]>
 	</sql>
@@ -28,7 +26,7 @@
 		from t_user a
 		<where>
 			<if test="id != null and id != '' " >and a.id =#{id,jdbcType=BIGINT}</if>
-			<if test="userName != null and userName != '' " >and a.username like "%"#{userName,jdbcType=VARCHAR}"%"</if>
+			<if test="userName != null and userName != '' " >and a.user_name like "%"#{userName,jdbcType=VARCHAR}"%"</if>
 			<if test="realName != null and realName != '' " >and a.real_name like "%"#{realName,jdbcType=VARCHAR}"%"</if>
 			<if test="mobile != null and mobile != '' " >and a.mobile like "%"#{mobile,jdbcType=VARCHAR}"%"</if>
 

@@ -85,5 +85,11 @@ public interface UserService {
      * @return : com.bit.base.vo.BaseVo
      */
     BaseVo findRoles();
+    /**
+     * 停用用户
+     * @param userId
+     * @return
+     */
+    BaseVo suspendUser(Long userId);
 
 }

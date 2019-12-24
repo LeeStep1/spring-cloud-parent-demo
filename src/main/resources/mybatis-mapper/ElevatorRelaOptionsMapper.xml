@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bit.module.manager.dao.ElevatorRelaOptionsDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.bit.module.miniapp.bean.ElevatorRelaOptions" id="elevatorRelaOptionsMap">
+        <result property="id" column="id"/>
+        <result property="elevatorTypeId" column="elevator_type_id"/>
+        <result property="optionId" column="option_id"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        elevator_type_id,
+        option_id
+    </sql>
+
+    <!--根据电梯类型id查询选项-->
+    <select id="getOptionsByElevatorTypeId" parameterType="long" resultType="com.bit.module.miniapp.bean.Options">
+        SELECT t2.* FROM t_elevator_rela_options t1
+        INNER JOIN t_options t2
+        on t1.option_id = t2.id
+        <where>
+            <if test="typeId!=null">
+                and t1.elevator_type_id = #{typeId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </select>
+
+</mapper>

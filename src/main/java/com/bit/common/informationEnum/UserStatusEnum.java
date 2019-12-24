@@ -10,12 +10,12 @@ public enum UserStatusEnum {
     /**
      * 启用标识
      */
-    USING_FLAG(0,"启用"),
+    USING_FLAG(1,"启用"),
 
     /**
      * 停用标识
      */
-    DISABLE_FLAG(1,"停用"),
+    DISABLE_FLAG(0,"停用"),
 
     ;
 

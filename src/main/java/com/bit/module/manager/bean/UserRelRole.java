@@ -1,5 +1,6 @@
 package com.bit.module.manager.bean;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
@@ -8,6 +9,7 @@ import lombok.Data;
  * @Date: 2019-12-20
  **/
 @Data
+@TableName("t_user_role")
 public class UserRelRole {
 
 
@@ -18,4 +20,9 @@ public class UserRelRole {
 
 
     private Integer roleId;
+
+    /**
+     * 登陆票据
+     */
+    private String token;
 }

@@ -1,7 +1,9 @@
 package com.bit.module.manager.service.Impl;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bit.base.dto.UserInfo;
@@ -17,21 +19,21 @@ import com.bit.module.manager.bean.User;
 import com.bit.module.manager.bean.UserLogin;
 import com.bit.module.manager.bean.UserRelRole;
 import com.bit.module.manager.dao.UserDao;
+import com.bit.module.manager.dao.UserRoleDao;
 import com.bit.module.manager.service.UserService;
 import com.bit.module.manager.vo.PortalUserVo;
 import com.bit.module.manager.vo.RefreshTokenVO;
 import com.bit.module.manager.vo.UserVo;
 import com.bit.utils.*;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.bit.common.informationEnum.UserStatusEnum.DISABLE_FLAG;
 import static com.bit.common.informationEnum.UserStatusEnum.USING_FLAG;
@@ -53,6 +55,9 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     @Value("${rtToken.expire}")
     private String rtTokenExpire;
+
+    @Autowired
+    private UserRoleDao userRoleDao;
 
     /**
      * 用户相关dao
@@ -378,6 +383,57 @@ public class UserServiceImpl extends BaseService implements UserService {
         BaseVo vo=new BaseVo();
         vo.setData(  userDao.findRoles());
        return  vo;
+    }
+
+    /**
+     * 停用用户
+     * @param userId
+     * @return
+     */
+    @Override
+    @Transactional
+    public BaseVo suspendUser(Long userId) {
+		User byId = userDao.findById(userId);
+		if (byId==null){
+			throw new BusinessException("用户不存在");
+		}
+		User user = new User();
+		user.setId(userId);
+		user.setStatus(DISABLE_FLAG.getCode());
+		user.setUpdateTime(new Date());
+		//停用用户
+		userDao.update(user);
+
+		//查询用户token
+		UserRelRole param = new UserRelRole();
+		param.setUserId(userId);
+		QueryWrapper<UserRelRole> userRelRoleQueryWrapper = new QueryWrapper<>();
+		userRelRoleQueryWrapper.setEntity(param);
+		List<UserRelRole> userRelRoles = userRoleDao.selectList(userRelRoleQueryWrapper);
+		//userRelRoles 去重token
+		List<String> tokens = new ArrayList<>();
+		if (CollectionUtils.isNotEmpty(userRelRoles)){
+			for (UserRelRole userRelRole : userRelRoles) {
+				if (StringUtil.isNotEmpty(userRelRole.getToken())){
+					tokens.add(userRelRole.getToken());
+				}
+			}
+			//去重
+			tokens = tokens.stream().distinct().collect(Collectors.toList());
+			if (CollectionUtils.isNotEmpty(tokens)){
+				for (String s : tokens) {
+					//redis删除token
+					cacheUtil.del(s);
+				}
+			}
+		}
+
+		UserRelRole userRelRole = new UserRelRole();
+        userRelRole.setToken("");
+        userRelRole.setUserId(userId);
+		//去除用户token
+        userRoleDao.updateTokenByUserId(userRelRole);
+        return successVo();
     }
 
 
