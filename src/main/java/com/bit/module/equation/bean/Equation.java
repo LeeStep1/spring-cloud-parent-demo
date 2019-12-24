@@ -16,7 +16,7 @@ import lombok.Data;
 /**
  */
 @Data
-@TableName("t_base_price_equation")
+@TableName("t_equation")
 public class Equation {
 
     @TableId(type = IdType.AUTO)

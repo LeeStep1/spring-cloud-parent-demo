@@ -1,5 +1,6 @@
 package com.bit.module.manager.bean;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
@@ -8,6 +9,8 @@ import lombok.Data;
  * @Date: 2019-12-23
  **/
 @Data
+
+@TableName("t_project_ele_options")
 public class ProjectEleOptions {
 
     private Long id;
@@ -16,7 +19,7 @@ public class ProjectEleOptions {
 
     private Long optionId;
 
-    private Long optionName;
+    private String optionName;
 
 
     private Integer nums;

@@ -64,8 +64,7 @@ pagehelper:
   params: countSql
 logging:
   level:
-     com.bit.module.manager.dao : debug
-     com.bit.module.website.dao : debug
+    com.bit.module : debug
 
 mybatis-plus:
   mapper-locations: classpath:mybatis-mapper/*.xml
@@ -108,6 +107,3 @@ template:
   #生产residentTemplateId: dDsc_RXmsvouGawhktf8fEnprR-pPIfKPZWYPSR0iJM
   residentTemplateId: ZzzpTSogvHfO3luOZ-HfnWLCTvQUS39BsuHrVr4f5J0
   residentUrl:  /pages/report-detail/report-detail?id={0}
-logging:
-   level:
-      com.bit.module.manager.dao : debug
