@@ -6,6 +6,7 @@ import com.bit.module.manager.service.ElevatorBaseElementService;
 import com.bit.module.manager.service.ElevatorService;
 import com.bit.module.manager.service.ElevatorTypeService;
 import com.bit.module.manager.service.QueryParamsService;
+import com.bit.module.manager.vo.ElevatorTypeVO;
 import com.bit.module.miniapp.bean.QueryParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -82,6 +83,14 @@ public class ElevatorController {
 		return elevatorService.getEleOptions(typeId);
 	}
 
+	/**
+	 * 电梯类型列表查询
+	 * @return
+	 */
+	@PostMapping("/elevatorTypeListPage")
+	public BaseVo elevatorTypeListPage(@RequestBody ElevatorTypeVO elevatorTypeVO){
+		return elevatorTypeService.elevatorTypeListPage(elevatorTypeVO);
+	}
 
 	/**
 	 * 根据电梯类型查询电梯的可选项

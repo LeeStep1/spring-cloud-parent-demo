@@ -1,5 +1,9 @@
 package com.bit.module.manager.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.bit.module.manager.bean.User;
+import com.bit.module.manager.vo.ElevatorTypeVO;
 import com.bit.module.miniapp.bean.ElevatorType;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
@@ -13,7 +17,7 @@ import org.springframework.stereotype.Repository;
  * @date 2019-12-23 11:33:26
  */
 @Repository
-public interface ElevatorTypeDao {
+public interface ElevatorTypeDao extends BaseMapper<ElevatorType> {
 
 	/**
     * 根据id单查记录
@@ -42,5 +46,10 @@ public interface ElevatorTypeDao {
     * 删除记录
     */
 	void delElevatorTypeById(Long id);
+	/**
+	 * 电梯类型列表查询
+	 * @return
+	 */
+	Page<ElevatorType> elevatorTypeListPage(Page<ElevatorType> page, ElevatorTypeVO elevatorTypeVO);
 	
 }

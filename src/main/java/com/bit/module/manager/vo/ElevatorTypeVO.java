@@ -4,6 +4,8 @@ package com.bit.module.manager.vo;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.bit.base.vo.BasePageVo;
+import com.bit.base.vo.BaseVo;
 import com.bit.module.manager.bean.FileInfo;
 import lombok.Data;
 
@@ -15,8 +17,7 @@ import lombok.Data;
  * @date 2019-12-23 11:33:26
  */
 @Data
-public class ElevatorTypeVO implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class ElevatorTypeVO extends BasePageVo implements Serializable {
 
 	/**
 	 * 
