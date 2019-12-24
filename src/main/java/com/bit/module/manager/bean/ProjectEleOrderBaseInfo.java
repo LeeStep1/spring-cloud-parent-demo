@@ -15,7 +15,7 @@ public class ProjectEleOrderBaseInfo {
     /***数据id*/
     private Long id;
     /**参数的变量**/
-    private String key;
+    private String paramKey;
     /***所填写的属性参数*/
     private String infoValue;
     /***'数据id'*/
