@@ -85,7 +85,7 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
                 throw new BusinessException("密码错误");
             }
 
-			WxLoginRs rs= wxUserComponent.getSessionKeyAndOpenId(wxUser.getCode(),wxUser.getTerminalId());
+			WxLoginRs rs= wxUserComponent.getSessionKeyAndOpenId(wxUser.getCode(),wxUser.getTid());
             //查询包括unionId在内的敏感信息
             JSONObject js = wxUserComponent.getUserInfo(wxUser.getEncryptedData(),rs.getSessionKey(),wxUser.getIv());
 
@@ -99,7 +99,7 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
             portalUser.setOpenId(js.getString("openId"));
             userInfo.setId(portalUser.getId());
             userInfo.setUserName(portalUser.getUserName());
-            userInfo.setTid(wxUser.getTerminalId());
+            userInfo.setTid(wxUser.getTid());
             userInfo.setRealName(portalUser.getRealName());
 			userInfo.setToken(token);
 

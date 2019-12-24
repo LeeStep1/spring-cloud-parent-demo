@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bit.module.manager.dao.ElevatorBaseElementDao">
+
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+                id,
+                elevator_type_id,
+                elevator_type_key,
+                element_name,
+                element_type,
+                category_type,
+                params_key,
+                order_num
+    </sql>
+
+    <!-- 根据主键查询数据 -->
+    <select id="findAll" resultType="com.bit.module.manager.bean.ElevatorBaseElement"  parameterType="com.bit.module.manager.bean.ElevatorBaseElement">
+
+        SELECT
+        id,
+        elevator_type_id,
+        elevator_type_key,
+        element_name,
+        element_type,
+        category_type,
+        params_key,
+        order_num
+           from
+        t_elevator_base_element
+        <where>
+            <if test="elevatorTypeId!=null and elevatorTypeId!=''">
+                and elevator_type_id = #{elevatorTypeId,jdbcType=BIGINT}
+            </if>
+            <if test="elevatorTypeKey!=null and elevatorTypeKey!=''">
+                and elevator_type_key = #{elevatorTypeKey,jdbcType=VARCHAR}
+            </if>
+        </where>
+
+        order by order_num
+
+    </select>
+
+    <!-- 多参数查询数据 -->
+   <!-- <select id="findByParam" parameterType="com.bit.module.miniapp.bean.Area" resultMap="areaMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_area
+        <where>
+            <if test="arName!=null and arName!=''">
+                and ar_name = #{arName,jdbcType=VARCHAR}
+            </if>
+            <if test="arType!=null and arType!=''">
+                and ar_type = #{arType,jdbcType=VARCHAR}
+            </if>
+            <if test="parentCode!=null and parentCode!=''">
+                and parent_code = #{parentCode,jdbcType=VARCHAR}
+            </if>
+            <if test="arLeavel!=null">
+                and ar_leavel = #{arLeavel,jdbcType=INTEGER}
+            </if>
+            <if test="tonsPrice!=null">
+                and tons_price = #{tonsPrice,jdbcType=INTEGER}
+            </if>
+
+        </where>
+    </select>
+-->
+
+
+
+
+</mapper>

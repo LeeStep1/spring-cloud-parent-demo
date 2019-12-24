@@ -1,6 +1,8 @@
 package com.bit.module.miniapp.controller;
 
 import com.bit.base.vo.BaseVo;
+import com.bit.module.manager.bean.ElevatorBaseElement;
+import com.bit.module.manager.service.ElevatorBaseElementService;
 import com.bit.module.manager.service.ElevatorService;
 import com.bit.module.manager.service.ElevatorTypeService;
 import com.bit.module.manager.service.QueryParamsService;
@@ -27,6 +29,10 @@ public class ElevatorController {
 	private ElevatorTypeService elevatorTypeService;
 	@Autowired
 	private ElevatorService elevatorService;
+	@Autowired
+	private ElevatorBaseElementService elevatorBaseElementService;
+
+
 
 
 	/**
@@ -85,5 +91,21 @@ public class ElevatorController {
 	public BaseVo elevatorTypeListPage(@RequestBody ElevatorTypeVO elevatorTypeVO){
 		return elevatorTypeService.elevatorTypeListPage(elevatorTypeVO);
 	}
+
+	/**
+	 * 根据电梯类型查询电梯的可选项
+	 * @param eletypeId
+	 * @return
+	 */
+	@GetMapping("/getElevatorBaseElement/{eletypeId}")
+	public BaseVo getElevatorBaseElement(@PathVariable(value = "eletypeId")Long eletypeId){
+		ElevatorBaseElement elevatorBaseElement=new ElevatorBaseElement();
+		elevatorBaseElement.setElevatorTypeId(eletypeId);
+		return elevatorBaseElementService.findAllByElevator(elevatorBaseElement);
+	}
+
+
+
+
 
 }

@@ -24,8 +24,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 
-//@Slf4j
-//@WebFilter(urlPatterns = {"/*"}, filterName = "tokenAuthorFilter")
+@Slf4j
+@WebFilter(urlPatterns = {"/*"}, filterName = "tokenAuthorFilter")
 public class TokenFilter implements Filter {
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(TokenFilter.class);

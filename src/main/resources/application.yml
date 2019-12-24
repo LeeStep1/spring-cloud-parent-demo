@@ -98,7 +98,7 @@ publicApp:
   secret: fa0e32e62ccc3cb337e365f99b2ba124
 filter:
    authUrl:  /fileLocalDisk,/public
-   noFilterUrl: /manager/user/login
+   noFilterUrl: /manager/user/login,/wx/user/login,/images
    #noFilterUrl: /manager/user/login,/manager/user/demo,/fileLocalDisk,/images,/resident/user/login,/resident/user/publicOpenId,/resident/user/residentInfo,/resident/reportInformation/allOrganization
 template:
   managerTemplateId: wldmDtP3QLSSPmaydvJ1q39MfEB9w_eubNf_0FMqmpc
