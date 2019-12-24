@@ -64,11 +64,16 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
     @Autowired
     private ProjectEleOptionsDao projectEleOptionsDao;
 
-    public void executeEquations(List<Map> list) {
-        executeEquations(list);
+    public void executeCountItem(List<ProjectEleOrderBaseInfo> list){
+        Map vars = new HashMap();
+        for (ProjectEleOrderBaseInfo baseInfo : list) {
+            vars.put(baseInfo.getKey(), baseInfo.getInfoValue());
+        }
+        executeEquations(vars);
+        executeTransportEquations(vars);
+        executeInstallEquations(vars);
     }
-
-    public void executeCount(Map vars) {
+    public void executeCountTest(Map vars) {
         vars = new HashMap();
         // test
         vars.put("载重", new Integer(630));
@@ -76,7 +81,6 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         vars.put("层站", new Integer(3));
         vars.put("梯型", "直梯");
         vars.put("系列", "GEE");
-        vars.put("实际提升高度", new Integer(10));
         vars.put("角度", new Integer(10));
         vars.put("宽度", new Integer(10));
         vars.put("台量", new Integer(60));
@@ -84,6 +88,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         vars.put("市", "120000");
         vars.put("区", "120000000");
         vars.put("下浮", new Double(0.55));
+        vars.put("实际提升高度", new Integer(60));
         vars.put("实际顶层高度", 4600);
         vars.put("实际底坑深度", 1500);
         //vars.put("标准提升高度", new Integer(6));
