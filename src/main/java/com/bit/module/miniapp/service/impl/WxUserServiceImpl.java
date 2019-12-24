@@ -12,7 +12,9 @@ import com.bit.common.wx.WxLoginRs;
 import com.bit.common.informationEnum.TidUrlEnum;
 import com.bit.common.informationEnum.UserRoleEnum;
 import com.bit.module.manager.bean.User;
+import com.bit.module.manager.bean.UserRelRole;
 import com.bit.module.manager.dao.UserDao;
+import com.bit.module.manager.dao.UserRoleDao;
 import com.bit.module.manager.vo.RefreshTokenVO;
 import com.bit.module.miniapp.bean.WxUser;
 import com.bit.module.miniapp.service.WxUserService;
@@ -51,6 +53,10 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private UserRoleDao userRoleDao;
+
     /**
      * @description:  微信端登陆
      * @author liyujun
@@ -79,18 +85,18 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
                 throw new BusinessException("密码错误");
             }
 
-             WxLoginRs rs= wxUserComponent.getSessionKeyAndOpenId(wxUser.getCode(),wxUser.getTerminalId());
+			WxLoginRs rs= wxUserComponent.getSessionKeyAndOpenId(wxUser.getCode(),wxUser.getTerminalId());
             //查询包括unionId在内的敏感信息
-            JSONObject js = wxUserComponent.getUserInfo(wxUser.getEncrypteData(),rs.getSessionKey(),wxUser.getIv());
+            JSONObject js = wxUserComponent.getUserInfo(wxUser.getEncryptedData(),rs.getSessionKey(),wxUser.getIv());
+
             User a =new User();
             a.setId(portalUser.getId());
-            // a.setOpenId(rs.getOpenid());
+            a.setOpenId(js.getString("openId"));
+            userDao.update(a);
+
             UserInfo userInfo = new UserInfo();
             String token = UUIDUtil.getUUID();
-            a.setToken(token);
-            a.setOpenId(js.getString("openId"));
             portalUser.setOpenId(js.getString("openId"));
-            userDao.update(a);
             userInfo.setId(portalUser.getId());
             userInfo.setUserName(portalUser.getUserName());
             userInfo.setTid(wxUser.getTerminalId());
@@ -100,6 +106,12 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
             tid = TidUrlEnum.TERMINALURL_RESIDENT.getTid();
             String key1=RedisKeyUtil.getRedisKey(RedisKey.LOGIN_TOKEN,String.valueOf(tid),token);
             cacheUtil.set(key1,userJson,atTokenExpire);
+
+            UserRelRole userRelRole = new UserRelRole();
+            userRelRole.setUserId(portalUser.getId());
+            userRelRole.setToken(key1);
+            userRoleDao.updateTokenByUserId(userRelRole);
+
           //  cacheUtil.set(Const.TOKEN_PREFIX+ tid+":"+token, userJson,Long.valueOf(atTokenExpire));
 
             //rt token 失效时间为7天

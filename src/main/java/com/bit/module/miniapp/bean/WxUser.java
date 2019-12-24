@@ -34,8 +34,10 @@ public class WxUser {
      */
     private String signature;
 
-
-    private String encrypteData;
+    /**
+     * 加密数据
+     */
+    private String encryptedData;
 
 
     private String iv;

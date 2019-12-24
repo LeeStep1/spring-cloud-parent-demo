@@ -93,7 +93,6 @@
 		u.insert_time as insertTime,
 		u.update_time as updateTime,
 		u.status as status,
-		u.token as token,
 		u.open_id as openId,
 		ro.id as roleId,
 		ro.role_name as roleName
@@ -177,7 +176,7 @@
 	<!-- 修改一条记录 -->
 	<update id="update" parameterType="com.bit.module.manager.bean.User">
 		update t_user
-		<set>
+        <trim prefix="set" suffixOverrides=",">
 			<if test="userName != null">
 				user_name =#{userName,jdbcType=VARCHAR},
 			</if>
@@ -202,10 +201,8 @@
 			<if test="openId != null">
 				open_id =#{openId,jdbcType=VARCHAR},
 			</if>
-			<if test="token != null">
-				token =#{token,jdbcType=VARCHAR}
-			</if>
-		</set>
+
+		</trim>
 		where  id = #{id,jdbcType=BIGINT}
 	</update>
 

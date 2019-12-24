@@ -65,6 +65,7 @@ public class UserServiceImpl extends BaseService implements UserService {
     @Autowired
     private UserDao userDao;
 
+
     /**
      * 微信登录工具
      */
@@ -100,7 +101,6 @@ public class UserServiceImpl extends BaseService implements UserService {
                 throw new BusinessException("密码错误");
             }
             User a =new User();
-            a.setId(portalUser.getId());
             UserInfo userInfo = new UserInfo();
             String token = UUIDUtil.getUUID();
 
@@ -112,11 +112,13 @@ public class UserServiceImpl extends BaseService implements UserService {
             userInfo.setRole(portalUser.getRoleId());
             userInfo.setRoleName(portalUser.getRoleName());
             String userJson = JSON.toJSONString(userInfo);
-            Integer tid = null;
-            tid = TidUrlEnum.TERMINALURL_MANAGER.getTid();
+
             String key1=RedisKeyUtil.getRedisKey(RedisKey.LOGIN_TOKEN,String.valueOf(adminLogin.getTid()),token);
-            a.setToken(key1);
-            userDao.update(a);
+
+            UserRelRole userRelRole = new UserRelRole();
+            userRelRole.setUserId(portalUser.getId());
+			userRelRole.setToken(key1);
+			userRoleDao.updateTokenByUserId(userRelRole);
             cacheUtil.set(key1,userJson,Long.valueOf(rtTokenExpire));
            // cacheUtil.set(Const.TOKEN_PREFIX+ tid+":"+token, userJson,Long.valueOf(atTokenExpire));
             //rt token 失效时间为7天

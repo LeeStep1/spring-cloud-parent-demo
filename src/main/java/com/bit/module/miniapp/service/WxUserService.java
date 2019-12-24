@@ -17,5 +17,5 @@ public interface WxUserService {
      * @param wxUser :
      * @return : void
      */
-    public BaseVo wxUserLogin(WxUser wxUser);
+    BaseVo wxUserLogin(WxUser wxUser);
 }
