@@ -4,17 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.bit.base.dto.UserInfo;
-import com.bit.base.exception.BusinessException;
-import com.bit.base.service.BaseService;
-import com.bit.base.vo.BaseVo;
-import com.bit.common.consts.Const;
-import com.bit.common.consts.RedisKey;
-import com.bit.common.informationEnum.TidUrlEnum;
-import com.bit.common.informationEnum.UserRoleEnum;
 import com.bit.module.equation.bean.BasePriceEquation;
 import com.bit.module.equation.bean.BasePriceEquationRel;
 import com.bit.module.equation.bean.Equation;
@@ -23,27 +13,14 @@ import com.bit.module.equation.dao.BasePriceEquationRelDao;
 import com.bit.module.equation.dao.EquationDao;
 import com.bit.module.manager.bean.*;
 import com.bit.module.manager.dao.ProjectEleOptionsDao;
-import com.bit.module.manager.dao.UserDao;
-import com.bit.module.manager.service.UserService;
-import com.bit.module.manager.vo.PortalUserVo;
-import com.bit.module.manager.vo.RefreshTokenVO;
-import com.bit.module.manager.vo.UserVo;
-import com.bit.utils.*;
+import com.bit.module.manager.dao.ProjectEleOrderDao;
+import com.bit.module.miniapp.bean.Options;
 import org.apache.commons.lang.StringUtils;
 import org.mvel2.MVEL;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static com.bit.common.informationEnum.UserStatusEnum.DISABLE_FLAG;
-import static com.bit.common.informationEnum.UserStatusEnum.USING_FLAG;
+import java.util.*;
 
 
 /**
@@ -63,6 +40,8 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
     private BasePriceEquationRelDao basePriceEquationRelDao;
     @Autowired
     private ProjectEleOptionsDao projectEleOptionsDao;
+    @Autowired
+    private ProjectEleOrderDao projectEleOrderDao;
 
     public void executeCountItem(List<ProjectEleOrderBaseInfo> list){
         Map vars = new HashMap();
@@ -70,9 +49,11 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             vars.put(baseInfo.getKey(), baseInfo.getInfoValue());
         }
         executeEquations(vars);
+        updateOrder(vars);
         executeTransportEquations(vars);
         executeInstallEquations(vars);
     }
+
     public void executeCountTest(Map vars) {
         vars = new HashMap();
         // test
@@ -121,6 +102,24 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         a = b;
         System.out.println(a);
     }
+
+
+    /**
+     *返回符合条件的option
+     * @param vars
+     * @return
+     */
+    public List<Options> executeEquationsForOption(Map vars, List<Options> list ) {
+        List<Options> res = new ArrayList<>();
+        for (Options options : list) {
+            int i = getEqInteger(options.getId()+"", vars, "选项触发公式");
+            if (i > 0) {
+                res.add(options);
+            }
+        }
+        return res;
+    }
+
     public Map executeEquations(Map vars) {
         String type = vars.get("系列").toString();
         vars.put("标准提升高度", getHeightForBasePrice(vars, "基价"));
@@ -159,10 +158,18 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         vars.put("小计_单台总价", simpleEquation("小计_设备单价+小计_安装费用", vars)); //单价
         vars.put("小计_合计", simpleEquation("小计_单台总价*台量", vars)); //单价
 
-        // (设备单价+安装单价+运输单价) *台数1 = 合计
-
         String service = " 价格*系数*维保价格";//维保
         return vars;
+    }
+
+    /**
+     * 更新订单表
+     */
+    private void updateOrder(Map vars) {
+        ProjectEleOrder projectEleOrder = projectEleOrderDao.selectById(Long.parseLong(vars.get("order_id").toString()));
+        projectEleOrder.setUnitPrice(vars.get("小计_设备单价").toString());
+        projectEleOrder.setTotalPrice(vars.get("小计_合计").toString());
+        projectEleOrderDao.updateById(projectEleOrder);
     }
 
     public int getOptionPrice(Map vars) {
