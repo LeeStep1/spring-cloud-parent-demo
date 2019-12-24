@@ -3,6 +3,7 @@ package com.bit.module.manager.service;
 import java.util.List;
 
 import com.bit.base.vo.BaseVo;
+import com.bit.module.manager.vo.ElevatorTypeVO;
 import com.bit.module.miniapp.bean.ElevatorType;
 
 /**
@@ -56,5 +57,10 @@ public interface ElevatorTypeService {
 	 * @return ElevatorType
 	 */
     BaseVo reflectById(Long id);
+	/**
+	 * 电梯类型列表查询
+	 * @return
+	 */
+    BaseVo elevatorTypeListPage(ElevatorTypeVO elevatorTypeVO);
 }
 

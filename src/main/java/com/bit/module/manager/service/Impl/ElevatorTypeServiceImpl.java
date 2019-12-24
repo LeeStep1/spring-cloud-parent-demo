@@ -1,5 +1,8 @@
 package com.bit.module.manager.service.Impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bit.base.service.BaseService;
 import com.bit.base.vo.BaseVo;
 import com.bit.module.manager.bean.FileInfo;
@@ -15,6 +18,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Service("elevatorTypeService")
 public class ElevatorTypeServiceImpl extends BaseService implements ElevatorTypeService {
@@ -92,6 +96,19 @@ public class ElevatorTypeServiceImpl extends BaseService implements ElevatorType
 		}
 		BaseVo baseVo = new BaseVo();
 		baseVo.setData(elevatorTypeVO);
+		return baseVo;
+	}
+
+	/**
+	 * 电梯类型列表查询
+	 * @return
+	 */
+	@Override
+	public BaseVo elevatorTypeListPage(ElevatorTypeVO elevatorTypeVO) {
+		Page<ElevatorType> page = new Page<>(elevatorTypeVO.getPageNum(), elevatorTypeVO.getPageSize());
+		Page<ElevatorType> elevatorTypePage = elevatorTypeDao.elevatorTypeListPage(page, elevatorTypeVO);
+		BaseVo baseVo = new BaseVo();
+		baseVo.setData(elevatorTypePage);
 		return baseVo;
 	}
 

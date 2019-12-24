@@ -127,4 +127,11 @@
         delete from t_elevator_type where id = #{id,jdbcType=BIGINT}
     </delete>
 
+    <!--电梯类型列表查询-->
+    <select id="elevatorTypeListPage" parameterType="com.bit.module.manager.vo.ElevatorTypeVO" resultType="com.bit.module.miniapp.bean.ElevatorType">
+        SELECT <include refid="Base_Column_List"/>
+        FROM t_elevator_type
+
+    </select>
+
 </mapper>
