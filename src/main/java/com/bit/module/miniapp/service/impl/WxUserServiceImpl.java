@@ -101,10 +101,12 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
             userInfo.setUserName(portalUser.getUserName());
             userInfo.setTid(wxUser.getTerminalId());
             userInfo.setRealName(portalUser.getRealName());
-            String userJson = JSON.toJSONString(userInfo);
+			userInfo.setToken(token);
+
             Integer tid = null;
             tid = TidUrlEnum.TERMINALURL_RESIDENT.getTid();
             String key1=RedisKeyUtil.getRedisKey(RedisKey.LOGIN_TOKEN,String.valueOf(tid),token);
+			String userJson = JSON.toJSONString(userInfo);
             cacheUtil.set(key1,userJson,atTokenExpire);
 
             UserRelRole userRelRole = new UserRelRole();

@@ -48,20 +48,20 @@
         </where>
     </select>
 
-    <select id="getEleParams" parameterType="com.bit.module.miniapp.bean.QueryParams" resultMap="queryParamsMap">
+    <!--根据电梯的key查询params的level1数据-->
+    <select id="getEleParam" parameterType="com.bit.module.miniapp.bean.QueryParams" resultMap="queryParamsMap">
         select
         <include refid="Base_Column_List"/>
         from t_query_params
         <where>
             <if test="key!=null and key!=''">
-            and id LIKE concat(
-            (
-              SELECT id FROM t_query_params WHERE `value` = #{key,jdbcType=VARCHAR}
-            )
-            ,"%")
+                AND `value` = #{key,jdbcType=VARCHAR}
             </if>
             <if test="level!=null">
                 and `level` = #{level,jdbcType=INTEGER}
+            </if>
+            <if test="id!=null and id!=''">
+                and id like concat(#{id,jdbcType=VARCHAR},"%")
             </if>
         </where>
     </select>

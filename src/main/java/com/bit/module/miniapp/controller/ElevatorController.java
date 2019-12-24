@@ -33,7 +33,7 @@ public class ElevatorController {
 	 * @param typeId
 	 * @return
 	 */
-	@GetMapping("/getElevatorType/{id}")
+	@GetMapping("/getElevatorType/{typeId}")
 	public BaseVo getElevator(@PathVariable(value = "typeId")Long typeId){
 		return elevatorTypeService.reflectById(typeId);
 	}
@@ -41,17 +41,30 @@ public class ElevatorController {
 
 
 	/**
-	 * 查询电梯参数
+	 * 根据电梯的key查询params的level1数据
 	 *
 	 * @param queryParams
 	 * @return List<QueryParams>
 	 * @author chenduo
 	 * @since ${date}
 	 */
-	@PostMapping("/getEleParams")
-	public BaseVo getEleParams(@RequestBody QueryParams queryParams) {
-		return queryParamsService.getEleParams(queryParams);
+	@PostMapping("/getEleParamLevelOne")
+	public BaseVo getEleParamLevelOne(@RequestBody QueryParams queryParams) {
+		return queryParamsService.getEleParamLevelOne(queryParams);
 	}
+
+	/**
+	 * 查询电梯的参数
+	 * @param queryParams
+	 * @return List<QueryParams>
+	 * @author chenduo
+	 * @since ${date}
+	 */
+	@PostMapping("/getEleParam")
+	public BaseVo getEleParams(@RequestBody QueryParams queryParams) {
+		return queryParamsService.getEleParam(queryParams);
+	}
+
 
 	/**
 	 * 根据电梯类型查询电梯的可选项

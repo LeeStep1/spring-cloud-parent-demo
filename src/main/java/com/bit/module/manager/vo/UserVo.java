@@ -2,8 +2,10 @@ package com.bit.module.manager.vo;
 
 import com.bit.module.manager.bean.Role;
 import com.bit.module.manager.bean.User;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,10 +16,21 @@ import java.util.List;
 @Data
 public class UserVo extends User {
 
+    /**
+     * 登陆票据
+     */
+    private String token;
 
+	/**
+	 * 角色名称
+	 */
     private String  roleName;
-
+	/**
+	 * 角色id
+	 */
     private Integer roleId;
-
+	/**
+	 * 角色集合
+	 */
     private List<Role> roleIds;
 }

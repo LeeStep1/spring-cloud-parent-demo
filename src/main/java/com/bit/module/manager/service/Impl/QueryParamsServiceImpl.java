@@ -18,16 +18,31 @@ public class QueryParamsServiceImpl implements QueryParamsService {
 
 
 	/**
-	 * 查询电梯参数
+	 * 根据电梯的key查询params的level1数据
 	 * @param queryParams
 	 * @author chenduo
 	 * @since ${date}
 	 * @return List<QueryParams>
 	 */
 	@Override
-	public BaseVo getEleParams(QueryParams queryParams) {
+	public BaseVo getEleParamLevelOne(QueryParams queryParams) {
 		BaseVo baseVo = new BaseVo();
-		List<QueryParams> queryParamsList = queryParamsDao.getEleParams(queryParams);
+		//只查询1级
+		queryParams.setLevel(1);
+		List<QueryParams> queryParamsList = queryParamsDao.getEleParam(queryParams);
+		baseVo.setData(queryParamsList);
+		return baseVo;
+	}
+
+	/**
+	 * 查询电梯的参数
+	 * @param queryParams
+	 * @return
+	 */
+	@Override
+	public BaseVo getEleParam(QueryParams queryParams) {
+		BaseVo baseVo = new BaseVo();
+		List<QueryParams> queryParamsList = queryParamsDao.getEleParam(queryParams);
 		baseVo.setData(queryParamsList);
 		return baseVo;
 	}

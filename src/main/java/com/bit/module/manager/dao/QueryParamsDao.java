@@ -30,6 +30,6 @@ public interface QueryParamsDao {
 	 * @param queryParams
 	 * @return
 	 */
-	List<QueryParams> getEleParams(QueryParams queryParams);
+	List<QueryParams> getEleParam(QueryParams queryParams);
 
 }

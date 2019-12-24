@@ -1,9 +1,7 @@
 package com.bit.module.manager.service.Impl;
 
 import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bit.base.dto.UserInfo;
@@ -104,18 +102,17 @@ public class UserServiceImpl extends BaseService implements UserService {
             UserInfo userInfo = new UserInfo();
             String token = UUIDUtil.getUUID();
 
-            //userInfo.setToken(token);
+            userInfo.setToken(token);
             userInfo.setId(portalUser.getId());
             userInfo.setUserName(portalUser.getUserName());
             userInfo.setTid(adminLogin.getTid());
             userInfo.setRealName(portalUser.getRealName());
             userInfo.setRole(portalUser.getRoleId());
             userInfo.setRoleName(portalUser.getRoleName());
-            String userJson = JSON.toJSONString(userInfo);
-
             String key1=RedisKeyUtil.getRedisKey(RedisKey.LOGIN_TOKEN,String.valueOf(adminLogin.getTid()),token);
+			String userJson = JSON.toJSONString(userInfo);
 
-            UserRelRole userRelRole = new UserRelRole();
+			UserRelRole userRelRole = new UserRelRole();
             userRelRole.setUserId(portalUser.getId());
 			userRelRole.setToken(key1);
 			userRoleDao.updateTokenByUserId(userRelRole);
@@ -159,10 +156,10 @@ public class UserServiceImpl extends BaseService implements UserService {
         String token = userInfo.getToken();
         String terminalId = userInfo.getTid().toString();
         String key= RedisKeyUtil.getRedisKey(RedisKey.LOGIN_TOKEN,terminalId,token);
-        User a=new User();
-        a.setId(userInfo.getId());
-        a.setToken("-1");
-        userDao.update(a);
+		UserRelRole userRelRole = new UserRelRole();
+		userRelRole.setId(userInfo.getId());
+		userRelRole.setToken("");
+		userRoleDao.updateTokenByUserId(userRelRole);
         cacheUtil.del(key);
         return successVo();
 
@@ -191,7 +188,7 @@ public class UserServiceImpl extends BaseService implements UserService {
             user.setPassWord(password);
             user.setSalt(salt);
 
-            //状态  0 启用  1 停用
+            //状态  0 停用  1 启用
             user.setStatus(USING_FLAG.getCode());
 
             //新增时间
@@ -245,7 +242,7 @@ public class UserServiceImpl extends BaseService implements UserService {
     public BaseVo update(UserVo portalUser) {
 
         //如果是修改密码
-        if(portalUser.getPassWord() !=null && !("").equals(portalUser.getPassWord())){
+        if(StringUtil.isNotEmpty(portalUser.getPassWord())){
 
             //随机密码盐
             String salt = StringRandom.getStringRandom(Const.RANDOM_PASSWORD_SALT);
@@ -256,15 +253,18 @@ public class UserServiceImpl extends BaseService implements UserService {
             portalUser.setSalt(salt);
         }
 
-        //更新人物所属
         portalUser.setUpdateTime(new Date());
-        userDao.deleteUserRole(portalUser.getId());
-        portalUser.getRoleIds().forEach(c->{
-            UserRelRole a=new UserRelRole();
-            a.setUserId(portalUser.getId());
-            a.setRoleId(c.getId());
-            userDao.addUserRelRole(a);
-        });
+        //如果传进来的role集合不为空 就更新角色
+        if (CollectionUtils.isNotEmpty(portalUser.getRoleIds())){
+			userDao.deleteUserRole(portalUser.getId());
+			portalUser.getRoleIds().forEach(c->{
+				UserRelRole a=new UserRelRole();
+				a.setUserId(portalUser.getId());
+				a.setRoleId(c.getId());
+				userDao.addUserRelRole(a);
+			});
+		}
+
         userDao.update(portalUser);
 
         return successVo();
@@ -280,11 +280,43 @@ public class UserServiceImpl extends BaseService implements UserService {
     @Override
     public BaseVo delete(Long id) {
         userDao.delete(id);
+        //删除token
+		delUserRoleToken(id);
+		//删除角色
         userDao.deleteUserRole(id);
 
-        //todo 删除redis
         return successVo();
     }
+
+	/**
+	 * 根据用户id删除token
+	 * @param userId
+	 */
+	private void delUserRoleToken(Long userId){
+		//查询用户token
+		UserRelRole param = new UserRelRole();
+		param.setUserId(userId);
+		QueryWrapper<UserRelRole> userRelRoleQueryWrapper = new QueryWrapper<>();
+		userRelRoleQueryWrapper.setEntity(param);
+		List<UserRelRole> userRelRoles = userRoleDao.selectList(userRelRoleQueryWrapper);
+		//userRelRoles 去重token
+		List<String> tokens = new ArrayList<>();
+		if (CollectionUtils.isNotEmpty(userRelRoles)){
+			for (UserRelRole userRelRole : userRelRoles) {
+				if (StringUtil.isNotEmpty(userRelRole.getToken())){
+					tokens.add(userRelRole.getToken());
+				}
+			}
+			//去重
+			tokens = tokens.stream().distinct().collect(Collectors.toList());
+			if (CollectionUtils.isNotEmpty(tokens)){
+				for (String s : tokens) {
+					//redis删除token
+					cacheUtil.del(s);
+				}
+			}
+		}
+	}
 
     /**
      * 重置用户密码
@@ -299,9 +331,6 @@ public class UserServiceImpl extends BaseService implements UserService {
         User a= userDao.findByUserId(id);
         if(a==null){
             throw new RuntimeException("无此用户");
-           /*if(!StringUtils.isEmpty(a.getToken()){
-               cacheUtil.del(RedisKeyUtil.getRedisKey(RedisKey.LOGIN_TOKEN),g);
-           }*/
         }
         //随机密码盐
         String salt = StringRandom.getStringRandom(Const.RANDOM_PASSWORD_SALT);
@@ -388,53 +417,36 @@ public class UserServiceImpl extends BaseService implements UserService {
     }
 
     /**
-     * 停用用户
+     * 停用启用用户
      * @param userId
+	 * @param status
      * @return
      */
     @Override
     @Transactional
-    public BaseVo suspendUser(Long userId) {
+    public BaseVo statusUser(Long userId,Integer status) {
 		User byId = userDao.findById(userId);
 		if (byId==null){
 			throw new BusinessException("用户不存在");
 		}
 		User user = new User();
 		user.setId(userId);
-		user.setStatus(DISABLE_FLAG.getCode());
+		user.setStatus(status);
 		user.setUpdateTime(new Date());
 		//停用用户
 		userDao.update(user);
+		//如果停用
+		if (status.equals(DISABLE_FLAG.getCode())){
+			//删除token
+			delUserRoleToken(userId);
 
-		//查询用户token
-		UserRelRole param = new UserRelRole();
-		param.setUserId(userId);
-		QueryWrapper<UserRelRole> userRelRoleQueryWrapper = new QueryWrapper<>();
-		userRelRoleQueryWrapper.setEntity(param);
-		List<UserRelRole> userRelRoles = userRoleDao.selectList(userRelRoleQueryWrapper);
-		//userRelRoles 去重token
-		List<String> tokens = new ArrayList<>();
-		if (CollectionUtils.isNotEmpty(userRelRoles)){
-			for (UserRelRole userRelRole : userRelRoles) {
-				if (StringUtil.isNotEmpty(userRelRole.getToken())){
-					tokens.add(userRelRole.getToken());
-				}
-			}
-			//去重
-			tokens = tokens.stream().distinct().collect(Collectors.toList());
-			if (CollectionUtils.isNotEmpty(tokens)){
-				for (String s : tokens) {
-					//redis删除token
-					cacheUtil.del(s);
-				}
-			}
+			UserRelRole userRelRole = new UserRelRole();
+			userRelRole.setToken("");
+			userRelRole.setUserId(userId);
+			//去除用户token
+			userRoleDao.updateTokenByUserId(userRelRole);
 		}
 
-		UserRelRole userRelRole = new UserRelRole();
-        userRelRole.setToken("");
-        userRelRole.setUserId(userId);
-		//去除用户token
-        userRoleDao.updateTokenByUserId(userRelRole);
         return successVo();
     }
 

@@ -72,9 +72,5 @@ public class User {
      */
     private String openId;
 
-    /**
-     * 登陆票据
-     */
-    private String token;
 
 }

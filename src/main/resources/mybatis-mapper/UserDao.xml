@@ -50,15 +50,15 @@
 			LEFT JOIN t_role tpr ON tp.role_id = tpr.id
 		<where>
 			<if test="portalUserVo.userName != null and portalUserVo.userName != ''">
-				and t.user_name LIKE CONCAT('%',#{portalUserVo.userName},'%')
+				and t.user_name LIKE CONCAT("%",#{portalUserVo.userName},"%")
 			</if>
 
 			<if test="portalUserVo.realName != null and portalUserVo.realName != ''">
-				and t.real_name LIKE CONCAT('%',#{portalUserVo.realName},'%')
+				and t.real_name LIKE CONCAT("%",#{portalUserVo.realName},"%")
 			</if>
 
 			<if test="portalUserVo.mobile != null and portalUserVo.mobile != ''">
-				and t.mobile LIKE CONCAT('%',#{portalUserVo.mobile})
+				and t.mobile LIKE CONCAT("%",#{portalUserVo.mobile})
 			</if>
 
 			<if test="portalUserVo.status != null">
@@ -123,27 +123,65 @@
 
 	<!-- 添加一条记录 -->
 	<insert id="addUser" parameterType="com.bit.module.manager.bean.User" keyProperty="id" useGeneratedKeys="true" keyColumn="id">
-		insert INTO t_user (
-			user_name ,
-			real_name ,
-			mobile ,
-			pass_word ,
-			salt ,
-			insert_time,
-			update_time ,
-			status,
-			open_id
-		) VALUES (
-			#{userName,jdbcType=VARCHAR},
-			#{realName,jdbcType=VARCHAR},
-			#{mobile,jdbcType=VARCHAR},
-			#{passWord,jdbcType=VARCHAR},
-			#{salt,jdbcType=VARCHAR},
-			#{insertTime,jdbcType=TINYINT},
-			#{updateTime,jdbcType=TIMESTAMP},
-			#{status,jdbcType=TINYINT},
-			#{openId,jdbcType=VARCHAR}
-		)
+        insert into t_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userName!=null and userName!=''">
+                user_name,
+            </if>
+            <if test="realName!=null and realName!=''">
+                real_name,
+            </if>
+            <if test="mobile!=null and mobile!=''">
+                mobile,
+            </if>
+            <if test="passWord!=null and passWord!=''">
+                pass_word,
+            </if>
+            <if test="salt!=null and salt!=''">
+                salt,
+            </if>
+            <if test="insertTime!=null">
+                insert_time,
+            </if>
+            <if test="updateTime!=null">
+                update_time,
+            </if>
+            <if test="status!=null">
+                status,
+            </if>
+            <if test="openId!=null and openId!=''">
+                open_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userName!=null and userName!=''">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="realName!=null and realName!=''">
+                #{realName,jdbcType=VARCHAR},
+            </if>
+            <if test="mobile!=null and mobile!=''">
+                #{mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="passWord!=null and passWord!=''">
+                #{passWord,jdbcType=VARCHAR},
+            </if>
+            <if test="salt!=null and salt!=''">
+                #{salt,jdbcType=VARCHAR},
+            </if>
+            <if test="insertTime!=null">
+                #{insertTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime!=null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status!=null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="openId!=null and openId!=''">
+                #{openId,jdbcType=VARCHAR},
+            </if>
+        </trim>
 	</insert>
 
 
@@ -175,35 +213,37 @@
 	</select>
 	<!-- 修改一条记录 -->
 	<update id="update" parameterType="com.bit.module.manager.bean.User">
-		update t_user
+        update t_user
         <trim prefix="set" suffixOverrides=",">
-			<if test="userName != null">
-				user_name =#{userName,jdbcType=VARCHAR},
-			</if>
-			<if test="realName != null">
-				real_name =#{realName,jdbcType=VARCHAR},
-			</if>
-			<if test="mobile != null">
-				mobile =#{mobile,jdbcType=VARCHAR},
-			</if>
-			<if test="passWord != null">
-				pass_word =#{passWord,jdbcType=VARCHAR},
-			</if>
-			<if test="salt != null">
-				salt =#{salt,jdbcType=VARCHAR},
-			</if>
-			<if test="updateTime != null">
-				update_time =#{updateTime,jdbcType=TIMESTAMP},
-			</if>
-			<if test="status != null">
-				status =#{status,jdbcType=TINYINT},
-			</if>
-			<if test="openId != null">
-				open_id =#{openId,jdbcType=VARCHAR},
-			</if>
-
-		</trim>
-		where  id = #{id,jdbcType=BIGINT}
+            <if test="userName!=null and userName!=''">
+                user_name = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="realName!=null and realName!=''">
+                real_name = #{realName,jdbcType=VARCHAR},
+            </if>
+            <if test="mobile!=null and mobile!=''">
+                mobile = #{mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="passWord!=null and passWord!=''">
+                pass_word = #{passWord,jdbcType=VARCHAR},
+            </if>
+            <if test="salt!=null and salt!=''">
+                salt = #{salt,jdbcType=VARCHAR},
+            </if>
+            <if test="insertTime!=null">
+                insert_time = #{insertTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime!=null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status!=null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="openId!=null and openId!=''">
+                open_id = #{openId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+        where id = #{id,jdbcType=BIGINT}
 	</update>
 
 
@@ -220,7 +260,7 @@
 	<!-- 根据用户ID查询用户 -->
 	<select id="findByUserId" parameterType="java.lang.Long" resultType="com.bit.module.manager.bean.User">
 		select <include refid="User_columns" />
-		from t_protal_user
+		from t_user
 		where id = #{id}
 	</select>
 

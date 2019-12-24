@@ -129,7 +129,7 @@ public class UserController {
     }
 
     /**
-     * 获取用户列表
+     * 获取角色列表
      * @author lyj
      * @date 2019-06-27
      * @return : BaseVo
@@ -140,12 +140,13 @@ public class UserController {
     }
 
     /**
-     * 停用用户
+     * 停用启用用户
      * @param userId
+	 * @param status
      * @return
      */
-    @GetMapping("/suspend/{userId}")
-    public BaseVo suspendUser(@PathVariable(value = "userId")Long userId){
-		return userService.suspendUser(userId);
+    @GetMapping("/status/{userId}/{status}")
+    public BaseVo statusUser(@PathVariable(value = "userId")Long userId,@PathVariable(value = "status")Integer status){
+		return userService.statusUser(userId,status);
     }
 }

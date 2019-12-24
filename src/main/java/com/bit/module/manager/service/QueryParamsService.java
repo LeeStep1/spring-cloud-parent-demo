@@ -16,14 +16,20 @@ public interface QueryParamsService {
 
 
 	/**
-	 * 查询电梯参数
+	 * 根据电梯的key查询params的level1数据
 	 * @param queryParams
 	 * @author chenduo
 	 * @since ${date}
 	 * @return List<QueryParams>
 	 */
-	BaseVo getEleParams(QueryParams queryParams);
+	BaseVo getEleParamLevelOne(QueryParams queryParams);
 
+	/**
+	 * 查询电梯的参数
+	 * @param queryParams
+	 * @return
+	 */
+	BaseVo getEleParam(QueryParams queryParams);
 
 }
 

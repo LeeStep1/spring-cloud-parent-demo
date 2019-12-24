@@ -75,7 +75,7 @@ public interface UserService {
      * @param portalUserVo : 密码集合
      * @return : BaseVo
     */
-    BaseVo updatePassword(PortalUserVo user);
+    BaseVo updatePassword(PortalUserVo portalUserVo);
 
     /**
      * @description: 角色
@@ -86,10 +86,11 @@ public interface UserService {
      */
     BaseVo findRoles();
     /**
-     * 停用用户
+     * 停用启用用户
      * @param userId
+	 * @param status
      * @return
      */
-    BaseVo suspendUser(Long userId);
+    BaseVo statusUser(Long userId,Integer status);
 
 }
