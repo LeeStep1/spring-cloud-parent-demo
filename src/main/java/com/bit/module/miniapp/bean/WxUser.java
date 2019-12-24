@@ -45,5 +45,5 @@ public class WxUser {
     /**
      * 接入端
      */
-    private Integer terminalId;
+    private Integer tid;
 }

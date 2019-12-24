@@ -11,7 +11,7 @@ public enum TidUrlEnum {
     /**
      * 销售人员tid，对应URL
      */
-    TERMINALURL_RESIDENT(20,"resident"),
+    TERMINALURL_RESIDENT(20,"wx"),
 
     /**
      * web 管理端 tid，对应URL

@@ -21,11 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class WxUserController {
 
     @Autowired
-    private WxUserService wxUserService;
+    private  WxUserService wxUserService;
 
     /**
-     * 小程序登陆
-     * @param wxUser   userName,passWord,code
+     * admin登陆
+     * @param wxUser   userName,passWord,code ,iv，encrypteData，signature
      *
      * @return
      */
