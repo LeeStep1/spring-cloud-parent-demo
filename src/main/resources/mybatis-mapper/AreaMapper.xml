@@ -127,7 +127,7 @@
     </update>
 
     <!--全表查询-->
-    <select id="findAll" resultType="com.bit.module.manager.vo.AreaVO">
+    <select id="findAll" resultType="com.bit.module.manager.vo.AreaTreeVO">
         SELECT <include refid="Base_Column_List"/>
         FROM t_area
     </select>

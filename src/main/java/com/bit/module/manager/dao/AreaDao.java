@@ -1,7 +1,7 @@
 package com.bit.module.manager.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.bit.module.manager.vo.AreaVO;
+import com.bit.module.manager.vo.AreaTreeVO;
 import com.bit.module.miniapp.bean.Area;
 import java.util.List;
 import org.springframework.stereotype.Repository;
@@ -43,5 +43,5 @@ public interface AreaDao extends BaseMapper<Area>{
 	 * 全表查询
 	 * @return
 	 */
-	List<AreaVO> findAll();
+	List<AreaTreeVO> findAll();
 }
