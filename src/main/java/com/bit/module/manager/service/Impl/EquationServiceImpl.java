@@ -156,7 +156,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             vars.put("小计_安装费用", 0);
         }
         vars.put("小计_单台总价", simpleEquation("小计_设备单价+小计_安装费用", vars)); //单价
-        vars.put("小计_合计", simpleEquation("小计_单台总价*台量", vars)); //单价
+        vars.put("小计_合价", simpleEquation("小计_单台总价*台量", vars)); //单价
 
         String service = " 价格*系数*维保价格";//维保
         return vars;
