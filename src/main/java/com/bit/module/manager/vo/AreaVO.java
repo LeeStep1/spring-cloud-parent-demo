@@ -1,22 +1,16 @@
-package com.bit.module.miniapp.bean;
+package com.bit.module.manager.vo;
 
-
-import java.io.Serializable;
-import java.util.Date;
-
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.util.List;
+
 /**
- * 采集居民中的一标三实的区划代码
- *
- * @author chenduo
- * @email ${email}
- * @date 2019-12-23 10:29:33
- */
+ * @Description
+ * @Author chenduo
+ * @Date 2019/12/25 9:49
+ **/
 @Data
-@TableName("t_area")
-public class Area implements Serializable {
+public class AreaVO {
 
 	/**
 	 *
@@ -46,5 +40,8 @@ public class Area implements Serializable {
 	 * 安装系数
 	 */
 	private Float installCoefficient;
-
+	/**
+	 * 子节点
+	 */
+	private List<AreaVO> childList;
 }

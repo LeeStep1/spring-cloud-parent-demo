@@ -126,5 +126,11 @@
         where id = #{id,jdbcType=VARCHAR}
     </update>
 
+    <!--全表查询-->
+    <select id="findAll" resultType="com.bit.module.manager.vo.AreaVO">
+        SELECT <include refid="Base_Column_List"/>
+        FROM t_area
+    </select>
+
 
 </mapper>

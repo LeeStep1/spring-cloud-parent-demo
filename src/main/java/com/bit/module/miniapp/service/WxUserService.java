@@ -1,6 +1,7 @@
 package com.bit.module.miniapp.service;
 
 import com.bit.base.vo.BaseVo;
+import com.bit.module.manager.vo.PortalUserVo;
 import com.bit.module.miniapp.bean.WxUser;
 
 /**
@@ -18,4 +19,23 @@ public interface WxUserService {
      * @return : void
      */
     BaseVo wxUserLogin(WxUser wxUser);
+
+    /**
+     * 微信端登出
+     * @return
+     */
+    BaseVo wxUserLogout();
+    /**
+     * 密码修改
+     * @param portalUserVo
+     * @return
+     */
+    BaseVo wxUpdatePassWord(PortalUserVo portalUserVo);
+
+	/**
+	 * 邮箱修改
+	 * @param portalUserVo
+	 * @return
+	 */
+	BaseVo wxUpdateEmail(PortalUserVo portalUserVo);
 }

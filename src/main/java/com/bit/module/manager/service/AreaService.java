@@ -21,5 +21,11 @@ public interface AreaService {
 	 */
 	BaseVo getAreas(String id);
 
+	/**
+	 * 地域缓存树
+	 * @return
+	 */
+	BaseVo getAreasCacheTree();
+
 }
 
