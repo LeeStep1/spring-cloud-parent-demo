@@ -9,7 +9,7 @@
         <result property="typeName" column="type_name"/>
         <result property="type" column="type"/>
         <result property="series" column="series"/>
-        <result property="key" column="key"/>
+        <result property="paramsKey" column="params_key"/>
         <result property="picture" column="picture"/>
     </resultMap>
 
@@ -19,7 +19,7 @@
          type_name,
          `type`,
          series,
-         `key`,
+         params_key,
          picture
     </sql>
 
@@ -46,8 +46,8 @@
             <if test="series!=null and series!=''">
                 and series = #{series,jdbcType=VARCHAR}
             </if>
-            <if test="key!=null and key!=''">
-                and key = #{key,jdbcType=VARCHAR}
+            <if test="paramsKey!=null and paramsKey!=''">
+                and params_key = #{paramsKey,jdbcType=VARCHAR}
             </if>
             <if test="picture!=null and picture!=''">
                 and picture = #{picture,jdbcType=VARCHAR}
@@ -71,8 +71,8 @@
             <if test="series!=null and series!=''">
                 series,
             </if>
-            <if test="key!=null and key!=''">
-                key,
+            <if test="paramsKey!=null and paramsKey!=''">
+                params_key,
             </if>
             <if test="picture!=null and picture!=''">
                 picture,
@@ -88,8 +88,8 @@
             <if test="series!=null and series!=''">
                 #{series,jdbcType=VARCHAR},
             </if>
-            <if test="key!=null and key!=''">
-                #{key,jdbcType=VARCHAR},
+            <if test="paramsKey!=null paramsKey key!=''">
+                #{paramsKey,jdbcType=VARCHAR},
             </if>
             <if test="picture!=null and picture!=''">
                 #{picture,jdbcType=VARCHAR},
@@ -111,8 +111,8 @@
             <if test="series!=null and series!=''">
                 series = #{series,jdbcType=VARCHAR},
             </if>
-            <if test="key!=null and key!=''">
-                `key` = #{key,jdbcType=VARCHAR},
+            <if test="paramsKey!=null and paramsKey!=''">
+                params_key = #{paramsKey,jdbcType=VARCHAR},
             </if>
             <if test="picture!=null and picture!=''">
                 picture = #{picture,jdbcType=VARCHAR},

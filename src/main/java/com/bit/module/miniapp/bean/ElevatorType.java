@@ -38,7 +38,7 @@ public class ElevatorType implements Serializable {
 	/**
 	 * 运算用key
 	 */
-	private String key;
+	private String paramsKey;
 	/**
 	 * 图片地址
 	 */
