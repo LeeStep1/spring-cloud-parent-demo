@@ -15,7 +15,10 @@ import com.bit.module.manager.bean.User;
 import com.bit.module.manager.bean.UserRelRole;
 import com.bit.module.manager.dao.UserDao;
 import com.bit.module.manager.dao.UserRoleDao;
+import com.bit.module.manager.service.UserService;
+import com.bit.module.manager.vo.PortalUserVo;
 import com.bit.module.manager.vo.RefreshTokenVO;
+import com.bit.module.manager.vo.UserVo;
 import com.bit.module.miniapp.bean.WxUser;
 import com.bit.module.miniapp.service.WxUserService;
 import com.bit.utils.*;
@@ -56,6 +59,9 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
 
     @Autowired
     private UserRoleDao userRoleDao;
+
+    @Autowired
+    private UserService userService;
 
     /**
      * @description:  微信端登陆
@@ -139,4 +145,39 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
             throw new BusinessException("该用户不存在！");
         }
     }
+
+    /**
+     * 微信端登出
+     * @return
+     */
+    @Override
+    public BaseVo wxUserLogout() {
+        userService.adminLogout();
+        return successVo();
+    }
+
+	/**
+	 * 密码修改
+	 * @param portalUserVo
+	 * @return
+	 */
+	@Override
+	public BaseVo wxUpdatePassWord(PortalUserVo portalUserVo) {
+		return userService.updatePassword(portalUserVo);
+	}
+
+	/**
+	 * 邮箱修改
+	 * @param portalUserVo
+	 * @return
+	 */
+	@Override
+	public BaseVo wxUpdateEmail(PortalUserVo portalUserVo) {
+		Long id = getCurrentUserInfo().getId();
+		UserVo userVo = new UserVo();
+		userVo.setId(id);
+		userVo.setEmail(portalUserVo.getEmail());
+		userService.update(userVo);
+		return successVo();
+	}
 }

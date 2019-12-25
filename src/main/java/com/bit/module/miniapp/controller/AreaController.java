@@ -38,5 +38,12 @@ public class AreaController {
 		return areaService.getAreas(id);
 	}
 
-
+	/**
+	 * 地域缓存树
+	 * @return
+	 */
+	@PostMapping("/getAreasCacheTree")
+	public BaseVo getAreasCacheTree(){
+		return areaService.getAreasCacheTree();
+	}
 }

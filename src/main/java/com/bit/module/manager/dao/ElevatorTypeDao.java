@@ -2,7 +2,7 @@ package com.bit.module.manager.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.bit.module.manager.bean.User;
+import com.bit.module.manager.vo.ElevatorTypePageVO;
 import com.bit.module.manager.vo.ElevatorTypeVO;
 import com.bit.module.miniapp.bean.ElevatorType;
 import java.util.List;
@@ -50,6 +50,6 @@ public interface ElevatorTypeDao extends BaseMapper<ElevatorType> {
 	 * 电梯类型列表查询
 	 * @return
 	 */
-	Page<ElevatorType> elevatorTypeListPage(Page<ElevatorType> page, ElevatorTypeVO elevatorTypeVO);
+	Page<ElevatorTypeVO> elevatorTypeListPage(Page<ElevatorTypeVO> page, ElevatorTypePageVO elevatorTypePageVO);
 	
 }

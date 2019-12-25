@@ -75,5 +75,9 @@ public class PortalUserVo extends BasePageVo {
      * 角色名称
      */
     private String roleName;
+    /**
+     * 邮箱
+     */
+    private String email;
 
 }

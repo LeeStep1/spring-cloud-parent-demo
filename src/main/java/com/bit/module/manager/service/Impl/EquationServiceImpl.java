@@ -46,7 +46,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
     public void executeCountItem(List<ProjectEleOrderBaseInfo> list){
         Map vars = new HashMap();
         for (ProjectEleOrderBaseInfo baseInfo : list) {
-            vars.put(baseInfo.getKey(), baseInfo.getInfoValue());
+            vars.put(baseInfo.getParamKey(), baseInfo.getInfoValue());
         }
         executeEquations(vars);
         updateOrder(vars);

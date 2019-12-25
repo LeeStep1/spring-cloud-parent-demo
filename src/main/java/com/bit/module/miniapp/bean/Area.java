@@ -17,7 +17,6 @@ import lombok.Data;
 @Data
 @TableName("t_area")
 public class Area implements Serializable {
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 *

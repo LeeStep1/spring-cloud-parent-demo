@@ -71,6 +71,8 @@ public class User {
      * 微信openId
      */
     private String openId;
-
-
+    /**
+     * 邮箱
+     */
+    private String email;
 }

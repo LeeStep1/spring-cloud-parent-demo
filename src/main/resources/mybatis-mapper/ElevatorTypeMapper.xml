@@ -128,7 +128,7 @@
     </delete>
 
     <!--电梯类型列表查询-->
-    <select id="elevatorTypeListPage" parameterType="com.bit.module.manager.vo.ElevatorTypeVO" resultType="com.bit.module.miniapp.bean.ElevatorType">
+    <select id="elevatorTypeListPage" parameterType="com.bit.module.manager.vo.ElevatorTypePageVO" resultType="com.bit.module.manager.vo.ElevatorTypeVO">
         SELECT <include refid="Base_Column_List"/>
         FROM t_elevator_type
 

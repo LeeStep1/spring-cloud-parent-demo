@@ -15,7 +15,8 @@
 			insert_time as insert_time,
 			update_time as update_time,
 			status as status,
-			open_id as open_id
+			open_id as open_id,
+			email as email
 	    ]]>
 	</sql>
 
@@ -152,6 +153,9 @@
             <if test="openId!=null and openId!=''">
                 open_id,
             </if>
+			<if test="email!=null and email!=''">
+				email,
+			</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userName!=null and userName!=''">
@@ -181,6 +185,9 @@
             <if test="openId!=null and openId!=''">
                 #{openId,jdbcType=VARCHAR},
             </if>
+			<if test="email!=null and email!=''">
+				#{email,jdbcType=VARCHAR},
+			</if>
         </trim>
 	</insert>
 
@@ -242,6 +249,9 @@
             <if test="openId!=null and openId!=''">
                 open_id = #{openId,jdbcType=VARCHAR},
             </if>
+			<if test="email!=null and email!=''">
+				email = #{email,jdbcType=VARCHAR},
+			</if>
         </trim>
         where id = #{id,jdbcType=BIGINT}
 	</update>

@@ -2,15 +2,16 @@ package com.bit.module.miniapp.controller;
 
 import com.bit.base.vo.BaseVo;
 import com.bit.module.manager.bean.ElevatorBaseElement;
-import com.bit.module.manager.service.ElevatorBaseElementService;
-import com.bit.module.manager.service.ElevatorService;
-import com.bit.module.manager.service.ElevatorTypeService;
-import com.bit.module.manager.service.QueryParamsService;
-import com.bit.module.manager.vo.ElevatorTypeVO;
+import com.bit.module.manager.bean.Project;
+import com.bit.module.manager.service.*;
+import com.bit.module.manager.vo.ElevatorTypePageVO;
+import com.bit.module.miniapp.bean.Options;
 import com.bit.module.miniapp.bean.QueryParams;
+import com.bit.module.miniapp.service.WxElevatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
 
 /**
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("wx/elevator")
 public class ElevatorController {
+
 	@Autowired
 	private QueryParamsService queryParamsService;
 	@Autowired
@@ -32,7 +34,10 @@ public class ElevatorController {
 	@Autowired
 	private ElevatorBaseElementService elevatorBaseElementService;
 
-
+	@Autowired
+	private WxElevatorService wxElevatorService;
+	@Autowired
+	private ProjectService projectService;
 
 
 	/**
@@ -88,12 +93,12 @@ public class ElevatorController {
 	 * @return
 	 */
 	@PostMapping("/elevatorTypeListPage")
-	public BaseVo elevatorTypeListPage(@RequestBody ElevatorTypeVO elevatorTypeVO){
-		return elevatorTypeService.elevatorTypeListPage(elevatorTypeVO);
+	public BaseVo elevatorTypeListPage(@RequestBody ElevatorTypePageVO elevatorTypePageVO){
+		return elevatorTypeService.elevatorTypeListPage(elevatorTypePageVO);
 	}
 
 	/**
-	 * 根据电梯类型查询电梯的可选项
+	 * 根据电梯类型查询电梯的基础信息填写模板
 	 * @param eletypeId
 	 * @return
 	 */
@@ -105,7 +110,32 @@ public class ElevatorController {
 	}
 
 
+	/**
+	 * 根据电梯类型id 订单以及相关可选项类别查询电梯的基础信息填写模板
+	 * @param optionType
+	 * @param elevatorTypeId
+	 * @param orderId
+	 * @return
+	 */
+	@GetMapping("/options/{orderId}/{elevatorTypeId}/{optionType}")
+	public BaseVo<List<Options>> getElevatorOption(@PathVariable(value = "elevatorTypeId")Long elevatorTypeId, @PathVariable(value = "orderId")Long orderId, @PathVariable(value = "optionType")Integer optionType){
+		BaseVo rs=new BaseVo();
+		rs.setData(wxElevatorService.getOptions(optionType,elevatorTypeId,orderId));
+		return  rs;
+	}
 
+	/**
+	 * 新建项目
+	 * @param project
+	 * @return
+	 */
 
+	@PostMapping("/project")
+	public BaseVo<Project> getElevator(@RequestBody Project project){
+		projectService.add(project);
+		BaseVo a=new BaseVo();
+		a.setData(project);
+		return a;
+	}
 
 }
