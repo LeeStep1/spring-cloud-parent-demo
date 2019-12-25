@@ -3,6 +3,8 @@ package com.bit.module.manager.bean;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import javax.xml.bind.Element;
+
 /**
  * @Description:
  * @Author: liyujun
@@ -20,5 +22,8 @@ public class ProjectEleOrderBaseInfo {
     private String infoValue;
     /***'数据id'*/
     private Long orderId;
+
+    /**对应的页面元素id**/
+    private Long elementId;
 
 }

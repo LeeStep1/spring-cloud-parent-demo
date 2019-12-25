@@ -1,5 +1,6 @@
 package com.bit.module.miniapp.controller;
 
+import com.bit.base.vo.BasePageVo;
 import com.bit.base.vo.BaseVo;
 import com.bit.module.manager.bean.ElevatorBaseElement;
 import com.bit.module.manager.bean.Project;
@@ -18,7 +19,7 @@ import java.util.List;
  * 电梯的基础数据的筛选关系
  *
  * @author chenduo
- * @email ${email}
+ * @email
  * @date 2019-12-23 11:04:01
  */
 @RestController
@@ -38,6 +39,8 @@ public class ElevatorController {
 	private WxElevatorService wxElevatorService;
 	@Autowired
 	private ProjectService projectService;
+
+
 
 
 	/**
@@ -117,7 +120,7 @@ public class ElevatorController {
 	 * @param orderId
 	 * @return
 	 */
-	@GetMapping("/options/{orderId}/{elevatorTypeId}/{optionType}")
+	@GetMapping("/options/{elevatorTypeId}/{optionType}")
 	public BaseVo<List<Options>> getElevatorOption(@PathVariable(value = "elevatorTypeId")Long elevatorTypeId, @PathVariable(value = "orderId")Long orderId, @PathVariable(value = "optionType")Integer optionType){
 		BaseVo rs=new BaseVo();
 		rs.setData(wxElevatorService.getOptions(optionType,elevatorTypeId,orderId));
@@ -129,7 +132,6 @@ public class ElevatorController {
 	 * @param project
 	 * @return
 	 */
-
 	@PostMapping("/project")
 	public BaseVo<Project> getElevator(@RequestBody Project project){
 		projectService.add(project);
@@ -138,4 +140,28 @@ public class ElevatorController {
 		return a;
 	}
 
+	/**
+	 *我的项目一级页面
+	 * @param vo  分页组件 pageNum pageSize
+	 * @return
+	 */
+	@PostMapping("/user/project")
+	public BaseVo<Project> queryUserProject(@RequestBody BasePageVo vo){
+		BaseVo a=new BaseVo();
+		a.setData(projectService.queryProject(vo));
+		return a;
+	}
+
+
+	/**
+	 *我的项目二级级页面  一个项目对应多个历史版本，以及下的电梯订单数据
+	 * @param projectId  项目ID
+	 * @return
+	 */
+	@PostMapping("/user/project/price/{projectId}")
+	public BaseVo<Project> queryUserProjectPrice(@PathVariable(value = "projectId")Long projectId){
+		BaseVo a=new BaseVo();
+		a.setData(projectService.queryProjectPri(projectId));
+		return a;
+	}
 }

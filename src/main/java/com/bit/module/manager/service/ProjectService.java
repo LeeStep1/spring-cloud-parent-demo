@@ -1,6 +1,10 @@
 package com.bit.module.manager.service;
 
+import com.bit.base.vo.BasePageVo;
 import com.bit.module.manager.bean.Project;
+import com.bit.module.manager.vo.ProjectVo;
+
+import java.util.List;
 
 /**
  * @Description:
@@ -10,4 +14,13 @@ import com.bit.module.manager.bean.Project;
 public interface ProjectService  {
 
     void add(Project project);
+
+
+
+     List<ProjectVo> queryProject(BasePageVo vo);
+
+
+
+
+    ProjectVo queryProjectPri(Long projectId);
 }

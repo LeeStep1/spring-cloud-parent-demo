@@ -61,4 +61,9 @@ public class ProjectEleOrder {
      */
     private Long versionId;
 
+    /**
+     * 下浮率
+     */
+    private Double rate;
+
 }
