@@ -5,18 +5,15 @@ public enum ElevatorTypeEnum {
 	 * 客梯
 	 */
 	ELEVATOR_TYPE_KT(1,"客梯"),
-	/**
-	 * 别墅梯
-	 */
-	ELEVATOR_TYPE_BST(2,"别墅梯"),
+
 	/**
 	 * 货梯
 	 */
-	ELEVATOR_TYPE_HT(3,"货梯"),
+	ELEVATOR_TYPE_HT(2,"货梯"),
 	/**
 	 * 扶梯
 	 */
-	ELEVATOR_TYPE_FT(5,"扶梯");
+	ELEVATOR_TYPE_FT(3,"扶梯");
 
 
 
