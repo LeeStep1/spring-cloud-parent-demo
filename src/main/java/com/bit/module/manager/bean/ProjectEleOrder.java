@@ -42,6 +42,14 @@ public class ProjectEleOrder {
      * 电梯单价
      */
     private String unitPrice;
+    /**
+     * 安装单价
+     */
+    private String installPrice;
+    /**
+     * 单台总价
+     */
+    private String singleTotalPrice;
 
     /**
      * 采购数量
