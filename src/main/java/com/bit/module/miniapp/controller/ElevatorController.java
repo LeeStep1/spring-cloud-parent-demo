@@ -4,7 +4,7 @@ import com.bit.base.vo.BaseVo;
 import com.bit.module.manager.bean.ElevatorBaseElement;
 import com.bit.module.manager.bean.Project;
 import com.bit.module.manager.service.*;
-import com.bit.module.manager.vo.ElevatorTypeVO;
+import com.bit.module.manager.vo.ElevatorTypePageVO;
 import com.bit.module.miniapp.bean.Options;
 import com.bit.module.miniapp.bean.QueryParams;
 import com.bit.module.miniapp.service.WxElevatorService;
@@ -93,8 +93,8 @@ public class ElevatorController {
 	 * @return
 	 */
 	@PostMapping("/elevatorTypeListPage")
-	public BaseVo elevatorTypeListPage(@RequestBody ElevatorTypeVO elevatorTypeVO){
-		return elevatorTypeService.elevatorTypeListPage(elevatorTypeVO);
+	public BaseVo elevatorTypeListPage(@RequestBody ElevatorTypePageVO elevatorTypePageVO){
+		return elevatorTypeService.elevatorTypeListPage(elevatorTypePageVO);
 	}
 
 	/**

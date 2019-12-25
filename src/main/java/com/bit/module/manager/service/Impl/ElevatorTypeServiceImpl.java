@@ -1,24 +1,24 @@
 package com.bit.module.manager.service.Impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bit.base.service.BaseService;
 import com.bit.base.vo.BaseVo;
+import com.bit.common.informationEnum.ElevatorTypeEnum;
 import com.bit.module.manager.bean.FileInfo;
 import com.bit.module.manager.dao.ElevatorTypeDao;
 import com.bit.module.manager.dao.FileInfoDao;
 import com.bit.module.manager.service.ElevatorTypeService;
+import com.bit.module.manager.vo.ElevatorTypePageVO;
 import com.bit.module.manager.vo.ElevatorTypeVO;
 import com.bit.module.miniapp.bean.ElevatorType;
 import com.bit.utils.StringUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Service("elevatorTypeService")
 public class ElevatorTypeServiceImpl extends BaseService implements ElevatorTypeService {
@@ -88,14 +88,14 @@ public class ElevatorTypeServiceImpl extends BaseService implements ElevatorType
 	@Override
 	public BaseVo reflectById(Long id) {
 		ElevatorType elevatorTypeById = elevatorTypeDao.getElevatorTypeById(id);
-		ElevatorTypeVO elevatorTypeVO = new ElevatorTypeVO();
-		BeanUtils.copyProperties(elevatorTypeById,elevatorTypeVO);
+		ElevatorTypePageVO elevatorTypePageVO = new ElevatorTypePageVO();
+		BeanUtils.copyProperties(elevatorTypeById, elevatorTypePageVO);
 		if (StringUtil.isNotEmpty(elevatorTypeById.getPicture())){
 			FileInfo byId = fileInfoDao.findById(Long.valueOf(elevatorTypeById.getPicture()));
-			elevatorTypeVO.setFileInfo(byId);
+			elevatorTypePageVO.setFileInfo(byId);
 		}
 		BaseVo baseVo = new BaseVo();
-		baseVo.setData(elevatorTypeVO);
+		baseVo.setData(elevatorTypePageVO);
 		return baseVo;
 	}
 
@@ -104,9 +104,14 @@ public class ElevatorTypeServiceImpl extends BaseService implements ElevatorType
 	 * @return
 	 */
 	@Override
-	public BaseVo elevatorTypeListPage(ElevatorTypeVO elevatorTypeVO) {
-		Page<ElevatorType> page = new Page<>(elevatorTypeVO.getPageNum(), elevatorTypeVO.getPageSize());
-		Page<ElevatorType> elevatorTypePage = elevatorTypeDao.elevatorTypeListPage(page, elevatorTypeVO);
+	public BaseVo elevatorTypeListPage(ElevatorTypePageVO elevatorTypePageVO) {
+		Page<ElevatorTypeVO> page = new Page<>(elevatorTypePageVO.getPageNum(), elevatorTypePageVO.getPageSize());
+		Page<ElevatorTypeVO> elevatorTypePage = elevatorTypeDao.elevatorTypeListPage(page, elevatorTypePageVO);
+		if (CollectionUtils.isNotEmpty(elevatorTypePage.getRecords())){
+			for (ElevatorTypeVO vo : elevatorTypePage.getRecords()) {
+				vo.setTypeEnumName(ElevatorTypeEnum.getValueByCode(vo.getType()));
+			}
+		}
 		BaseVo baseVo = new BaseVo();
 		baseVo.setData(elevatorTypePage);
 		return baseVo;

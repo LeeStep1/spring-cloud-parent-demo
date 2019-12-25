@@ -1,17 +1,26 @@
 package com.bit.module.manager.vo;
 
+
+import java.io.Serializable;
+import java.util.Date;
+
+import com.bit.base.vo.BasePageVo;
+import com.bit.base.vo.BaseVo;
 import com.bit.module.manager.bean.FileInfo;
 import lombok.Data;
 
 /**
- * @Description
- * @Author chenduo
- * @Date 2019/12/25 9:27
- **/
+ * 电梯系列基础信息表
+ * 
+ * @author chenduo
+ * @email ${email}
+ * @date 2019-12-23 11:33:26
+ */
 @Data
-public class ElevatorTypeVO {
+public class ElevatorTypePageVO extends BasePageVo implements Serializable {
+
 	/**
-	 *
+	 * 
 	 */
 	private Long id;
 	/**
@@ -38,8 +47,5 @@ public class ElevatorTypeVO {
 	 * 附件信息
 	 */
 	private FileInfo fileInfo;
-	/**
-	 * 电梯类型名称
-	 */
-	private String typeEnumName;
+
 }
