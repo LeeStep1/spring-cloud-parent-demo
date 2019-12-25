@@ -1,10 +1,12 @@
 package com.bit.module.manager.bean;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
- * @description:
+ * @description: 项目下的订单表
  * @date:
  **/
 @Data
@@ -14,13 +16,41 @@ public class ProjectEleOrder {
     /**
      * id
      */
+    @TableId(value = "id",type = IdType.AUTO)
     private Long id;
+    /**
+     * 项目id
+     */
     private Long projectId;
+
+    /**
+     * 电梯类型id
+     */
     private Long elevatorTypeId;
+
+    /**
+     * 电梯类型名称
+     */
     private String elevatorTypeName;
+
+    /**
+     * 总价
+     */
     private String totalPrice;
+
+    /**
+     * 电梯单价
+     */
     private String unitPrice;
+
+    /**
+     * 采购数量
+     */
     private String num;
+
+    /**
+     * 对应t_projec_price报价历史表中的id
+     */
     private Long versionId;
 
 }
