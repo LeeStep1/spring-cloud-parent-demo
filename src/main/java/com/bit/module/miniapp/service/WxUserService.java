@@ -38,4 +38,10 @@ public interface WxUserService {
 	 * @return
 	 */
 	BaseVo wxUpdateEmail(PortalUserVo portalUserVo);
+
+	/**
+	 * 微信用户信息返显
+	 * @return
+	 */
+	BaseVo wxUserReflect();
 }

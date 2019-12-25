@@ -60,4 +60,13 @@ public class WxUserController {
 	public BaseVo wxUpdateEmail(@RequestBody PortalUserVo portalUserVo){
 		return wxUserService.wxUpdateEmail(portalUserVo);
 	}
+
+	/**
+	 * 微信用户信息返显
+	 * @return
+	 */
+	@GetMapping("/wxUserReflect")
+	public BaseVo wxUserReflect(){
+		return wxUserService.wxUserReflect();
+	}
 }

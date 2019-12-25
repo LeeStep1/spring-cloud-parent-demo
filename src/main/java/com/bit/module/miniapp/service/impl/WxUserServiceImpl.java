@@ -180,4 +180,17 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
 		userService.update(userVo);
 		return successVo();
 	}
+
+	/**
+	 * 微信用户信息返显
+	 * @return
+	 */
+	@Override
+	public BaseVo wxUserReflect() {
+		Long id = getCurrentUserInfo().getId();
+		User byId = userDao.findById(id);
+		BaseVo baseVo = new BaseVo();
+		baseVo.setData(byId);
+		return baseVo;
+	}
 }
