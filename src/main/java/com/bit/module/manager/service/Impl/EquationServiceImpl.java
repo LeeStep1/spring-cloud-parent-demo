@@ -14,6 +14,7 @@ import com.bit.module.equation.dao.BasePriceEquationRelDao;
 import com.bit.module.equation.dao.EquationDao;
 import com.bit.module.manager.bean.*;
 import com.bit.module.manager.dao.*;
+import com.bit.module.miniapp.bean.Area;
 import com.bit.module.miniapp.bean.ElevatorType;
 import com.bit.module.miniapp.bean.Options;
 import org.apache.commons.lang.StringUtils;
@@ -51,6 +52,10 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
     private ProjectPriceDao projectPriceDao;
     @Autowired
     private ElevatorTypeDao elevatorTypeDao;
+    @Autowired
+    private AreaDao areaDao;
+    @Autowired
+    private ProjectDao projectDao;
 
 
     /**
@@ -70,10 +75,36 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         executeCountItem(baseInfos, map);
     }
 
+    /**
+     * 拼装需要的参数
+     *
+     * @param projectEleOrder
+     * @param map
+     */
     public void getElevatorInfo(ProjectEleOrder projectEleOrder, Map map) {
         ElevatorType elevatorType = elevatorTypeDao.selectById(projectEleOrder.getElevatorTypeId());
         map.put("梯型", elevatorType.getCategory());
         map.put("系列", elevatorType.getParamsKey());
+        Project project = projectDao.selectById(projectEleOrder.getProjectId());
+        String[] split = project.getAddressId().split(",");
+
+        List<Area> areas = areaDao.selectList(new QueryWrapper<Area>().in("ar_code", split));
+        Collections.reverse(areas);
+        float installCoefficient = 1.0f;
+        int tonsPrice = 1;
+        for (Area area : areas) {
+            if (area.getInstallCoefficient() != null) {
+                installCoefficient = area.getInstallCoefficient();
+            }
+        }
+        for (Area area : areas) {
+            if (area.getTonsPrice() != null) {
+                tonsPrice = area.getTonsPrice();
+                break;
+            }
+        }
+        map.put("运输_吨位单价", tonsPrice);
+        map.put("安装_地区系数", installCoefficient);
     }
 
     /**
@@ -117,14 +148,14 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
                 vars.put(baseInfo.getParamKey(), baseInfo.getInfoValue());
             }
         }
-        executeEquations(vars);//计算基价
-        updateOrder(vars);
         if (Boolean.TRUE.equals(vars.get("包括运费"))) {
             executeTransportEquations(vars);
         }
         if (Boolean.TRUE.equals(vars.get("包括安装"))) {
             executeInstallEquations(vars);
         }
+        executeEquations(vars);//计算基价
+        updateOrder(vars);
     }
 
     public void test(Map vars) {
@@ -156,16 +187,16 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
 
     public void executeInstallEquations(Map vars) {
         String type = vars.get("系列").toString();
-        vars.put("安装_基价", getEqInteger(type, vars, "安装基价"));
+        vars.put("安装_基价", getEqInteger(type, vars, "安装_基价"));
         vars.put("安装_台量系数", getEqDouble(null, vars, "安装_台量系数"));
-        vars.put("安装_地区系数", getEqDouble(null, vars, "安装_地区系数"));
+        //vars.put("安装_地区系数", getEqDouble(null, vars, "安装_地区系数"));
         vars.put("小计_安装费用", (Double) simpleEquation("安装_基价*安装_台量系数*安装_地区系数", vars));//安装费用
     }
 
     public void executeTransportEquations(Map vars) {
-        vars.put("运输_吨位单价", getEqInteger(null, vars, "运输_吨位单价"));
-        vars.put("运输_吨位", getEqInteger(null, vars, "运输_吨位"));
-        vars.put("运输_分段系数", getEqDouble(null, vars, "运输_分段系数"));
+        //vars.put("运输_吨位单价", getEqInteger(null, vars, "运输_吨位单价"));
+        vars.put("运输_吨位", getEqDouble(null, vars, "运输_吨位"));
+        vars.put("运输_分段系数", getEqDouble(null, vars, "运输_分段系数", "1.0"));
         vars.put("小计_运费", simpleEquation("运输_吨位单价*运输_吨位*运输_分段系数", vars));//运输
     }
 
@@ -187,7 +218,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
     public List<Options> executeEquationsForOption(Map vars, List<Options> list) {
         List<Options> res = new ArrayList<>();
         for (Options options : list) {
-            int i = getEqInteger(options.getId() + "", vars, "选项触发公式");
+            int i = getEqInteger(options.getId() + "", vars, "可选项价格");
             if (i > 0) {
                 res.add(options);
             }
@@ -195,8 +226,20 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         return res;
     }
 
-    public Map executeEquations(Map vars) {
+    private void checkMap(Map vars) {
+        if (vars.get("下浮") == null) {
+            throw new RuntimeException("下浮不能为空");
+        }
+        if (vars.get("台量") == null) {
+            throw new RuntimeException("台量不能为空");
+        }
+        if (vars.get("梯型") == null) {
+            throw new RuntimeException("梯型不能为空");
+        }
 
+    }
+
+    public Map executeEquations(Map vars) {
         checkMap(vars);
         String type = vars.get("系列").toString();
         vars.put("标准提升高度", getHeightForBasePrice(vars, "基价"));
@@ -240,19 +283,6 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
 
         String service = " 价格*系数*维保价格";//维保
         return vars;
-    }
-
-    private void checkMap(Map vars) {
-        if (vars.get("下浮") == null) {
-            throw new RuntimeException("下浮不能为空");
-        }
-        if (vars.get("台量") == null) {
-            throw new RuntimeException("台量不能为空");
-        }
-        if (vars.get("梯型") == null) {
-            throw new RuntimeException("梯型不能为空");
-        }
-
     }
 
     /**
@@ -310,7 +340,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
                 .eq("category", category)
                 .eq("type", vars.get("系列"));
         for (BasePriceEquationRel basePriceEquationRel : basePriceRel) {
-            query.eq(basePriceEquationRel.getVal(), vars.get(basePriceEquationRel.getParams()));
+            query.eq(vars.get(basePriceEquationRel.getParams())!=null,basePriceEquationRel.getVal(), vars.get(basePriceEquationRel.getParams()));
         }
         BasePriceEquation basePriceEquation = basePriceEquationDao.selectOne(query);
         if (basePriceEquation == null) {
@@ -327,8 +357,16 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
     }
 
     private Integer getEqInteger(String type, Map vars, String category) {
-        String all = getObject(type, category);
-        return (Integer) MVEL.eval(all, vars);
+        String all = getObject(type, category, "0");
+        Object object = MVEL.eval(all, vars);
+        return (Integer) object;
+    }
+    public void test(){
+        Map vars = new HashMap();
+        vars.put("提升高度",15);
+        vars.put("价格",60);
+        Integer test = getEqInteger(null, vars, "test");
+
     }
 
     //TODO 五方对讲平摊
@@ -365,12 +403,15 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         }
     }
 
-    private Double getEqDouble(String type, Map vars, String category) {
-        String all = getObject(type, category);
-        all = all.replaceAll("res=0;", "res=0.0;");
+    private Double getEqDouble(String type, Map vars, String category, String... values) {
+        String defaultValue = "0.0";
+        if (values.length > 0) {
+            defaultValue = values[0];
+        }
+        String all = getObject(type, category, defaultValue);
         Object res = MVEL.eval(all, vars);
         System.out.println("计算结果:" + res);
-        return (Double) res;
+        return Double.parseDouble(res.toString());
     }
 
     private Boolean getEqBoolean(String type, String category, Map vars) {
@@ -392,7 +433,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         return res;
     }
 
-    private String getObject(String type, String category) {
+    private String getObject(String type, String category, String result) {
         List<Equation> testEntities = equationDao.selectList(new QueryWrapper<Equation>()
                 .eq(StringUtils.isNotEmpty(type), "type", type)
                 .eq("category", category));
@@ -406,8 +447,8 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             String equationStr = CollUtil.join(equations, " and ");
             expression += StrUtil.format(s, equationStr, entity.getPrice());
         }
-        String all = "res=0; \n {} \n res;";
-        all = StrUtil.format(all, expression);
+        String all = "res={}; \n {} \n res;";
+        all = StrUtil.format(all, result, expression);
         return all;
     }
 
