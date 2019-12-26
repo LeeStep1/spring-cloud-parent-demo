@@ -88,10 +88,10 @@ upload:
 
 wxapp:
   customer:
-    #appid: wxc85b36d4480113fc
-    #secret: fa0e32e62ccc3cb337e365f99b2ba124
-    appid: wx152b80b3b929690e
-    secret: b4c5017da388a64b6e5587d1a066a07d
+    appid: wxc85b36d4480113fc
+    secret: fa0e32e62ccc3cb337e365f99b2ba124
+    #appid: wx152b80b3b929690e
+    #secret: b4c5017da388a64b6e5587d1a066a07d
 #公众号
 publicApp:
 #  #生产appid: wx52a8537e630038aa
