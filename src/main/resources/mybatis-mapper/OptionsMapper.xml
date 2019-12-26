@@ -7,12 +7,8 @@
 
     <!-- 多参数查询数据 -->
     <select id="findOptionByElevatorType"  resultType="com.bit.module.miniapp.bean.Options">
-
-
         SELECT
-
         tos.*
-
         from t_elevator_rela_options ts, t_options tos
         <where>
                   tos.id=ts.option_id
@@ -24,6 +20,7 @@
             </if>
 
         </where>
+        order by group_value
     </select>
 
 

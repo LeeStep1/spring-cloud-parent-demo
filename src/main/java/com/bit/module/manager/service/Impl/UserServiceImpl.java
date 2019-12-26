@@ -115,6 +115,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 			UserRelRole userRelRole = new UserRelRole();
             userRelRole.setUserId(portalUser.getId());
 			userRelRole.setToken(key1);
+			userRelRole.setRoleId(UserRoleEnum.MANAGER.getRoleId());
 			userRoleDao.updateTokenByUserId(userRelRole);
             cacheUtil.set(key1,userJson,Long.valueOf(rtTokenExpire));
            // cacheUtil.set(Const.TOKEN_PREFIX+ tid+":"+token, userJson,Long.valueOf(atTokenExpire));
