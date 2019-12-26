@@ -85,7 +85,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
             cod.put(c.getParamKey(),c.getInfoValue());
         });
         List<Options> rs=equationServiceImpl. executeEquationsForOption(cod,ops);
-        return ops;
+        return rs;
     }
 
     /**
@@ -223,7 +223,6 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
        return new BaseVo();
    }
 
-   
 
          /**
           * @description:  删除旧版本
