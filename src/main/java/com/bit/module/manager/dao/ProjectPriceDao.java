@@ -26,4 +26,8 @@ public interface ProjectPriceDao extends BaseMapper<ProjectPrice> {
 
     List<ElevatorOrderVo> queryOrderByPriceId(ProjectEleOrder  projectEleOrder);
 
+
+
+    Integer  getMaxVersion(@Param(value = "projectId") Long projectId);
+
 }
