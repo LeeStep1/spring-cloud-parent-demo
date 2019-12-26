@@ -261,6 +261,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             if (temp2 > 0) {
                 heightPrice += (double) simpleEquation("(实际底坑深度-标准底坑深度)/1000*高度单价", vars);
             }
+            vars.put("是否为非标", false);
         } else {
             vars.put("是否为非标", true);
         }
