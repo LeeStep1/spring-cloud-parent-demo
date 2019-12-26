@@ -16,8 +16,8 @@ public interface ProjectService  {
     void add(Project project);
 
 
-
-     List<ProjectVo> queryProject(BasePageVo vo);
+    ProjectVo
+     List<> queryProject(BasePageVo vo);
 
 
 

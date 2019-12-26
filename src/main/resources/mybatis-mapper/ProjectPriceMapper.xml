@@ -27,5 +27,16 @@
                     and  tor.project_id=#{projectId,type=BIGINT}
               </if>
     </select>
+    <select id="getMaxVersion" resultType="java.lang.Long" parameterType="java.lang.Integer">
+
+    SELECT MAX(version) version FROM t_project_price
+    <where>
+          <if test="projectId!=null">
+              AND   project_id=#{projectId}
+
+          </if>
+    </where>
+    </select>
+
 
 </mapper>

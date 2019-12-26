@@ -72,7 +72,7 @@ public class BeanReflectUtil {
     }
 
 
-    public static Map<String,Object> listmap(List<Object> beans, String key, String value) throws IntrospectionException, InvocationTargetException, IllegalAccessException {
+    public static Map<String,Object> listmap(List beans, String key, String value) throws IntrospectionException, InvocationTargetException, IllegalAccessException {
         Map<String,Object> map = new HashMap<>();
         if (beans.size()==0){
             throw new RuntimeException("參數無效");

@@ -6,6 +6,7 @@ import com.bit.module.manager.bean.ElevatorBaseElement;
 import com.bit.module.manager.bean.Project;
 import com.bit.module.manager.service.*;
 import com.bit.module.manager.vo.ElevatorTypePageVO;
+import com.bit.module.manager.vo.ProjectVo;
 import com.bit.module.miniapp.bean.Options;
 import com.bit.module.miniapp.bean.QueryParams;
 import com.bit.module.miniapp.service.WxElevatorService;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -86,7 +88,7 @@ public class ElevatorController {
 	 * @param typeId
 	 * @return
 	 */
-	@GetMapping("/getEleOptions/{typeId}")
+	@GetMapping("/eleOptions/{typeId}")
 	public BaseVo getEleOptions(@PathVariable(value = "typeId")Long typeId){
 		return elevatorService.getEleOptions(typeId);
 	}
@@ -105,7 +107,7 @@ public class ElevatorController {
 	 * @param eletypeId
 	 * @return
 	 */
-	@GetMapping("/getElevatorBaseElement/{eletypeId}")
+	@GetMapping("/elevatorBaseElement/{eletypeId}")
 	public BaseVo getElevatorBaseElement(@PathVariable(value = "eletypeId")Long eletypeId){
 		ElevatorBaseElement elevatorBaseElement=new ElevatorBaseElement();
 		elevatorBaseElement.setElevatorTypeId(eletypeId);
@@ -140,6 +142,8 @@ public class ElevatorController {
 		return a;
 	}
 
+
+
 	/**
 	 *我的项目一级页面
 	 * @param vo  分页组件 pageNum pageSize
@@ -159,9 +163,34 @@ public class ElevatorController {
 	 * @return
 	 */
 	@PostMapping("/user/project/price/{projectId}")
-	public BaseVo<Project> queryUserProjectPrice(@PathVariable(value = "projectId")Long projectId){
+	public BaseVo<ProjectVo> queryUserProjectPrice(@PathVariable(value = "projectId")Long projectId){
 		BaseVo a=new BaseVo();
 		a.setData(projectService.queryProjectPri(projectId));
 		return a;
 	}
+
+	/**
+	 * 计算按钮动作
+	 * @param projectId  项目ID
+	 * @return 返回总价和各个订单的价各
+	 */
+	@PostMapping("/poject/test/{projectId}")
+	public BaseVo<Map> pojectPriceTest(@PathVariable(value = "projectId")Long projectId){
+		BaseVo<Map>rs=new BaseVo<>();
+		rs.setData(wxElevatorService.pojectPriceTest(projectId));
+		return rs;
+	}
+
+	/**
+	 * 草稿转正是版本
+	 * @param projectId  项目ID
+	 * @return 成功与失败
+	 */
+	@PostMapping("/poject/version/{projectId}")
+	public BaseVo proPriceToVersion(@PathVariable(value = "projectId")Long projectId){
+
+		return wxElevatorService.proPriceToVersion(projectId);
+
+	}
+
 }

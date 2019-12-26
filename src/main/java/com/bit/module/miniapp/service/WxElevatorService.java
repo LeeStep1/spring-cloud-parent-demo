@@ -1,11 +1,13 @@
 package com.bit.module.miniapp.service;
 
+import com.bit.base.vo.BaseVo;
 import com.bit.module.manager.bean.Project;
 import com.bit.module.manager.bean.ProjectEleOrderBaseInfo;
 import com.bit.module.miniapp.bean.Options;
 import com.bit.module.miniapp.vo.ReportInfoVO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description:
@@ -50,7 +52,7 @@ public interface WxElevatorService {
       * @param vo :
       * @return : void
       */
-     void wxAddReportInfo(ReportInfoVO vo);
+     Map wxAddReportInfo(ReportInfoVO vo);
 
 
      /**
@@ -62,7 +64,23 @@ public interface WxElevatorService {
       */
     // void  wxUpdateReportInfo(ReportInfoVO vo);
 
+     /**
+      * @description:  计算按钮，其实只是计算草稿的
+      * @author liyujun
+      * @date 2019-12-19
+      * @param projectId
+      * @return : void
+      */
+     Map pojectPriceTest(Long projectId);
 
 
+     /**
+      * @description:  转正是版本
+      * @author liyujun
+      * @date 2019-12-19
+      * @param projectId
+      * @return : void
+      */
+     BaseVo proPriceToVersion(Long projectId);
 
 }
