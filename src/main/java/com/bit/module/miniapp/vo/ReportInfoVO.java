@@ -19,12 +19,12 @@ public class ReportInfoVO {
     /**項目ID**/
     private Long projectId;
 
-    /**項目ID**/
+    /**电梯类型ID**/
     private Long elevatorTypeId;
 
 
     /**电梯基础信息**/
-    private List<ProjectEleOrderBaseInfo> Baseinfo;
+    private List<ProjectEleOrderBaseInfo> baseinfo;
 
     /**电梯选择项*/
     private List<ProjectEleOptions>projectEleOptions;
