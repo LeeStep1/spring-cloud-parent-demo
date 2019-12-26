@@ -30,7 +30,7 @@ public class Project {
     private Long  createUserId;
     /**'创建人姓名'**/
     private String  createUserName;
-    /**项目名称**/
+    /**创建时间**/
     private Date createTime;
     /**地址id  对应area表中的ID**/
     private String  addressId;

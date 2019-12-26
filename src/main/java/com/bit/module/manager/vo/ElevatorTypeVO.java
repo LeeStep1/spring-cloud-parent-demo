@@ -35,10 +35,6 @@ public class ElevatorTypeVO {
 	 */
 	private String picture;
 	/**
-	 * 附件信息
-	 */
-	private FileInfo fileInfo;
-	/**
 	 * 电梯类型名称
 	 */
 	private String typeEnumName;

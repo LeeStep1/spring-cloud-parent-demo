@@ -1,0 +1,55 @@
+package com.bit.module.manager.vo;
+
+import com.bit.module.manager.bean.ProjectPriceDetailInfo;
+import lombok.Data;
+
+import java.util.Date;
+import java.util.List;
+
+/**
+ * @Description 报价项目细节
+ * @Author chenduo
+ * @Date 2019/12/26 8:47
+ **/
+@Data
+public class ProjectPriceDetailVO {
+
+	//-----项目细节------
+
+	/**
+	 * 项目名称
+	 */
+	private String projectName;
+	/**
+	 * 客户名称
+	 */
+	private String customerName;
+
+	/**
+	 * 代理商名称
+	 */
+	private String  agentName;
+	/**
+	 * 创建人姓名
+	 */
+	private String createUserName;
+	/**
+	 * 报价日期
+	 */
+	private Date createTime;
+
+	//----项目报价-----
+
+	/**
+	 * 报价
+	 */
+	private Long totalPrice;
+
+	//----电梯细节----
+	/**
+	 * 电梯细节 集合
+	 */
+	private List<ProjectPriceDetailInfo> projectPriceDetailInfos;
+
+
+}

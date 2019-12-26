@@ -14,6 +14,7 @@ import com.bit.module.miniapp.bean.ElevatorType;
 import com.bit.utils.StringUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -27,6 +28,10 @@ public class ElevatorTypeServiceImpl extends BaseService implements ElevatorType
 	private ElevatorTypeDao elevatorTypeDao;
 	@Autowired
 	private FileInfoDao fileInfoDao;
+
+	@Value("${server.servlet.context-path}")
+	private String contextPath;
+
 
 
 	/**
@@ -110,6 +115,9 @@ public class ElevatorTypeServiceImpl extends BaseService implements ElevatorType
 		if (CollectionUtils.isNotEmpty(elevatorTypePage.getRecords())){
 			for (ElevatorTypeVO vo : elevatorTypePage.getRecords()) {
 				vo.setTypeEnumName(ElevatorTypeEnum.getValueByCode(vo.getType()));
+				//设置图片地址
+				String pic = contextPath + "/images/" + vo.getPicture();
+				vo.setPicture(pic);
 			}
 		}
 		BaseVo baseVo = new BaseVo();

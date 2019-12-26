@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bit.module.manager.dao.ProjectDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+	<resultMap type="com.bit.module.manager.bean.Project" id="projectMap">
+		<result property="id" column="id"/>
+		<result property="projectName" column="project_name"/>
+		<result property="customerName" column="customer_name"/>
+		<result property="agentName" column="agent_name"/>
+		<result property="createUserId" column="create_user_id"/>
+		<result property="createUserName" column="create_user_name"/>
+		<result property="createTime" column="create_time"/>
+		<result property="addressId" column="address_id"/>
+		<result property="addressName" column="address_name"/>
+		<result property="projectStatus" column="project_status"/>
+	</resultMap>
+
+	<!-- 通用查询结果列 -->
+	<sql id="Base_Column_List">
+		id,
+		project_name,
+		customer_name,
+		agent_name,
+		create_user_id,
+		create_user_name,
+		create_time,
+		address_id,
+		address_name,
+		project_status
+	</sql>
+
+
+
+	<!-- 查询项目信息和报价 -->
+	<select id="getProjectDetailById" resultType="com.bit.module.manager.vo.ProjectPriceDetailVO" parameterType="long">
+		SELECT
+		t1.project_name,
+		t1.customer_name,
+		t1.agent_name,
+		t1.create_user_name,
+		t1.create_time,
+		t2.total_price
+		FROM t_project t1
+		LEFT JOIN t_project_price t2
+		on t1.id = t2.project_id
+		<where>
+			<if test="projectId!=null">
+				and t1.id =#{projectId,jdbcType=BIGINT}
+			</if>
+			<if test="projectPriceId!=null">
+				and t2.id =#{projectPriceId,jdbcType=BIGINT}
+			</if>
+		</where>
+	</select>
+    <!--根据项目id查询项目下的电梯订单-->
+    <select id="getOrderByProjectId" parameterType="long" resultType="com.bit.module.manager.bean.ProjectEleOrder">
+        SELECT elevator_type_name,unit_price,elevator_type_id,id
+        FROM t_project_ele_order
+        <where>
+            <if test="projectId!=null">
+                and project_id = #{projectId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </select>
+    <!--根据订单id查询电梯规格参数 和 井道参数-->
+    <select id="getElementParamByOrderId" parameterType="long" resultType="com.bit.module.manager.bean.ElementParam">
+        SELECT t2.element_name,t2.category_type,t3.info_value FROM t_project_ele_order t1
+        INNER JOIN t_elevator_base_element t2
+        on t1.elevator_type_id = t2.elevator_type_id
+        INNER JOIN t_project_ele_order_base_info t3
+        on t2.id = t3.element_id
+        <where>
+            <if test="orderId!=null">
+                and t1.id = #{orderId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </select>
+    <!--根据项目id查询电梯功能定制选项-->
+    <select id="getProjectOptions" parameterType="long" resultType="com.bit.module.miniapp.bean.Options">
+        SELECT t2.options_name,t2.input_type FROM `t_project_ele_options` t1
+        INNER JOIN t_options t2
+        on t1.option_id = t2.id
+        <where>
+            <if test="orderId!=null">
+                and t1.order_id = #{orderId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </select>
+
+    <!-- 多参数查询数据 -->
+    <select id="findByParam" parameterType="com.bit.module.manager.bean.Project" resultMap="projectMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_project
+        <where>
+            <if test="projectName!=null and projectName!=''">
+                and project_name = #{projectName,jdbcType=VARCHAR}
+            </if>
+            <if test="customerName!=null and customerName!=''">
+                and customer_name = #{customerName,jdbcType=VARCHAR}
+            </if>
+            <if test="agentName!=null and agentName!=''">
+                and agent_name = #{agentName,jdbcType=VARCHAR}
+            </if>
+            <if test="createUserId!=null">
+                and create_user_id = #{createUserId,jdbcType=BIGINT}
+            </if>
+            <if test="createUserName!=null and createUserName!=''">
+                and create_user_name = #{createUserName,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime!=null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="addressId!=null and addressId!=''">
+                and address_id = #{addressId,jdbcType=VARCHAR}
+            </if>
+            <if test="addressName!=null and addressName!=''">
+                and address_name = #{addressName,jdbcType=VARCHAR}
+            </if>
+            <if test="projectStatus!=null">
+                and project_status = #{projectStatus,jdbcType=INTEGER}
+            </if>
+
+        </where>
+    </select>
+
+</mapper>

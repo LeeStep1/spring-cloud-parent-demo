@@ -11,8 +11,10 @@ import com.bit.common.consts.RedisKey;
 import com.bit.common.wx.WxLoginRs;
 import com.bit.common.informationEnum.TidUrlEnum;
 import com.bit.common.informationEnum.UserRoleEnum;
+import com.bit.module.manager.bean.Project;
 import com.bit.module.manager.bean.User;
 import com.bit.module.manager.bean.UserRelRole;
+import com.bit.module.manager.dao.ProjectDao;
 import com.bit.module.manager.dao.UserDao;
 import com.bit.module.manager.dao.UserRoleDao;
 import com.bit.module.manager.service.UserService;
@@ -28,6 +30,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.bit.common.informationEnum.UserStatusEnum.DISABLE_FLAG;
@@ -62,6 +65,9 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+	private ProjectDao projectDao;
 
     /**
      * @description:  微信端登陆
@@ -137,7 +143,13 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
             map.put("realName",portalUser.getRealName());
            // map.put("role",portalUser.getRoleId());
             map.put("openId",portalUser.getOpenId());
-            BaseVo baseVo = new BaseVo();
+            //根据人查询项目 返回前端
+			Project project = new Project();
+			project.setCreateUserId(portalUser.getId());
+			List<Project> byParam = projectDao.findByParam(project);
+			map.put("project",byParam);
+
+			BaseVo baseVo = new BaseVo();
             baseVo.setData(map);
             return baseVo;
 

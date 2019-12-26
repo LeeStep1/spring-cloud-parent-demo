@@ -164,4 +164,15 @@ public class ElevatorController {
 		a.setData(projectService.queryProjectPri(projectId));
 		return a;
 	}
+
+	/**
+	 * 查询项目报价详情
+	 * @param projectId
+	 * @param projectPriceId
+	 * @return
+	 */
+	@GetMapping("/getProjectDetail/{projectId}/{projectPriceId}")
+	public BaseVo getProjectDetail(@PathVariable(value = "projectId")Long projectId,@PathVariable(value = "projectPriceId")Long projectPriceId){
+		return projectService.getProjectDetail(projectId, projectPriceId);
+	}
 }
