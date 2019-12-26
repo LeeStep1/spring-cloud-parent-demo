@@ -52,6 +52,11 @@ public class ProjectEleOrder {
     private String singleTotalPrice;
 
     /**
+     * 运输费用
+     */
+    private String transportPrice;
+
+    /**
      * 采购数量
      */
     private String num;

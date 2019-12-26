@@ -25,12 +25,20 @@ public class TestController {
     @Autowired
     private EquationServiceImpl equationService;
 
-
     @PostMapping(value = "/equation")
     public BaseVo equation(@RequestBody Map map){
         equationService.executeCount(map);
-        return new BaseVo();
+        BaseVo baseVo = new BaseVo();
+        baseVo.setData(map);
+        return baseVo;
     }
 
+    @PostMapping(value = "/executeCountProjectPrice")
+    public BaseVo executeCountProjectPrice(@RequestBody Map map){
+        equationService.executeCountProjectPrice(map);
+        BaseVo baseVo = new BaseVo();
+        baseVo.setData(map);
+        return baseVo;
+    }
 
 }

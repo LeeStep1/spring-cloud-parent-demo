@@ -154,14 +154,10 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
     }
 
     public static void main(String[] args) {
-        System.out.println(NumberUtil.isDouble("10.0"));
         Map vars = new HashMap();
-        vars.put("小计_设备基价", 132);
-        vars.put("下浮", 0.55);
-        vars.put("小计_非标加价", 0.0);
-        Object eval = MVEL.eval("小计_设备基价*(1-下浮)+小计_非标加价", vars);
 
-        System.out.println(eval);
+        String price = NumberUtil.roundStr(vars.get("小计_运费").toString(), 2);
+        System.out.println(price);
     }
 
 
@@ -219,6 +215,9 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         if (vars.get("小计_安装费用") == null) {
             vars.put("小计_安装费用", 0);
         }
+        if (vars.get("小计_运费") == null) {
+            vars.put("小计_运费", 0);
+        }
         vars.put("小计_单台总价", simpleEquation("小计_设备单价+小计_安装费用", vars)); //单价
         vars.put("小计_合价", simpleEquation("小计_单台总价*台量", vars)); //单价
 
@@ -244,6 +243,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         projectEleOrder.setSingleTotalPrice(NumberUtil.roundStr(vars.get("小计_单台总价").toString(),2));
         projectEleOrder.setInstallPrice(NumberUtil.roundStr(vars.get("小计_安装费用").toString(),2));
         projectEleOrder.setTotalPrice(NumberUtil.roundStr(vars.get("小计_合价").toString(),2));
+        projectEleOrder.setTransportPrice(NumberUtil.roundStr(vars.get("小计_运费").toString(),2));
         projectEleOrderDao.updateById(projectEleOrder);
     }
 
