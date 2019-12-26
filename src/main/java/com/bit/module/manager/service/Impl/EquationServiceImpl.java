@@ -13,16 +13,14 @@ import com.bit.module.equation.dao.BasePriceEquationDao;
 import com.bit.module.equation.dao.BasePriceEquationRelDao;
 import com.bit.module.equation.dao.EquationDao;
 import com.bit.module.manager.bean.*;
-import com.bit.module.manager.dao.ProjectDao;
-import com.bit.module.manager.dao.ProjectEleOptionsDao;
-import com.bit.module.manager.dao.ProjectEleOrderBaseInfoDao;
-import com.bit.module.manager.dao.ProjectEleOrderDao;
+import com.bit.module.manager.dao.*;
 import com.bit.module.miniapp.bean.Options;
 import org.apache.commons.lang.StringUtils;
 import org.mvel2.MVEL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -48,16 +46,52 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
     private ProjectEleOrderDao projectEleOrderDao;
     @Autowired
     private ProjectEleOrderBaseInfoDao projectEleOrderBaseInfoDao;
+    @Autowired
+    private ProjectPriceDao projectPriceDao;
 
+
+    /**
+     * 计算单个电梯
+     * @param map
+     */
     public void executeCount(Map map) {
         ProjectEleOrder projectEleOrder = projectEleOrderDao.selectById(Long.parseLong(map.get("orderId").toString()));
-        List<ProjectEleOrderBaseInfo> projectEleOrders =
-                projectEleOrderBaseInfoDao.selectList(new QueryWrapper<ProjectEleOrderBaseInfo>().eq("order_id", map.get("orderId").toString()));
-        executeCountItem(projectEleOrders, projectEleOrder.getId());
+        List<ProjectEleOrderBaseInfo> baseInfos =
+                projectEleOrderBaseInfoDao.selectList(new QueryWrapper<ProjectEleOrderBaseInfo>()
+                        .eq("order_id", map.get("orderId").toString()));
+        executeCountItem(baseInfos, map);
+    }
+    /**
+     * 计算整个项目
+     * @param map
+     */
+    public void executeCountProjectPrice(Map map) {
+        ProjectPrice projectPrice = projectPriceDao.selectOne(new QueryWrapper<ProjectPrice>()
+        .eq("project_id",map.get("projectId"))
+        .eq("version",map.get("version")));
+        List<ProjectEleOrder> projectEleOrder = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
+                .eq("project_id", projectPrice.getProjectId())
+                .eq("version_id", projectPrice.getVersion()));
+        for (ProjectEleOrder eleOrder : projectEleOrder) {
+            Map input = new HashMap();
+            input.put("orderId",eleOrder.getId() );
+            executeCount(input);
+        }
+        BigDecimal bd = new BigDecimal("0");
+        List<ProjectEleOrder> projectEleOrderNew = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
+                .eq("project_id", projectPrice.getProjectId())
+                .eq("version_id", projectPrice.getVersion()));
+        for (ProjectEleOrder eleOrder : projectEleOrderNew) {
+            bd = NumberUtil.add(bd.toString(),eleOrder.getTotalPrice());
+        }
+        projectPrice.setTotalPrice(bd.toString());
+        if (map.get("stage") != null) {
+            projectPrice.setStage(Integer.parseInt(map.get("stage").toString()));
+        }
+        projectPriceDao.updateById(projectPrice);
     }
 
-    public void executeCountItem(List<ProjectEleOrderBaseInfo> list, Long orderId) {
-        Map vars = new HashMap();
+    public void executeCountItem(List<ProjectEleOrderBaseInfo> list, Map vars) {
         for (ProjectEleOrderBaseInfo baseInfo : list) {
             if (NumberUtil.isInteger(baseInfo.getInfoValue())) {
                 vars.put(baseInfo.getParamKey(), Integer.parseInt(baseInfo.getInfoValue()));
@@ -67,8 +101,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
                 vars.put(baseInfo.getParamKey(), baseInfo.getInfoValue());
             }
         }
-        vars.put("orderId", orderId);
-        executeEquations(vars);
+        executeEquations(vars);//计算基价
         updateOrder(vars);
         if (Boolean.TRUE.equals(vars.get("包括运费"))) {
             executeTransportEquations(vars);

@@ -18,7 +18,7 @@ public class ProjectPrice {
 
     private Long projectId;
 
-    private Long totalPrice;
+    private String totalPrice;
 
     private Date createTime;
 
