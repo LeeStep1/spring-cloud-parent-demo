@@ -83,4 +83,13 @@ public interface WxElevatorService {
       */
      BaseVo proPriceToVersion(Long projectId);
 
+     /**
+      * @description:  修改前复制数据
+      * @author liyujun
+      * @date 2019-12-19
+      * @param projectId
+      * @return : void
+      */
+     Map<String, Object>  copyData(Long projectId,Long versionId);
+
 }
