@@ -4,38 +4,39 @@
 <mapper namespace="com.bit.module.manager.dao.ProjectPriceDao">
 
 
-    <select id="getProjectPrice"   resultType="com.bit.module.manager.bean.ProjectPrice" parameterType="map" >
-    select
-       d.*
-       from t_project_price d
-    WHERE  d.project_id in
+    <select id="getProjectPrice" resultType="com.bit.module.manager.bean.ProjectPrice" parameterType="map">
+        select
+        d.*
+        from t_project_price d
+        WHERE d.project_id in
         <foreach item="item" index="index" collection="projectList" open="(" separator="," close=")">
             #{item}
         </foreach>
-        group by  d.project_id order by version desc
+        group by d.project_id order by version desc
     </select>
 
-    <select id="queryOrderByPriceId"  resultType="com.bit.module.manager.vo.ElevatorOrderVo" parameterType="com.bit.module.manager.bean.ProjectEleOrder">
-        SELECT tor.*, ty.params_key,ty.type,ty.picture from t_project_ele_order  tor
+    <select id="queryOrderByPriceId" resultType="com.bit.module.manager.vo.ElevatorOrderVo"
+            parameterType="com.bit.module.manager.bean.ProjectEleOrder">
+        SELECT tor.*, ty.params_key,ty.type,ty.picture from t_project_ele_order tor
 
-              LEFT JOIN t_elevator_type ty ON tor.elevator_type_id=ty.id where
-              1=1
-              <if test="versionId!=null">
-                 and  tor.version_id=#{versionId,type=BIGINT}
-              </if>
-              <if test="projectId!=null">
-                    and  tor.project_id=#{projectId,type=BIGINT}
-              </if>
+        LEFT JOIN t_elevator_type ty ON tor.elevator_type_id=ty.id where
+        1=1
+        <if test="versionId!=null">
+            and tor.version_id=#{versionId,jdbcType=BIGINT}
+        </if>
+        <if test="projectId!=null">
+            and tor.project_id=#{projectId,jdbcType=BIGINT}
+        </if>
     </select>
     <select id="getMaxVersion" resultType="java.lang.Long" parameterType="java.lang.Integer">
 
-    SELECT MAX(version) version FROM t_project_price
-    <where>
-          <if test="projectId!=null">
-              AND   project_id=#{projectId}
+        SELECT MAX(version) version FROM t_project_price
+        <where>
+            <if test="projectId!=null">
+                AND project_id=#{projectId}
 
-          </if>
-    </where>
+            </if>
+        </where>
     </select>
 
 

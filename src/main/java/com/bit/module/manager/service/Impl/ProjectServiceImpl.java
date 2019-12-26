@@ -97,7 +97,7 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
         ProjectVo vo=new ProjectVo();
         BeanUtils.copyProperties(projectDao.selectById(projectId),vo);
         QueryWrapper<ProjectPrice> queryWrapper =  new QueryWrapper<>();
-        queryWrapper.orderByDesc("version_id");
+        queryWrapper.orderByDesc("version");
         queryWrapper.eq("project_id",projectId);
         //历史报价
         List<ProjectPrice> prices =projectPriceDao.selectList(queryWrapper);

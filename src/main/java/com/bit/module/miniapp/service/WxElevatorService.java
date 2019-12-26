@@ -90,6 +90,6 @@ public interface WxElevatorService {
       * @param projectId
       * @return : void
       */
-     Map<String, Object>  copyData(Long projectId,Long versionId);
+     Map<String, Object>  copyData(Long projectId,Long projectPriceId);
 
 }

@@ -224,7 +224,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
     /**
      * @param projectId 项目id
-     * @param versionId 报价数据的id
+     * @param projectPriceId 报价数据的id 就是t_project_ele_order的versionid
      * @return : void
      * @description: 修改前的备份数据
      * @author liyujun
@@ -232,9 +232,11 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Map<String, Object> copyData(Long projectId, Long versionId) {
+    public Map<String, Object> copyData(Long projectId, Long projectPriceId) {
         Map<String, Object> p = new HashMap<>();
-        ProjectPrice projectPrice = projectPriceDao.selectById(versionId);
+        //根据订单的报价版本 查询报价记录
+        ProjectPrice projectPrice = projectPriceDao.selectById(projectPriceId);
+        //订单id集合
         List<Long> ids = new ArrayList();
         List<Long> idsNew = new ArrayList();
         if (projectPrice.getVersion() == -1) {
@@ -245,23 +247,25 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
                 //删除草稿
                 delELePriceInfo(projectId);
                 p.put("version_id", projectPrice.getId().longValue());
+                //根据versionid查询订单记录
                 List<ProjectEleOrder> list1 = projectEleOrderDao.selectByMap(p);
-                delELePriceInfo(projectId);
                 projectPrice.setId(null);
                 projectPrice.setVersion(-1);
                 projectPrice.setCreateTime(new Date());
-                //新增报价
+                //新增一个草稿报价
                 projectPriceDao.insert(projectPrice);
                 //todo 优化查询算法
                 for (ProjectEleOrder pro : list1) {//遍历订单数据，查询关联的option
 
                     ids.add(pro.getId());
                 }
+                //根据订单id集合批量查询项目的可选项
                 QueryWrapper<ProjectEleOptions> queryWrapper = new QueryWrapper<>();
                 queryWrapper.in("order_id", ids);
                 List<ProjectEleOptions> optionsList = projectEleOptionsDao.selectList(queryWrapper);//得到原来的关联的数据
                 for (ProjectEleOrder pro : list1) {
                     pro.setId(null);
+                    //批量新增 返回id
                     projectEleOrderDao.insert(pro);
                     idsNew.add(pro.getId());
                     for (Long orderId : ids) {
@@ -275,7 +279,6 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
                         }
                     }
                 }
-
             }
 
         }

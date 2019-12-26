@@ -204,4 +204,16 @@ public class ElevatorController {
 
 	}
 
+	/**
+	 * 复制
+	 * @param projectId
+	 * @param projectPriceId
+	 * @return
+	 */
+	@GetMapping("/copyData/{projectId}/{projectPriceId}")
+	public Map<String, Object> copyData(@PathVariable(value = "projectId")Long projectId,@PathVariable(value = "projectPriceId")Long projectPriceId){
+		Map<String, Object> stringObjectMap = wxElevatorService.copyData(projectId, projectPriceId);
+		return stringObjectMap;
+	}
+
 }

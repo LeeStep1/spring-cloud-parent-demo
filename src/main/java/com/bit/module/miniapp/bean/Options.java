@@ -51,5 +51,13 @@ public class Options implements Serializable {
 	 * 单位
 	 */
 	private String unit;
+	/**
+	 * 分组名称
+	 */
+	private String groupName;
+	/**
+	 * 分组值
+	 */
+	private String groupValue;
 
 }
