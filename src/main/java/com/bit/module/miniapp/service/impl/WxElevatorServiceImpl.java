@@ -232,7 +232,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Map<String, Object> copyData(Long projectId, Long projectPriceId) {
+    public BaseVo updateProjectPrice(Long projectId, Long projectPriceId) {
+		BaseVo baseVo = new BaseVo();
         Map<String, Object> p = new HashMap<>();
         //根据订单的报价版本 查询报价记录
         ProjectPrice projectPrice = projectPriceDao.selectById(projectPriceId);
@@ -240,7 +241,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
         List<Long> ids = new ArrayList();
         List<Long> idsNew = new ArrayList();
         if (projectPrice.getVersion() == -1) {
-            return p;
+			baseVo.setData(p);
+			return baseVo;
         } else {
             //正式版本copy 转成草稿
             if (projectPrice != null) {
@@ -286,7 +288,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
         p.put("newOrderIds", idsNew);
         p.put("projectPriceId", projectPrice.getId());
         p.put("version", -1);
-        return p;
+		baseVo.setData(p);
+		return baseVo;
     }
 
 

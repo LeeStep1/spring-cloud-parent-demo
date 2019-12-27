@@ -205,15 +205,14 @@ public class ElevatorController {
 	}
 
 	/**
-	 * 复制
+	 * 修改项目报价
 	 * @param projectId
 	 * @param projectPriceId
 	 * @return
 	 */
-	@GetMapping("/copyData/{projectId}/{projectPriceId}")
-	public Map<String, Object> copyData(@PathVariable(value = "projectId")Long projectId,@PathVariable(value = "projectPriceId")Long projectPriceId){
-		Map<String, Object> stringObjectMap = wxElevatorService.copyData(projectId, projectPriceId);
-		return stringObjectMap;
+	@GetMapping("/updateProjectPrice/{projectId}/{projectPriceId}")
+	public BaseVo updateProjectPrice(@PathVariable(value = "projectId")Long projectId,@PathVariable(value = "projectPriceId")Long projectPriceId){
+		return wxElevatorService.updateProjectPrice(projectId, projectPriceId);
 	}
 
 }
