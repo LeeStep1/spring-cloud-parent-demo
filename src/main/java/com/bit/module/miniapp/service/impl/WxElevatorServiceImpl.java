@@ -77,12 +77,14 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
      */
     @Override
     public List<Options> getOptions(Integer optionType, Long elevatorTypeId, List<ProjectEleOrderBaseInfo> orderBaseInfos) {
+        ElevatorType e =elevatorTypeDao.selectById(elevatorTypeId);
         List<Options> ops = optionsDao.findOptionByElevatorType(elevatorTypeId, optionType);
         Map cod = new HashMap<>();
         cod.clear();
         orderBaseInfos.forEach(c -> {
             cod.put(c.getParamKey(), c.getInfoValue());
         });
+        cod.put("系列",e.getParamsKey());
         List<Options> rs = equationServiceImpl.executeEquationsForOption(cod, ops);
         return rs;
     }
@@ -148,6 +150,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
         par.put("下浮", vo.getRate());
         par.put("台量",order.getNum());
 
+
         par.put("orderId",order.getId());
         equationServiceImpl.executeCount(par);
         //Map rs = equationServiceImpl.executeEquations(par);
@@ -167,7 +170,6 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
         par.clear();
         par.put("project_id", vo.getProjectId());
         par.put("version", -1);
-        //List<ProjectPrice> projectPriceList = projectPriceDao.selectByMap(par);
         rrs.put("elePriceId",a.getId());
         ProjectEleOrder a1=projectEleOrderDao.selectById(order.getId());
         if(a1!=null){
