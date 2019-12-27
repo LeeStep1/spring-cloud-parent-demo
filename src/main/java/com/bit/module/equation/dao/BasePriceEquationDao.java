@@ -11,13 +11,14 @@ package com.bit.module.equation.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bit.module.equation.bean.BasePriceEquation;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
 /**
  * 验证码
  *
  * @author Mark sunlightcs@gmail.com
  */
-@Mapper
+@Repository
 public interface BasePriceEquationDao extends BaseMapper<BasePriceEquation> {
 
 }

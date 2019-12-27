@@ -75,7 +75,7 @@ public interface WxElevatorService {
 
 
      /**
-      * @description:  转正是版本
+      * @description:  转正式版本
       * @author liyujun
       * @date 2019-12-19
       * @param projectId

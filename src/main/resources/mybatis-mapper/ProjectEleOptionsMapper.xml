@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bit.module.manager.dao.ProjectEleOptionsDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.bit.module.manager.bean.ProjectEleOptions" id="projectEleOptionsMap">
+        <result property="id" column="id"/>
+        <result property="projectInfoId" column="project_info_id"/>
+        <result property="optionId" column="option_id"/>
+        <result property="optionName" column="option_name"/>
+        <result property="nums" column="nums"/>
+        <result property="optionPrice" column="option_price"/>
+        <result property="orderId" column="order_id"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        project_info_id,
+        option_id,
+        option_name,
+        nums,
+        option_price,
+        order_id
+    </sql>
+
+    <!--批量新增-->
+    <insert id="batchAdd" parameterType="com.bit.module.manager.bean.ProjectEleOptions" keyColumn="id" useGeneratedKeys="true">
+        INSERT INTO t_project_ele_options(
+        project_info_id,
+        option_id,
+        option_name,
+        nums,
+        option_price,
+        order_id
+        ) VALUES
+        <foreach collection="list" item="item" index="index"  separator=",">
+            (
+                #{item.projectInfoId,jdbcType=BIGINT},
+                #{item.optionId,jdbcType=BIGINT},
+                #{item.optionName,jdbcType=VARCHAR},
+                #{item.nums,jdbcType=INTEGER},
+                #{item.optionPrice,jdbcType=DECIMAL},
+                #{item.orderId,jdbcType=BIGINT}
+            )
+        </foreach>
+    </insert>
+
+
+
+</mapper>

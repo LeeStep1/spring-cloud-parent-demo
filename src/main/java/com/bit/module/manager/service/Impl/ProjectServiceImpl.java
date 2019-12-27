@@ -116,7 +116,7 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
             ProjectPriceVo  projectPriceVo=new ProjectPriceVo();
             projectEleOrder.setVersionId(p.getId());
             BeanUtils.copyProperties(p,projectPriceVo);
-            projectPriceVo.setElevatorOrderVo(projectPriceDao.queryOrderByPriceId(projectEleOrder));
+            projectPriceVo.setElevatorOrderVo(projectPriceDao.queryOrderByProjectId(projectEleOrder));
 			for (ElevatorOrderVo elevatorOrderVo : projectPriceVo.getElevatorOrderVo()) {
 				elevatorOrderVo.setPicture(contextPath + "/images/" + elevatorOrderVo.getPicture());
 			}

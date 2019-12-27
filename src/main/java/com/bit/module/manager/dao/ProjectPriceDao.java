@@ -18,16 +18,26 @@ import java.util.List;
 @Repository
 public interface ProjectPriceDao extends BaseMapper<ProjectPrice> {
 
-
+    /**
+     * 根据项目id集合批量查询报价记录
+     * @param list
+     * @return
+     */
     List<ProjectPrice> getProjectPrice(@Param(value = "projectList") List<Long> list);
 
 
+	/**
+	 * 根据项目id查询订单
+	 * @param projectEleOrder
+	 * @return
+	 */
+    List<ElevatorOrderVo> queryOrderByProjectId(ProjectEleOrder  projectEleOrder);
 
-
-    List<ElevatorOrderVo> queryOrderByPriceId(ProjectEleOrder  projectEleOrder);
-
-
-
+	/**
+	 * 获取报价的最大版本号
+	 * @param projectId
+	 * @return
+	 */
     Integer  getMaxVersion(@Param(value = "projectId") Long projectId);
 
 }
