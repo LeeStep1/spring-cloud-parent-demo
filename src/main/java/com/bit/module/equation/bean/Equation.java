@@ -28,7 +28,7 @@ public class Equation {
     private String equation;
     private String coefficient;
     private String equation3;
-    private String out;
+    private String output;
     private String category;
 
 }
