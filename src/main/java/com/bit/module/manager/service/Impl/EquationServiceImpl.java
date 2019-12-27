@@ -429,7 +429,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         for (Equation entity : testEntities) {
             List<String> equations = JSON.parseArray(entity.getEquation(), String.class);
             String equationStr = CollUtil.join(equations, " and ");
-            expression += StrUtil.format(s, equationStr, entity.getOut());
+            expression += StrUtil.format(s, equationStr, entity.getOutput());
         }
         String all = "res=false; \n {} \n res;";
         all = StrUtil.format(all, expression);
@@ -449,7 +449,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         for (Equation entity : testEntities) {
             List<String> equations = JSON.parseArray(entity.getEquation(), String.class);
             String equationStr = CollUtil.join(equations, " and ");
-            expression += StrUtil.format(s, equationStr, entity.getOut());
+            expression += StrUtil.format(s, equationStr, entity.getOutput());
         }
         String all = "res={}; \n {} \n res;";
         all = StrUtil.format(all, result, expression);
