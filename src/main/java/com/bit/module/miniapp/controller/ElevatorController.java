@@ -164,9 +164,7 @@ public class ElevatorController {
 	 */
 	@PostMapping("/user/project")
 	public BaseVo<Project> queryUserProject(@RequestBody BasePageVo vo){
-		BaseVo a=new BaseVo();
-		a.setData(projectService.queryProject(vo));
-		return a;
+		return projectService.queryProject(vo);
 	}
 
 

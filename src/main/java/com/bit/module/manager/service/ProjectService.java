@@ -16,8 +16,12 @@ public interface ProjectService {
 
 	void add(Project project);
 
-
-	List<ProjectVo> queryProject(BasePageVo vo);
+	/**
+	 *我的项目一级页面
+	 * @param vo  分页组件 pageNum pageSize
+	 * @return
+	 */
+	BaseVo queryProject(BasePageVo vo);
 
 
 	ProjectVo queryProjectPri(Long projectId);

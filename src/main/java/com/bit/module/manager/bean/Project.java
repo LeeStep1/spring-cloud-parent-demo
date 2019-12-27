@@ -1,11 +1,13 @@
 package com.bit.module.manager.bean;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Description:
@@ -38,5 +40,15 @@ public class Project {
     private  String   addressName;
     /**'项目状态1:正常，0 ：流失'**/
     private  Integer projectStatus;
+
+    //-----添加字段-----
+
+    //忽略此字段的映射
+    /**
+     * 历史报价
+     */
+    @TableField(exist = false)
+    private List<ProjectPrice> projectPriceList;
+
 
 }

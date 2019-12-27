@@ -17,7 +17,9 @@ public class ProjectVo  extends Project{
 
     /**历史报价**/
     private List<ProjectPrice>   projectPriceList;
-
+    /**
+     * 订单报价
+     */
    /**二级页面才有此项**/
     private List<ProjectPriceVo> projectPriceOrderList;
 }

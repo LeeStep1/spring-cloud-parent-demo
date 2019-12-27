@@ -11,13 +11,16 @@ import com.bit.module.manager.bean.*;
 import com.bit.module.manager.dao.ProjectDao;
 import com.bit.module.manager.dao.ProjectPriceDao;
 import com.bit.module.manager.service.ProjectService;
+import com.bit.module.manager.vo.ElevatorOrderVo;
 import com.bit.module.manager.vo.ProjectPriceDetailVO;
 import com.bit.module.manager.vo.ProjectPriceVo;
 import com.bit.module.manager.vo.ProjectVo;
 import com.bit.module.miniapp.bean.Options;
+import com.sun.xml.internal.rngom.parse.host.Base;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +35,8 @@ import java.util.*;
 @Transactional
 public class ProjectServiceImpl extends BaseService implements ProjectService{
 
+	@Value("${server.servlet.context-path}")
+	private String contextPath;
 
     @Autowired
     private ProjectDao projectDao;
@@ -56,16 +61,19 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
      * @return : java.util.List<com.bit.module.manager.vo.ProjectVo>
      */
     @Override
-    public List<ProjectVo>   queryProject(BasePageVo vo){
+    public BaseVo queryProject(BasePageVo vo){
 
-        Map<String,Object> map = new HashMap<>();
         QueryWrapper<Project> queryWrapper =  new QueryWrapper<>();
         queryWrapper.orderByDesc("create_time");
         queryWrapper.eq("create_user_id",getCurrentUserInfo().getId());
         Page<Project> page = new Page<>(vo.getPageNum(),vo.getPageSize());  // 查询第1页，每页返回5条
         IPage<Project> iPage = projectDao.selectPage(page,queryWrapper);
-        List<Long> projectIdlist= new ArrayList<>(iPage.getRecords().size());
-        List<ProjectVo> listRs=new ArrayList<>(iPage.getRecords().size());
+
+		//项目id集合
+        List<Long> projectIdlist= new ArrayList<>();
+
+        List<ProjectVo> listRs=new ArrayList<>();
+
         for(Project project:iPage.getRecords()){
             projectIdlist.add(project.getId());
             ProjectVo vo1=new ProjectVo();
@@ -73,17 +81,21 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
             listRs.add(vo1);
         }
         List<ProjectPrice> prices= projectPriceDao.getProjectPrice(projectIdlist);
-        for (ProjectVo vo2:listRs){
-            List<ProjectPrice>rsPrice=new ArrayList<>();
-            for(ProjectPrice p:prices){
-                 if(p.getProjectId().equals(vo2.getId())){
-                     rsPrice.add(p);
-                 }
-            }
-             vo2.setProjectPriceList(rsPrice);
-        }
-        return  listRs;
-    }
+
+		for (Project project:iPage.getRecords()) {
+			List<ProjectPrice> rsPrice=new ArrayList<>();
+			for(ProjectPrice p:prices){
+				if (p.getProjectId().equals(project.getId())){
+					rsPrice.add(p);
+				}
+			}
+			project.setProjectPriceList(rsPrice);
+		}
+		BaseVo baseVo = new BaseVo();
+		baseVo.setData(iPage);
+		return baseVo;
+
+	}
 
     /**
      * @description:  项目二级
@@ -109,7 +121,10 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
             projectEleOrder.setVersionId(p.getId());
             BeanUtils.copyProperties(p,projectPriceVo);
             projectPriceVo.setElevatorOrderVo(projectPriceDao.queryOrderByPriceId(projectEleOrder));
-            projectPriceVoList.add(projectPriceVo);
+			for (ElevatorOrderVo elevatorOrderVo : projectPriceVo.getElevatorOrderVo()) {
+				elevatorOrderVo.setPicture(contextPath + "/images/" + elevatorOrderVo.getPicture());
+			}
+			projectPriceVoList.add(projectPriceVo);
         }
         vo.setProjectPriceOrderList(projectPriceVoList);
         return vo;
