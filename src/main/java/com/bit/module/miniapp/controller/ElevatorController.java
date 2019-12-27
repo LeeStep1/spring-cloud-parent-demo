@@ -4,12 +4,14 @@ import com.bit.base.vo.BasePageVo;
 import com.bit.base.vo.BaseVo;
 import com.bit.module.manager.bean.ElevatorBaseElement;
 import com.bit.module.manager.bean.Project;
+import com.bit.module.manager.bean.ProjectEleOrderBaseInfo;
 import com.bit.module.manager.service.*;
 import com.bit.module.manager.vo.ElevatorTypePageVO;
 import com.bit.module.manager.vo.ProjectVo;
 import com.bit.module.miniapp.bean.Options;
 import com.bit.module.miniapp.bean.QueryParams;
 import com.bit.module.miniapp.service.WxElevatorService;
+import com.bit.module.miniapp.vo.ReportInfoVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,6 +59,7 @@ public class ElevatorController {
 
 
 
+
 	/**
 	 * 根据电梯的key查询params的level1数据
 	 *
@@ -69,7 +72,6 @@ public class ElevatorController {
 	public BaseVo getEleParamLevelOne(@RequestBody QueryParams queryParams) {
 		return queryParamsService.getEleParamLevelOne(queryParams);
 	}
-
 	/**
 	 * 查询电梯的参数
 	 * @param queryParams
@@ -119,13 +121,14 @@ public class ElevatorController {
 	 * 根据电梯类型id 订单以及相关可选项类别查询电梯的基础信息填写模板
 	 * @param optionType
 	 * @param elevatorTypeId
-	 * @param orderId
+	 * @param baseInfo
 	 * @return
 	 */
-	@GetMapping("/options/{elevatorTypeId}/{optionType}")
-	public BaseVo<List<Options>> getElevatorOption(@PathVariable(value = "elevatorTypeId")Long elevatorTypeId, @PathVariable(value = "orderId")Long orderId, @PathVariable(value = "optionType")Integer optionType){
+	@PostMapping("/options/{elevatorTypeId}/{optionType}")
+	public BaseVo<List<Options>> getElevatorOption(@PathVariable(value = "elevatorTypeId")Long elevatorTypeId,  @PathVariable(value = "optionType")Integer optionType,
+												   @RequestBody List<ProjectEleOrderBaseInfo> baseInfo){
 		BaseVo rs=new BaseVo();
-		rs.setData(wxElevatorService.getOptions(optionType,elevatorTypeId,orderId));
+		rs.setData(wxElevatorService.getOptions(optionType,elevatorTypeId,baseInfo));
 		return  rs;
 	}
 
@@ -135,13 +138,23 @@ public class ElevatorController {
 	 * @return
 	 */
 	@PostMapping("/project")
-	public BaseVo<Project> getElevator(@RequestBody Project project){
+	public BaseVo<Project> addProject(@RequestBody Project project){
 		projectService.add(project);
 		BaseVo a=new BaseVo();
 		a.setData(project);
 		return a;
 	}
-
+	/**
+	 * 新建项目下的电梯 算钱
+	 * @param vo  返回项目
+	 * @return
+	 */
+	@PostMapping("/project/elevator/order")
+	public BaseVo<Project> wxAddReportInfo(@RequestBody ReportInfoVO vo){
+		BaseVo a=new BaseVo();
+		a.setData(wxElevatorService.wxAddReportInfo(vo));
+		return a;
+	}
 
 
 	/**
@@ -159,6 +172,7 @@ public class ElevatorController {
 
 	/**
 	 *我的项目二级级页面  一个项目对应多个历史版本，以及下的电梯订单数据
+	 * g
 	 * @param projectId  项目ID
 	 * @return
 	 */
@@ -181,10 +195,10 @@ public class ElevatorController {
 	}
 
 	/*
-	 * 计算按钮动作
-	 * @param projectId  项目ID
-	 * @return 返回总价和各个订单的价各
-	 */
+   * 计算按钮动作
+   * @param projectId  项目ID
+   * @return 返回总价和各个订单的价各
+   */
 	@PostMapping("/poject/test/{projectId}")
 	public BaseVo<Map> pojectPriceTest(@PathVariable(value = "projectId")Long projectId){
 		BaseVo<Map>rs=new BaseVo<>();

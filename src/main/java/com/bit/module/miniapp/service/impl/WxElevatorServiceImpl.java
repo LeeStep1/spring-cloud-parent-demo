@@ -77,12 +77,14 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
      */
     @Override
     public List<Options> getOptions(Integer optionType, Long elevatorTypeId, List<ProjectEleOrderBaseInfo> orderBaseInfos) {
+        ElevatorType e =elevatorTypeDao.selectById(elevatorTypeId);
         List<Options> ops = optionsDao.findOptionByElevatorType(elevatorTypeId, optionType);
         Map cod = new HashMap<>();
         cod.clear();
         orderBaseInfos.forEach(c -> {
             cod.put(c.getParamKey(), c.getInfoValue());
         });
+        cod.put("系列",e.getParamsKey());
         List<Options> rs = equationServiceImpl.executeEquationsForOption(cod, ops);
         return rs;
     }
@@ -110,18 +112,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
             e.printStackTrace();
         }
         order.setRate(vo.getRate());
-        order.setNum(String.valueOf(baseParams.get("数量")));
-        projectEleOrderDao.insert(order);
-        //todo 需要优化为批量新增方法,填写整体的基础信息
-        vo.getBaseinfo().stream().forEach(c -> {
-            c.setOrderId(order.getId());
-            projectEleOrderBaseInfoDao.insert(c);
-        });
-        vo.getProjectEleOptions().stream().forEach(c -> {
-            c.setOrderId(order.getId());
-            c.setProjectInfoId(vo.getProjectId());
-            projectEleOptionsDao.insert(c);
-        });
+        order.setProjectId(vo.getProjectId());
+        order.setNum(String.valueOf(baseParams.get("台量")));
         Map<String, Object> cod = new HashMap<>();
         cod.put("project_id", vo.getProjectId());
         cod.put("version", -1);
@@ -133,17 +125,37 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
             a.setVersion(-1);
             a.setCreateUserId(getCurrentUserInfo().getId());
             a.setStage(1);
-            a.setStandardName("常规");
+            a.setStageName("常规");
+            a.setStandard(-1);
+            a.setStandardName("ceshi");
             projectPriceDao.insert(a);
         } else {
             a = list1.get(0);
         }
+        order.setVersionId(a.getId());
+        projectEleOrderDao.insert(order);
+        //todo 需要优化为批量新增方法,填写整体的基础信息
+        vo.getBaseinfo().stream().forEach(c -> {
+            c.setOrderId(order.getId());
+            projectEleOrderBaseInfoDao.insert(c);
+        });
+        vo.getProjectEleOptions().stream().forEach(c -> {
+            c.setOrderId(order.getId());
+            c.setProjectInfoId(vo.getProjectId());
+            projectEleOptionsDao.insert(c);
+        });
+
         //todo 需要进行报价算法
         Map par = new HashMap();
-        par.put("下浮率", vo.getRate());
-        Map rs = equationServiceImpl.executeEquations(par);
-        if (rs != null || rs.containsKey("是否为非标")) {
-            if (Boolean.TRUE.equals(rs.get("是否为非标"))) {
+        par.put("下浮", vo.getRate());
+        par.put("台量",order.getNum());
+
+
+        par.put("orderId",order.getId());
+        equationServiceImpl.executeCount(par);
+        //Map rs = equationServiceImpl.executeEquations(par);
+        if (par != null || par.containsKey("是否为非标")) {
+            if (Boolean.TRUE.equals(par.get("是否为非标"))) {
                 a.setStandard(0);
                 a.setStandardName("非标");
             } else {
@@ -157,10 +169,11 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
         rrs.put("nums", order.getNum());
         par.clear();
         par.put("project_id", vo.getProjectId());
-        par.put("version_id", -1);
-        List<ProjectPrice> projectPriceList = projectPriceDao.selectByMap(par);
-        if (projectPriceList.size() > 0) {
-            rrs.put("price", projectPriceList.get(0).getTotalPrice());
+        par.put("version", -1);
+        rrs.put("elePriceId",a.getId());
+        ProjectEleOrder a1=projectEleOrderDao.selectById(order.getId());
+        if(a1!=null){
+            rrs.put("orderPrice",a1.getTotalPrice());
         }
         return rrs;
     }
@@ -222,14 +235,14 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
         return new BaseVo();
     }
 
-    /**
-     * @param projectId 项目id
-     * @param projectPriceId 报价数据的id 就是t_project_ele_order的versionid
-     * @return : void
-     * @description: 修改前的备份数据
-     * @author liyujun
-     * @date 2019-12-26
-     */
+        /**
+         * @param projectId 项目id
+         * @param projectPriceId 报价数据的id 就是t_project_ele_order的versionid
+         * @return : void
+         * @description: 修改前的备份数据
+         * @author liyujun
+         * @date 2019-12-26
+         */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public BaseVo updateProjectPrice(Long projectId, Long projectPriceId) {
