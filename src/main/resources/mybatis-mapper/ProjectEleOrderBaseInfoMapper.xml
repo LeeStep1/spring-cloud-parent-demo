@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bit.module.manager.dao.ProjectEleOrderBaseInfoDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.bit.module.manager.bean.ProjectEleOrderBaseInfo" id="projectEleOrderBaseInfoMap">
+        <result property="id" column="id"/>
+        <result property="paramKey" column="param_key"/>
+        <result property="infoValue" column="info_value"/>
+        <result property="orderId" column="order_id"/>
+        <result property="elementId" column="element_id"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        param_key,
+        info_value,
+        order_id,
+        element_id
+    </sql>
+
+    <insert id="batchAdd" parameterType="com.bit.module.manager.bean.ProjectEleOrderBaseInfo" keyColumn="id" useGeneratedKeys="true">
+        INSERT INTO t_project_ele_order_base_info(
+        param_key,
+        info_value,
+        order_id,
+        element_id
+        ) VALUES
+        <foreach collection="list" item="item" index="index"  separator=",">
+            (
+            #{item.paramKey,jdbcType=VARCHAR},
+            #{item.infoValue,jdbcType=VARCHAR},
+            #{item.orderId,jdbcType=BIGINT},
+            #{item.elementId,jdbcType=BIGINT}
+            )
+        </foreach>
+    </insert>
+
+
+
+</mapper>

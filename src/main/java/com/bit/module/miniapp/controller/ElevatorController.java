@@ -193,7 +193,7 @@ public class ElevatorController {
 	}
 
 	/*
-   * 计算按钮动作
+   * 计算按钮动作 输入定制信息页面的生成报价单按钮
    * @param projectId  项目ID
    * @return 返回总价和各个订单的价各
    */
@@ -205,7 +205,7 @@ public class ElevatorController {
 	}
 
 	/**
-	 * 草稿转正是版本
+	 * 草稿转正式版本  生成报价单
 	 * @param projectId  项目ID
 	 * @return 成功与失败
 	 */

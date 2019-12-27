@@ -133,7 +133,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
     public void executeCountProjectPrice(Map map) {
         ProjectPrice projectPrice = projectPriceDao.selectOne(new QueryWrapper<ProjectPrice>()
                 .eq("project_id", map.get("projectId"))
-                .eq("version", map.get("version")));
+                .eq("version", map.get("verison_id")));
         List<ProjectEleOrder> projectEleOrder = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
                 .eq("project_id", projectPrice.getProjectId())
                 .eq("version_id", projectPrice.getVersion()));

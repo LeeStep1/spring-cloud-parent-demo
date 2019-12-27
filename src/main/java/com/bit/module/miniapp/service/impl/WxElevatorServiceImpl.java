@@ -3,6 +3,8 @@ package com.bit.module.miniapp.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.bit.base.service.BaseService;
 import com.bit.base.vo.BaseVo;
+import com.bit.common.informationEnum.StageEnum;
+import com.bit.common.informationEnum.StandardEnum;
 import com.bit.module.manager.bean.*;
 import com.bit.module.manager.dao.*;
 import com.bit.module.manager.service.Impl.EquationServiceImpl;
@@ -124,10 +126,10 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
             a.setProjectId(vo.getProjectId());
             a.setVersion(-1);
             a.setCreateUserId(getCurrentUserInfo().getId());
-            a.setStage(1);
-            a.setStageName("常规");
-            a.setStandard(-1);
-            a.setStandardName("ceshi");
+            a.setStage(StageEnum.STAGE_ONE.getCode());
+            a.setStageName(StageEnum.STAGE_ONE.getInfo());
+            a.setStandard(StandardEnum.STANDARD_DEFAULT.getCode());
+            a.setStandardName(StandardEnum.STANDARD_DEFAULT.getInfo());
             projectPriceDao.insert(a);
         } else {
             a = list1.get(0);
@@ -137,13 +139,20 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
         //todo 需要优化为批量新增方法,填写整体的基础信息
         vo.getBaseinfo().stream().forEach(c -> {
             c.setOrderId(order.getId());
-            projectEleOrderBaseInfoDao.insert(c);
+//            projectEleOrderBaseInfoDao.insert(c);
         });
+		List<ProjectEleOrderBaseInfo> baseinfo = vo.getBaseinfo();
+        projectEleOrderBaseInfoDao.batchAdd(baseinfo);
+
         vo.getProjectEleOptions().stream().forEach(c -> {
             c.setOrderId(order.getId());
             c.setProjectInfoId(vo.getProjectId());
-            projectEleOptionsDao.insert(c);
+//            projectEleOptionsDao.insert(c);
         });
+
+		List<ProjectEleOptions> projectEleOptions = vo.getProjectEleOptions();
+
+		projectEleOptionsDao.batchAdd(projectEleOptions);
 
         //todo 需要进行报价算法
         Map par = new HashMap();
@@ -156,11 +165,11 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
         //Map rs = equationServiceImpl.executeEquations(par);
         if (par != null || par.containsKey("是否为非标")) {
             if (Boolean.TRUE.equals(par.get("是否为非标"))) {
-                a.setStandard(0);
-                a.setStandardName("非标");
+                a.setStandard(StandardEnum.STANDARD_ZERO.getCode());
+                a.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
             } else {
-                a.setStandard(1);
-                a.setStandardName("标准");
+                a.setStandard(StandardEnum.STANDARD_ONE.getCode());
+                a.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
             }
             projectPriceDao.updateById(a);
         }
@@ -195,7 +204,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
         equationServiceImpl.executeCountProjectPrice(cod);
         Map par = new HashMap();
         par.put("project_id", projectId);
-        par.put("version_id", -1);
+        par.put("version", -1);
         List<ProjectPrice> projectPriceList = projectPriceDao.selectByMap(par);
         par.clear();
         par.put("version_id", projectPriceList.get(0).getId());
@@ -210,7 +219,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
     /**
      * @param projectId
      * @return : void
-     * @description: 转正是版本
+     * @description: 转正式版本
      * @author liyujun
      * @date 2019-12-19
      */
@@ -235,14 +244,14 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
         return new BaseVo();
     }
 
-        /**
-         * @param projectId 项目id
-         * @param projectPriceId 报价数据的id 就是t_project_ele_order的versionid
-         * @return : void
-         * @description: 修改前的备份数据
-         * @author liyujun
-         * @date 2019-12-26
-         */
+    /**
+     * @param projectId 项目id
+     * @param projectPriceId 报价数据的id 就是t_project_ele_order的versionid
+     * @return : void
+     * @description: 修改前的备份数据
+     * @author liyujun
+     * @date 2019-12-26
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public BaseVo updateProjectPrice(Long projectId, Long projectPriceId) {
