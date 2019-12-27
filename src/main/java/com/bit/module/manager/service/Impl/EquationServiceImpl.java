@@ -217,7 +217,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         List<Options> res = new ArrayList<>();
         for (Options options : list) {
             int i = getEqInteger(options.getId() + "", vars, "可选项价格");
-            if (i > 0) {
+            if (i != 0) {
                 res.add(options);
             }
         }
@@ -266,8 +266,8 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         vars.put("小计_设备基价", getNoEquationOut(vars, "基价"));//设备基价
         double optionPrice = countOptionPrice(vars);
         optionPrice += heightPrice;
+        vars.put("小计_高度价格", heightPrice);
         vars.put("小计_设备可选项价格", optionPrice);//设备可选项价格
-
 
         //vars.put("小计_非标加价", optionPrice);
         vars.put("小计_设备单价", simpleEquation("小计_设备基价*(1-下浮)+小计_设备可选项价格", vars)); //单价
@@ -280,7 +280,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         vars.put("小计_单台总价", simpleEquation("小计_设备单价+小计_安装费用+小计_运费", vars)); //单价
         vars.put("小计_合价", simpleEquation("小计_单台总价*台量", vars)); //单价
 
-        String service = " 价格*系数*维保价格";//维保
+        String service = "价格*系数*维保价格";//维保
         return vars;
     }
 
@@ -298,16 +298,16 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
     }
 
     public double countOptionPrice(Map vars) {
-        String type = vars.get("系列").toString();
         Long orderId = Long.parseLong(vars.get("orderId").toString());
         double res = 0;
         List<ProjectEleOptions> projectEleOptions = projectEleOptionsDao.selectList(
                 new QueryWrapper<ProjectEleOptions>().eq("order_id", orderId));
         for (ProjectEleOptions projectEleOption : projectEleOptions) {
             vars.put("数量", projectEleOption.getNums());
-            res = getEqDouble(projectEleOption.getOptionId() + "", vars, "可选项价格");
-            projectEleOption.setOptionPrice(res * projectEleOption.getNums());
+            double price = getEqDouble(projectEleOption.getOptionId() + "", vars, "可选项价格");
+            projectEleOption.setOptionPrice(price * projectEleOption.getNums());
             projectEleOptionsDao.updateById(projectEleOption);
+            res += projectEleOption.getOptionPrice();
         }
         return res;
     }
