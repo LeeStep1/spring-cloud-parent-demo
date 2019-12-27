@@ -45,6 +45,7 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
     private ProjectPriceDao projectPriceDao;
 
     @Override
+	@Transactional
     public void add(Project project) {
         project.setCreateTime(new Date());
         project.setProjectStatus(ProjectEnum.PROJECT_SUC.getCode());
@@ -72,13 +73,8 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 		//项目id集合
         List<Long> projectIdlist= new ArrayList<>();
 
-        List<ProjectVo> listRs=new ArrayList<>();
-
         for(Project project:iPage.getRecords()){
             projectIdlist.add(project.getId());
-            ProjectVo vo1=new ProjectVo();
-            BeanUtils.copyProperties(project,vo1);
-            listRs.add(vo1);
         }
         List<ProjectPrice> prices= projectPriceDao.getProjectPrice(projectIdlist);
 
