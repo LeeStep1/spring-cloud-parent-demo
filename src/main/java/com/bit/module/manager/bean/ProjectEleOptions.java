@@ -28,7 +28,7 @@ public class ProjectEleOptions {
     private Integer nums;
 
 
-    private Integer optionPrice;
+    private double optionPrice;
 
     private Long orderId;
 
