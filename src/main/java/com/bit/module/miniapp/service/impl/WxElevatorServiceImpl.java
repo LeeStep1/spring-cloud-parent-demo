@@ -239,9 +239,9 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
         if(proPriceToVersion.size()>0){
             proPriceToVersion.forEach(c->{
                 if(c.equals(OrderPriceAddTypeEnum.SHISHI.getCode())){
-                    cod.put("包含实施","true");
+                    cod.put("包括安装","true");
                 }else{
-                    cod.put("包含运费","true");
+                    cod.put("包括运费","true");
                 }
             });
         }
