@@ -81,7 +81,7 @@ public interface WxElevatorService {
       * @param projectId
       * @return : void
       */
-     BaseVo proPriceToVersion(Long projectId);
+     BaseVo proPriceToVersion(Long projectId,List<Integer> additionalTypes);
 
      /**
       * @description:  修改前复制数据

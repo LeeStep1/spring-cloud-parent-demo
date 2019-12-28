@@ -217,12 +217,13 @@ public class ElevatorController {
 	/**
 	 * 草稿转正式版本  生成报价单
 	 * @param projectId  项目ID
+	 * @param proPriceToVersion  实施和运费的标识  1:实施,2 ：运费
 	 * @return 成功与失败
 	 */
-	@PostMapping("/poject/version/{projectId}")
-	public BaseVo proPriceToVersion(@PathVariable(value = "projectId")Long projectId){
+	@PostMapping("/project/version/{projectId}")
+	public BaseVo proPriceToVersion(@PathVariable(value = "projectId")Long projectId,List<Integer>proPriceToVersion){
 
-		return wxElevatorService.proPriceToVersion(projectId);
+		return wxElevatorService.proPriceToVersion(projectId,proPriceToVersion);
 
 	}
 

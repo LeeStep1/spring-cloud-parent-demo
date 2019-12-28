@@ -3,6 +3,7 @@ package com.bit.module.miniapp.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.bit.base.service.BaseService;
 import com.bit.base.vo.BaseVo;
+import com.bit.common.businessEnum.OrderPriceAddTypeEnum;
 import com.bit.common.informationEnum.StageEnum;
 import com.bit.common.informationEnum.StandardEnum;
 import com.bit.module.manager.bean.*;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Description:
@@ -219,6 +221,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
     /**
      * @param projectId
+     * @param additionalType  (1,实施，2运费)
      * @return : void
      * @description: 转正式版本
      * @author liyujun
@@ -226,8 +229,23 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public BaseVo proPriceToVersion(Long projectId) {
+    public BaseVo proPriceToVersion(Long projectId,List<Integer> additionalTypes) {
         Integer version = projectPriceDao.getMaxVersion(projectId);
+        //算价钱
+        Map <String,Object> cod=new HashMap<>();
+        cod.put("projectId",projectId);
+        cod.put("version","-1");
+
+        if(additionalTypes.size()>0){
+            additionalTypes.forEach(c->{
+                if(c.equals(OrderPriceAddTypeEnum.SHISHI.getCode())){
+                    cod.put("包含实施","true");
+                }else{
+                    cod.put("包含运费","true");
+                }
+            });
+        }
+        equationServiceImpl.executeCountProjectPrice (cod);
         if (version != null && version > -1) {
             version = version + 1;
 
