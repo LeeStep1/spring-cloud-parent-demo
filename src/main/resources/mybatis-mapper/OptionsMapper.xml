@@ -20,7 +20,7 @@
             </if>
 
         </where>
-        order by group_value
+        order by tos.group_name, tos.id
     </select>
 
 
