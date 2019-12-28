@@ -221,7 +221,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
     /**
      * @param projectId
-     * @param additionalType  (1,实施，2运费)
+     * @param proPriceToVersion  (1,实施，2运费)
      * @return : void
      * @description: 转正式版本
      * @author liyujun
@@ -229,15 +229,15 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public BaseVo proPriceToVersion(Long projectId,List<Integer> additionalTypes) {
+    public BaseVo proPriceToVersion(Long projectId,List<Integer> proPriceToVersion) {
         Integer version = projectPriceDao.getMaxVersion(projectId);
         //算价钱
         Map <String,Object> cod=new HashMap<>();
         cod.put("projectId",projectId);
         cod.put("version","-1");
 
-        if(additionalTypes.size()>0){
-            additionalTypes.forEach(c->{
+        if(proPriceToVersion.size()>0){
+            proPriceToVersion.forEach(c->{
                 if(c.equals(OrderPriceAddTypeEnum.SHISHI.getCode())){
                     cod.put("包含实施","true");
                 }else{

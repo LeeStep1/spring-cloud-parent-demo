@@ -79,9 +79,10 @@ public interface WxElevatorService {
       * @author liyujun
       * @date 2019-12-19
       * @param projectId
+	  * @param proPriceToVersion  (1,实施，2运费)
       * @return : void
       */
-     BaseVo proPriceToVersion(Long projectId,List<Integer> additionalTypes);
+     BaseVo proPriceToVersion(Long projectId,List<Integer> proPriceToVersion);
 
      /**
       * @description:  修改前复制数据
