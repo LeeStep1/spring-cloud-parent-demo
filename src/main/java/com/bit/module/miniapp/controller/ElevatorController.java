@@ -221,7 +221,7 @@ public class ElevatorController {
 	 * @return 成功与失败
 	 */
 	@PostMapping("/project/version/{projectId}")
-	public BaseVo proPriceToVersion(@PathVariable(value = "projectId")Long projectId,List<Integer> proPriceToVersion){
+	public BaseVo proPriceToVersion(@PathVariable(value = "projectId")Long projectId,@RequestParam(value = "proPriceToVersion") List<Integer> proPriceToVersion){
 
 		return wxElevatorService.proPriceToVersion(projectId,proPriceToVersion);
 
