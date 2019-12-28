@@ -227,4 +227,25 @@ public class ElevatorController {
 		return wxElevatorService.updateProjectPrice(projectId, projectPriceId);
 	}
 
+
+	/**
+	 * 根据订单id删除订单
+	 * @param orderId
+	 * @return
+	 */
+	@GetMapping("/delOrderByOrderId/{orderId}")
+	public BaseVo delOrderByOrderId(@PathVariable(value = "orderId")Long orderId){
+		return wxElevatorService.delOrderByOrderId(orderId);
+	}
+
+	/**
+	 * 更新订单
+	 * @param vo
+	 * @return
+	 */
+	@PostMapping("/updateOrder")
+	public BaseVo updateOrder(@RequestBody ReportInfoVO vo){
+		return wxElevatorService.updateOrder(vo);
+	}
+
 }

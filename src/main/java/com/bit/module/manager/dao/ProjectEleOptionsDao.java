@@ -30,5 +30,10 @@ public interface ProjectEleOptionsDao extends BaseMapper<ProjectEleOptions> {
 	 * @param list
 	 */
 	void batchAdd(@Param(value = "list") List<ProjectEleOptions> list);
-
+	/**
+	 * 根据订单id删除记录
+	 * @param orderId
+	 * @return
+	 */
+	void delByOrderId(@Param(value = "orderId")Long orderId);
 }

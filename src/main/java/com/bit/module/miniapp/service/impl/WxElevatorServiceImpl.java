@@ -314,6 +314,40 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		return baseVo;
     }
 
+    /**
+     * 根据订单id删除订单
+     * @param orderId
+     * @return
+     */
+    @Override
+    @Transactional
+    public BaseVo delOrderByOrderId(Long orderId) {
+        //先删除关联数据
+        projectEleOrderBaseInfoDao.delByOrderId(orderId);
+
+        projectEleOptionsDao.delByOrderId(orderId);
+        //删除订单记录
+        projectEleOrderDao.deleteById(orderId);
+
+        return successVo();
+    }
+
+    /**
+     * 更新订单
+     * @param vo
+     * @return
+     */
+    @Override
+    @Transactional
+    public BaseVo updateOrder(ReportInfoVO vo) {
+        //先删除订单记录
+        this.delOrderByOrderId(vo.getOrderId());
+        Map map = this.wxAddReportInfo(vo);
+        BaseVo baseVo = new BaseVo();
+        baseVo.setData(map);
+        return baseVo;
+    }
+
 
     /**
      * @param projectId :

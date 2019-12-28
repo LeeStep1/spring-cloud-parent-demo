@@ -92,4 +92,18 @@ public interface WxElevatorService {
       */
      BaseVo  updateProjectPrice(Long projectId,Long projectPriceId);
 
+     /**
+      * 根据订单id删除订单
+      * @param orderId
+      * @return
+      */
+     BaseVo delOrderByOrderId(Long orderId);
+
+	/**
+	 * 更新订单
+	 * @param vo
+	 * @return
+	 */
+     BaseVo updateOrder(ReportInfoVO vo);
+
 }

@@ -14,6 +14,10 @@ import java.util.List;
  **/
 @Data
 public class ReportInfoVO {
+    /**
+     * 订单id
+     */
+    private Long orderId;
 
 
     /**項目ID**/

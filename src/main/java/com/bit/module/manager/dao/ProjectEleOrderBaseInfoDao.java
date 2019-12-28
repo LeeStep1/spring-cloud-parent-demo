@@ -21,4 +21,11 @@ public interface ProjectEleOrderBaseInfoDao  extends BaseMapper<ProjectEleOrderB
 	 */
 	void batchAdd(@Param(value = "list") List<ProjectEleOrderBaseInfo> list);
 
+	/**
+	 * 根据订单id删除记录
+	 * @param orderId
+	 * @return
+	 */
+	void delByOrderId(@Param(value = "orderId")Long orderId);
+
 }

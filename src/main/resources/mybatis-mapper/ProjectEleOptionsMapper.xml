@@ -47,6 +47,11 @@
         </foreach>
     </insert>
 
+    <!--根据订单id删除记录-->
+    <delete id="delByOrderId" parameterType="long">
+        DELETE FROM t_project_ele_options
+        WHERE order_id = #{orderId,jdbcType=BIGINT}
+    </delete>
 
 
 </mapper>
