@@ -43,9 +43,5 @@ public class ElevatorTypePageVO extends BasePageVo implements Serializable {
 	 * 图片地址
 	 */
 	private String picture;
-	/**
-	 * 附件信息
-	 */
-	private FileInfo fileInfo;
 
 }

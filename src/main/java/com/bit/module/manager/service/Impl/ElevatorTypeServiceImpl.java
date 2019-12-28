@@ -94,11 +94,11 @@ public class ElevatorTypeServiceImpl extends BaseService implements ElevatorType
 	public BaseVo reflectById(Long id) {
 		ElevatorType elevatorTypeById = elevatorTypeDao.getElevatorTypeById(id);
 		ElevatorTypePageVO elevatorTypePageVO = new ElevatorTypePageVO();
+		//设置图片地址
+		String pic = contextPath + "/images/" + elevatorTypeById.getPicture();
+		elevatorTypeById.setPicture(pic);
 		BeanUtils.copyProperties(elevatorTypeById, elevatorTypePageVO);
-		if (StringUtil.isNotEmpty(elevatorTypeById.getPicture())){
-			FileInfo byId = fileInfoDao.findById(Long.valueOf(elevatorTypeById.getPicture()));
-			elevatorTypePageVO.setFileInfo(byId);
-		}
+
 		BaseVo baseVo = new BaseVo();
 		baseVo.setData(elevatorTypePageVO);
 		return baseVo;
