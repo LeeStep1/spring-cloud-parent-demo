@@ -237,11 +237,21 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
 
     }
 
-    public Map executeEquations(Map vars) {
-        checkMap(vars);
+    /**
+     * 验证是否超标
+     * @param vars
+     * @return
+     */
+    public boolean checkHeightStandard(Map vars) {
         String type = vars.get("系列").toString();
         vars.put("标准提升高度", getHeightForBasePrice(vars, "基价"));
         boolean heightStandard = getEqBoolean(type, "顶层底坑是否超标", vars);//是否超标
+        return heightStandard;
+    }
+
+    public Map executeEquations(Map vars) {
+        checkMap(vars);
+        boolean heightStandard = checkHeightStandard(vars);//是否超标
         double heightPrice = 0;
         if (heightStandard) {
             vars.put("高度单价", getNoEquationOut(vars, "高度单价"));
