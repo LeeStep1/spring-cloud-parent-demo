@@ -87,6 +87,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
             cod.put(c.getParamKey(), c.getInfoValue());
         });
         cod.put("系列",e.getParamsKey());
+        cod.put("梯型",e.getCategory());
         List<Options> rs = equationServiceImpl.executeEquationsForOption(cod, ops);
         return rs;
     }
