@@ -27,6 +27,7 @@
                 and t1.elevator_type_id = #{typeId,jdbcType=BIGINT}
             </if>
         </where>
+
     </select>
 
 </mapper>
