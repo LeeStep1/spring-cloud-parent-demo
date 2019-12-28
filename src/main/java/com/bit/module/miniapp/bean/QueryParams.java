@@ -3,7 +3,9 @@ package com.bit.module.miniapp.bean;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -44,5 +46,14 @@ public class QueryParams implements Serializable {
 	 * 等级
 	 */
 	private Integer level;
-
+	/**
+	 * 子节点
+	 */
+	@TableField(exist = false)
+	private List<QueryParams> childList;
+	/**
+	 * 电梯类型参数关键字
+	 */
+	@TableField(exist = false)
+	private String elevatorTypeParamsKey;
 }

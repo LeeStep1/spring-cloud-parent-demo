@@ -84,6 +84,16 @@ public class ElevatorController {
 		return queryParamsService.getEleParam(queryParams);
 	}
 
+	/**
+	 * 查询电梯的参数 树形结构
+	 * @param queryParams
+	 * @return
+	 */
+	@PostMapping("/getEleParamTree")
+	public BaseVo<QueryParams> getEleParamTree(@RequestBody QueryParams queryParams) {
+		return queryParamsService.getEleParamTree(queryParams);
+	}
+
 
 	/**
 	 * 根据电梯类型查询电梯的可选项

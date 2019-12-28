@@ -1,5 +1,6 @@
 package com.bit.module.manager.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bit.module.miniapp.bean.QueryParams;
 
 import java.util.List;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Repository;
  * @date 2019-12-23 11:04:01
  */
 @Repository
-public interface QueryParamsDao {
+public interface QueryParamsDao extends BaseMapper<QueryParams>{
 
 
 

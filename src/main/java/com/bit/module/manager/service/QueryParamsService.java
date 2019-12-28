@@ -30,6 +30,11 @@ public interface QueryParamsService {
 	 * @return
 	 */
 	BaseVo getEleParam(QueryParams queryParams);
-
+	/**
+	 * 查询电梯的参数 树形结构
+	 * @param queryParams
+	 * @return
+	 */
+	BaseVo<QueryParams> getEleParamTree(QueryParams queryParams);
 }
 
