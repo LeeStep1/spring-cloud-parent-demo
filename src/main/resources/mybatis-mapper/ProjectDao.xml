@@ -96,13 +96,15 @@
         SELECT DISTINCT t2.element_name,t2.category_type,t3.info_value,t4.params_unit FROM t_project_ele_order t1
         INNER JOIN t_elevator_base_element t2
         on t1.elevator_type_id = t2.elevator_type_id
+        <if test="orderId!=null">
+            and t1.id = #{orderId,jdbcType=BIGINT}
+        </if>
         LEFT JOIN t_project_ele_order_base_info t3
         on t2.id = t3.element_id
         INNER JOIN t_params t4
         on t2.params_key = t4.params_name
         <where>
             <if test="orderId!=null">
-                and t1.id = #{orderId,jdbcType=BIGINT}
                 and t3.order_id = #{orderId,jdbcType=BIGINT}
             </if>
         </where>
