@@ -16,6 +16,15 @@ public enum ResultCode {
      *操作失败
      */
     WRONG(1, "操作失败"),
+    /**
+     * 参数已存在
+     */
+    PARAMS_KEY_EXIST(4000,"参数已存在"),
+
+    /**
+     * 参数不存在
+     */
+    PARAMS_KEY_NOT_EXIST(4001,"参数不存在"),
 
 
 
@@ -39,26 +48,7 @@ public enum ResultCode {
      */
     HYSTRIX_TIME_OUT(-1, "未授权"),
 
-    /**
-     * 恶意报名三次警告
-     */
-    WARNING_THREE_TIMES(10,"您已多次取消活动，下次报名将不可取消"),
-    /**
-     * 超过三次报名警告
-     */
-    WARNING_OVER_THREE_TIMES(11,"您已多次取消活动，此次活动禁止报名"),
-    /**
-     * 活动不存在
-     */
-    WARNING_CAMPAIGN_NOT_EXIST(12,"该活动不存在"),
-    /**
-     * 活动已开始不能取消报名
-     */
-    WARNING_CAMPAIGN_IN_PROGRESS_NOT_UNENROLL(13,"活动已开始不能取消报名"),
-    /**
-     * 活动已开始不能报名
-     */
-    WARNING_CAMPAIGN_IN_PROGRESS_NOT_ENROLL(14,"活动已开始不能报名"),
+
 
 
     /**

@@ -21,7 +21,7 @@ public interface ElevatorTypeService {
 	 * @author chenduo
 	 * @since ${date}
 	 */
-	void add(ElevatorType elevatorType);
+	BaseVo add(ElevatorType elevatorType);
 
 	/**
 	 * 编辑数据
@@ -29,7 +29,7 @@ public interface ElevatorTypeService {
 	 * @author chenduo
 	 * @since ${date}
 	 */
-	void update(ElevatorType elevatorType);
+	BaseVo update(ElevatorType elevatorType);
 
 	/**
 	 * 删除数据
@@ -37,17 +37,9 @@ public interface ElevatorTypeService {
 	 * @author chenduo
 	 * @since ${date}
 	 */
-	void delete(Long id);
+	BaseVo delete(Long id);
 
 
-	/**
-	 * 多参数查询数据
-	 * @param elevatorType
-	 * @author chenduo
-	 * @since ${date}
-	 * @return List<ElevatorType>
-	 */
-	List<ElevatorType> findByParam(ElevatorType elevatorType);
 
 	/**
 	 * 单查数据
@@ -62,5 +54,17 @@ public interface ElevatorTypeService {
 	 * @return
 	 */
     BaseVo elevatorTypeListPage(ElevatorTypePageVO elevatorTypePageVO);
+
+	/**
+	 * 电梯类型
+	 * @return
+	 */
+	BaseVo categoryList();
+	/**
+	 * paramsKey验重
+	 * @param elevatorType
+	 * @return
+	 */
+	BaseVo distinctParams(ElevatorType elevatorType);
 }
 

@@ -1,5 +1,12 @@
 package com.bit.common.informationEnum;
 
+import com.bit.module.manager.bean.Category;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.lang.System.in;
+
 public enum ElevatorTypeEnum {
 	/**
 	 * 客梯
@@ -60,4 +67,20 @@ public enum ElevatorTypeEnum {
 		}
 		return  null;
 	}
+
+	/**
+	 * 枚举转换成list
+	 * @return
+	 */
+	public static List<Category> getCatoryList(){
+		List<Category> categories = new ArrayList<>();
+		for (ElevatorTypeEnum typeEnum : ElevatorTypeEnum.values()){
+			Category category = new Category();
+			category.setCode(typeEnum.code);
+			category.setInfo(typeEnum.info);
+			categories.add(category);
+		}
+		return categories;
+	}
+
 }

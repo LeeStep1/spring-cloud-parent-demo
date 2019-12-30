@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bit.module.manager.dao.ParamsDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.bit.module.manager.bean.Params" id="paramsMap">
+        <result property="id" column="id"/>
+        <result property="paramsName" column="params_name"/>
+        <result property="paramsKey" column="params_key"/>
+        <result property="paramsValueType" column="params_value_type"/>
+        <result property="paramsUnit" column="params_unit"/>
+        <result property="paramsDescription" column="params_description"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        params_name,
+        params_key,
+        params_value_type,
+        params_unit,
+        params_description
+    </sql>
+
+    <!-- 根据主键查询数据 -->
+    <select id="getParamsById" parameterType="Long" resultMap="paramsMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_params
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <!-- 多参数查询数据 -->
+    <select id="findByParam" parameterType="com.bit.module.manager.bean.Params" resultMap="paramsMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_params
+        <where>
+            <if test="paramsName!=null and paramsName!=''">
+                and params_name = #{paramsName,jdbcType=VARCHAR}
+            </if>
+            <if test="paramsKey!=null and paramsKey!=''">
+                and params_key = #{paramsKey,jdbcType=VARCHAR}
+            </if>
+            <if test="paramsValueType!=null and paramsValueType!=''">
+                and params_value_type = #{paramsValueType,jdbcType=VARCHAR}
+            </if>
+            <if test="paramsUnit!=null and paramsUnit!=''">
+                and params_unit = #{paramsUnit,jdbcType=VARCHAR}
+            </if>
+            <if test="paramsDescription!=null and paramsDescription!=''">
+                and params_description = #{paramsDescription,jdbcType=VARCHAR}
+            </if>
+
+        </where>
+    </select>
+
+
+    <!-- 新增数据 -->
+    <insert id="addParams" parameterType="com.bit.module.manager.bean.Params" keyColumn="id"
+            useGeneratedKeys="true">
+        insert into t_params
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="paramsName!=null and paramsName!=''">
+                params_name,
+            </if>
+            <if test="paramsKey!=null and paramsKey!=''">
+                params_key,
+            </if>
+            <if test="paramsValueType!=null and paramsValueType!=''">
+                params_value_type,
+            </if>
+            <if test="paramsUnit!=null and paramsUnit!=''">
+                params_unit,
+            </if>
+            <if test="paramsDescription!=null and paramsDescription!=''">
+                params_description,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="paramsName!=null and paramsName!=''">
+                #{paramsName,jdbcType=VARCHAR},
+            </if>
+            <if test="paramsKey!=null and paramsKey!=''">
+                #{paramsKey,jdbcType=VARCHAR},
+            </if>
+            <if test="paramsValueType!=null and paramsValueType!=''">
+                #{paramsValueType,jdbcType=VARCHAR},
+            </if>
+            <if test="paramsUnit!=null and paramsUnit!=''">
+                #{paramsUnit,jdbcType=VARCHAR},
+            </if>
+            <if test="paramsDescription!=null and paramsDescription!=''">
+                #{paramsDescription,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+
+    <!-- 编辑数据 -->
+    <update id="updateParams" parameterType="com.bit.module.manager.bean.Params">
+        update t_params
+        <trim prefix="set" suffixOverrides=",">
+            <if test="paramsName!=null and paramsName!=''">
+                params_name = #{paramsName,jdbcType=VARCHAR},
+            </if>
+            <if test="paramsKey!=null and paramsKey!=''">
+                params_key = #{paramsKey,jdbcType=VARCHAR},
+            </if>
+            <if test="paramsValueType!=null and paramsValueType!=''">
+                params_value_type = #{paramsValueType,jdbcType=VARCHAR},
+            </if>
+            <if test="paramsUnit!=null and paramsUnit!=''">
+                params_unit = #{paramsUnit,jdbcType=VARCHAR},
+            </if>
+            <if test="paramsDescription!=null and paramsDescription!=''">
+                params_description = #{paramsDescription,jdbcType=VARCHAR},
+            </if>
+        </trim>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+
+    <!-- 删除数据 -->
+    <delete id="delParamsById" parameterType="Long">
+        delete from t_params
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <!--分页查询数据-->
+    <select id="paramsListPage" parameterType="com.bit.module.manager.vo.ParamsPageVO" resultType="com.bit.module.manager.vo.ParamsVO">
+        select
+        <include refid="Base_Column_List"/>
+        from t_params
+        <where>
+            <if test="paramsPageVO.paramsName!=null and paramsPageVO.paramsName!=''">
+                and params_name = #{paramsPageVO.paramsName,jdbcType=VARCHAR}
+            </if>
+            <if test="paramsPageVO.paramsKey!=null and paramsPageVO.paramsKey!=''">
+                and params_key = #{paramsPageVO.paramsKey,jdbcType=VARCHAR}
+            </if>
+            <if test="paramsPageVO.paramsValueType!=null and paramsPageVO.paramsValueType!=''">
+                and params_value_type = #{paramsPageVO.paramsValueType,jdbcType=VARCHAR}
+            </if>
+            <if test="paramsPageVO.paramsUnit!=null and paramsPageVO.paramsUnit!=''">
+                and params_unit = #{paramsPageVO.paramsUnit,jdbcType=VARCHAR}
+            </if>
+            <if test="paramsPageVO.paramsDescription!=null and paramsPageVO.paramsDescription!=''">
+                and params_description = #{paramsPageVO.paramsDescription,jdbcType=VARCHAR}
+            </if>
+
+        </where>
+    </select>
+
+</mapper>

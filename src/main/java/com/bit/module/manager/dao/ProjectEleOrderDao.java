@@ -18,10 +18,11 @@ public interface ProjectEleOrderDao extends BaseMapper<ProjectEleOrder> {
 	 * @param list
 	 */
 	void batchInsert(@Param(value = "list") List<ProjectEleOrder> list);
+
 	/**
-	 * 根据订单id删除记录
-	 * @param orderId
+	 * 多参数查询
+	 * @param projectEleOrder
 	 * @return
 	 */
-	void delByOrderId(@Param(value = "orderId")Long orderId);
+	List<ProjectEleOrder> findByParam(ProjectEleOrder projectEleOrder);
 }

@@ -59,5 +59,8 @@ public class Options implements Serializable {
 	 * 分组值
 	 */
 	private String groupValue;
-
+	/**
+	 * 数据属性1:有且唯一，2：可多选
+	 */
+	private Integer rule;
 }

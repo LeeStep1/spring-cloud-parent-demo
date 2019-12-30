@@ -20,7 +20,8 @@
          `type`,
          series,
          params_key,
-         picture
+         picture,
+         category
     </sql>
 
     <!-- 根据主键查询数据 -->
@@ -52,14 +53,15 @@
             <if test="picture!=null and picture!=''">
                 and picture = #{picture,jdbcType=VARCHAR}
             </if>
-
+            <if test="category!=null and category!=''">
+                and category = #{category,jdbcType=VARCHAR}
+            </if>
         </where>
     </select>
 
 
     <!-- 新增数据 -->
-    <insert id="addElevatorType" parameterType="com.bit.module.miniapp.bean.ElevatorType" keyColumn="id"
-            useGeneratedKeys="true">
+    <insert id="addElevatorType" parameterType="com.bit.module.miniapp.bean.ElevatorType" keyColumn="id" useGeneratedKeys="true">
         insert into t_elevator_type
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="typeName!=null and typeName!=''">
@@ -77,6 +79,9 @@
             <if test="picture!=null and picture!=''">
                 picture,
             </if>
+            <if test="category!=null and category!=''">
+                category,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="typeName!=null and typeName!=''">
@@ -88,11 +93,14 @@
             <if test="series!=null and series!=''">
                 #{series,jdbcType=VARCHAR},
             </if>
-            <if test="paramsKey!=null paramsKey key!=''">
+            <if test="paramsKey!=null and paramsKey!=''">
                 #{paramsKey,jdbcType=VARCHAR},
             </if>
             <if test="picture!=null and picture!=''">
                 #{picture,jdbcType=VARCHAR},
+            </if>
+            <if test="category!=null and category!=''">
+                #{category,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -117,6 +125,9 @@
             <if test="picture!=null and picture!=''">
                 picture = #{picture,jdbcType=VARCHAR},
             </if>
+            <if test="category!=null and category!=''">
+                category = #{category,jdbcType=VARCHAR},
+            </if>
         </trim>
         where id = #{id,jdbcType=BIGINT}
     </update>
@@ -131,7 +142,26 @@
     <select id="elevatorTypeListPage" parameterType="com.bit.module.manager.vo.ElevatorTypePageVO" resultType="com.bit.module.manager.vo.ElevatorTypeVO">
         SELECT <include refid="Base_Column_List"/>
         FROM t_elevator_type
-
+        <where>
+            <if test="elevatorTypePageVO.typeName!=null and elevatorTypePageVO.typeName!=''">
+                and type_name = #{elevatorTypePageVO.typeName,jdbcType=VARCHAR}
+            </if>
+            <if test="elevatorTypePageVO.type!=null">
+                and `type` = #{elevatorTypePageVO.type,jdbcType=INTEGER}
+            </if>
+            <if test="elevatorTypePageVO.series!=null and elevatorTypePageVO.series!=''">
+                and series = #{elevatorTypePageVO.series,jdbcType=VARCHAR}
+            </if>
+            <if test="elevatorTypePageVO.paramsKey!=null and elevatorTypePageVO.paramsKey!=''">
+                and params_key = #{elevatorTypePageVO.paramsKey,jdbcType=VARCHAR}
+            </if>
+            <if test="elevatorTypePageVO.picture!=null and elevatorTypePageVO.picture!=''">
+                and picture = #{elevatorTypePageVO.picture,jdbcType=VARCHAR}
+            </if>
+            <if test="elevatorTypePageVO.category!=null and elevatorTypePageVO.category!=''">
+                and category = #{elevatorTypePageVO.category,jdbcType=VARCHAR}
+            </if>
+        </where>
     </select>
 
 </mapper>
