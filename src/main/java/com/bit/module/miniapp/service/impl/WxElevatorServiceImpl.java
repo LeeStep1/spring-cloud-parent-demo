@@ -183,6 +183,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
         par.put("project_id", vo.getProjectId());
         par.put("version", -1);
         rrs.put("elePriceId",a.getId());
+        rrs.put("orderId",order.getId());
         ProjectEleOrder a1=projectEleOrderDao.selectById(order.getId());
         if(a1!=null){
             rrs.put("orderPrice",a1.getTotalPrice());

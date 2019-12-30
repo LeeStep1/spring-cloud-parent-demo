@@ -22,5 +22,9 @@ public class ElementParam {
 	 * 所填写的属性参数
 	 */
 	private String infoValue;
+	/**
+	 * 参数的单位
+	 */
+	private String paramsUnit;
 
 }

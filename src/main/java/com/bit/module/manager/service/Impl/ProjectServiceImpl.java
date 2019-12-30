@@ -3,6 +3,7 @@ package com.bit.module.manager.service.Impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.bit.base.exception.BusinessException;
 import com.bit.base.service.BaseService;
 import com.bit.base.vo.BasePageVo;
 import com.bit.base.vo.BaseVo;
@@ -11,10 +12,7 @@ import com.bit.module.manager.bean.*;
 import com.bit.module.manager.dao.ProjectDao;
 import com.bit.module.manager.dao.ProjectPriceDao;
 import com.bit.module.manager.service.ProjectService;
-import com.bit.module.manager.vo.ElevatorOrderVo;
-import com.bit.module.manager.vo.ProjectPriceDetailVO;
-import com.bit.module.manager.vo.ProjectPriceVo;
-import com.bit.module.manager.vo.ProjectVo;
+import com.bit.module.manager.vo.*;
 import com.bit.module.miniapp.bean.Options;
 import com.sun.xml.internal.rngom.parse.host.Base;
 import org.apache.commons.collections.CollectionUtils;
@@ -76,17 +74,20 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
         for(Project project:iPage.getRecords()){
             projectIdlist.add(project.getId());
         }
-        List<ProjectPrice> prices= projectPriceDao.getProjectPrice(projectIdlist);
+        if (CollectionUtils.isNotEmpty(projectIdlist)){
+			List<ProjectPrice> prices= projectPriceDao.getProjectPrice(projectIdlist);
 
-		for (Project project:iPage.getRecords()) {
-			List<ProjectPrice> rsPrice=new ArrayList<>();
-			for(ProjectPrice p:prices){
-				if (p.getProjectId().equals(project.getId())){
-					rsPrice.add(p);
+			for (Project project:iPage.getRecords()) {
+				List<ProjectPrice> rsPrice=new ArrayList<>();
+				for(ProjectPrice p:prices){
+					if (p.getProjectId().equals(project.getId())){
+						rsPrice.add(p);
+					}
 				}
+				project.setProjectPriceList(rsPrice);
 			}
-			project.setProjectPriceList(rsPrice);
 		}
+
 		BaseVo baseVo = new BaseVo();
 		baseVo.setData(iPage);
 		return baseVo;
@@ -136,6 +137,9 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
     public BaseVo getProjectDetail(Long projectId, Long projectPriceId) {
     	//查询项目详情和报价
 		ProjectPriceDetailVO projectPriceDetailVO = projectDao.getProjectDetailById(projectId, projectPriceId);
+		if (projectPriceDetailVO==null){
+			throw new BusinessException("无记录");
+		}
 
 		List<ProjectPriceDetailInfo> projectPriceDetailInfos = new ArrayList<>();
 		//组装电梯详情
@@ -165,4 +169,34 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 		baseVo.setData(projectPriceDetailVO);
 		return baseVo;
     }
+
+	/**
+	 * 查询订单详情
+	 * @param projectId
+	 * @param orderId
+	 * @return
+	 */
+	@Override
+	public BaseVo getOrderDetail(Long projectId, Long orderId) {
+		ProjectOrderDetailInfoVO projectOrderDetailInfoVO = projectDao.getOrderDetailById(projectId, orderId);
+		if (projectOrderDetailInfoVO==null){
+			throw new BusinessException("无记录");
+		}
+		Project project = projectDao.selectById(projectId);
+		if (project!=null){
+			projectOrderDetailInfoVO.setAddressName(project.getAddressName());
+		}
+		//组装电梯详情
+
+		//设置规格参数 和 井道参数
+		List<ElementParam> elementParamByOrderId = projectDao.getElementParamByOrderId(orderId);
+		projectOrderDetailInfoVO.setElementParams(elementParamByOrderId);
+
+		List<Options> projectOptions = projectDao.getProjectOptions(orderId);
+		projectOrderDetailInfoVO.setProjectOptions(projectOptions);
+
+		BaseVo baseVo = new BaseVo();
+		baseVo.setData(projectOrderDetailInfoVO);
+		return baseVo;
+	}
 }

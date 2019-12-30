@@ -33,4 +33,12 @@ public interface ProjectService {
 	 * @return
 	 */
 	BaseVo getProjectDetail(Long projectId,Long projectPriceId);
+
+	/**
+	 * 查询订单详情
+	 * @param projectId
+	 * @param orderId
+	 * @return
+	 */
+	BaseVo getOrderDetail(Long projectId,Long orderId);
 }

@@ -54,6 +54,33 @@
 			</if>
 		</where>
 	</select>
+
+    <!-- 查询订单详情 -->
+    <select id="getOrderDetailById" resultType="com.bit.module.manager.vo.ProjectOrderDetailInfoVO" parameterType="long">
+        SELECT
+        t1.project_name,
+        t1.customer_name,
+        t1.agent_name,
+        t1.create_user_name,
+        t1.create_time,
+        t2.num,
+        t2.unit_price,
+        t2.total_price,
+        t2.elevator_type_name
+        FROM t_project t1
+        INNER JOIN t_project_ele_order t2
+        on t1.id = t2.project_id
+        <where>
+            <if test="projectId!=null">
+                and t1.id =#{projectId,jdbcType=BIGINT}
+            </if>
+            <if test="orderId!=null">
+                and t2.id =#{orderId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </select>
+
+
     <!--根据项目id查询项目下的电梯订单-->
     <select id="getOrderByProjectId" parameterType="long" resultType="com.bit.module.manager.bean.ProjectEleOrder">
         SELECT elevator_type_name,unit_price,elevator_type_id,id
@@ -66,20 +93,23 @@
     </select>
     <!--根据订单id查询电梯规格参数 和 井道参数-->
     <select id="getElementParamByOrderId" parameterType="long" resultType="com.bit.module.manager.bean.ElementParam">
-        SELECT t2.element_name,t2.category_type,t3.info_value FROM t_project_ele_order t1
+        SELECT DISTINCT t2.element_name,t2.category_type,t3.info_value,t4.params_unit FROM t_project_ele_order t1
         INNER JOIN t_elevator_base_element t2
         on t1.elevator_type_id = t2.elevator_type_id
-        INNER JOIN t_project_ele_order_base_info t3
+        LEFT JOIN t_project_ele_order_base_info t3
         on t2.id = t3.element_id
+        INNER JOIN t_params t4
+        on t2.params_key = t4.params_name
         <where>
             <if test="orderId!=null">
                 and t1.id = #{orderId,jdbcType=BIGINT}
+                and t3.order_id = #{orderId,jdbcType=BIGINT}
             </if>
         </where>
     </select>
     <!--根据项目id查询电梯功能定制选项-->
     <select id="getProjectOptions" parameterType="long" resultType="com.bit.module.miniapp.bean.Options">
-        SELECT t2.options_name,t2.input_type FROM `t_project_ele_options` t1
+        SELECT DISTINCT t2.options_name,t2.input_type FROM `t_project_ele_options` t1
         INNER JOIN t_options t2
         on t1.option_id = t2.id
         <where>

@@ -1,18 +1,20 @@
 package com.bit.module.manager.vo;
 
+import com.bit.module.manager.bean.ElementParam;
 import com.bit.module.manager.bean.ProjectPriceDetailInfo;
+import com.bit.module.miniapp.bean.Options;
 import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
 
 /**
- * @Description 报价项目细节
+ * @Description 项目的订单的详情
  * @Author chenduo
- * @Date 2019/12/26 8:47
+ * @Date 2019/12/30 13:51
  **/
 @Data
-public class ProjectPriceDetailVO {
+public class ProjectOrderDetailInfoVO {
 
 	//-----项目细节------
 
@@ -37,19 +39,34 @@ public class ProjectPriceDetailVO {
 	 * 报价日期
 	 */
 	private Date createTime;
-
-	//----项目报价-----
-
 	/**
-	 * 报价
+	 * 总价
 	 */
 	private String totalPrice;
+	/**
+	 * 台数
+	 */
+	private Integer num;
+	/**
+	 * 设备单价
+	 */
+	private String unitPrice;
+	/**
+	 * 电梯类型名称
+	 */
+	private String elevatorTypeName;
+	/**
+	 * 项目地点
+	 */
+	private String addressName;
 
 	//----电梯细节----
 	/**
 	 * 电梯细节 集合
 	 */
-	private List<ProjectPriceDetailInfo> projectPriceDetailInfos;
-
-
+	private List<ElementParam> elementParams;
+	/**
+	 * 功能定制
+	 */
+	private List<Options> projectOptions;
 }

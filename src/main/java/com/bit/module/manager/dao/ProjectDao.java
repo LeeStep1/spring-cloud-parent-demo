@@ -1,10 +1,8 @@
 package com.bit.module.manager.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.bit.module.manager.bean.ElementParam;
-import com.bit.module.manager.bean.ElevatorTypeNameAndUnitPrice;
-import com.bit.module.manager.bean.Project;
-import com.bit.module.manager.bean.ProjectEleOrder;
+import com.bit.module.manager.bean.*;
+import com.bit.module.manager.vo.ProjectOrderDetailInfoVO;
 import com.bit.module.manager.vo.ProjectPriceDetailVO;
 import com.bit.module.miniapp.bean.Options;
 import org.apache.ibatis.annotations.Param;
@@ -26,6 +24,8 @@ public interface ProjectDao extends BaseMapper<Project> {
 	 * @return
 	 */
 	ProjectPriceDetailVO getProjectDetailById(@Param(value = "projectId")Long projectId,@Param(value = "projectPriceId")Long projectPriceId);
+
+
 
 	/**
 	 * 根据项目id查询项目下的电梯订单
@@ -54,4 +54,12 @@ public interface ProjectDao extends BaseMapper<Project> {
 	 * @return
 	 */
 	List<Project> findByParam(Project project);
+
+	/**
+	 * 根据项目id和订单id查询订单详情
+	 * @param projectId
+	 * @param orderId
+	 * @return
+	 */
+	ProjectOrderDetailInfoVO getOrderDetailById(@Param(value = "projectId")Long projectId, @Param(value = "orderId")Long orderId);
 }

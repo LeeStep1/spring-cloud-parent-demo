@@ -202,6 +202,18 @@ public class ElevatorController {
 		return projectService.getProjectDetail(projectId, projectPriceId);
 	}
 
+	/**
+	 * 查询订单详情
+	 * @param projectId
+	 * @param orderId
+	 * @return
+	 */
+	@GetMapping("/getOrderDetail/{projectId}/{orderId}")
+	public BaseVo getOrderDetail(@PathVariable(value = "projectId")Long projectId,@PathVariable(value = "orderId")Long orderId){
+		return projectService.getOrderDetail(projectId, orderId);
+	}
+
+
 	/*
    * 计算按钮动作 输入定制信息页面的生成报价单按钮
    * @param projectId  项目ID
