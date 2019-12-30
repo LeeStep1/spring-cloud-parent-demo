@@ -63,32 +63,32 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
      * @param vars
      */
     public void executeCount(Map vars) {
-        ProjectEleOrder projectEleOrder = projectEleOrderDao.selectById(Long.parseLong(vars.get("orderId").toString()));
-
-        List<ProjectEleOrderBaseInfo> baseInfos =
-                projectEleOrderBaseInfoDao.selectList(new QueryWrapper<ProjectEleOrderBaseInfo>()
-                        .eq("order_id", vars.get("orderId").toString()));
-        vars.put("下浮", projectEleOrder.getRate());
-        vars.put("台量", projectEleOrder.getNum());
-        getElevatorInfo(projectEleOrder,baseInfos, vars);
-
+        getElevatorInfo(vars);
         if (Boolean.TRUE.equals(vars.get("包括运费"))) {
             executeTransportEquations(vars);
         }
         if (Boolean.TRUE.equals(vars.get("包括安装"))) {
             executeInstallEquations(vars);
         }
-        executeEquations(vars);//计算基价
+        executeEquations(vars);//计算设备单价
         updateOrder(vars);
     }
 
     /**
      * 拼装需要的参数
-     *  @param projectEleOrder
+     *
+     * @param projectEleOrder
      * @param baseInfos
      * @param vars
      */
-    public void getElevatorInfo(ProjectEleOrder projectEleOrder, List<ProjectEleOrderBaseInfo> baseInfos, Map vars) {
+    public void getElevatorInfo(Map vars) {
+        ProjectEleOrder projectEleOrder = projectEleOrderDao.selectById(Long.parseLong(vars.get("orderId").toString()));
+        List<ProjectEleOrderBaseInfo> baseInfos =
+                projectEleOrderBaseInfoDao.selectList(new QueryWrapper<ProjectEleOrderBaseInfo>()
+                        .eq("order_id", vars.get("orderId").toString()));
+        vars.put("下浮", projectEleOrder.getRate());
+        vars.put("台量", projectEleOrder.getNum());
+
         ElevatorType elevatorType = elevatorTypeDao.selectById(projectEleOrder.getElevatorTypeId());
         vars.put("梯型", elevatorType.getCategory());
         vars.put("系列", elevatorType.getParamsKey());
@@ -122,7 +122,10 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
                 vars.put(baseInfo.getParamKey(), baseInfo.getInfoValue());
             }
         }
-        vars.put("开门宽度", getNoEquationOut(vars,"开门宽度"));
+        vars.put("开门宽度", getNoEquationOut(vars, "开门宽度"));
+        if (vars.get("平摊费用") == null) {
+            vars.put("平摊费用", 0);
+        }
     }
 
     /**
@@ -130,17 +133,28 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
      *
      * @param map
      */
-    public void executeCountProjectPrice(Map map) {
+    public List<Map> executeCountProjectPrice(Map map) {
         ProjectPrice projectPrice = projectPriceDao.selectOne(new QueryWrapper<ProjectPrice>()
                 .eq("project_id", map.get("projectId"))
-                .eq("version", map.get("verison_id")));
+                .eq("version", map.get("version")));
         List<ProjectEleOrder> projectEleOrder = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
                 .eq("project_id", projectPrice.getProjectId())
                 .eq("version_id", projectPrice.getVersion()));
+
+        //事前计算平摊费用
+        List<Map> eleInputs = new ArrayList(projectEleOrder.size());
         for (ProjectEleOrder eleOrder : projectEleOrder) {
-            Map input = new HashMap();
+            Map input = new HashMap(3);
             input.put("orderId", eleOrder.getId());
-            executeCount(input);
+            input.put("包括运费", map.get("包括运费"));
+            input.put("包括安装", map.get("包括安装"));
+            eleInputs.add(input);
+        }
+        beforeExecuteEquations(eleInputs);
+
+        //开始计算
+        for (Map vars : eleInputs) {
+            executeCount(vars);
         }
         BigDecimal bd = new BigDecimal("0");
         List<ProjectEleOrder> projectEleOrderNew = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
@@ -154,33 +168,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             projectPrice.setStage(Integer.parseInt(map.get("stage").toString()));
         }
         projectPriceDao.updateById(projectPrice);
-    }
-
-    public void test(Map vars) {
-        vars = new HashMap();
-        // test
-        vars.put("载重", new Integer(630));
-        vars.put("速度", new Float(1.0));
-        vars.put("层站", new Integer(3));
-        vars.put("梯型", "直梯");
-        vars.put("系列", "GEE");
-        vars.put("角度", new Integer(10));
-        vars.put("宽度", new Integer(10));
-        vars.put("台量", new Integer(60));
-        vars.put("省", "120");
-        vars.put("市", "120000");
-        vars.put("区", "120000000");
-        vars.put("下浮", new Double(0.55));
-        vars.put("实际提升高度", new Integer(60));
-        vars.put("实际顶层高度", 4600);
-        vars.put("实际底坑深度", 1500);
-        //vars.put("标准提升高度", new Integer(6));
-        vars.put("project_id", 123);//项目id
-        vars.put("elevator_id", 1500);//项目id
-
-        executeEquations(vars);
-        executeTransportEquations(vars);
-        executeInstallEquations(vars);
+        return eleInputs;
     }
 
     public void executeInstallEquations(Map vars) {
@@ -200,9 +188,9 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
 
     public static void main(String[] args) {
         Map vars = new HashMap();
-        vars.put("input", 2000);
-        vars.put("系列", "GEB");
-        Object o = new EquationServiceImpl().simpleEquation("系列=='GEB' OR 系列=='GEC' ", vars);
+        vars.put("input", 5);
+        vars.put("系列", "GEE_DJ");
+        Object o = new EquationServiceImpl().simpleEquation("input<3 and input>1  ", vars);
         System.out.println(o.getClass());
     }
 
@@ -214,8 +202,10 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
      * @return
      */
     public List<Options> executeEquationsForOption(Map vars, List<Options> list) {
+        vars.put("开门宽度", getNoEquationOut(vars, "开门宽度"));
         List<Options> res = new ArrayList<>();
         for (Options options : list) {
+            vars.put("数量", 10000);//
             int i = getEqInteger(options.getId() + "", vars, "可选项价格");
             if (i != 0) {
                 res.add(options);
@@ -239,6 +229,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
 
     /**
      * 验证是否超标
+     *
      * @param vars
      * @return
      */
@@ -280,7 +271,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         vars.put("小计_设备可选项价格", optionPrice);//设备可选项价格
 
         //vars.put("小计_非标加价", optionPrice);
-        vars.put("小计_设备单价", simpleEquation("小计_设备基价*(1-下浮)+小计_设备可选项价格", vars)); //单价
+        vars.put("小计_设备单价", simpleEquation("小计_设备基价*(1-下浮)+小计_设备可选项价格+平摊费用", vars)); //单价
         if (vars.get("小计_安装费用") == null) {
             vars.put("小计_安装费用", 0);
         }
@@ -314,10 +305,13 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
                 new QueryWrapper<ProjectEleOptions>().eq("order_id", orderId));
         for (ProjectEleOptions projectEleOption : projectEleOptions) {
             vars.put("数量", projectEleOption.getNums());
+            Boolean isAverage = getEqBoolean(projectEleOption.getOptionId() + "", "是否参与平摊", vars);
             double price = getEqDouble(projectEleOption.getOptionId() + "", vars, "可选项价格");
             projectEleOption.setOptionPrice(price * projectEleOption.getNums());
             projectEleOptionsDao.updateById(projectEleOption);
-            res += projectEleOption.getOptionPrice();
+            if (!isAverage) {
+                res += projectEleOption.getOptionPrice();//参与平摊的在这里不再累加金额
+            }
         }
         return res;
     }
@@ -383,37 +377,49 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
 
     }
 
-    //TODO 五方对讲平摊
-    public void beforeExecuteEquations(List<Map> list) {
+    //计算需要平摊的配件金额
+    public double getCommonPrice(Map vars) {
+        Long orderId = Long.parseLong(vars.get("orderId").toString());
+        double res = 0;
+        List<ProjectEleOptions> projectEleOptions = projectEleOptionsDao.selectList(
+                new QueryWrapper<ProjectEleOptions>().eq("order_id", orderId));
+        for (ProjectEleOptions projectEleOption : projectEleOptions) {
+            Boolean isAverage = getEqBoolean(projectEleOption.getOptionId() + "", "是否参与平摊", vars);
+            if (!isAverage) {
+                continue;
+            }
+            vars.put("数量", projectEleOption.getNums());
+            double price = getEqDouble(projectEleOption.getOptionId() + "", vars, "可选项价格");
+            projectEleOption.setOptionPrice(price * projectEleOption.getNums());
+            projectEleOptionsDao.updateById(projectEleOption);
+            res += projectEleOption.getOptionPrice();
+        }
+        return res;
+    }
 
-        int numSum = 0;
-        int commonPrice = 0;
+    //将参与平摊的配件提前算出并平摊
+    public void beforeExecuteEquations(List<Map> list) {
+        double numSum = 0;
+        double commonPrice = 0;
         for (Map map : list) {
-            int num = (int) map.get("台量");
-            String type = (String) map.get("梯型");
-            if (type != "直梯") {
+            getElevatorInfo(map);
+            int num = Integer.parseInt(map.get("台量").toString());
+            Boolean isAverage = getEqBoolean(null, "此电梯是否参与平摊", map);
+            if (!isAverage) {
                 continue;
             }
             numSum += num;
-            for (Map option : (List<Map>) map.get("options")) {
-                boolean isCommon = (boolean) option.get("是否为通用组件");
-                if (isCommon) {
-                    int price = (int) option.get("out");
-                    commonPrice += price;
-                }
-            }
+            commonPrice += getCommonPrice(map);
         }
         if (commonPrice == 0) {
             return;
         }
-        int perPrice = commonPrice / numSum;
+        double perPrice = commonPrice / numSum;
         for (Map map : list) {
-            int num = (int) map.get("台量");
-            String type = (String) map.get("梯型");
-            if (type != "直梯") {
-                continue;
+            Boolean isAverage = getEqBoolean(null, "此电梯是否参与平摊", map);
+            if (isAverage) {
+                map.put("平摊费用", perPrice);
             }
-            map.put("平摊费用", perPrice * num);
         }
     }
 
