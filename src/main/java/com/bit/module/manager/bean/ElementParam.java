@@ -10,6 +10,10 @@ import lombok.Data;
 @Data
 public class ElementParam {
 	/**
+	 * id
+	 */
+	private Long elementId;
+	/**
 	 * 元素名称
 	 */
 	private String elementName;
