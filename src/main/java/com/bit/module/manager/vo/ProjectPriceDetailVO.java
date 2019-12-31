@@ -37,6 +37,14 @@ public class ProjectPriceDetailVO {
 	 * 报价日期
 	 */
 	private Date createTime;
+	/**
+	 * 项目地点
+	 */
+	private String addressName;
+	/**
+	 * 项目状态1:正常，0 ：流失
+	 */
+	private Integer projectStatus;
 
 	//----项目报价-----
 
