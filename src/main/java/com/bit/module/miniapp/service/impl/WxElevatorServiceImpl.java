@@ -380,6 +380,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
         Map<String, Object> p = new HashMap<>();
         //根据订单的报价版本 查询报价记录
         ProjectPrice projectPrice = projectPriceDao.selectById(projectPriceId);
+
         //订单id集合
         List<Long> ids = new ArrayList();
         List<Long> idsNew = new ArrayList();
@@ -410,10 +411,21 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
                 List<ProjectEleOptions> optionsList = projectEleOptionsDao.selectList(queryWrapper);//得到原来的关联的数据
                 for (ProjectEleOrder pro : list1) {
                 	long orderIdOld=pro.getId();
+
+
                     pro.setId(null);
                     //批量新增 返回id
 					pro.setVersionId(projectPrice.getId());
                     projectEleOrderDao.insert(pro);
+					//新增基础数据
+					Map cod=new HashMap();
+					cod.put("order_id",orderIdOld);
+					List<ProjectEleOrderBaseInfo> list=projectEleOrderBaseInfoDao.selectByMap(cod);
+					list.forEach(c->{
+						c.setOrderId(pro.getId());
+						c.setId(null);
+					});
+					projectEleOrderBaseInfoDao.batchAdd(list);
                     idsNew.add(pro.getId());
 					for (ProjectEleOptions options : optionsList) {
 						//todo 优化批量插入
