@@ -12,4 +12,5 @@ public class DirectMessage {
     private Long id;
     private String content;
     private String title;
+    private Integer count;
 }

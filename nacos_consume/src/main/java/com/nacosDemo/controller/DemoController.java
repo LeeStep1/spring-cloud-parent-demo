@@ -6,6 +6,7 @@ import com.nacosDemo.commonEnum.RedisKey;
 import com.nacosDemo.until.CacheUtil;
 import com.nacosDemo.until.DistributedLock;
 import com.nacosDemo.until.RedisKeyUntil;
+import io.prometheus.client.Collector;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessagePostProcessor;
@@ -19,8 +20,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.nacosDemo.commonEnum.RedisKey.DELAY_INFORMATION;
 
@@ -243,5 +247,20 @@ public class DemoController {
         System.out.println(date + "  发送至redis");
 
         return date;
+    }
+
+    @GetMapping("/filterDemo")
+    public void filterDemo(){
+        List<DirectMessage> directMessageList = new ArrayList<>();
+        for (int i = 0;i<=20;i++){
+            DirectMessage direct = new DirectMessage();
+            direct.setCount(i);
+            direct.setTitle("第" + i + "个");
+            directMessageList.add(direct);
+        }
+
+        List<DirectMessage> dms = directMessageList.stream().filter(dm->dm.getCount()>5).collect(Collectors.toList());
+
+        System.out.println(dms);
     }
 }
