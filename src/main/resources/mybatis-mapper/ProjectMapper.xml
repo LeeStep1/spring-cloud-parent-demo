@@ -41,6 +41,8 @@
 		t1.agent_name,
 		t1.create_user_name,
 		t1.create_time,
+        t1.address_name,
+        t1.project_status,
 		t2.total_price
 		FROM t_project t1
 		LEFT JOIN t_project_price t2
