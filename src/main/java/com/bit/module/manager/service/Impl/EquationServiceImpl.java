@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.bit.base.exception.BusinessException;
 import com.bit.module.equation.bean.BasePriceEquation;
 import com.bit.module.equation.bean.BasePriceEquationRel;
 import com.bit.module.equation.bean.Equation;
@@ -86,6 +87,9 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         List<ProjectEleOrderBaseInfo> baseInfos =
                 projectEleOrderBaseInfoDao.selectList(new QueryWrapper<ProjectEleOrderBaseInfo>()
                         .eq("order_id", vars.get("orderId").toString()));
+        if (baseInfos.size()==0) {
+            throw new BusinessException("基础信息不能为空");
+        }
         vars.put("下浮", projectEleOrder.getRate());
         vars.put("台量", projectEleOrder.getNum());
 
