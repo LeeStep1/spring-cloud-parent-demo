@@ -42,5 +42,12 @@
         </where>
     </select>
 
-
+    <select id="getProjectPriceByProjectId" parameterType="long" resultType="com.bit.module.manager.bean.ProjectPrice">
+        SELECT * FROM t_project_price
+        <where>
+            <if test="projectId!=null">
+                AND project_id=#{projectId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </select>
 </mapper>

@@ -17,6 +17,10 @@ import java.util.List;
 public class ProjectOrderDetailInfoVO {
 
 	//-----项目细节------
+	/**
+	 * 项目id
+	 */
+	private Long projectId;
 
 	/**
 	 * 项目名称
@@ -52,6 +56,10 @@ public class ProjectOrderDetailInfoVO {
 	 */
 	private String unitPrice;
 	/**
+	 * 电梯类型id
+	 */
+	private Integer elevatorTypeId;
+	/**
 	 * 电梯类型名称
 	 */
 	private String elevatorTypeName;
@@ -59,7 +67,14 @@ public class ProjectOrderDetailInfoVO {
 	 * 项目地点
 	 */
 	private String addressName;
-
+	/**
+	 * 下浮率
+	 */
+	private Double rate;
+	/**
+	 * 报价表里的version
+	 */
+	private Integer priceVersion;
 	//----电梯细节----
 	/**
 	 * 电梯细节 集合

@@ -31,7 +31,7 @@ public class ReportInfoVO {
     private List<ProjectEleOrderBaseInfo> baseinfo;
 
     /**电梯选择项*/
-    private List<ProjectEleOptions>projectEleOptions;
+    private List<ProjectEleOptions> projectEleOptions;
 
     /**下浮率**/
     private Double rate;

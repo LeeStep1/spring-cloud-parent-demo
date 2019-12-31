@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @Description:
@@ -139,10 +138,9 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
         }
         order.setVersionId(a.getId());
         projectEleOrderDao.insert(order);
-        //todo 需要优化为批量新增方法,填写整体的基础信息
+        // 需要优化为批量新增方法,填写整体的基础信息
         vo.getBaseinfo().stream().forEach(c -> {
             c.setOrderId(order.getId());
-//            projectEleOrderBaseInfoDao.insert(c);
         });
 		List<ProjectEleOrderBaseInfo> baseinfo = vo.getBaseinfo();
         projectEleOrderBaseInfoDao.batchAdd(baseinfo);
@@ -150,14 +148,13 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
         vo.getProjectEleOptions().stream().forEach(c -> {
             c.setOrderId(order.getId());
             c.setProjectInfoId(vo.getProjectId());
-//            projectEleOptionsDao.insert(c);
         });
 
 		List<ProjectEleOptions> projectEleOptions = vo.getProjectEleOptions();
 
 		projectEleOptionsDao.batchAdd(projectEleOptions);
 
-        //todo 需要进行报价算法
+        // 需要进行报价算法
         Map par = new HashMap();
         par.put("下浮", vo.getRate());
         par.put("台量",order.getNum());
@@ -190,6 +187,95 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
         }
         return rrs;
     }
+
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public Map wxUpdateReportInfo(ReportInfoVO vo) {
+
+		/**新增报价**/
+		Map<String, Object> baseParams = new HashMap<>(vo.getBaseinfo().size());
+		ProjectEleOrder order = new ProjectEleOrder();
+		order.setElevatorTypeId(vo.getElevatorTypeId());
+		ElevatorType elevatorType = elevatorTypeDao.selectById(vo.getElevatorTypeId());
+		order.setElevatorTypeName(elevatorType.getTypeName());
+		try {
+			baseParams = BeanReflectUtil.listmap(vo.getBaseinfo(), "paramKey", "infoValue");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		order.setRate(vo.getRate());
+		order.setProjectId(vo.getProjectId());
+		order.setNum(String.valueOf(baseParams.get("台量")));
+		Map<String, Object> cod = new HashMap<>();
+		cod.put("project_id", vo.getProjectId());
+		cod.put("version", -1);
+		List<ProjectPrice> list1 = projectPriceDao.selectByMap(cod);
+		ProjectPrice a = new ProjectPrice();
+		if (list1.size() == 0) {
+			a.setCreateTime(new Date());
+			a.setProjectId(vo.getProjectId());
+			a.setVersion(-1);
+			a.setCreateUserId(getCurrentUserInfo().getId());
+			a.setStage(StageEnum.STAGE_ONE.getCode());
+			a.setStageName(StageEnum.STAGE_ONE.getInfo());
+			a.setStandard(StandardEnum.STANDARD_DEFAULT.getCode());
+			a.setStandardName(StandardEnum.STANDARD_DEFAULT.getInfo());
+			projectPriceDao.insert(a);
+		} else {
+			a = list1.get(0);
+		}
+		order.setVersionId(a.getId());
+		projectEleOrderDao.insert(order);
+		// 需要优化为批量新增方法,填写整体的基础信息
+		vo.getBaseinfo().stream().forEach(c -> {
+			c.setOrderId(order.getId());
+		});
+		List<ProjectEleOrderBaseInfo> baseinfo = vo.getBaseinfo();
+		projectEleOrderBaseInfoDao.batchAdd(baseinfo);
+
+		vo.getProjectEleOptions().stream().forEach(c -> {
+			c.setOrderId(order.getId());
+			c.setProjectInfoId(vo.getProjectId());
+		});
+
+		List<ProjectEleOptions> projectEleOptions = vo.getProjectEleOptions();
+
+		projectEleOptionsDao.batchAdd(projectEleOptions);
+
+		// 需要进行报价算法
+		Map par = new HashMap();
+		par.put("下浮", vo.getRate());
+		par.put("台量",order.getNum());
+
+
+		par.put("orderId",order.getId());
+		equationServiceImpl.executeCount(par);
+		//Map rs = equationServiceImpl.executeEquations(par);
+		if (par != null || par.containsKey("是否为非标")) {
+			if (Boolean.TRUE.equals(par.get("是否为非标"))) {
+				a.setStandard(StandardEnum.STANDARD_ZERO.getCode());
+				a.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
+			} else {
+				a.setStandard(StandardEnum.STANDARD_ONE.getCode());
+				a.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
+			}
+			projectPriceDao.updateById(a);
+		}
+
+		Map rrs = new HashMap();
+		rrs.put("nums", order.getNum());
+		par.clear();
+		par.put("project_id", vo.getProjectId());
+		par.put("version", -1);
+		rrs.put("elePriceId",a.getId());
+		rrs.put("orderId",order.getId());
+		ProjectEleOrder a1=projectEleOrderDao.selectById(order.getId());
+		if(a1!=null){
+			rrs.put("orderPrice",a1.getTotalPrice());
+		}
+		return rrs;
+	}
 
 
     /**
@@ -360,11 +446,22 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
     @Override
     @Transactional
     public BaseVo updateOrder(ReportInfoVO vo) {
-        //先删除订单记录
-        this.delOrderByOrderId(vo.getOrderId());
-        Map map = this.wxAddReportInfo(vo);
-        BaseVo baseVo = new BaseVo();
-        baseVo.setData(map);
+		BaseVo baseVo = new BaseVo();
+//		Integer version = projectEleOrderDao.getPriceVersionByOrderId(vo.getOrderId());
+		//先删除订单记录
+		this.delOrderByOrderId(vo.getOrderId());
+		Map map = this.wxAddReportInfo(vo);
+		baseVo.setData(map);
+//		if (version.equals(-1)){
+//			//草稿状态
+//			Map map = this.wxAddReportInfo(vo);
+//			baseVo.setData(map);
+//		}else {
+//			//正式状态
+//			Map map = this.wxUpdateReportInfo(vo);
+//			baseVo.setData(map);
+//		}
+
         return baseVo;
     }
 

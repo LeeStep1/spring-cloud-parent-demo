@@ -191,5 +191,17 @@
     </insert>
 
 
+    <select id="getPriceVersionByOrderId" parameterType="long" resultType="integer">
+        SELECT t2.version FROM t_project_ele_order t1
+        INNER JOIN t_project_price t2
+        on t1.version_id = t2.id
+        <where>
+            <if test="orderId!=null">
+                t1.id = #{orderId,jdbcType=BIGINT}
+            </if>
+        </where>
+
+    </select>
+
 
 </mapper>

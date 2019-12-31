@@ -40,4 +40,12 @@ public interface ProjectPriceDao extends BaseMapper<ProjectPrice> {
 	 */
     Integer  getMaxVersion(@Param(value = "projectId") Long projectId);
 
+	/**
+	 * 根据项目id查询项目报价
+	 * @param projectId
+	 * @return
+	 */
+	ProjectPrice getProjectPriceByProjectId(@Param(value = "projectId") Long projectId);
+
+
 }

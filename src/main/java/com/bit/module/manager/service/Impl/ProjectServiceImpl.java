@@ -186,6 +186,11 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 		if (project!=null){
 			projectOrderDetailInfoVO.setAddressName(project.getAddressName());
 		}
+
+		ProjectPrice projectPriceByProjectId = projectPriceDao.getProjectPriceByProjectId(projectId);
+		if (projectPriceByProjectId!=null){
+			projectOrderDetailInfoVO.setPriceVersion(projectPriceByProjectId.getVersion());
+		}
 		//组装电梯详情
 
 		//设置规格参数 和 井道参数

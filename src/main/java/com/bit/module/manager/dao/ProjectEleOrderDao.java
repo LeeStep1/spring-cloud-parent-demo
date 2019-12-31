@@ -25,4 +25,11 @@ public interface ProjectEleOrderDao extends BaseMapper<ProjectEleOrder> {
 	 * @return
 	 */
 	List<ProjectEleOrder> findByParam(ProjectEleOrder projectEleOrder);
+
+	/**
+	 * 根据订单id查询报价版本
+	 * @param orderId
+	 * @return
+	 */
+	Integer getPriceVersionByOrderId(@Param(value = "orderId")Long orderId);
 }

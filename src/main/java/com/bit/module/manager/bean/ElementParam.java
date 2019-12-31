@@ -30,5 +30,9 @@ public class ElementParam {
 	 * 参数的单位
 	 */
 	private String paramsUnit;
+	/**
+	 * 参数的变量
+	 */
+	private String paramsKey;
 
 }

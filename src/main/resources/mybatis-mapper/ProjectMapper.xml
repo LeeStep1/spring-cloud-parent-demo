@@ -58,6 +58,7 @@
     <!-- 查询订单详情 -->
     <select id="getOrderDetailById" resultType="com.bit.module.manager.vo.ProjectOrderDetailInfoVO" parameterType="long">
         SELECT
+        t1.id as projectId,
         t1.project_name,
         t1.customer_name,
         t1.agent_name,
@@ -66,7 +67,9 @@
         t2.num,
         t2.unit_price,
         t2.total_price,
-        t2.elevator_type_name
+        t2.elevator_type_id,
+        t2.elevator_type_name,
+        t2.rate
         FROM t_project t1
         INNER JOIN t_project_ele_order t2
         on t1.id = t2.project_id
@@ -93,7 +96,7 @@
     </select>
     <!--根据订单id查询电梯规格参数 和 井道参数-->
     <select id="getElementParamByOrderId" parameterType="long" resultType="com.bit.module.manager.bean.ElementParam">
-        SELECT DISTINCT t2.element_name,t2.category_type,t3.info_value,t4.params_unit,t3.element_id FROM t_project_ele_order t1
+        SELECT DISTINCT t2.element_name,t2.category_type,t3.info_value,t4.params_unit,t3.element_id,t2.params_key FROM t_project_ele_order t1
         INNER JOIN t_elevator_base_element t2
         on t1.elevator_type_id = t2.elevator_type_id
         <if test="orderId!=null">
@@ -111,7 +114,7 @@
     </select>
     <!--根据项目id查询电梯功能定制选项-->
     <select id="getProjectOptions" parameterType="long" resultType="com.bit.module.miniapp.bean.Options">
-        SELECT DISTINCT t2.* FROM `t_project_ele_options` t1
+        SELECT  t2.* FROM `t_project_ele_options` t1
         INNER JOIN t_options t2
         on t1.option_id = t2.id
         <where>
