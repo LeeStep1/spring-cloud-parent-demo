@@ -5,6 +5,7 @@ import com.bit.base.vo.BaseVo;
 import com.bit.module.manager.bean.ElevatorBaseElement;
 import com.bit.module.manager.bean.Project;
 import com.bit.module.manager.bean.ProjectEleOrderBaseInfo;
+import com.bit.module.manager.bean.ProjectPrice;
 import com.bit.module.manager.service.*;
 import com.bit.module.manager.vo.ElevatorTypePageVO;
 import com.bit.module.manager.vo.ProjectVo;
@@ -229,13 +230,12 @@ public class ElevatorController {
 	/**
 	 * 草稿转正式版本  生成报价单
 	 * @param projectId  项目ID
-	 * @param proPriceToVersion  实施和运费的标识  1:实施,2 ：运费
 	 * @return 成功与失败
 	 */
 	@PostMapping("/project/version/{projectId}")
-	public BaseVo proPriceToVersion(@PathVariable(value = "projectId")Long projectId,@RequestParam(value = "proPriceToVersion") List<Integer> proPriceToVersion){
+	public BaseVo proPriceToVersion(@PathVariable(value = "projectId")Long projectId){
 
-		return wxElevatorService.proPriceToVersion(projectId,proPriceToVersion);
+		return wxElevatorService.proPriceToVersion(projectId);
 
 	}
 
@@ -271,4 +271,13 @@ public class ElevatorController {
 		return wxElevatorService.updateOrder(vo);
 	}
 
+	/**
+	 * 更新报价表的运输 和 安装 标识
+	 * @param projectPrice
+	 * @return
+	 */
+	@PostMapping("/updateProjectPriceFlag")
+	public BaseVo updateProjectPriceFlag(@RequestBody ProjectPrice projectPrice){
+		return wxElevatorService.updateProjectPriceFlag(projectPrice);
+	}
 }

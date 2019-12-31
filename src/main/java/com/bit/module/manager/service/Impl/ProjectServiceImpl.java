@@ -187,7 +187,7 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 			projectOrderDetailInfoVO.setAddressName(project.getAddressName());
 		}
 
-		ProjectPrice projectPriceByProjectId = projectPriceDao.getProjectPriceByProjectId(projectId);
+		ProjectPrice projectPriceByProjectId = projectPriceDao.getProjectPriceByProjectIdAndOrderId(projectId,orderId);
 		if (projectPriceByProjectId!=null){
 			projectOrderDetailInfoVO.setPriceVersion(projectPriceByProjectId.getVersion());
 		}

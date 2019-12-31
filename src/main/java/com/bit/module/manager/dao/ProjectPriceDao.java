@@ -45,7 +45,13 @@ public interface ProjectPriceDao extends BaseMapper<ProjectPrice> {
 	 * @param projectId
 	 * @return
 	 */
-	ProjectPrice getProjectPriceByProjectId(@Param(value = "projectId") Long projectId);
+	ProjectPrice getProjectPriceByProjectIdAndOrderId(@Param(value = "projectId") Long projectId,@Param(value = "orderId") Long orderId);
 
-
+	/**
+	 * 根据项目id和version查询记录
+	 * @param projectId
+	 * @param version
+	 * @return
+	 */
+	ProjectPrice getProjectPriceByProjectIdWithVersion(@Param(value = "projectId") Long projectId,@Param(value = "version")Integer version);
 }

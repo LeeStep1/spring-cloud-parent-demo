@@ -42,9 +42,26 @@
         </where>
     </select>
 
-    <select id="getProjectPriceByProjectId" parameterType="long" resultType="com.bit.module.manager.bean.ProjectPrice">
+    <select id="getProjectPriceByProjectIdAndOrderId" parameterType="long" resultType="com.bit.module.manager.bean.ProjectPrice">
+        SELECT t1.* FROM t_project_price t1
+        INNER JOIN t_project_ele_order t2
+        on t1.id = t2.version_id
+        <where>
+            <if test="projectId!=null">
+                AND t1.project_id=#{projectId,jdbcType=BIGINT}
+            </if>
+            <if test="orderId!=null">
+                AND t2.id=#{orderId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </select>
+
+    <select id="getProjectPriceByProjectIdWithVersion" parameterType="long" resultType="com.bit.module.manager.bean.ProjectPrice">
         SELECT * FROM t_project_price
         <where>
+            <if test="version!=null">
+                AND version=#{version,jdbcType=INTEGER}
+            </if>
             <if test="projectId!=null">
                 AND project_id=#{projectId,jdbcType=BIGINT}
             </if>

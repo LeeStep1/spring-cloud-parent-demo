@@ -51,5 +51,12 @@ public class ProjectPrice {
      * 常规，实施
      */
     private String stageName;
-
+    /**
+     * 是否选择安装费 0-否 1-是
+     */
+    private Integer installFlag;
+    /**
+     * 是否选择运输费 0-否 1-是
+     */
+    private Integer transportFlag;
 }

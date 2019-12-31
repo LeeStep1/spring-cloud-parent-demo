@@ -139,7 +139,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
                 .eq("version", map.get("version")));
         List<ProjectEleOrder> projectEleOrder = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
                 .eq("project_id", projectPrice.getProjectId())
-                .eq("version_id", projectPrice.getVersion()));
+                .eq("version_id", projectPrice.getId()));
 
         //事前计算平摊费用
         List<Map> eleInputs = new ArrayList(projectEleOrder.size());
@@ -159,7 +159,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         BigDecimal bd = new BigDecimal("0");
         List<ProjectEleOrder> projectEleOrderNew = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
                 .eq("project_id", projectPrice.getProjectId())
-                .eq("version_id", projectPrice.getVersion()));
+                .eq("version_id", projectPrice.getId()));
         for (ProjectEleOrder eleOrder : projectEleOrderNew) {
             bd = NumberUtil.add(bd.toString(), eleOrder.getTotalPrice());
         }

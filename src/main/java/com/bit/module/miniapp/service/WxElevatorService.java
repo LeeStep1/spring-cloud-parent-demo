@@ -3,6 +3,7 @@ package com.bit.module.miniapp.service;
 import com.bit.base.vo.BaseVo;
 import com.bit.module.manager.bean.Project;
 import com.bit.module.manager.bean.ProjectEleOrderBaseInfo;
+import com.bit.module.manager.bean.ProjectPrice;
 import com.bit.module.miniapp.bean.Options;
 import com.bit.module.miniapp.vo.ReportInfoVO;
 
@@ -83,13 +84,12 @@ public interface WxElevatorService {
 
 	/**
 	 * @param projectId
-	 * @param proPriceToVersion (1,实施，2运费)
 	 * @return : void
 	 * @description: 转正式版本
 	 * @author liyujun
 	 * @date 2019-12-19
 	 */
-	BaseVo proPriceToVersion(Long projectId, List<Integer> proPriceToVersion);
+	BaseVo proPriceToVersion(Long projectId);
 
 	/**
 	 * @param projectId
@@ -115,5 +115,12 @@ public interface WxElevatorService {
 	 * @return
 	 */
 	BaseVo updateOrder(ReportInfoVO vo);
+
+	/**
+	 * 更新报价表的运输 和 安装 标识
+	 * @param projectPrice
+	 * @return
+	 */
+	BaseVo updateProjectPriceFlag(ProjectPrice projectPrice);
 
 }

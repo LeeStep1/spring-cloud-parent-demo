@@ -138,5 +138,9 @@ public class Const {
      * 微信消息模板 color
      */
     public static final String WX_TEMPLATE_COLOR = "color";
-
+    /**
+     * 标识 0 -否 1-是
+     */
+    public static final Integer FLAG_NO = 0;
+    public static final Integer FLAG_YES = 1;
 }

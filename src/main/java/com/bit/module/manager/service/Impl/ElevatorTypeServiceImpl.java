@@ -107,8 +107,10 @@ public class ElevatorTypeServiceImpl extends BaseService implements ElevatorType
 		ElevatorType elevatorTypeById = elevatorTypeDao.getElevatorTypeById(id);
 		ElevatorTypeVO elevatorTypeVO = new ElevatorTypeVO();
 		//设置图片地址
-		String pic = contextPath + "/images/" + elevatorTypeById.getPicture();
-		elevatorTypeById.setPicture(pic);
+		if (StringUtil.isNotEmpty(elevatorTypeById.getPicture())){
+			String pic = contextPath + "/images/" + elevatorTypeById.getPicture();
+			elevatorTypeById.setPicture(pic);
+		}
 		BeanUtils.copyProperties(elevatorTypeById, elevatorTypeVO);
 		elevatorTypeVO.setTypeEnumName(ElevatorTypeEnum.getValueByCode(elevatorTypeVO.getType()));
 
@@ -130,8 +132,10 @@ public class ElevatorTypeServiceImpl extends BaseService implements ElevatorType
 			for (ElevatorTypeVO vo : elevatorTypePage.getRecords()) {
 				vo.setTypeEnumName(ElevatorTypeEnum.getValueByCode(vo.getType()));
 				//设置图片地址
-				String pic = contextPath + "/images/" + vo.getPicture();
-				vo.setPicture(pic);
+				if (StringUtil.isNotEmpty(vo.getPicture())){
+					String pic = contextPath + "/images/" + vo.getPicture();
+					vo.setPicture(pic);
+				}
 			}
 		}
 		BaseVo baseVo = new BaseVo();

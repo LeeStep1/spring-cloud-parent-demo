@@ -3,7 +3,7 @@ package com.bit.module.miniapp.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.bit.base.service.BaseService;
 import com.bit.base.vo.BaseVo;
-import com.bit.common.businessEnum.OrderPriceAddTypeEnum;
+import com.bit.common.consts.Const;
 import com.bit.common.informationEnum.StageEnum;
 import com.bit.common.informationEnum.StandardEnum;
 import com.bit.module.manager.bean.*;
@@ -308,7 +308,6 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
     /**
      * @param projectId
-     * @param proPriceToVersion  (1,实施，2运费)
      * @return : void
      * @description: 转正式版本
      * @author liyujun
@@ -316,22 +315,32 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public BaseVo proPriceToVersion(Long projectId,List<Integer> proPriceToVersion) {
+    public BaseVo proPriceToVersion(Long projectId) {
         Integer version = projectPriceDao.getMaxVersion(projectId);
         //算价钱
         Map <String,Object> cod=new HashMap<>();
         cod.put("projectId",projectId);
         cod.put("version","-1");
 
-        if(proPriceToVersion.size()>0){
-            proPriceToVersion.forEach(c->{
-                if(c.equals(OrderPriceAddTypeEnum.SHISHI.getCode())){
-                    cod.put("包括安装","true");
-                }else{
-                    cod.put("包括运费","true");
-                }
-            });
-        }
+		ProjectPrice projectPriceByProjectId = projectPriceDao.getProjectPriceByProjectIdWithVersion(projectId,-1);
+		if (projectPriceByProjectId!=null){
+			if (projectPriceByProjectId.getInstallFlag().equals(Const.FLAG_YES)){
+				cod.put("包括安装","true");
+			}
+			if (projectPriceByProjectId.getTransportFlag().equals(Const.FLAG_YES)){
+				cod.put("包括运费","true");
+			}
+		}
+
+//		if(proPriceToVersion.size()>0){
+//            proPriceToVersion.forEach(c->{
+//                if(c.equals(OrderPriceAddTypeEnum.SHISHI.getCode())){
+//                    cod.put("包括安装","true");
+//                }else{
+//                    cod.put("包括运费","true");
+//                }
+//            });
+//        }
         equationServiceImpl.executeCountProjectPrice (cod);
         if (version != null && version > -1) {
             version = version + 1;
@@ -339,15 +348,21 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
         } else if (version.equals(-1) || version == null) {
             version = 1;
         }
+        //根据projectid和version查询记录 只有一条
         ProjectPrice o = new ProjectPrice();
         o.setVersion(-1);
         o.setProjectId(projectId);
         QueryWrapper<ProjectPrice> projectPriceQueryWrapper = new QueryWrapper<>();
-        ProjectPrice entity = new ProjectPrice();
+		ProjectPrice projectPrice = projectPriceDao.getProjectPriceByProjectIdWithVersion(projectId,-1);
+		//更新记录
+		ProjectPrice entity = new ProjectPrice();
         entity.setVersion(version);
         projectPriceQueryWrapper.setEntity(o);
         projectPriceDao.update(entity, projectPriceQueryWrapper);
-        return new BaseVo();
+
+        BaseVo baseVo = new BaseVo();
+        baseVo.setData(projectPrice.getId());
+        return baseVo;
     }
 
     /**
@@ -386,7 +401,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
                 projectPriceDao.insert(projectPrice);
                 //todo 优化查询算法
                 for (ProjectEleOrder pro : list1) {//遍历订单数据，查询关联的option
-
+					//准备order 数据
                     ids.add(pro.getId());
                 }
                 //根据订单id集合批量查询项目的可选项
@@ -394,20 +409,32 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
                 queryWrapper.in("order_id", ids);
                 List<ProjectEleOptions> optionsList = projectEleOptionsDao.selectList(queryWrapper);//得到原来的关联的数据
                 for (ProjectEleOrder pro : list1) {
+                	long orderIdOld=pro.getId();
                     pro.setId(null);
                     //批量新增 返回id
+					pro.setVersionId(projectPrice.getId());
                     projectEleOrderDao.insert(pro);
                     idsNew.add(pro.getId());
-                    for (Long orderId : ids) {
+					for (ProjectEleOptions options : optionsList) {
+						//todo 优化批量插入
+						if (options.getOrderId().equals(orderIdOld)) {
+							options.setOrderId(pro.getId());
+							options.setId(null);
+							projectEleOptionsDao.insert(options);
+						}
+
+					}
+                   /* for (Long orderId : ids) {
                         for (ProjectEleOptions options : optionsList) {
                             //todo 优化批量插入
                             if (options.getOrderId().equals(orderId)) {
                                 options.setOrderId(pro.getId());
+								options.setId(null);
                                 projectEleOptionsDao.insert(options);
                             }
 
                         }
-                    }
+                    }*/
                 }
             }
 
@@ -465,8 +492,19 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
         return baseVo;
     }
 
+	/**
+	 * 更新报价表的运输 和 安装 标识
+	 * @param projectPrice
+	 * @return
+	 */
+	@Override
+	public BaseVo updateProjectPriceFlag(ProjectPrice projectPrice) {
+		projectPriceDao.updateById(projectPrice);
+		return successVo();
+	}
 
-    /**
+
+	/**
      * @param projectId :
      * @return : void
      * @description: 删除旧版本
@@ -492,12 +530,13 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
                 queryWrapper.in("order_id", ids);
                 projectEleOptionsDao.delete(queryWrapper);//删除所选项；
                 QueryWrapper<ProjectEleOrder> queryWrapper1 = new QueryWrapper<>();
-                queryWrapper.eq("version_id", a.getId());
+				queryWrapper1.eq("version_id", a.getId());
                 projectEleOrderDao.delete(queryWrapper1);//删除电梯订单；
             }
         }
         QueryWrapper<ProjectPrice> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("version", -1);
+		queryWrapper.eq("project_id",projectId);
         projectPriceDao.delete(queryWrapper);//删除草稿状态
 
     }
