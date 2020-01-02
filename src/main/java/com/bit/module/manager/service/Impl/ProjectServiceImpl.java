@@ -209,6 +209,8 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 		ProjectPrice projectPriceByProjectId = projectPriceDao.getProjectPriceByProjectIdAndOrderId(projectId,orderId);
 		if (projectPriceByProjectId!=null){
 			projectOrderDetailInfoVO.setVersion(projectPriceByProjectId.getVersion());
+			projectOrderDetailInfoVO.setInstallFlag(projectPriceByProjectId.getInstallFlag());
+			projectOrderDetailInfoVO.setTransportFlag(projectPriceByProjectId.getTransportFlag());
 		}
 		//组装电梯详情
 
