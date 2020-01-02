@@ -91,8 +91,8 @@
         SELECT elevator_type_name,unit_price,elevator_type_id,id,rate
         FROM t_project_ele_order
         <where>
-            <if test="projectId!=null">
-                and project_id = #{projectId,jdbcType=BIGINT}
+            <if test="projectPriceId!=null">
+                and version_id = #{projectPriceId,jdbcType=BIGINT}
             </if>
         </where>
     </select>

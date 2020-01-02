@@ -160,7 +160,7 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 
 		List<ProjectPriceDetailInfo> projectPriceDetailInfos = new ArrayList<>();
 		//组装电梯详情
-		List<ProjectEleOrder> orderByProjectId = projectDao.getOrderByProjectId(projectId);
+		List<ProjectEleOrder> orderByProjectId = projectDao.getOrderByProjectId(projectPriceId);
 		if (CollectionUtils.isNotEmpty(orderByProjectId)){
 			for (ProjectEleOrder projectEleOrder : orderByProjectId) {
 				ProjectPriceDetailInfo projectPriceDetailInfo = new ProjectPriceDetailInfo();

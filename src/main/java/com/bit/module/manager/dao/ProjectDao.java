@@ -29,10 +29,10 @@ public interface ProjectDao extends BaseMapper<Project> {
 
 	/**
 	 * 根据项目id查询项目下的电梯订单
-	 * @param projectId
+	 * @param projectPriceId
 	 * @return
 	 */
-	List<ProjectEleOrder> getOrderByProjectId(@Param(value = "projectId")Long projectId);
+	List<ProjectEleOrder> getOrderByProjectId(@Param(value = "projectPriceId")Long projectPriceId);
 
 	/**
 	 * 根据订单id查询电梯规格参数 和 井道参数
