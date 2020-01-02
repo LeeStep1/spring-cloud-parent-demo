@@ -1,5 +1,6 @@
 package com.bit.module.miniapp.bean;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
@@ -63,4 +64,9 @@ public class Options implements Serializable {
 	 * 数据属性1:有且唯一，2：可多选
 	 */
 	private Integer rule;
+	/**
+	 * 选项数量
+	 */
+	@TableField(exist = false)
+	private Integer nums;
 }

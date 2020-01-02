@@ -116,7 +116,7 @@
     </select>
     <!--根据项目id查询电梯功能定制选项-->
     <select id="getProjectOptions" parameterType="long" resultType="com.bit.module.miniapp.bean.Options">
-        SELECT  t2.* FROM `t_project_ele_options` t1
+        SELECT  t2.*,t1.nums FROM `t_project_ele_options` t1
         INNER JOIN t_options t2
         on t1.option_id = t2.id
         <where>
