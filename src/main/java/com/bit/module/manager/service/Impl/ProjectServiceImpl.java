@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Description:
@@ -74,13 +75,43 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 			project.setProjectPriceList(latestProjectPrice);
         }
 
+        //第二种方案 批量查询后 找出version最大的
+
+//		//项目id集合
+//		List<Long> projectIdlist= new ArrayList<>();
+//
+//		for(Project project:iPage.getRecords()){
+//			projectIdlist.add(project.getId());
+//		}
+//		if (CollectionUtils.isNotEmpty(projectIdlist)){
+//			for (Long aLong : projectIdlist) {
+//				List<ProjectPrice> latestProjectPrice = projectPriceDao.getLatestProjectPrice(aLong);
+//				for (Project project:iPage.getRecords()) {
+//					List<ProjectPrice> rsPrice=new ArrayList<>();
+//					for(ProjectPrice p:latestProjectPrice){
+//						if (p.getProjectId().equals(project.getId())){
+//							rsPrice.add(p);
+//						}
+//					}
+//					//找出来最大值
+//					List<Integer> versions = rsPrice.stream().map(p->p.getVersion()).collect(Collectors.toList());
+//					if (CollectionUtils.isNotEmpty(versions)){
+//						Integer min = Collections.min(versions);
+//						System.out.println(min);
+//						project.setProjectPriceList(rsPrice);
+//					}
+//
+//				}
+//			}
+//		}
+
 		BaseVo baseVo = new BaseVo();
 		baseVo.setData(iPage);
 		return baseVo;
 
 	}
 
-    /**
+	/**
      * @description:  项目二级
      * @author liyujun
      * @date 2019-12-25
