@@ -74,7 +74,15 @@ public class ProjectOrderDetailInfoVO {
 	/**
 	 * 报价表里的version
 	 */
-	private Integer priceVersion;
+	private Integer version;
+	/**
+	 * 是否选择安装费 0-否 1-是
+	 */
+	private Integer installFlag;
+	/**
+	 * 是否选择运输费 0-否 1-是
+	 */
+	private Integer transportFlag;
 	//----电梯细节----
 	/**
 	 * 电梯细节 集合

@@ -19,7 +19,8 @@ public interface UserRoleDao extends BaseMapper<UserRelRole>{
 	void updateTokenByUserId(UserRelRole userRelRole);
 
 	/**
-	 * 根据用户id查询记录
+	 * 根据用户id和角色id查询记录
+	 * @param roleId
 	 * @param userId
 	 * @return
 	 */
