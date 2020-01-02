@@ -53,14 +53,6 @@ public interface WxElevatorService {
 	 */
 	Map wxAddReportInfo(ReportInfoVO vo);
 
-	/**
-	 * @param vo :
-	 * @return : void
-	 * @description: 微信端更新报价
-	 * @author liyujun
-	 * @date 2019-12-19
-	 */
-	Map wxUpdateReportInfo(ReportInfoVO vo);
 
 
 	/**
