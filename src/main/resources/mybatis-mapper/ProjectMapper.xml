@@ -176,7 +176,7 @@
             t_project_ele_order t
             <where>
                 <if test="projectPriceId!=null">
-                    and   t.version_id=#{ProjectPriceId,jdbcType=BIGINT}
+                    and   t.version_id=#{projectPriceId,jdbcType=BIGINT}
                 </if>
             </where>
             )tt
