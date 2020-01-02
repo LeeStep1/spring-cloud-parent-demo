@@ -154,6 +154,17 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
     public BaseVo getProjectDetail(Long projectId, Long projectPriceId) {
     	//查询项目详情和报价
 		ProjectPriceDetailVO projectPriceDetailVO = projectDao.getProjectDetailById(projectId, projectPriceId);
+		Map totalMap=projectDao.getPriceInfo(projectPriceId);
+		if(totalMap!=null){
+
+
+			if(totalMap.containsKey("installPrice")){
+				projectPriceDetailVO.setInstallPrice(String.valueOf(totalMap.get("installPrice")));
+			}
+			if(totalMap.containsKey("transportPrice")){
+				projectPriceDetailVO.setTransportPrice(String.valueOf(totalMap.get("transportPrice")));
+			}
+		}
 		if (projectPriceDetailVO==null){
 			throw new BusinessException("无记录");
 		}
@@ -211,6 +222,16 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 			projectOrderDetailInfoVO.setVersion(projectPriceByProjectId.getVersion());
 			projectOrderDetailInfoVO.setInstallFlag(projectPriceByProjectId.getInstallFlag());
 			projectOrderDetailInfoVO.setTransportFlag(projectPriceByProjectId.getTransportFlag());
+			Map totalMap=projectDao.getPriceInfo(projectPriceByProjectId.getId());
+			if(totalMap!=null){
+
+				if(totalMap.containsKey("installPrice")){
+					projectOrderDetailInfoVO.setInstallPrice(String.valueOf(totalMap.get("installPrice")));
+				}
+				if(totalMap.containsKey("transportPrice")){
+					projectOrderDetailInfoVO.setTransportPrice(String.valueOf(totalMap.get("transportPrice")));
+				}
+			}
 		}
 		//组装电梯详情
 

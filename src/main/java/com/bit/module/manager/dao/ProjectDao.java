@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description:
@@ -62,4 +63,13 @@ public interface ProjectDao extends BaseMapper<Project> {
 	 * @return
 	 */
 	ProjectOrderDetailInfoVO getOrderDetailById(@Param(value = "projectId")Long projectId, @Param(value = "orderId")Long orderId);
+
+	/**
+	 * 根据项目报价版本来
+	 * @param projectPriceId  项目报价的ID
+	 * @param
+	 * @return
+	 */
+
+	Map getPriceInfo(@Param(value = "projectPriceId")Long  projectPriceId);
 }

@@ -58,6 +58,26 @@ public class ProjectPriceDetailVO {
 	 */
 	private Integer version;
 
+
+	/**
+	 * 安装标识
+	 */
+	private Integer installFlag;
+
+	/**
+	 * 运输标识
+	 */
+	private Integer transportFlag;
+
+	/**
+	 * 安装费用
+	 */
+	private String installPrice;
+
+	/**
+	 * 运输费用
+	 */
+	private String transportPrice;
 	//----电梯细节----
 	/**
 	 * 电梯细节 集合

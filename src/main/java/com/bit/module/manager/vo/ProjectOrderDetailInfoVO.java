@@ -92,4 +92,15 @@ public class ProjectOrderDetailInfoVO {
 	 * 功能定制
 	 */
 	private List<Options> projectOptions;
+
+
+	/**
+	 * 安装费用总价
+	 */
+	private String installPrice;
+
+	/**
+	 * 运输费用总价
+	 */
+	private String transportPrice;
 }
