@@ -122,7 +122,15 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
 			String userJson = JSON.toJSONString(userInfo);
             cacheUtil.set(key1,userJson,atTokenExpire);
 
-            UserRelRole userRelRole = new UserRelRole();
+			//干掉之前的token
+			Long role = Long.valueOf(UserRoleEnum.RESIDENT.getRoleId());
+			UserRelRole userRelRoleByUserIdRoleId = userRoleDao.getUserRelRoleByUserIdRoleId(portalUser.getId(), role);
+			if (userRelRoleByUserIdRoleId!=null){
+				cacheUtil.del(userRelRoleByUserIdRoleId.getToken());
+			}
+
+
+			UserRelRole userRelRole = new UserRelRole();
             userRelRole.setUserId(portalUser.getId());
             userRelRole.setToken(key1);
 			userRelRole.setRoleId(UserRoleEnum.RESIDENT.getRoleId());

@@ -51,6 +51,6 @@ public class Area implements Serializable {
 	 * 前端web页面使用 0- 否 1- 是
 	 */
 	@TableField(exist = false)
-	private Integer flag;
+	private Integer hasChildren;
 
 }

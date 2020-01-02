@@ -113,6 +113,13 @@ public class UserServiceImpl extends BaseService implements UserService {
             String key1=RedisKeyUtil.getRedisKey(RedisKey.LOGIN_TOKEN,String.valueOf(adminLogin.getTid()),token);
 			String userJson = JSON.toJSONString(userInfo);
 
+			//干掉之前的token
+			Long role = Long.valueOf(UserRoleEnum.MANAGER.getRoleId());
+			UserRelRole userRelRoleByUserIdRoleId = userRoleDao.getUserRelRoleByUserIdRoleId(portalUser.getId(), role);
+			if (userRelRoleByUserIdRoleId!=null){
+				cacheUtil.del(userRelRoleByUserIdRoleId.getToken());
+			}
+
 			UserRelRole userRelRole = new UserRelRole();
             userRelRole.setUserId(portalUser.getId());
 			userRelRole.setToken(key1);

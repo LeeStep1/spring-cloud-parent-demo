@@ -2,6 +2,7 @@ package com.bit.module.manager.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bit.module.manager.bean.UserRelRole;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -16,4 +17,11 @@ public interface UserRoleDao extends BaseMapper<UserRelRole>{
 	 * @param userRelRole
 	 */
 	void updateTokenByUserId(UserRelRole userRelRole);
+
+	/**
+	 * 根据用户id查询记录
+	 * @param userId
+	 * @return
+	 */
+	UserRelRole getUserRelRoleByUserIdRoleId(@Param(value = "userId")Long userId,@Param(value = "roleId")Long roleId);
 }

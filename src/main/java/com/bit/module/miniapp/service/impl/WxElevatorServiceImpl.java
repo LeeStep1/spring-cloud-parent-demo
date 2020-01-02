@@ -601,6 +601,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
             EmailAttachment emailAttachment = new EmailAttachment();
             emailAttachment.setPath(path);
             emailAttachment.setName("报价.xlsx");
+			attachments.add(emailAttachment);
             //标题
             emailInfo.setSubject("电梯报价报价");
             //内容
