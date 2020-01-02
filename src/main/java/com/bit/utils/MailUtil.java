@@ -29,9 +29,9 @@ public class MailUtil {
 	// 发件人
 	private static String TencentEntmailSenderAddress  = "duo.chen@xblgroup.com";
 	// 发件人邮箱账号
-	private static String TencentEntmailSenderUsername  = "";
+	private static String TencentEntmailSenderUsername  = "duo.chen@xblgroup.com";
 	// 发件人邮箱密码
-	private static String TencentEntmailSenderPassword  = "";
+	private static String TencentEntmailSenderPassword  = "14475SolidSnake";
 	// 邮箱服务器端口
 	private static String TencentEntmailServerHostPort  = "465";
 	// 协议
@@ -146,7 +146,7 @@ public class MailUtil {
 		//邮件附件集合
 		List<EmailAttachment> attachments = new ArrayList<>();
 		EmailAttachment emailAttachment = new EmailAttachment();
-		emailAttachment.setPath("C:\\Users\\win10\\Desktop\\报价.xlsx");
+		emailAttachment.setPath("D:\\upload\\1.xls");
 		emailAttachment.setName("报价.xlsx");
 		attachments.add(emailAttachment);
 

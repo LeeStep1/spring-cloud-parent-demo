@@ -4,6 +4,7 @@ package com.bit.module.miniapp.bean;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -46,5 +47,10 @@ public class Area implements Serializable {
 	 * 安装系数
 	 */
 	private Float installCoefficient;
+	/**
+	 * 前端web页面使用 0- 否 1- 是
+	 */
+	@TableField(exist = false)
+	private Integer flag;
 
 }

@@ -82,6 +82,9 @@ public class AreaServiceImpl extends BaseService implements AreaService {
 	@Override
 	public BaseVo<Area> listPage(Area area) {
 		List<Area> byParam = areaDao.findByParam(area);
+		for (Area ar : byParam) {
+			ar.setFlag(1);
+		}
 		BaseVo baseVo = new BaseVo();
 		baseVo.setData(byParam);
 		return baseVo;

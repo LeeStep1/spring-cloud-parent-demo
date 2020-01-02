@@ -24,6 +24,7 @@ import com.bit.utils.ConvertMoneyUtil;
 import com.bit.utils.MailUtil;
 import com.bit.utils.UUIDUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.mail.EmailAttachment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -163,7 +164,9 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
             c.setOrderId(order.getId());
         });
 		List<ProjectEleOrderBaseInfo> baseinfo = vo.getBaseinfo();
-        projectEleOrderBaseInfoDao.batchAdd(baseinfo);
+		if (CollectionUtils.isNotEmpty(baseinfo)){
+			projectEleOrderBaseInfoDao.batchAdd(baseinfo);
+		}
 
         vo.getProjectEleOptions().stream().forEach(c -> {
             c.setOrderId(order.getId());
@@ -171,8 +174,9 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
         });
 
 		List<ProjectEleOptions> projectEleOptions = vo.getProjectEleOptions();
-
-		projectEleOptionsDao.batchAdd(projectEleOptions);
+		if (CollectionUtils.isNotEmpty(projectEleOptions)){
+			projectEleOptionsDao.batchAdd(projectEleOptions);
+		}
 
         // 需要进行报价算法
         Map par = new HashMap();
@@ -501,7 +505,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
        cod.put("version_id",projectPriceId);
         ProjectPrice p= projectPriceDao.selectById(projectPriceId);
         if(p!=null){
-            cod.put("project_id",p.getId());
+            cod.put("project_id",p.getProjectId());
         }
       // cod.put("project_id",projectPrice.getProjectId());
        //订单数据
@@ -531,7 +535,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
                }
            });
 
-           List<ProjectEleOptionsVo> optins = projectEleOptionsDao.findOptionByOrder(c.getId(), 3);
+           //List<ProjectEleOptionsVo> optins = projectEleOptionsDao.findOptionByOrder(c.getId(), 3);
            listVo.add(vo);
      /* 选装项      if (optins.size() > 0) {
                 ExcelVo voOption1 = new ExcelVo();
@@ -570,7 +574,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
         /*String path="D:/test/1/exportCls.xls";
         File aa=new File("D:/test/1/exportCls.xls");*/
 
-        String path=filePath+"/xls"+filename+".xls";
+        String path="D:\\upload\\1.xls";
         File aa=new File(path);
         if(!aa.getParentFile().exists()){
             aa.getParentFile().mkdirs();
@@ -602,12 +606,13 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
             //内容
             emailInfo.setContent("内容：<h1>电梯报价报价,请查收附件</h1>");
             emailInfo.setAttachments(attachments);
+			emailInfo.setCcAddress(toList);
             MailUtil.send(emailInfo);
         } catch (Exception e) {
             e.printStackTrace();
             throw new BusinessException("发送失败{}"+e.getMessage());
         }finally {
-            aa.delete();
+           // aa.delete();
         }
 
         //aa.getParentFile().delete();  删除上一级
