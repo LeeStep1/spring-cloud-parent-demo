@@ -56,7 +56,7 @@ public class ProjectPriceDetailVO {
 	/**
 	 * 版本
 	 */
-	private Integer verison;
+	private Integer version;
 
 	//----电梯细节----
 	/**
