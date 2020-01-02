@@ -2,7 +2,7 @@ package com.bit.module.manager.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bit.module.manager.bean.ElevatorBaseElement;
-import com.bit.module.miniapp.bean.ElevatorBaseElementVo;
+import com.bit.module.miniapp.vo.ElevatorBaseElementVo;
 
 import java.util.List;
 

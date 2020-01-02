@@ -18,7 +18,7 @@
     </sql>
 
     <!-- 根据主键查询数据 -->
-    <select id="findAll" resultType="com.bit.module.manager.bean.ElevatorBaseElement"  parameterType="com.bit.module.miniapp.bean.ElevatorBaseElementVo">
+    <select id="findAll" resultType="com.bit.module.manager.bean.ElevatorBaseElement"  parameterType="com.bit.module.miniapp.vo.ElevatorBaseElementVo">
 
         SELECT
         tet.id,

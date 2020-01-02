@@ -1,4 +1,4 @@
-package com.bit.module.miniapp.bean;
+package com.bit.module.miniapp.vo;
 
 import com.bit.module.manager.bean.ElevatorBaseElement;
 import lombok.Data;

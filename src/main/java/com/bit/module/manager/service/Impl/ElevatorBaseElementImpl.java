@@ -5,7 +5,7 @@ import com.bit.base.vo.BaseVo;
 import com.bit.module.manager.bean.ElevatorBaseElement;
 import com.bit.module.manager.dao.ElevatorBaseElementDao;
 import com.bit.module.manager.service.ElevatorBaseElementService;
-import com.bit.module.miniapp.bean.ElevatorBaseElementVo;
+import com.bit.module.miniapp.vo.ElevatorBaseElementVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
