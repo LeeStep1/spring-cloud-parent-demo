@@ -54,7 +54,9 @@
             <if test="tonsPrice!=null">
                 and tons_price = #{tonsPrice,jdbcType=INTEGER}
             </if>
-
+            <if test="installCoefficient!=null">
+                and install_coefficient = #{installCoefficient,jdbcType=DECIMAL}
+            </if>
         </where>
     </select>
 
@@ -99,6 +101,9 @@
             <if test="tonsPrice!=null">
                 #{tonsPrice,jdbcType=INTEGER},
             </if>
+            <if test="installCoefficient!=null">
+                #{installCoefficient,jdbcType=DECIMAL}
+            </if>
         </trim>
     </insert>
 
@@ -122,8 +127,11 @@
             <if test="tonsPrice!=null">
                 tons_price = #{tonsPrice,jdbcType=INTEGER},
             </if>
+            <if test="installCoefficient!=null">
+                install_coefficient = #{installCoefficient,jdbcType=DECIMAL},
+            </if>
         </trim>
-        where id = #{id,jdbcType=VARCHAR}
+        where ar_code = #{arCode,jdbcType=VARCHAR}
     </update>
 
     <!--全表查询-->
@@ -132,5 +140,30 @@
         FROM t_area
     </select>
 
-
+    <!--列表查询-->
+    <select id="listPage" parameterType="com.bit.module.miniapp.bean.Area" resultMap="areaMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_area
+        <where>
+            <if test="arName!=null and arName!=''">
+                and ar_name LIKE concat("%",#{arName,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="arType!=null and arType!=''">
+                and ar_type = #{arType,jdbcType=VARCHAR}
+            </if>
+            <if test="parentCode!=null and parentCode!=''">
+                and parent_code = #{parentCode,jdbcType=VARCHAR}
+            </if>
+            <if test="arLeavel!=null">
+                and ar_leavel = #{arLeavel,jdbcType=INTEGER}
+            </if>
+            <if test="tonsPrice!=null">
+                and tons_price = #{tonsPrice,jdbcType=INTEGER}
+            </if>
+            <if test="installCoefficient!=null">
+                install_coefficient = #{installCoefficient,jdbcType=DECIMAL}
+            </if>
+        </where>
+    </select>
 </mapper>

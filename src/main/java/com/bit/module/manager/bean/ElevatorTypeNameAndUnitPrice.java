@@ -18,4 +18,8 @@ public class ElevatorTypeNameAndUnitPrice {
 	 * 设备单价
 	 */
 	private String unitPrice;
+	/**
+	 * 下浮率
+	 */
+	private Double rate;
 }

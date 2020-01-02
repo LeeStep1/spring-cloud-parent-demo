@@ -19,23 +19,23 @@ import lombok.Data;
 public class Area implements Serializable {
 
 	/**
-	 *
+	 * 地域编码
 	 */
 	private String arCode;
 	/**
-	 *
+	 * 地域名称
 	 */
 	private String arName;
 	/**
-	 *
+	 * 地域类型
 	 */
 	private String arType;
 	/**
-	 *
+	 * 父级编码
 	 */
 	private String parentCode;
 	/**
-	 *
+	 * 地域等级
 	 */
 	private Integer arLeavel;
 	/**

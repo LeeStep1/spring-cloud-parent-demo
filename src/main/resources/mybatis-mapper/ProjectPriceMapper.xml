@@ -5,15 +5,13 @@
 
 
     <!--根据项目id集合批量查询报价记录-->
-    <select id="getProjectPrice" resultType="com.bit.module.manager.bean.ProjectPrice" parameterType="map">
-        select
-        d.*
-        from t_project_price d
-        WHERE d.project_id in
-        <foreach item="item" index="index" collection="projectList" open="(" separator="," close=")">
-            #{item}
-        </foreach>
-        group by d.project_id order by version desc
+    <select id="getLatestProjectPrice" resultType="com.bit.module.manager.bean.ProjectPrice" parameterType="map">
+
+        SELECT * FROM t_project_price
+        WHERE project_id = #{projectId,jdbcType=BIGINT}
+        ORDER BY
+        version DESC
+        limit 1
     </select>
 
     <!--根据项目id查询订单-->

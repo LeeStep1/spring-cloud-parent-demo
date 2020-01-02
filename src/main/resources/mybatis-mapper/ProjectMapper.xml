@@ -88,7 +88,7 @@
 
     <!--根据项目id查询项目下的电梯订单-->
     <select id="getOrderByProjectId" parameterType="long" resultType="com.bit.module.manager.bean.ProjectEleOrder">
-        SELECT elevator_type_name,unit_price,elevator_type_id,id
+        SELECT elevator_type_name,unit_price,elevator_type_id,id,rate
         FROM t_project_ele_order
         <where>
             <if test="projectId!=null">

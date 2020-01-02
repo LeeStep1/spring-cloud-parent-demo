@@ -68,25 +68,11 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
         Page<Project> page = new Page<>(vo.getPageNum(),vo.getPageSize());  // 查询第1页，每页返回5条
         IPage<Project> iPage = projectDao.selectPage(page,queryWrapper);
 
-		//项目id集合
-        List<Long> projectIdlist= new ArrayList<>();
 
         for(Project project:iPage.getRecords()){
-            projectIdlist.add(project.getId());
+			List<ProjectPrice> latestProjectPrice = projectPriceDao.getLatestProjectPrice(project.getId());
+			project.setProjectPriceList(latestProjectPrice);
         }
-        if (CollectionUtils.isNotEmpty(projectIdlist)){
-			List<ProjectPrice> prices= projectPriceDao.getProjectPrice(projectIdlist);
-
-			for (Project project:iPage.getRecords()) {
-				List<ProjectPrice> rsPrice=new ArrayList<>();
-				for(ProjectPrice p:prices){
-					if (p.getProjectId().equals(project.getId())){
-						rsPrice.add(p);
-					}
-				}
-				project.setProjectPriceList(rsPrice);
-			}
-		}
 
 		BaseVo baseVo = new BaseVo();
 		baseVo.setData(iPage);
@@ -151,6 +137,7 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 				ElevatorTypeNameAndUnitPrice elevatorTypeNameAndUnitPrice = new ElevatorTypeNameAndUnitPrice();
 				elevatorTypeNameAndUnitPrice.setElevatorTypeName(projectEleOrder.getElevatorTypeName());
 				elevatorTypeNameAndUnitPrice.setUnitPrice(projectEleOrder.getUnitPrice());
+				elevatorTypeNameAndUnitPrice.setRate(projectEleOrder.getRate());
 
 				projectPriceDetailInfo.setElevatorTypeNameAndUnitPrice(elevatorTypeNameAndUnitPrice);
 				//设置规格参数 和 井道参数

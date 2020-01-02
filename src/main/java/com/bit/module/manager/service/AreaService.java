@@ -26,6 +26,24 @@ public interface AreaService {
 	 * @return
 	 */
 	BaseVo getAreasCacheTree();
+	/**
+	 * 地域查询
+	 * @param area
+	 * @return
+	 */
+	BaseVo<Area> listPage(Area area);
+	/**
+	 * 更新地域信息
+	 * @param area
+	 * @return
+	 */
+	BaseVo updateArea(Area area);
+	/**
+	 * 查询子节点
+	 * @param arCode
+	 * @return
+	 */
+	BaseVo getChildArea(String arCode);
 
 }
 

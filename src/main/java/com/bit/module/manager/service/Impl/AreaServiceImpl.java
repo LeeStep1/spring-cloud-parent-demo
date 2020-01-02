@@ -12,6 +12,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +71,51 @@ public class AreaServiceImpl extends BaseService implements AreaService {
 
 		BaseVo baseVo = new BaseVo();
 		baseVo.setData(rootList);
+		return baseVo;
+	}
+
+	/**
+	 * 地域查询
+	 * @param area
+	 * @return
+	 */
+	@Override
+	public BaseVo<Area> listPage(Area area) {
+		List<Area> byParam = areaDao.findByParam(area);
+		BaseVo baseVo = new BaseVo();
+		baseVo.setData(byParam);
+		return baseVo;
+	}
+
+	/**
+	 * 更新地域信息
+	 * @param area
+	 * @return
+	 */
+	@Override
+	@Transactional
+	public BaseVo updateArea(Area area) {
+		//省和直辖市
+		if (area.getArLeavel().equals(1)){
+			area.setTonsPrice(null);
+		}else{
+			area.setInstallCoefficient(null);
+		}
+		areaDao.updateArea(area);
+		return successVo();
+	}
+	/**
+	 * 查询子节点
+	 * @param arCode
+	 * @return
+	 */
+	@Override
+	public BaseVo getChildArea(String arCode) {
+		Area area = new Area();
+		area.setParentCode(arCode);
+		List<Area> byParam = areaDao.findByParam(area);
+		BaseVo baseVo = new BaseVo();
+		baseVo.setData(byParam);
 		return baseVo;
 	}
 

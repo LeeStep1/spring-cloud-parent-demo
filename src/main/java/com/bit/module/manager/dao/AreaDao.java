@@ -44,4 +44,11 @@ public interface AreaDao extends BaseMapper<Area>{
 	 * @return
 	 */
 	List<AreaTreeVO> findAll();
+
+	/**
+	 * 列表查询
+	 * @param area
+	 * @return
+	 */
+	List<Area> listPage(Area area);
 }
