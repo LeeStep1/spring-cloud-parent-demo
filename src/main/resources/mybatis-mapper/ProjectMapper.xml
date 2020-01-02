@@ -44,7 +44,9 @@
         t1.address_name,
         t1.project_status,
 		t2.total_price,
-        t2.version
+        t2.version,
+        t2.install_flag,
+        t2.transport_flag
 		FROM t_project t1
 		LEFT JOIN t_project_price t2
 		on t1.id = t2.project_id
@@ -163,5 +165,21 @@
 
         </where>
     </select>
+        <select id="getPriceInfo" resultType="java.util.Map">
 
+            select sum(tt.install_price) installPrice,SUM(tt.transport_price) transportPrice from
+
+            (SELECT
+            t.num * t.install_price install_price,
+            t.num * t.transport_price transport_price
+            FROM
+            t_project_ele_order t
+            <where>
+                <if test="projectPriceId!=null">
+                    and   t.version_id=#{ProjectPriceId,jdbcType=BIGINT}
+                </if>
+            </where>
+            )tt
+
+        </select>
 </mapper>
