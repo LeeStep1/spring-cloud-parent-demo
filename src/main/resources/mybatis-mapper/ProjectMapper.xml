@@ -106,7 +106,7 @@
         </if>
         LEFT JOIN t_project_ele_order_base_info t3
         on t2.id = t3.element_id
-        INNER JOIN t_params t4
+        LEFT JOIN t_params t4
         on t2.params_key = t4.params_name
         <where>
             <if test="orderId!=null">
