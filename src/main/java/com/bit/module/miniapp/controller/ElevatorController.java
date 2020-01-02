@@ -280,4 +280,16 @@ public class ElevatorController {
 	public BaseVo updateProjectPriceFlag(@RequestBody ProjectPrice projectPrice){
 		return wxElevatorService.updateProjectPriceFlag(projectPrice);
 	}
+	/**
+	 * 發送郵件  報價單
+	 * @param projectPriceId  报价的id
+	 * @return
+	 */
+	@GetMapping("/sendMail/{projectPriceId}")
+	public BaseVo sendPriceMail(@PathVariable(value = "projectPriceId")Long projectPriceId){
+		 wxElevatorService.sendPriceMail(projectPriceId);
+		return new BaseVo();
+	}
+
+
 }

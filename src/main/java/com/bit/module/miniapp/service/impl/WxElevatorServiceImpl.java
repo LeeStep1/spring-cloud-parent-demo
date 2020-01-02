@@ -1,6 +1,10 @@
 package com.bit.module.miniapp.service.impl;
 
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.bit.base.exception.BusinessException;
 import com.bit.base.service.BaseService;
 import com.bit.base.vo.BaseVo;
 import com.bit.common.consts.Const;
@@ -12,13 +16,26 @@ import com.bit.module.manager.service.Impl.EquationServiceImpl;
 import com.bit.module.miniapp.bean.ElevatorType;
 import com.bit.module.miniapp.bean.Options;
 import com.bit.module.miniapp.service.WxElevatorService;
+import com.bit.module.miniapp.vo.ExcelVo;
+import com.bit.module.miniapp.vo.ProjectEleOptionsVo;
 import com.bit.module.miniapp.vo.ReportInfoVO;
 import com.bit.utils.BeanReflectUtil;
+import com.bit.utils.ConvertMoneyUtil;
+import com.bit.utils.MailUtil;
+import com.bit.utils.UUIDUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.mail.EmailAttachment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.OpenOption;
 import java.util.*;
 
 /**
@@ -53,6 +70,9 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
     @Autowired
     private EquationServiceImpl equationServiceImpl;
+    @Value("${upload.imagesPath}")
+    private String filePath;
+
 
 
     @Override
@@ -464,5 +484,134 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
         projectPriceDao.delete(queryWrapper);//删除草稿状态
 
     }
+
+
+
+    /**
+     * 生成报价单发送邮件
+     * @param projectPriceId  (id)
+     * @return
+     */
+   @Override
+   public void sendPriceMail(Long projectPriceId){
+
+       Map cod=new HashMap();
+     /*  cod.put("version_id",49);
+       cod.put("project_id",13);*/
+       cod.put("version_id",projectPriceId);
+        ProjectPrice p= projectPriceDao.selectById(projectPriceId);
+        if(p!=null){
+            cod.put("project_id",p.getId());
+        }
+      // cod.put("project_id",projectPrice.getProjectId());
+       //订单数据
+       List<ProjectEleOrder> orderList= projectEleOrderDao.selectByMap(cod);
+       List<ExcelVo>listVo=new ArrayList<ExcelVo>();
+       List<OpenOption>optionList=new ArrayList<>();
+       int i=1;
+       for (ProjectEleOrder c:orderList) {
+           ExcelVo vo = new ExcelVo();
+           vo.setElevatorName(c.getElevatorTypeName());
+           vo.setNums(c.getNum());
+           vo.setInstallPrice(c.getInstallPrice());
+           vo.setSingleTotalPrice(c.getSingleTotalPrice());
+           vo.setTotalPrice(c.getTotalPrice());
+           vo.setCid(i);
+           Map codss = new HashMap();
+           codss.put("order_id", c.getId());
+           List<ProjectEleOrderBaseInfo> list = projectEleOrderBaseInfoDao.selectByMap(codss);
+           list.forEach(cc -> {
+
+               if (cc.getParamKey().equals("速度")) {
+                   vo.setSpeed(cc.getInfoValue());
+               } else if (cc.getParamKey().equals("载重")) {
+                   vo.setWeight(cc.getInfoValue());
+               } else if (cc.getParamKey().equals("层站")) {
+                   vo.setFloors(cc.getInfoValue());
+               }
+           });
+
+           List<ProjectEleOptionsVo> optins = projectEleOptionsDao.findOptionByOrder(c.getId(), 3);
+           listVo.add(vo);
+     /* 选装项      if (optins.size() > 0) {
+                ExcelVo voOption1 = new ExcelVo();
+                voOption1.setElevatorName(c.getElevatorTypeName() + "非标项");//非标项单独一行
+                listVo.add(voOption1);
+                optins.forEach(op1 -> {
+                    ExcelVo voOption = new ExcelVo();
+                    voOption.setElevatorName(op1.getGroupName()+"_"+op1.getOptionName());
+                    listVo.add(voOption);
+                });
+
+            }*/
+
+           i++;
+       }
+       ExcelVo  rs=new ExcelVo();
+       if(orderList.size()>0){
+           ProjectPrice aa = projectPriceDao.selectById(orderList.get(0).getVersionId());
+           rs.setElevatorName("总价");
+           rs.setTotalPrice(aa.getTotalPrice());
+           rs.setInstallPrice( ConvertMoneyUtil.convert(Double.parseDouble(orderList.get(0).getTotalPrice())));
+       }else{
+           rs.setElevatorName("总价");
+           rs.setTotalPrice("0");
+           rs.setInstallPrice( "零");
+       }
+       listVo.add(rs);
+       export(listVo,"电梯价格单");
+
+    }
+
+
+
+    public void export(List<ExcelVo> clsList,String sheetName) {
+        String filename= UUIDUtil.getUUID();
+        /*String path="D:/test/1/exportCls.xls";
+        File aa=new File("D:/test/1/exportCls.xls");*/
+
+        String path=filePath+"/xls"+filename+".xls";
+        File aa=new File(path);
+        if(!aa.getParentFile().exists()){
+            aa.getParentFile().mkdirs();
+        }
+        try {
+            aa.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try(OutputStream out=new FileOutputStream(aa)) {
+            ExcelWriter writer=new ExcelWriter(out, ExcelTypeEnum.XLSX);
+
+            if(!clsList.isEmpty()) {
+                Sheet sheet=new Sheet(1,0,clsList.get(0).getClass());
+                sheet.setSheetName(sheetName);
+                writer.write(clsList, sheet);
+            }
+            writer.finish();
+            EmailInfo emailInfo=new EmailInfo();
+            List<String> toList = new ArrayList<String>();
+            toList.add("star9c2009@163.com");
+            emailInfo.setToAddress(toList);
+            List<EmailAttachment> attachments = new ArrayList<>();
+            EmailAttachment emailAttachment = new EmailAttachment();
+            emailAttachment.setPath(path);
+            emailAttachment.setName("报价.xlsx");
+            //标题
+            emailInfo.setSubject("电梯报价报价");
+            //内容
+            emailInfo.setContent("内容：<h1>电梯报价报价,请查收附件</h1>");
+            emailInfo.setAttachments(attachments);
+            MailUtil.send(emailInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BusinessException("发送失败{}"+e.getMessage());
+        }finally {
+            aa.delete();
+        }
+
+        //aa.getParentFile().delete();  删除上一级
+    }
+
 
 }

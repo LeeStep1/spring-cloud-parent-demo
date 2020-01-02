@@ -25,6 +25,28 @@
         order_id
     </sql>
 
+    <select id="findOptionByOrder" resultType="com.bit.module.miniapp.vo.ProjectEleOptionsVo">
+
+    SELECT
+    tpe.*,
+    ts.group_name
+    FROM
+    t_project_ele_options tpe
+    LEFT JOIN t_options ts ON ts.id = tpe.option_id
+    <where>
+        <if test="orderId!=null">
+            AND   tpe.order_id = #{orderId,jdbcType=BIGINT}
+        </if>
+
+        <if test="optionType!=null">
+            AND  ts.option_type = #{optionType,jdbcType=INTEGER}
+        </if>
+
+    </where>
+
+
+</select>
+
     <!--批量新增-->
     <insert id="batchAdd" parameterType="com.bit.module.manager.bean.ProjectEleOptions" keyColumn="id" useGeneratedKeys="true">
         INSERT INTO t_project_ele_options(

@@ -11,6 +11,7 @@ package com.bit.module.manager.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bit.module.manager.bean.ProjectEleOptions;
 import com.bit.module.manager.bean.ProjectEleOrderBaseInfo;
+import com.bit.module.miniapp.vo.ProjectEleOptionsVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -36,4 +37,12 @@ public interface ProjectEleOptionsDao extends BaseMapper<ProjectEleOptions> {
 	 * @return
 	 */
 	void delByOrderId(@Param(value = "orderId")Long orderId);
+
+
+	/**
+	 * 根据订单id删除记录
+	 * @param orderId
+	 * @return
+	 */
+	List<ProjectEleOptionsVo>findOptionByOrder(@Param(value = "orderId")Long orderId, @Param(value = "optionType")Integer optionType);
 }

@@ -115,4 +115,12 @@ public interface WxElevatorService {
 	 */
 	BaseVo updateProjectPriceFlag(ProjectPrice projectPrice);
 
+
+	/**
+	 * 生成报价单发送邮件
+	 * @param projectPriceId  (id)
+	 * @return
+	 */
+	void sendPriceMail(Long projectPriceId);
+
 }

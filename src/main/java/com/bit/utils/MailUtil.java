@@ -85,6 +85,11 @@ public class MailUtil {
 		}
 	}
 
+
+	public static void send(EmailInfo emailInfo){
+		send( TencentEntmailSenderAddress, emailInfo);
+	}
+
 	private static String assembleReceiver(List<String> toAddress){
 		StringBuilder receiver = new StringBuilder();
 		for (String address : toAddress) {
