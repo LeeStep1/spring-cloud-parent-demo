@@ -288,6 +288,7 @@ public class ElevatorController {
 	@GetMapping("/sendMail/{projectPriceId}")
 	public BaseVo sendPriceMail(@PathVariable(value = "projectPriceId")Long projectPriceId){
 		 wxElevatorService.sendPriceMail(projectPriceId);
+
 		return new BaseVo();
 	}
 

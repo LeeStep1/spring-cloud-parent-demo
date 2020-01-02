@@ -53,6 +53,11 @@ public class ProjectPriceDetailVO {
 	 */
 	private String totalPrice;
 
+	/**
+	 * 版本
+	 */
+	private Integer verison;
+
 	//----电梯细节----
 	/**
 	 * 电梯细节 集合
