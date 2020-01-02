@@ -46,6 +46,7 @@
                 and `level` = #{level,jdbcType=INTEGER}
             </if>
         </where>
+        order by id
     </select>
 
     <!--查询电梯参数-->
