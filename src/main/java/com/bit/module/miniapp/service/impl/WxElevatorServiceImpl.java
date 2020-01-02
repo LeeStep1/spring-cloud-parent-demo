@@ -613,7 +613,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
             e.printStackTrace();
             throw new BusinessException("发送失败{}"+e.getMessage());
         }finally {
-           // aa.delete();
+            aa.delete();
         }
 
         //aa.getParentFile().delete();  删除上一级
