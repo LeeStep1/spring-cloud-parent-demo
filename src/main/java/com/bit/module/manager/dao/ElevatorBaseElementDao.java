@@ -2,6 +2,7 @@ package com.bit.module.manager.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bit.module.manager.bean.ElevatorBaseElement;
+import com.bit.module.miniapp.bean.ElevatorBaseElementVo;
 
 import java.util.List;
 
@@ -15,6 +16,6 @@ public interface ElevatorBaseElementDao extends BaseMapper<ElevatorBaseElement> 
 
 
 
-    public List<ElevatorBaseElement> findAll(ElevatorBaseElement a);
+    public List<ElevatorBaseElementVo> findAll(ElevatorBaseElement a);
 
 }

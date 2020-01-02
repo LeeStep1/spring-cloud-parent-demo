@@ -5,6 +5,7 @@ import com.bit.base.vo.BaseVo;
 import com.bit.module.manager.bean.ElevatorBaseElement;
 import com.bit.module.manager.dao.ElevatorBaseElementDao;
 import com.bit.module.manager.service.ElevatorBaseElementService;
+import com.bit.module.miniapp.bean.ElevatorBaseElementVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +36,7 @@ public class ElevatorBaseElementImpl implements ElevatorBaseElementService {
     @Override
     public BaseVo findAllByElevator(ElevatorBaseElement elevatorBaseElement) {
 
-        List<ElevatorBaseElement>list=elevatorBaseElementDao.findAll(elevatorBaseElement);
+        List<ElevatorBaseElementVo>list=elevatorBaseElementDao.findAll(elevatorBaseElement);
         Set<Integer> type= new HashSet();
         list.stream().forEach(c->type.add(c.getCategoryType()));
         List<Map> rsList=new ArrayList<>(type.size());

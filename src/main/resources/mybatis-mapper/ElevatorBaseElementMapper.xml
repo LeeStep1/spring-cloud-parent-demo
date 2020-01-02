@@ -18,29 +18,32 @@
     </sql>
 
     <!-- 根据主键查询数据 -->
-    <select id="findAll" resultType="com.bit.module.manager.bean.ElevatorBaseElement"  parameterType="com.bit.module.manager.bean.ElevatorBaseElement">
+    <select id="findAll" resultType="com.bit.module.manager.bean.ElevatorBaseElement"  parameterType="com.bit.module.miniapp.bean.ElevatorBaseElementVo">
 
         SELECT
-        id,
-        elevator_type_id,
-        elevator_type_key,
-        element_name,
-        element_type,
-        category_type,
-        params_key,
-        order_num
+        tet.id,
+        tet.elevator_type_id,
+        tet.elevator_type_key,
+        tet.element_name,
+        tet.element_type,
+        tet.category_type,
+        tet.params_key,
+        tet.order_num,
+        tpa.params_unit
            from
-        t_elevator_base_element
+        t_elevator_base_element tet , t_params tpa
+
         <where>
+               tpa.params_name=tet.params_key
             <if test="elevatorTypeId!=null and elevatorTypeId!=''">
-                and elevator_type_id = #{elevatorTypeId,jdbcType=BIGINT}
+                and tet.elevator_type_id = #{elevatorTypeId,jdbcType=BIGINT}
             </if>
             <if test="elevatorTypeKey!=null and elevatorTypeKey!=''">
-                and elevator_type_key = #{elevatorTypeKey,jdbcType=VARCHAR}
+                and tet.elevator_type_key = #{elevatorTypeKey,jdbcType=VARCHAR}
             </if>
         </where>
 
-        order by order_num
+        order by tet.order_num
 
     </select>
 
