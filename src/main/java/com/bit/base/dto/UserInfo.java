@@ -41,5 +41,6 @@ public class UserInfo {
 	/**授权token**/
 	private String token;
 
-
+	/**邮箱**/
+	private String email;
 }

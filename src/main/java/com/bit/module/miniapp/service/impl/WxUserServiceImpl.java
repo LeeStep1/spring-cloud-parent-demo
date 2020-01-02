@@ -113,6 +113,7 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
             userInfo.setUserName(portalUser.getUserName());
             userInfo.setTid(wxUser.getTid());
             userInfo.setRealName(portalUser.getRealName());
+			userInfo.setEmail(portalUser.getEmail());
 			userInfo.setToken(token);
 
             Integer tid = null;

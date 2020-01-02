@@ -109,6 +109,7 @@ public class UserServiceImpl extends BaseService implements UserService {
             userInfo.setRealName(portalUser.getRealName());
             userInfo.setRole(portalUser.getRoleId());
             userInfo.setRoleName(portalUser.getRoleName());
+			userInfo.setEmail(portalUser.getEmail());
             String key1=RedisKeyUtil.getRedisKey(RedisKey.LOGIN_TOKEN,String.valueOf(adminLogin.getTid()),token);
 			String userJson = JSON.toJSONString(userInfo);
 
