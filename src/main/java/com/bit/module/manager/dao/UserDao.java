@@ -33,7 +33,7 @@ public interface UserDao extends BaseMapper<User> {
 	 * 查询所有User
 	 * @return
 	 */
-	Page<User> findAll(@Param("pg") Page<User> page, @Param("portalUserVo") PortalUserVo portalUserVo);
+	Page<UserVo> findAll(@Param("pg") Page<UserVo> page, @Param("portalUserVo") PortalUserVo portalUserVo);
 
 	/**
 	 * 通过主键查询单个User

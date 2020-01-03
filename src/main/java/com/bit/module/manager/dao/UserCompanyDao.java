@@ -1,6 +1,8 @@
 package com.bit.module.manager.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bit.module.manager.bean.Company;
+import com.bit.module.manager.bean.ProjectPrice;
 import com.bit.module.manager.bean.UserCompany;
 import java.util.List;
 
@@ -15,7 +17,7 @@ import org.springframework.stereotype.Repository;
  * @date 2020-01-03 13:19:11
  */
 @Repository
-public interface UserCompanyDao {
+public interface UserCompanyDao  extends BaseMapper<UserCompany> {
 
 	/**
     * 根据id单查记录

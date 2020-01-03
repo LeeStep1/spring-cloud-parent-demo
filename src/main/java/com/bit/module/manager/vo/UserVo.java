@@ -33,4 +33,14 @@ public class UserVo extends User {
 	 * 角色集合
 	 */
     private List<Role> roleIds;
+
+	/**
+	 * 公司id
+	 */
+    private Long companyId;
+
+	/**
+	 * 公司名称
+	 */
+	private String companyName;
 }

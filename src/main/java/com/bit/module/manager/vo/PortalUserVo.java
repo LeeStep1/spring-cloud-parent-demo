@@ -80,4 +80,10 @@ public class PortalUserVo extends BasePageVo {
      */
     private String email;
 
+    /**
+     * 公司id
+     */
+    private Long companyId;
+
+
 }

@@ -13,6 +13,7 @@ import com.bit.common.consts.RedisKey;
 import com.bit.common.informationEnum.TidUrlEnum;
 import com.bit.common.informationEnum.UserRoleEnum;
 import com.bit.module.manager.bean.*;
+import com.bit.module.manager.dao.CompanyDao;
 import com.bit.module.manager.dao.UserCompanyDao;
 import com.bit.module.manager.dao.UserDao;
 import com.bit.module.manager.dao.UserRoleDao;
@@ -61,8 +62,21 @@ public class UserServiceImpl extends BaseService implements UserService {
     @Autowired
     private UserDao userDao;
 
+    /**
+     * 用户关联角色
+     */
     @Autowired
-	private UserCompanyDao userCompanyDao;
+    private UserCompanyDao userCompanyDao;
+
+
+    /**
+     * 公司基础信息
+     */
+    @Autowired
+    private CompanyDao companyDao;
+
+
+
 
 
     /**
@@ -223,7 +237,12 @@ public class UserServiceImpl extends BaseService implements UserService {
                 a.setUserId(user.getId());
                 a.setRoleId(c.getId());
                 userDao.addUserRelRole(a);
+
             });
+            UserCompany uc=new UserCompany();
+            uc.setUserId(user.getId());
+            uc.setCompanyId(user.getCompanyId());
+            userCompanyDao.insert(uc);
             return successVo();
         }else {
             throw new BusinessException("该用户已存在！");
@@ -241,8 +260,8 @@ public class UserServiceImpl extends BaseService implements UserService {
     @Override
     public BaseVo findAll(PortalUserVo portalUserVo) {
 
-        Page<User> page = new Page<>(portalUserVo.getPageNum(), portalUserVo.getPageSize());
-        IPage<User> userIPage = userDao.findAll(page,portalUserVo);
+        Page<UserVo> page = new Page<>(portalUserVo.getPageNum(), portalUserVo.getPageSize());
+        IPage<UserVo> userIPage = userDao.findAll(page,portalUserVo);
         BaseVo baseVo = new BaseVo();
         baseVo.setData(userIPage);
         return baseVo;
@@ -281,6 +300,15 @@ public class UserServiceImpl extends BaseService implements UserService {
 				a.setRoleId(c.getId());
 				userDao.addUserRelRole(a);
 			});
+			Map cd=new HashMap();
+            cd.put("user_id",portalUser.getId());
+           List<UserCompany>  ucList=userCompanyDao.selectByMap(cd);
+           if(ucList.size()>0){
+               UserCompany  aa=ucList.get(0);
+               aa.setCompanyId(portalUser.getCompanyId());
+               userCompanyDao.updateUserCompany(aa);
+           }
+
 		}
 
         userDao.update(portalUser);
@@ -302,6 +330,9 @@ public class UserServiceImpl extends BaseService implements UserService {
 		delUserRoleToken(id);
 		//删除角色
         userDao.deleteUserRole(id);
+        Map cod=new HashMap();
+        cod.put("user_id",id);
+        userCompanyDao.deleteByMap(cod);
 
         return successVo();
     }
@@ -374,7 +405,15 @@ public class UserServiceImpl extends BaseService implements UserService {
 
         User user = userDao.findUserSql(id);
         List<Role> list=userDao.findRoleByUserId(id);
+        Map cod=new HashMap();
+        cod.put("user_id",id);
+        List<UserCompany> listc=userCompanyDao.selectByMap(cod);
         UserVo vo=new UserVo();
+        if(listc.size()>0){
+            vo.setCompanyId(listc.get(0).getCompanyId());
+           Company company = companyDao.selectById(listc.get(0).getId());
+            vo.setCompanyName(company.getCompanyName());
+        }
         BeanUtils.copyProperties(user,vo);
         vo.setRoleIds(list);
         BaseVo baseVo = new BaseVo();
