@@ -2,8 +2,6 @@ package com.bit.module.manager.dao;
 
 import com.bit.module.manager.bean.Company;
 import com.bit.module.manager.bean.UserCompany;
-import com.bit.module.manager.vo.UserCompanyVO;
-import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;

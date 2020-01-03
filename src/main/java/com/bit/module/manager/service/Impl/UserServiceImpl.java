@@ -19,7 +19,6 @@ import com.bit.module.manager.dao.UserRoleDao;
 import com.bit.module.manager.service.UserService;
 import com.bit.module.manager.vo.PortalUserVo;
 import com.bit.module.manager.vo.RefreshTokenVO;
-import com.bit.module.manager.vo.UserCompanyVO;
 import com.bit.module.manager.vo.UserVo;
 import com.bit.utils.*;
 import org.apache.commons.collections.CollectionUtils;
