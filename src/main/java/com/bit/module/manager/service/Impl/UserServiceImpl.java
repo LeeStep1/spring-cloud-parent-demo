@@ -12,15 +12,14 @@ import com.bit.common.consts.Const;
 import com.bit.common.consts.RedisKey;
 import com.bit.common.informationEnum.TidUrlEnum;
 import com.bit.common.informationEnum.UserRoleEnum;
-import com.bit.module.manager.bean.Role;
-import com.bit.module.manager.bean.User;
-import com.bit.module.manager.bean.UserLogin;
-import com.bit.module.manager.bean.UserRelRole;
+import com.bit.module.manager.bean.*;
+import com.bit.module.manager.dao.UserCompanyDao;
 import com.bit.module.manager.dao.UserDao;
 import com.bit.module.manager.dao.UserRoleDao;
 import com.bit.module.manager.service.UserService;
 import com.bit.module.manager.vo.PortalUserVo;
 import com.bit.module.manager.vo.RefreshTokenVO;
+import com.bit.module.manager.vo.UserCompanyVO;
 import com.bit.module.manager.vo.UserVo;
 import com.bit.utils.*;
 import org.apache.commons.collections.CollectionUtils;
@@ -63,6 +62,9 @@ public class UserServiceImpl extends BaseService implements UserService {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+	private UserCompanyDao userCompanyDao;
+
 
     /**
      * 微信登录工具
@@ -98,7 +100,6 @@ public class UserServiceImpl extends BaseService implements UserService {
             if (!pw.equals(portalUser.getPassWord())) {
                 throw new BusinessException("密码错误");
             }
-            User a =new User();
             UserInfo userInfo = new UserInfo();
             String token = UUIDUtil.getUUID();
 
@@ -110,7 +111,14 @@ public class UserServiceImpl extends BaseService implements UserService {
             userInfo.setRole(portalUser.getRoleId());
             userInfo.setRoleName(portalUser.getRoleName());
 			userInfo.setEmail(portalUser.getEmail());
-            String key1=RedisKeyUtil.getRedisKey(RedisKey.LOGIN_TOKEN,String.valueOf(adminLogin.getTid()),token);
+			//查询用户的公司
+			Company company = userCompanyDao.getUserCompanyByUserId(portalUser.getId());
+			if (company!=null){
+				userInfo.setCompanyId(company.getId());
+				userInfo.setCompanyName(company.getCompanyName());
+			}
+
+			String key1=RedisKeyUtil.getRedisKey(RedisKey.LOGIN_TOKEN,String.valueOf(adminLogin.getTid()),token);
 			String userJson = JSON.toJSONString(userInfo);
 
 			//干掉之前的token
@@ -144,6 +152,8 @@ public class UserServiceImpl extends BaseService implements UserService {
             map.put("realName",portalUser.getRealName());
             map.put("roleId",portalUser.getRoleId());
             map.put("roleName",portalUser.getRoleName());
+			map.put("companyId",company.getId());
+			map.put("companyName",company.getCompanyName());
             BaseVo baseVo = new BaseVo();
             baseVo.setData(map);
             return baseVo;

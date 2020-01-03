@@ -43,4 +43,12 @@ public class UserInfo {
 
 	/**邮箱**/
 	private String email;
+	/**
+	 * 公司id
+	 */
+	private Long companyId;
+	/**
+	 * 公司名称
+	 */
+	private String companyName;
 }

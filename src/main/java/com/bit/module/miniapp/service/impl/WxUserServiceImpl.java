@@ -11,10 +11,12 @@ import com.bit.common.consts.RedisKey;
 import com.bit.common.wx.WxLoginRs;
 import com.bit.common.informationEnum.TidUrlEnum;
 import com.bit.common.informationEnum.UserRoleEnum;
+import com.bit.module.manager.bean.Company;
 import com.bit.module.manager.bean.Project;
 import com.bit.module.manager.bean.User;
 import com.bit.module.manager.bean.UserRelRole;
 import com.bit.module.manager.dao.ProjectDao;
+import com.bit.module.manager.dao.UserCompanyDao;
 import com.bit.module.manager.dao.UserDao;
 import com.bit.module.manager.dao.UserRoleDao;
 import com.bit.module.manager.service.UserService;
@@ -68,6 +70,8 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
 
     @Autowired
 	private ProjectDao projectDao;
+	@Autowired
+	private UserCompanyDao userCompanyDao;
 
     /**
      * @description:  微信端登陆
@@ -116,6 +120,13 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
 			userInfo.setEmail(portalUser.getEmail());
 			userInfo.setToken(token);
 
+			//查询用户的公司
+			Company company = userCompanyDao.getUserCompanyByUserId(portalUser.getId());
+			if (company!=null){
+				userInfo.setCompanyId(company.getId());
+				userInfo.setCompanyName(company.getCompanyName());
+			}
+
             Integer tid = null;
             tid = TidUrlEnum.TERMINALURL_RESIDENT.getTid();
             String key1=RedisKeyUtil.getRedisKey(RedisKey.LOGIN_TOKEN,String.valueOf(tid),token);
@@ -158,6 +169,8 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
 			project.setCreateUserId(portalUser.getId());
 			List<Project> byParam = projectDao.findByParam(project);
 			map.put("project",byParam);
+			map.put("companyId",company.getId());
+			map.put("companyName",company.getCompanyName());
 
 			BaseVo baseVo = new BaseVo();
             baseVo.setData(map);

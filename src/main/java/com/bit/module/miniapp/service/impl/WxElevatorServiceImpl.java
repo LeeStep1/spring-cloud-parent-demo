@@ -49,222 +49,220 @@ import java.util.*;
 public class WxElevatorServiceImpl extends BaseService implements WxElevatorService {
 
 
-    @Autowired
-    private OptionsDao optionsDao;
+	@Autowired
+	private OptionsDao optionsDao;
 
 
-    @Autowired
-    private ProjectEleOptionsDao projectEleOptionsDao;
+	@Autowired
+	private ProjectEleOptionsDao projectEleOptionsDao;
 
-    @Autowired
-    private ElevatorTypeDao elevatorTypeDao;
+	@Autowired
+	private ElevatorTypeDao elevatorTypeDao;
 
-    @Autowired
-    private ProjectEleOrderBaseInfoDao projectEleOrderBaseInfoDao;
-
-
-    @Autowired
-    private ProjectEleOrderDao projectEleOrderDao;
-
-    @Autowired
-    private ProjectPriceDao projectPriceDao;
-
-    @Autowired
-    private EquationServiceImpl equationServiceImpl;
-    @Value("${upload.imagesPath}")
-    private String filePath;
+	@Autowired
+	private ProjectEleOrderBaseInfoDao projectEleOrderBaseInfoDao;
 
 
+	@Autowired
+	private ProjectEleOrderDao projectEleOrderDao;
 
-    @Override
-    public List<Options> getOptions(Integer optionType, Long elevatorTypeId, Long orderId) {
-        List<Options> ops = optionsDao.findOptionByElevatorType(elevatorTypeId, optionType);
-        Map cod = new HashMap<>();
-        cod.put("order_id", orderId);
-        List<ProjectEleOrderBaseInfo> list = projectEleOrderBaseInfoDao.selectByMap(cod);
-        cod.clear();
-        list.forEach(c -> {
-            cod.put(c.getParamKey(), c.getInfoValue());
-        });
-        List<Options> rs = equationServiceImpl.executeEquationsForOption(cod, ops);
-        return ops;
-    }
+	@Autowired
+	private ProjectPriceDao projectPriceDao;
 
-    /**
-     * @param optionType      : 填写的类型
-     * @param elevatorTypeId: 电梯类型的id
-     * @param orderBaseInfos: 订单基本信息
-     * @return : List
-     * @description: 获得相关的选项下拉
-     * @author liyujun
-     * @date 2019-12-25
-     */
-    @Override
-    public List<Options> getOptions(Integer optionType, Long elevatorTypeId, List<ProjectEleOrderBaseInfo> orderBaseInfos) {
-        ElevatorType e =elevatorTypeDao.selectById(elevatorTypeId);
-        List<Options> ops = optionsDao.findOptionByElevatorType(elevatorTypeId, optionType);
-        Map cod = new HashMap<>();
-        cod.clear();
-        orderBaseInfos.forEach(c -> {
-            cod.put(c.getParamKey(), c.getInfoValue());
-        });
-        cod.put("系列",e.getParamsKey());
-        cod.put("梯型",e.getCategory());
-        List<Options> rs = equationServiceImpl.executeEquationsForOption(cod, ops);
-        return rs;
-    }
+	@Autowired
+	private EquationServiceImpl equationServiceImpl;
+	@Value("${upload.imagesPath}")
+	private String filePath;
 
-    /**
-     * @param vo :
-     * @return : void
-     * @description: 微信端添加报价
-     * @author liyujun
-     * @date 2019-12-19
-     */
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Map wxAddReportInfo(ReportInfoVO vo) {
 
-        /**新增报价**/
-        Map<String, Object> baseParams = new HashMap<>(vo.getBaseinfo().size());
-        ProjectEleOrder order = new ProjectEleOrder();
-        order.setElevatorTypeId(vo.getElevatorTypeId());
-        ElevatorType elevatorType = elevatorTypeDao.selectById(vo.getElevatorTypeId());
-        order.setElevatorTypeName(elevatorType.getTypeName());
-        try {
-            baseParams = BeanReflectUtil.listmap(vo.getBaseinfo(), "paramKey", "infoValue");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        order.setRate(vo.getRate());
-        order.setProjectId(vo.getProjectId());
-        order.setNum(String.valueOf(baseParams.get("台量")));
-        Map<String, Object> cod = new HashMap<>();
-        cod.put("project_id", vo.getProjectId());
-        cod.put("version", -1);
-        List<ProjectPrice> list1 = projectPriceDao.selectByMap(cod);
-        ProjectPrice a = new ProjectPrice();
-        if (list1.size() == 0) {
-            a.setCreateTime(new Date());
-            a.setProjectId(vo.getProjectId());
-            a.setVersion(-1);
-            a.setCreateUserId(getCurrentUserInfo().getId());
-            a.setStage(StageEnum.STAGE_ONE.getCode());
-            a.setStageName(StageEnum.STAGE_ONE.getInfo());
-            a.setStandard(StandardEnum.STANDARD_DEFAULT.getCode());
-            a.setStandardName(StandardEnum.STANDARD_DEFAULT.getInfo());
-            projectPriceDao.insert(a);
-        } else {
-            a = list1.get(0);
-        }
-        order.setVersionId(a.getId());
-        projectEleOrderDao.insert(order);
-        // 需要优化为批量新增方法,填写整体的基础信息
-        vo.getBaseinfo().stream().forEach(c -> {
-            c.setOrderId(order.getId());
-        });
+	@Override
+	public List<Options> getOptions(Integer optionType, Long elevatorTypeId, Long orderId) {
+		List<Options> ops = optionsDao.findOptionByElevatorType(elevatorTypeId, optionType);
+		Map cod = new HashMap<>();
+		cod.put("order_id", orderId);
+		List<ProjectEleOrderBaseInfo> list = projectEleOrderBaseInfoDao.selectByMap(cod);
+		cod.clear();
+		list.forEach(c -> {
+			cod.put(c.getParamKey(), c.getInfoValue());
+		});
+		List<Options> rs = equationServiceImpl.executeEquationsForOption(cod, ops);
+		return ops;
+	}
+
+	/**
+	 * @param optionType      : 填写的类型
+	 * @param elevatorTypeId: 电梯类型的id
+	 * @param orderBaseInfos: 订单基本信息
+	 * @return : List
+	 * @description: 获得相关的选项下拉
+	 * @author liyujun
+	 * @date 2019-12-25
+	 */
+	@Override
+	public List<Options> getOptions(Integer optionType, Long elevatorTypeId, List<ProjectEleOrderBaseInfo> orderBaseInfos) {
+		ElevatorType e = elevatorTypeDao.selectById(elevatorTypeId);
+		List<Options> ops = optionsDao.findOptionByElevatorType(elevatorTypeId, optionType);
+		Map cod = new HashMap<>();
+		cod.clear();
+		orderBaseInfos.forEach(c -> {
+			cod.put(c.getParamKey(), c.getInfoValue());
+		});
+		cod.put("系列", e.getParamsKey());
+		cod.put("梯型", e.getCategory());
+		List<Options> rs = equationServiceImpl.executeEquationsForOption(cod, ops);
+		return rs;
+	}
+
+	/**
+	 * @param vo :
+	 * @return : void
+	 * @description: 微信端添加报价
+	 * @author liyujun
+	 * @date 2019-12-19
+	 */
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public Map wxAddReportInfo(ReportInfoVO vo) {
+
+		/**新增报价**/
+		Map<String, Object> baseParams = new HashMap<>(vo.getBaseinfo().size());
+		ProjectEleOrder order = new ProjectEleOrder();
+		order.setElevatorTypeId(vo.getElevatorTypeId());
+		ElevatorType elevatorType = elevatorTypeDao.selectById(vo.getElevatorTypeId());
+		order.setElevatorTypeName(elevatorType.getTypeName());
+		try {
+			baseParams = BeanReflectUtil.listmap(vo.getBaseinfo(), "paramKey", "infoValue");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		order.setRate(vo.getRate());
+		order.setProjectId(vo.getProjectId());
+		order.setNum(String.valueOf(baseParams.get("台量")));
+		Map<String, Object> cod = new HashMap<>();
+		cod.put("project_id", vo.getProjectId());
+		cod.put("version", -1);
+		List<ProjectPrice> list1 = projectPriceDao.selectByMap(cod);
+		ProjectPrice a = new ProjectPrice();
+		if (list1.size() == 0) {
+			a.setCreateTime(new Date());
+			a.setProjectId(vo.getProjectId());
+			a.setVersion(-1);
+			a.setCreateUserId(getCurrentUserInfo().getId());
+			a.setStage(StageEnum.STAGE_ONE.getCode());
+			a.setStageName(StageEnum.STAGE_ONE.getInfo());
+			a.setStandard(StandardEnum.STANDARD_DEFAULT.getCode());
+			a.setStandardName(StandardEnum.STANDARD_DEFAULT.getInfo());
+			projectPriceDao.insert(a);
+		} else {
+			a = list1.get(0);
+		}
+		order.setVersionId(a.getId());
+		projectEleOrderDao.insert(order);
+		// 需要优化为批量新增方法,填写整体的基础信息
+		vo.getBaseinfo().stream().forEach(c -> {
+			c.setOrderId(order.getId());
+		});
 		List<ProjectEleOrderBaseInfo> baseinfo = vo.getBaseinfo();
-		if (CollectionUtils.isNotEmpty(baseinfo)){
+		if (CollectionUtils.isNotEmpty(baseinfo)) {
 			projectEleOrderBaseInfoDao.batchAdd(baseinfo);
 		}
 
-        vo.getProjectEleOptions().stream().forEach(c -> {
-            c.setOrderId(order.getId());
-            c.setProjectInfoId(vo.getProjectId());
-        });
+		vo.getProjectEleOptions().stream().forEach(c -> {
+			c.setOrderId(order.getId());
+			c.setProjectInfoId(vo.getProjectId());
+		});
 
 		List<ProjectEleOptions> projectEleOptions = vo.getProjectEleOptions();
-		if (CollectionUtils.isNotEmpty(projectEleOptions)){
+		if (CollectionUtils.isNotEmpty(projectEleOptions)) {
 			projectEleOptionsDao.batchAdd(projectEleOptions);
 		}
 
-        // 需要进行报价算法
-        Map par = new HashMap();
-        par.put("下浮", vo.getRate());
-        par.put("台量",order.getNum());
+		// 需要进行报价算法
+		Map par = new HashMap();
+		par.put("下浮", vo.getRate());
+		par.put("台量", order.getNum());
 
 
-        par.put("orderId",order.getId());
-        equationServiceImpl.executeCount(par);
-        //Map rs = equationServiceImpl.executeEquations(par);
-        if (par != null || par.containsKey("是否为非标")) {
-            if (Boolean.TRUE.equals(par.get("是否为非标"))) {
-                a.setStandard(StandardEnum.STANDARD_ZERO.getCode());
-                a.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
-            } else {
-                a.setStandard(StandardEnum.STANDARD_ONE.getCode());
-                a.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
-            }
-            projectPriceDao.updateById(a);
-        }
-
-        Map rrs = new HashMap();
-        rrs.put("nums", order.getNum());
-        par.clear();
-        par.put("project_id", vo.getProjectId());
-        par.put("version", -1);
-        rrs.put("elePriceId",a.getId());
-        rrs.put("orderId",order.getId());
-        ProjectEleOrder a1=projectEleOrderDao.selectById(order.getId());
-        if(a1!=null){
-            rrs.put("orderPrice",a1.getTotalPrice());
-        }
-        return rrs;
-    }
-
-
-
-    /**
-     * @param projectId
-     * @return : void
-     * @description: 计算按钮
-     * @author liyujun
-     * @date 2019-12-19
-     */
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Map pojectPriceTest(Long projectId) {
-        Map cod = new HashMap();
-        cod.put("projectId", projectId);
-        cod.put("verison_id", -1);
-        equationServiceImpl.executeCountProjectPrice(cod);
-        Map par = new HashMap();
-        par.put("project_id", projectId);
-        par.put("version", -1);
-        List<ProjectPrice> projectPriceList = projectPriceDao.selectByMap(par);
-        par.clear();
-        par.put("version_id", projectPriceList.get(0).getId());
-        par.put("project_id", projectId);
-        cod.clear();
-        cod.put("totalPrice", projectPriceList.get(0).getTotalPrice());
-        List<ProjectEleOrder> list = projectEleOrderDao.selectByMap(par);
-        cod.put("orderPrice", list);
-        return cod;
-    }
-
-    /**
-     * @param projectId
-     * @return : void
-     * @description: 转正式版本
-     * @author liyujun
-     * @date 2019-12-19
-     */
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public BaseVo proPriceToVersion(Long projectId) {
-        Integer version = projectPriceDao.getMaxVersion(projectId);
-        //算价钱
-        Map <String,Object> cod=new HashMap<>();
-        cod.put("projectId",projectId);
-        cod.put("version","-1");
-
-		ProjectPrice projectPriceByProjectId = projectPriceDao.getProjectPriceByProjectIdWithVersion(projectId,-1);
-		if (projectPriceByProjectId!=null){
-			if (projectPriceByProjectId.getInstallFlag().equals(Const.FLAG_YES)){
-				cod.put("包括安装","true");
+		par.put("orderId", order.getId());
+		equationServiceImpl.executeCount(par);
+		//Map rs = equationServiceImpl.executeEquations(par);
+		if (par != null || par.containsKey("是否为非标")) {
+			if (Boolean.TRUE.equals(par.get("是否为非标"))) {
+				a.setStandard(StandardEnum.STANDARD_ZERO.getCode());
+				a.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
+			} else {
+				a.setStandard(StandardEnum.STANDARD_ONE.getCode());
+				a.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
 			}
-			if (projectPriceByProjectId.getTransportFlag().equals(Const.FLAG_YES)){
-				cod.put("包括运费","true");
+			projectPriceDao.updateById(a);
+		}
+
+		Map rrs = new HashMap();
+		rrs.put("nums", order.getNum());
+		par.clear();
+		par.put("project_id", vo.getProjectId());
+		par.put("version", -1);
+		rrs.put("elePriceId", a.getId());
+		rrs.put("orderId", order.getId());
+		ProjectEleOrder a1 = projectEleOrderDao.selectById(order.getId());
+		if (a1 != null) {
+			rrs.put("orderPrice", a1.getTotalPrice());
+		}
+		return rrs;
+	}
+
+
+	/**
+	 * @param projectId
+	 * @return : void
+	 * @description: 计算按钮
+	 * @author liyujun
+	 * @date 2019-12-19
+	 */
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public Map pojectPriceTest(Long projectId) {
+		Map cod = new HashMap();
+		cod.put("projectId", projectId);
+		cod.put("verison_id", -1);
+		equationServiceImpl.executeCountProjectPrice(cod);
+		Map par = new HashMap();
+		par.put("project_id", projectId);
+		par.put("version", -1);
+		List<ProjectPrice> projectPriceList = projectPriceDao.selectByMap(par);
+		par.clear();
+		par.put("version_id", projectPriceList.get(0).getId());
+		par.put("project_id", projectId);
+		cod.clear();
+		cod.put("totalPrice", projectPriceList.get(0).getTotalPrice());
+		List<ProjectEleOrder> list = projectEleOrderDao.selectByMap(par);
+		cod.put("orderPrice", list);
+		return cod;
+	}
+
+	/**
+	 * @param projectId
+	 * @return : void
+	 * @description: 转正式版本
+	 * @author liyujun
+	 * @date 2019-12-19
+	 */
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public BaseVo proPriceToVersion(Long projectId) {
+		Integer version = projectPriceDao.getMaxVersion(projectId);
+		//算价钱
+		Map<String, Object> cod = new HashMap<>();
+		cod.put("projectId", projectId);
+		cod.put("version", "-1");
+
+		ProjectPrice projectPriceByProjectId = projectPriceDao.getProjectPriceByProjectIdWithVersion(projectId, -1);
+		if (projectPriceByProjectId != null) {
+			if (projectPriceByProjectId.getInstallFlag().equals(Const.FLAG_YES)) {
+				cod.put("包括安装", "true");
+			}
+			if (projectPriceByProjectId.getTransportFlag().equals(Const.FLAG_YES)) {
+				cod.put("包括运费", "true");
 			}
 		}
 
@@ -277,92 +275,92 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 //                }
 //            });
 //        }
-        equationServiceImpl.executeCountProjectPrice (cod);
-        if (version != null && version > -1) {
-            version = version + 1;
+		equationServiceImpl.executeCountProjectPrice(cod);
+		if (version != null && version > -1) {
+			version = version + 1;
 
-        } else if (version.equals(-1) || version == null) {
-            version = 1;
-        }
-        //根据projectid和version查询记录 只有一条
-        ProjectPrice o = new ProjectPrice();
-        o.setVersion(-1);
-        o.setProjectId(projectId);
-        QueryWrapper<ProjectPrice> projectPriceQueryWrapper = new QueryWrapper<>();
-		ProjectPrice projectPrice = projectPriceDao.getProjectPriceByProjectIdWithVersion(projectId,-1);
+		} else if (version.equals(-1) || version == null) {
+			version = 1;
+		}
+		//根据projectid和version查询记录 只有一条
+		ProjectPrice o = new ProjectPrice();
+		o.setVersion(-1);
+		o.setProjectId(projectId);
+		QueryWrapper<ProjectPrice> projectPriceQueryWrapper = new QueryWrapper<>();
+		ProjectPrice projectPrice = projectPriceDao.getProjectPriceByProjectIdWithVersion(projectId, -1);
 		//更新记录
 		ProjectPrice entity = new ProjectPrice();
-        entity.setVersion(version);
-        projectPriceQueryWrapper.setEntity(o);
-        projectPriceDao.update(entity, projectPriceQueryWrapper);
+		entity.setVersion(version);
+		projectPriceQueryWrapper.setEntity(o);
+		projectPriceDao.update(entity, projectPriceQueryWrapper);
 
-        BaseVo baseVo = new BaseVo();
-        baseVo.setData(projectPrice.getId());
-        return baseVo;
-    }
-
-    /**
-     * @param projectId 项目id
-     * @param projectPriceId 报价数据的id 就是t_project_ele_order的versionid
-     * @return : void
-     * @description: 修改前的备份数据
-     * @author liyujun
-     * @date 2019-12-26
-     */
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public BaseVo updateProjectPrice(Long projectId, Long projectPriceId) {
 		BaseVo baseVo = new BaseVo();
-        Map<String, Object> p = new HashMap<>();
-        //根据订单的报价版本 查询报价记录
-        ProjectPrice projectPrice = projectPriceDao.selectById(projectPriceId);
+		baseVo.setData(projectPrice.getId());
+		return baseVo;
+	}
 
-        //订单id集合
-        List<Long> ids = new ArrayList();
-        List<Long> idsNew = new ArrayList();
-        if (projectPrice.getVersion() == -1) {
+	/**
+	 * @param projectId      项目id
+	 * @param projectPriceId 报价数据的id 就是t_project_ele_order的versionid
+	 * @return : void
+	 * @description: 修改前的备份数据
+	 * @author liyujun
+	 * @date 2019-12-26
+	 */
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public BaseVo updateProjectPrice(Long projectId, Long projectPriceId) {
+		BaseVo baseVo = new BaseVo();
+		Map<String, Object> p = new HashMap<>();
+		//根据订单的报价版本 查询报价记录
+		ProjectPrice projectPrice = projectPriceDao.selectById(projectPriceId);
+
+		//订单id集合
+		List<Long> ids = new ArrayList();
+		List<Long> idsNew = new ArrayList();
+		if (projectPrice.getVersion() == -1) {
 			baseVo.setData(p);
 			return baseVo;
-        } else {
-            //正式版本copy 转成草稿
-            if (projectPrice != null) {
-                //删除草稿
-                delELePriceInfo(projectId);
-                p.put("version_id", projectPrice.getId().longValue());
-                //根据versionid查询订单记录
-                List<ProjectEleOrder> list1 = projectEleOrderDao.selectByMap(p);
-                projectPrice.setId(null);
-                projectPrice.setVersion(-1);
-                projectPrice.setCreateTime(new Date());
-                //新增一个草稿报价
-                projectPriceDao.insert(projectPrice);
-                //todo 优化查询算法
-                for (ProjectEleOrder pro : list1) {//遍历订单数据，查询关联的option
+		} else {
+			//正式版本copy 转成草稿
+			if (projectPrice != null) {
+				//删除草稿
+				delELePriceInfo(projectId);
+				p.put("version_id", projectPrice.getId().longValue());
+				//根据versionid查询订单记录
+				List<ProjectEleOrder> list1 = projectEleOrderDao.selectByMap(p);
+				projectPrice.setId(null);
+				projectPrice.setVersion(-1);
+				projectPrice.setCreateTime(new Date());
+				//新增一个草稿报价
+				projectPriceDao.insert(projectPrice);
+				//todo 优化查询算法
+				for (ProjectEleOrder pro : list1) {//遍历订单数据，查询关联的option
 					//准备order 数据
-                    ids.add(pro.getId());
-                }
-                //根据订单id集合批量查询项目的可选项
-                QueryWrapper<ProjectEleOptions> queryWrapper = new QueryWrapper<>();
-                queryWrapper.in("order_id", ids);
-                List<ProjectEleOptions> optionsList = projectEleOptionsDao.selectList(queryWrapper);//得到原来的关联的数据
-                for (ProjectEleOrder pro : list1) {
-                	long orderIdOld=pro.getId();
+					ids.add(pro.getId());
+				}
+				//根据订单id集合批量查询项目的可选项
+				QueryWrapper<ProjectEleOptions> queryWrapper = new QueryWrapper<>();
+				queryWrapper.in("order_id", ids);
+				List<ProjectEleOptions> optionsList = projectEleOptionsDao.selectList(queryWrapper);//得到原来的关联的数据
+				for (ProjectEleOrder pro : list1) {
+					long orderIdOld = pro.getId();
 
 
-                    pro.setId(null);
-                    //批量新增 返回id
+					pro.setId(null);
+					//批量新增 返回id
 					pro.setVersionId(projectPrice.getId());
-                    projectEleOrderDao.insert(pro);
+					projectEleOrderDao.insert(pro);
 					//新增基础数据
-					Map cod=new HashMap();
-					cod.put("order_id",orderIdOld);
-					List<ProjectEleOrderBaseInfo> list=projectEleOrderBaseInfoDao.selectByMap(cod);
-					list.forEach(c->{
+					Map cod = new HashMap();
+					cod.put("order_id", orderIdOld);
+					List<ProjectEleOrderBaseInfo> list = projectEleOrderBaseInfoDao.selectByMap(cod);
+					list.forEach(c -> {
 						c.setOrderId(pro.getId());
 						c.setId(null);
 					});
 					projectEleOrderBaseInfoDao.batchAdd(list);
-                    idsNew.add(pro.getId());
+					idsNew.add(pro.getId());
 					for (ProjectEleOptions options : optionsList) {
 						//todo 优化批量插入
 						if (options.getOrderId().equals(orderIdOld)) {
@@ -372,7 +370,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 						}
 
 					}
-                   /* for (Long orderId : ids) {
+				   /* for (Long orderId : ids) {
                         for (ProjectEleOptions options : optionsList) {
                             //todo 优化批量插入
                             if (options.getOrderId().equals(orderId)) {
@@ -383,44 +381,46 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
                         }
                     }*/
-                }
-            }
+				}
+			}
 
-        }
-        p.put("orderIds", ids);
-        p.put("newOrderIds", idsNew);
-        p.put("projectPriceId", projectPrice.getId());
-        p.put("version", -1);
+		}
+		p.put("orderIds", ids);
+		p.put("newOrderIds", idsNew);
+		p.put("projectPriceId", projectPrice.getId());
+		p.put("version", -1);
 		baseVo.setData(p);
 		return baseVo;
-    }
+	}
 
-    /**
-     * 根据订单id删除订单
-     * @param orderId
-     * @return
-     */
-    @Override
-    @Transactional
-    public BaseVo delOrderByOrderId(Long orderId) {
-        //先删除关联数据
-        projectEleOrderBaseInfoDao.delByOrderId(orderId);
+	/**
+	 * 根据订单id删除订单
+	 *
+	 * @param orderId
+	 * @return
+	 */
+	@Override
+	@Transactional
+	public BaseVo delOrderByOrderId(Long orderId) {
+		//先删除关联数据
+		projectEleOrderBaseInfoDao.delByOrderId(orderId);
 
-        projectEleOptionsDao.delByOrderId(orderId);
-        //删除订单记录
-        projectEleOrderDao.deleteById(orderId);
+		projectEleOptionsDao.delByOrderId(orderId);
+		//删除订单记录
+		projectEleOrderDao.deleteById(orderId);
 
-        return successVo();
-    }
+		return successVo();
+	}
 
-    /**
-     * 更新订单
-     * @param vo
-     * @return
-     */
-    @Override
-    @Transactional
-    public BaseVo updateOrder(ReportInfoVO vo) {
+	/**
+	 * 更新订单
+	 *
+	 * @param vo
+	 * @return
+	 */
+	@Override
+	@Transactional
+	public BaseVo updateOrder(ReportInfoVO vo) {
 		BaseVo baseVo = new BaseVo();
 //		Integer version = projectEleOrderDao.getPriceVersionByOrderId(vo.getOrderId());
 		//先删除订单记录
@@ -437,11 +437,12 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 //			baseVo.setData(map);
 //		}
 
-        return baseVo;
-    }
+		return baseVo;
+	}
 
 	/**
 	 * 更新报价表的运输 和 安装 标识
+	 *
 	 * @param projectPrice
 	 * @return
 	 */
@@ -453,90 +454,87 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
 
 	/**
-     * @param projectId :
-     * @return : void
-     * @description: 删除旧版本
-     * @author liyujun
-     * @date 2019-12-26
-     */
-    private void delELePriceInfo(Long projectId) {
-        Map<String, Object> p = new HashMap<>();
-        p.put("project_id", projectId);
-        p.put("version", -1);
-        List<ProjectPrice> list = projectPriceDao.selectByMap(p);
-        if (list.size() == 1) {
-            p.clear();
-            ProjectPrice a = list.get(0);
-            p.put("version_id", a.getId());
-            List<ProjectEleOrder> orderList = projectEleOrderDao.selectByMap(p);
-            if (orderList.size() > 0) {
-                List<Long> ids = new ArrayList<>();
-                orderList.forEach(c -> {
-                    ids.add(c.getId());
-                });
-                QueryWrapper<ProjectEleOptions> queryWrapper = new QueryWrapper<>();
-                queryWrapper.in("order_id", ids);
-                projectEleOptionsDao.delete(queryWrapper);//删除所选项；
-                QueryWrapper<ProjectEleOrder> queryWrapper1 = new QueryWrapper<>();
+	 * @param projectId :
+	 * @return : void
+	 * @description: 删除旧版本
+	 * @author liyujun
+	 * @date 2019-12-26
+	 */
+	private void delELePriceInfo(Long projectId) {
+		Map<String, Object> p = new HashMap<>();
+		p.put("project_id", projectId);
+		p.put("version", -1);
+		List<ProjectPrice> list = projectPriceDao.selectByMap(p);
+		if (list.size() == 1) {
+			p.clear();
+			ProjectPrice a = list.get(0);
+			p.put("version_id", a.getId());
+			List<ProjectEleOrder> orderList = projectEleOrderDao.selectByMap(p);
+			if (orderList.size() > 0) {
+				List<Long> ids = new ArrayList<>();
+				orderList.forEach(c -> {
+					ids.add(c.getId());
+				});
+				QueryWrapper<ProjectEleOptions> queryWrapper = new QueryWrapper<>();
+				queryWrapper.in("order_id", ids);
+				projectEleOptionsDao.delete(queryWrapper);//删除所选项；
+				QueryWrapper<ProjectEleOrder> queryWrapper1 = new QueryWrapper<>();
 				queryWrapper1.eq("version_id", a.getId());
-                projectEleOrderDao.delete(queryWrapper1);//删除电梯订单；
-            }
-        }
-        QueryWrapper<ProjectPrice> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("version", -1);
-		queryWrapper.eq("project_id",projectId);
-        projectPriceDao.delete(queryWrapper);//删除草稿状态
+				projectEleOrderDao.delete(queryWrapper1);//删除电梯订单；
+			}
+		}
+		QueryWrapper<ProjectPrice> queryWrapper = new QueryWrapper<>();
+		queryWrapper.eq("version", -1);
+		queryWrapper.eq("project_id", projectId);
+		projectPriceDao.delete(queryWrapper);//删除草稿状态
 
-    }
+	}
 
 
+	/**
+	 * 生成报价单发送邮件
+	 *
+	 * @param projectPriceId (id)
+	 * @return
+	 */
+	@Override
+	public void sendPriceMail(Long projectPriceId) {
 
-    /**
-     * 生成报价单发送邮件
-     * @param projectPriceId  (id)
-     * @return
-     */
-   @Override
-   public void sendPriceMail(Long projectPriceId){
+		Map cod = new HashMap();
+		cod.put("version_id", projectPriceId);
+		ProjectPrice p = projectPriceDao.selectById(projectPriceId);
+		if (p != null) {
+			cod.put("project_id", p.getProjectId());
+		}
+		//订单数据
+		List<ProjectEleOrder> orderList = projectEleOrderDao.selectByMap(cod);
+		List<ExcelVo> listVo = new ArrayList<ExcelVo>();
+		List<OpenOption> optionList = new ArrayList<>();
+		int i = 1;
+		for (ProjectEleOrder c : orderList) {
+			ExcelVo vo = new ExcelVo();
+			vo.setElevatorName(c.getElevatorTypeName());
+			vo.setNums(c.getNum());
+			vo.setInstallPrice(c.getInstallPrice());
+			vo.setSingleTotalPrice(c.getSingleTotalPrice());
+			vo.setTotalPrice(c.getTotalPrice());
+			vo.setCid(i);
+			Map codss = new HashMap();
+			codss.put("order_id", c.getId());
+			List<ProjectEleOrderBaseInfo> list = projectEleOrderBaseInfoDao.selectByMap(codss);
+			list.forEach(cc -> {
 
-       Map cod=new HashMap();
-     /*  cod.put("version_id",49);
-       cod.put("project_id",13);*/
-       cod.put("version_id",projectPriceId);
-        ProjectPrice p= projectPriceDao.selectById(projectPriceId);
-        if(p!=null){
-            cod.put("project_id",p.getProjectId());
-        }
-      // cod.put("project_id",projectPrice.getProjectId());
-       //订单数据
-       List<ProjectEleOrder> orderList= projectEleOrderDao.selectByMap(cod);
-       List<ExcelVo>listVo=new ArrayList<ExcelVo>();
-       List<OpenOption>optionList=new ArrayList<>();
-       int i=1;
-       for (ProjectEleOrder c:orderList) {
-           ExcelVo vo = new ExcelVo();
-           vo.setElevatorName(c.getElevatorTypeName());
-           vo.setNums(c.getNum());
-           vo.setInstallPrice(c.getInstallPrice());
-           vo.setSingleTotalPrice(c.getSingleTotalPrice());
-           vo.setTotalPrice(c.getTotalPrice());
-           vo.setCid(i);
-           Map codss = new HashMap();
-           codss.put("order_id", c.getId());
-           List<ProjectEleOrderBaseInfo> list = projectEleOrderBaseInfoDao.selectByMap(codss);
-           list.forEach(cc -> {
+				if (cc.getParamKey().equals("速度")) {
+					vo.setSpeed(cc.getInfoValue());
+				} else if (cc.getParamKey().equals("载重")) {
+					vo.setWeight(cc.getInfoValue());
+				} else if (cc.getParamKey().equals("层站")) {
+					vo.setFloors(cc.getInfoValue());
+				}
+			});
 
-               if (cc.getParamKey().equals("速度")) {
-                   vo.setSpeed(cc.getInfoValue());
-               } else if (cc.getParamKey().equals("载重")) {
-                   vo.setWeight(cc.getInfoValue());
-               } else if (cc.getParamKey().equals("层站")) {
-                   vo.setFloors(cc.getInfoValue());
-               }
-           });
-
-           //List<ProjectEleOptionsVo> optins = projectEleOptionsDao.findOptionByOrder(c.getId(), 3);
-           listVo.add(vo);
+			//List<ProjectEleOptionsVo> optins = projectEleOptionsDao.findOptionByOrder(c.getId(), 3);
+			listVo.add(vo);
      /* 选装项      if (optins.size() > 0) {
                 ExcelVo voOption1 = new ExcelVo();
                 voOption1.setElevatorName(c.getElevatorTypeName() + "非标项");//非标项单独一行
@@ -549,75 +547,74 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
             }*/
 
-           i++;
-       }
-       ExcelVo  rs=new ExcelVo();
-       if(orderList.size()>0){
-           ProjectPrice aa = projectPriceDao.selectById(orderList.get(0).getVersionId());
-           rs.setElevatorName("总价");
-           rs.setTotalPrice(aa.getTotalPrice());
-           rs.setInstallPrice( ConvertMoneyUtil.convert(Double.parseDouble(orderList.get(0).getTotalPrice())));
-       }else{
-           rs.setElevatorName("总价");
-           rs.setTotalPrice("0");
-           rs.setInstallPrice( "零");
-       }
-       listVo.add(rs);
-       export(listVo,"电梯价格单");
+			i++;
+		}
+		ExcelVo rs = new ExcelVo();
+		if (orderList.size() > 0) {
+			ProjectPrice aa = projectPriceDao.selectById(orderList.get(0).getVersionId());
+			rs.setElevatorName("总价");
+			rs.setTotalPrice(aa.getTotalPrice());
+			rs.setInstallPrice(ConvertMoneyUtil.convert(Double.parseDouble(orderList.get(0).getTotalPrice())));
+		} else {
+			rs.setElevatorName("总价");
+			rs.setTotalPrice("0");
+			rs.setInstallPrice("零");
+		}
+		listVo.add(rs);
+		export(listVo, "电梯价格单");
 
-    }
+	}
 
 
-
-    public void export(List<ExcelVo> clsList,String sheetName) {
-        String filename= UUIDUtil.getUUID();
+	public void export(List<ExcelVo> clsList, String sheetName) {
+		String filename = UUIDUtil.getUUID();
         /*String path="D:/test/1/exportCls.xls";
         File aa=new File("D:/test/1/exportCls.xls");*/
+		String path = filePath+"/xls/"+filename+".xls";
+//		String path = "D:\\upload\\1.xls";
+		File aa = new File(path);
+		if (!aa.getParentFile().exists()) {
+			aa.getParentFile().mkdirs();
+		}
+		try {
+			aa.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try (OutputStream out = new FileOutputStream(aa)) {
+			ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLSX);
 
-        String path="D:\\upload\\1.xls";
-        File aa=new File(path);
-        if(!aa.getParentFile().exists()){
-            aa.getParentFile().mkdirs();
-        }
-        try {
-            aa.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try(OutputStream out=new FileOutputStream(aa)) {
-            ExcelWriter writer=new ExcelWriter(out, ExcelTypeEnum.XLSX);
-
-            if(!clsList.isEmpty()) {
-                Sheet sheet=new Sheet(1,0,clsList.get(0).getClass());
-                sheet.setSheetName(sheetName);
-                writer.write(clsList, sheet);
-            }
-            writer.finish();
-            EmailInfo emailInfo=new EmailInfo();
-            List<String> toList = new ArrayList<String>();
-            toList.add("star9c2009@163.com");
-            emailInfo.setToAddress(toList);
-            List<EmailAttachment> attachments = new ArrayList<>();
-            EmailAttachment emailAttachment = new EmailAttachment();
-            emailAttachment.setPath(path);
-            emailAttachment.setName("报价.xlsx");
+			if (!clsList.isEmpty()) {
+				Sheet sheet = new Sheet(1, 0, clsList.get(0).getClass());
+				sheet.setSheetName(sheetName);
+				writer.write(clsList, sheet);
+			}
+			writer.finish();
+			EmailInfo emailInfo = new EmailInfo();
+			List<String> toList = new ArrayList<String>();
+			toList.add("star9c2009@163.com");
+			emailInfo.setToAddress(toList);
+			List<EmailAttachment> attachments = new ArrayList<>();
+			EmailAttachment emailAttachment = new EmailAttachment();
+			emailAttachment.setPath(path);
+			emailAttachment.setName("报价.xlsx");
 			attachments.add(emailAttachment);
-            //标题
-            emailInfo.setSubject("电梯报价报价");
-            //内容
-            emailInfo.setContent("内容：<h1>电梯报价报价,请查收附件</h1>");
-            emailInfo.setAttachments(attachments);
+			//标题
+			emailInfo.setSubject("电梯报价报价");
+			//内容
+			emailInfo.setContent("内容：<h1>电梯报价报价,请查收附件</h1>");
+			emailInfo.setAttachments(attachments);
 			emailInfo.setCcAddress(toList);
-            MailUtil.send(emailInfo);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new BusinessException("发送失败{}"+e.getMessage());
-        }finally {
-            aa.delete();
-        }
+			MailUtil.send(emailInfo);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new BusinessException("发送失败{}" + e.getMessage());
+		} finally {
+			aa.delete();
+		}
 
-        //aa.getParentFile().delete();  删除上一级
-    }
+		//aa.getParentFile().delete();  删除上一级
+	}
 
 
 }

@@ -1,8 +1,12 @@
 package com.bit.module.manager.dao;
 
+import com.bit.module.manager.bean.Company;
 import com.bit.module.manager.bean.UserCompany;
+import com.bit.module.manager.vo.UserCompanyVO;
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -42,5 +46,12 @@ public interface UserCompanyDao {
     * 删除记录
     */
 	void delUserCompanyById(Long id);
+
+	/**
+	 * 根据用户id查询用户公司关联关系
+	 * @param userId
+	 * @return
+	 */
+	Company getUserCompanyByUserId(@Param(value = "userId") Long userId);
 	
 }
