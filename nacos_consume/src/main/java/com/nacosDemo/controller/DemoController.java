@@ -9,6 +9,7 @@ import com.nacosDemo.until.RedisKeyUntil;
 import io.prometheus.client.Collector;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,7 +106,11 @@ public class DemoController {
 
         String directStr = JSON.toJSONString(direct);
 
-        rabbitTemplate.convertAndSend("fanoutExchange","",directStr);
+        //设置消息持久化
+        rabbitTemplate.convertAndSend("fanoutExchange","",directStr,message -> {
+            message.getMessageProperties().setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+            return message
+        });
 
         return "成功";
     }
