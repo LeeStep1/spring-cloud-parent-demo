@@ -75,7 +75,7 @@
 			</if>
 
 			<if test="portalUserVo.companyId != null">
-				and t.role_id = #{portalUserVo.companyId}
+				and tcu.company_id = #{portalUserVo.companyId}
 			</if>
 		</where>
 		ORDER BY
