@@ -51,7 +51,7 @@
 			t_user t
 			LEFT JOIN t_user_role tp ON t.id = tp.user_id
 			LEFT JOIN t_role tpr ON tp.role_id = tpr.id
-		    LEFT JOIN (SELECT  tsr.id company_id,tca.company_name company_name  from t_company_user tsr, t_company tca                       where                  tsr.company_id=tca.id
+		    LEFT JOIN (SELECT  tsr.id company_id,tca.company_name company_name  from t_user_company tsr, t_company tca                       where                  tsr.company_id=tca.id
 		       )tcu ON  t.id=tcu.user_id
 		<where>
 			<if test="portalUserVo.userName != null and portalUserVo.userName != ''">
