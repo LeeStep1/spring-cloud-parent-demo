@@ -273,6 +273,6 @@ public class DemoController {
     @GetMapping("/getThreadString")
     public void getThreadString(){
         String ss = RequestThread.getThread();
-        System.out.println("取到的uuid 是..............."+ss);
+        System.out.println(Thread.currentThread().getName()+ "  取到的uuid 是..............."+ss);
     }
 }
