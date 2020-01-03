@@ -6,6 +6,7 @@ import com.bit.module.manager.bean.Company;
 import com.bit.module.manager.dao.CompanyDao;
 import com.bit.module.manager.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
  * @Author: liyujun
  * @Date: 2020-01-03
  **/
+@Service("companyService")
 public class CompanyServiceImpl  extends BaseService implements CompanyService {
 
     @Autowired
