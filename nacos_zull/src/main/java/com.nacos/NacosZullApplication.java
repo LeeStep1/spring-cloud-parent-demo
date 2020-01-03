@@ -4,6 +4,7 @@ import com.netflix.loadbalancer.IRule;
 import com.netflix.loadbalancer.RandomRule;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -20,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 @EnableDiscoveryClient
 @EnableZuulProxy
 @RefreshScope
+@ServletComponentScan
 public class NacosZullApplication {
     public static void main(String[] args) {
         SpringApplication.run(NacosZullApplication.class,args);

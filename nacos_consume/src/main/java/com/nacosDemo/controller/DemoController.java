@@ -6,6 +6,7 @@ import com.nacosDemo.commonEnum.RedisKey;
 import com.nacosDemo.until.CacheUtil;
 import com.nacosDemo.until.DistributedLock;
 import com.nacosDemo.until.RedisKeyUntil;
+import com.nacosDemo.until.RequestThread;
 import io.prometheus.client.Collector;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.Message;
@@ -267,5 +268,11 @@ public class DemoController {
         List<DirectMessage> dms = directMessageList.stream().filter(dm->dm.getCount()>5).collect(Collectors.toList());
 
         System.out.println(dms);
+    }
+
+    @GetMapping("/getThreadString")
+    public void getThreadString(){
+        String ss = RequestThread.getThread();
+        System.out.println("取到的uuid 是..............."+ss);
     }
 }
