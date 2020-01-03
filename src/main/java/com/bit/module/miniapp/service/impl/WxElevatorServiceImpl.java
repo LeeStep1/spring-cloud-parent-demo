@@ -10,6 +10,7 @@ import com.bit.base.vo.BaseVo;
 import com.bit.common.consts.Const;
 import com.bit.common.informationEnum.StageEnum;
 import com.bit.common.informationEnum.StandardEnum;
+import com.bit.common.wxenum.ResultCode;
 import com.bit.module.manager.bean.*;
 import com.bit.module.manager.dao.*;
 import com.bit.module.manager.service.Impl.EquationServiceImpl;
@@ -17,7 +18,6 @@ import com.bit.module.miniapp.bean.ElevatorType;
 import com.bit.module.miniapp.bean.Options;
 import com.bit.module.miniapp.service.WxElevatorService;
 import com.bit.module.miniapp.vo.ExcelVo;
-import com.bit.module.miniapp.vo.ProjectEleOptionsVo;
 import com.bit.module.miniapp.vo.ReportInfoVO;
 import com.bit.utils.BeanReflectUtil;
 import com.bit.utils.ConvertMoneyUtil;
@@ -62,6 +62,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	@Autowired
 	private ProjectEleOrderBaseInfoDao projectEleOrderBaseInfoDao;
 
+	@Autowired
+	private CompanyRateDao companyRateDao;
 
 	@Autowired
 	private ProjectEleOrderDao projectEleOrderDao;
@@ -563,6 +565,35 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		listVo.add(rs);
 		export(listVo, "电梯价格单");
 
+	}
+
+	/**
+	 * 判断下浮率
+	 * @param elevatorRate
+	 * @return
+	 */
+	@Override
+	public BaseVo judgeRate(ElevatorRate elevatorRate) {
+		BaseVo baseVo = new BaseVo();
+		Long roleId = getCurrentUserInfo().getRole().longValue();
+		Long companyId = getCurrentUserInfo().getCompanyId();
+		CompanyRate companyRate = new CompanyRate();
+		companyRate.setCompanyId(companyId);
+		companyRate.setElevatorTypeId(elevatorRate.getElevatorTypeId());
+		companyRate.setRoleId(roleId);
+		List<CompanyRate> byParam = companyRateDao.findByParam(companyRate);
+		if (byParam.size()==1){
+			CompanyRate crate = byParam.get(0);
+			//大于
+			if (crate.getRate().compareTo(elevatorRate.getRate())<0){
+				baseVo.setCode(ResultCode.RATE_TOO_BIG.getCode());
+				baseVo.setMsg(ResultCode.RATE_TOO_BIG.getInfo());
+			}
+		}else {
+			throw new BusinessException("查询结果异常");
+		}
+
+		return baseVo;
 	}
 
 

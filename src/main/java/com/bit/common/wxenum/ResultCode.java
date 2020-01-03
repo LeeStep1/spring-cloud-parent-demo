@@ -60,7 +60,10 @@ public enum ResultCode {
      * 手机号不存在
      */
     MOBILE_NOT_EXIST(50001,"手机号不存在"),
-
+    /**
+     * 下浮率过大
+     */
+    RATE_TOO_BIG(1001,"下浮率超出范围"),
 
 
     /**

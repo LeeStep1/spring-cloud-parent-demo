@@ -2,10 +2,7 @@ package com.bit.module.miniapp.controller;
 
 import com.bit.base.vo.BasePageVo;
 import com.bit.base.vo.BaseVo;
-import com.bit.module.manager.bean.ElevatorBaseElement;
-import com.bit.module.manager.bean.Project;
-import com.bit.module.manager.bean.ProjectEleOrderBaseInfo;
-import com.bit.module.manager.bean.ProjectPrice;
+import com.bit.module.manager.bean.*;
 import com.bit.module.manager.service.*;
 import com.bit.module.manager.vo.ElevatorTypePageVO;
 import com.bit.module.manager.vo.ProjectVo;
@@ -46,19 +43,16 @@ public class ElevatorController {
 	private ProjectService projectService;
 
 
-
-
 	/**
 	 * 单查电梯类型
+	 *
 	 * @param typeId
 	 * @return
 	 */
 	@GetMapping("/getElevatorType/{typeId}")
-	public BaseVo getElevator(@PathVariable(value = "typeId")Long typeId){
+	public BaseVo getElevator(@PathVariable(value = "typeId") Long typeId) {
 		return elevatorTypeService.reflectById(typeId);
 	}
-
-
 
 
 	/**
@@ -73,8 +67,10 @@ public class ElevatorController {
 	public BaseVo getEleParamLevelOne(@RequestBody QueryParams queryParams) {
 		return queryParamsService.getEleParamLevelOne(queryParams);
 	}
+
 	/**
 	 * 查询电梯的参数
+	 *
 	 * @param queryParams
 	 * @return List<QueryParams>
 	 * @author chenduo
@@ -87,6 +83,7 @@ public class ElevatorController {
 
 	/**
 	 * 查询电梯的参数 树形结构
+	 *
 	 * @param queryParams
 	 * @return
 	 */
@@ -98,31 +95,34 @@ public class ElevatorController {
 
 	/**
 	 * 根据电梯类型查询电梯的可选项
+	 *
 	 * @param typeId
 	 * @return
 	 */
 	@GetMapping("/eleOptions/{typeId}")
-	public BaseVo getEleOptions(@PathVariable(value = "typeId")Long typeId){
+	public BaseVo getEleOptions(@PathVariable(value = "typeId") Long typeId) {
 		return elevatorService.getEleOptions(typeId);
 	}
 
 	/**
 	 * 电梯类型列表查询
+	 *
 	 * @return
 	 */
 	@PostMapping("/elevatorTypeListPage")
-	public BaseVo elevatorTypeListPage(@RequestBody ElevatorTypePageVO elevatorTypePageVO){
+	public BaseVo elevatorTypeListPage(@RequestBody ElevatorTypePageVO elevatorTypePageVO) {
 		return elevatorTypeService.elevatorTypeListPage(elevatorTypePageVO);
 	}
 
 	/**
 	 * 根据电梯类型查询电梯的基础信息填写模板
+	 *
 	 * @param eletypeId
 	 * @return
 	 */
 	@GetMapping("/elevatorBaseElement/{eletypeId}")
-	public BaseVo getElevatorBaseElement(@PathVariable(value = "eletypeId")Long eletypeId){
-		ElevatorBaseElement elevatorBaseElement=new ElevatorBaseElement();
+	public BaseVo getElevatorBaseElement(@PathVariable(value = "eletypeId") Long eletypeId) {
+		ElevatorBaseElement elevatorBaseElement = new ElevatorBaseElement();
 		elevatorBaseElement.setElevatorTypeId(eletypeId);
 		return elevatorBaseElementService.findAllByElevator(elevatorBaseElement);
 	}
@@ -130,87 +130,94 @@ public class ElevatorController {
 
 	/**
 	 * 根据电梯类型id 订单以及相关可选项类别查询电梯的基础信息填写模板
+	 *
 	 * @param optionType
 	 * @param elevatorTypeId
 	 * @param baseInfo
 	 * @return
 	 */
 	@PostMapping("/options/{elevatorTypeId}/{optionType}")
-	public BaseVo<List<Options>> getElevatorOption(@PathVariable(value = "elevatorTypeId")Long elevatorTypeId,  @PathVariable(value = "optionType")Integer optionType,
-												   @RequestBody List<ProjectEleOrderBaseInfo> baseInfo){
-		BaseVo rs=new BaseVo();
-		rs.setData(wxElevatorService.getOptions(optionType,elevatorTypeId,baseInfo));
-		return  rs;
+	public BaseVo<List<Options>> getElevatorOption(@PathVariable(value = "elevatorTypeId") Long elevatorTypeId, @PathVariable(value = "optionType") Integer optionType,
+												   @RequestBody List<ProjectEleOrderBaseInfo> baseInfo) {
+		BaseVo rs = new BaseVo();
+		rs.setData(wxElevatorService.getOptions(optionType, elevatorTypeId, baseInfo));
+		return rs;
 	}
 
 	/**
 	 * 新建项目
+	 *
 	 * @param project
 	 * @return
 	 */
 	@PostMapping("/project")
-	public BaseVo<Project> addProject(@RequestBody Project project){
+	public BaseVo<Project> addProject(@RequestBody Project project) {
 		projectService.add(project);
-		BaseVo a=new BaseVo();
+		BaseVo a = new BaseVo();
 		a.setData(project);
 		return a;
 	}
+
 	/**
 	 * 新建项目下的电梯 算钱
-	 * @param vo  返回项目
+	 *
+	 * @param vo 返回项目
 	 * @return
 	 */
 	@PostMapping("/project/elevator/order")
-	public BaseVo<Project> wxAddReportInfo(@RequestBody ReportInfoVO vo){
-		BaseVo a=new BaseVo();
+	public BaseVo<Project> wxAddReportInfo(@RequestBody ReportInfoVO vo) {
+		BaseVo a = new BaseVo();
 		a.setData(wxElevatorService.wxAddReportInfo(vo));
 		return a;
 	}
 
 
 	/**
-	 *我的项目一级页面
-	 * @param vo  分页组件 pageNum pageSize
+	 * 我的项目一级页面
+	 *
+	 * @param vo 分页组件 pageNum pageSize
 	 * @return
 	 */
 	@PostMapping("/user/project")
-	public BaseVo<Project> queryUserProject(@RequestBody BasePageVo vo){
+	public BaseVo<Project> queryUserProject(@RequestBody BasePageVo vo) {
 		return projectService.queryProject(vo);
 	}
 
 
 	/**
-	 *我的项目二级级页面  一个项目对应多个历史版本，以及下的电梯订单数据
+	 * 我的项目二级级页面  一个项目对应多个历史版本，以及下的电梯订单数据
 	 *
-	 * @param projectId  项目ID
+	 * @param projectId 项目ID
 	 * @return
 	 */
 	@PostMapping("/user/project/price/{projectId}")
-	public BaseVo<ProjectVo> queryUserProjectPrice(@PathVariable(value = "projectId")Long projectId){
-		BaseVo a=new BaseVo();
+	public BaseVo<ProjectVo> queryUserProjectPrice(@PathVariable(value = "projectId") Long projectId) {
+		BaseVo a = new BaseVo();
 		a.setData(projectService.queryProjectPri(projectId));
 		return a;
 	}
 
 	/**
 	 * 查询项目报价详情
+	 *
 	 * @param projectId
 	 * @param projectPriceId
 	 * @return
 	 */
 	@GetMapping("/getProjectDetail/{projectId}/{projectPriceId}")
-	public BaseVo getProjectDetail(@PathVariable(value = "projectId")Long projectId,@PathVariable(value = "projectPriceId")Long projectPriceId){
+	public BaseVo getProjectDetail(@PathVariable(value = "projectId") Long projectId, @PathVariable(value = "projectPriceId") Long projectPriceId) {
 		return projectService.getProjectDetail(projectId, projectPriceId);
 	}
 
 	/**
 	 * 查询订单详情
+	 *
 	 * @param projectId
 	 * @param orderId
 	 * @return
 	 */
 	@GetMapping("/getOrderDetail/{projectId}/{orderId}")
-	public BaseVo getOrderDetail(@PathVariable(value = "projectId")Long projectId,@PathVariable(value = "orderId")Long orderId){
+	public BaseVo getOrderDetail(@PathVariable(value = "projectId") Long projectId, @PathVariable(value = "orderId") Long orderId) {
 		return projectService.getOrderDetail(projectId, orderId);
 	}
 
@@ -221,19 +228,20 @@ public class ElevatorController {
    * @return 返回总价和各个订单的价各
    */
 	@PostMapping("/poject/test/{projectId}")
-	public BaseVo<Map> pojectPriceTest(@PathVariable(value = "projectId")Long projectId){
-		BaseVo<Map>rs=new BaseVo<>();
+	public BaseVo<Map> pojectPriceTest(@PathVariable(value = "projectId") Long projectId) {
+		BaseVo<Map> rs = new BaseVo<>();
 		rs.setData(wxElevatorService.pojectPriceTest(projectId));
 		return rs;
 	}
 
 	/**
 	 * 草稿转正式版本  生成报价单
-	 * @param projectId  项目ID
+	 *
+	 * @param projectId 项目ID
 	 * @return 成功与失败
 	 */
 	@PostMapping("/project/version/{projectId}")
-	public BaseVo proPriceToVersion(@PathVariable(value = "projectId")Long projectId){
+	public BaseVo proPriceToVersion(@PathVariable(value = "projectId") Long projectId) {
 
 		return wxElevatorService.proPriceToVersion(projectId);
 
@@ -241,56 +249,72 @@ public class ElevatorController {
 
 	/**
 	 * 修改项目报价
+	 *
 	 * @param projectId
 	 * @param projectPriceId
 	 * @return
 	 */
 	@GetMapping("/updateProjectPrice/{projectId}/{projectPriceId}")
-	public BaseVo updateProjectPrice(@PathVariable(value = "projectId")Long projectId,@PathVariable(value = "projectPriceId")Long projectPriceId){
+	public BaseVo updateProjectPrice(@PathVariable(value = "projectId") Long projectId, @PathVariable(value = "projectPriceId") Long projectPriceId) {
 		return wxElevatorService.updateProjectPrice(projectId, projectPriceId);
 	}
 
 
 	/**
 	 * 根据订单id删除订单
+	 *
 	 * @param orderId
 	 * @return
 	 */
 	@GetMapping("/delOrderByOrderId/{orderId}")
-	public BaseVo delOrderByOrderId(@PathVariable(value = "orderId")Long orderId){
+	public BaseVo delOrderByOrderId(@PathVariable(value = "orderId") Long orderId) {
 		return wxElevatorService.delOrderByOrderId(orderId);
 	}
 
 	/**
 	 * 更新订单
+	 *
 	 * @param vo
 	 * @return
 	 */
 	@PostMapping("/updateOrder")
-	public BaseVo updateOrder(@RequestBody ReportInfoVO vo){
+	public BaseVo updateOrder(@RequestBody ReportInfoVO vo) {
 		return wxElevatorService.updateOrder(vo);
 	}
 
 	/**
 	 * 更新报价表的运输 和 安装 标识
+	 *
 	 * @param projectPrice
 	 * @return
 	 */
 	@PostMapping("/updateProjectPriceFlag")
-	public BaseVo updateProjectPriceFlag(@RequestBody ProjectPrice projectPrice){
+	public BaseVo updateProjectPriceFlag(@RequestBody ProjectPrice projectPrice) {
 		return wxElevatorService.updateProjectPriceFlag(projectPrice);
 	}
+
 	/**
 	 * 發送郵件  報價單
-	 * @param projectPriceId  报价的id
+	 *
+	 * @param projectPriceId 报价的id
 	 * @return
 	 */
 	@GetMapping("/sendMail/{projectPriceId}")
-	public BaseVo sendPriceMail(@PathVariable(value = "projectPriceId")Long projectPriceId){
-		 wxElevatorService.sendPriceMail(projectPriceId);
+	public BaseVo sendPriceMail(@PathVariable(value = "projectPriceId") Long projectPriceId) {
+		wxElevatorService.sendPriceMail(projectPriceId);
 
 		return new BaseVo();
 	}
 
+	/**
+	 * 判断下浮率
+	 *
+	 * @param elevatorRate
+	 * @return
+	 */
+	@PostMapping("/judgeRate")
+	public BaseVo judgeRate(@RequestBody ElevatorRate elevatorRate) {
+		return wxElevatorService.judgeRate(elevatorRate);
+	}
 
 }
