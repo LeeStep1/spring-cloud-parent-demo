@@ -109,7 +109,7 @@ public class DemoController {
         //设置消息持久化
         rabbitTemplate.convertAndSend("fanoutExchange","",directStr,message -> {
             message.getMessageProperties().setDeliveryMode(MessageDeliveryMode.PERSISTENT);
-            return message
+            return message;
         });
 
         return "成功";
