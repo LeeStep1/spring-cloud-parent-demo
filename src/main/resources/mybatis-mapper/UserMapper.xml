@@ -40,6 +40,7 @@
 		select
 			 DISTINCT (t.id) id,
 			t.user_name user_name,
+		    t.email,
 			t.real_name real_name,
 			t.mobile mobile,
 			t.insert_time insert_time,
