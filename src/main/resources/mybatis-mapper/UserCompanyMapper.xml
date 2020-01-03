@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bit.module.manager.dao.UserCompanyDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.bit.module.manager.bean.UserCompany" id="userCompanyMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="companyId" column="company_id"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        user_id,
+        company_id
+    </sql>
+
+    <!-- 根据主键查询数据 -->
+    <select id="getUserCompanyById" parameterType="Integer" resultMap="userCompanyMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user_company
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <!-- 多参数查询数据 -->
+    <select id="findByParam" parameterType="com.bit.module.manager.bean.UserCompany" resultMap="userCompanyMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user_company
+        <where>
+            <if test="userId!=null">
+                and user_id = #{userId,jdbcType=BIGINT}
+            </if>
+            <if test="companyId!=null">
+                and company_id = #{companyId,jdbcType=BIGINT}
+            </if>
+
+        </where>
+    </select>
+
+
+    <!-- 新增数据 -->
+    <insert id="addUserCompany" parameterType="com.bit.module.manager.bean.UserCompany" keyColumn="id"
+            useGeneratedKeys="true">
+        insert into t_user_company
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId!=null">
+                user_id,
+            </if>
+            <if test="companyId!=null">
+                company_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId!=null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="companyId!=null">
+                #{companyId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+
+    <!-- 编辑数据 -->
+    <update id="updateUserCompany" parameterType="com.bit.module.manager.bean.UserCompany">
+        update t_user_company
+        <trim prefix="set" suffixOverrides=",">
+            <if test="userId!=null">
+                user_id = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="companyId!=null">
+                company_id = #{companyId,jdbcType=BIGINT},
+            </if>
+        </trim>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+
+    <!-- 删除数据 -->
+    <delete id="delUserCompanyById" parameterType="Integer">
+        delete from t_user_company
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+
+</mapper>

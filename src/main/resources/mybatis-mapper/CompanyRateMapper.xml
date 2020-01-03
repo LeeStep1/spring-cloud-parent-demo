@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bit.module.manager.dao.CompanyRateDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.bit.module.manager.bean.CompanyRate" id="companyRateMap">
+        <result property="id" column="id"/>
+        <result property="rate" column="rate"/>
+        <result property="companyId" column="company_id"/>
+        <result property="roleId" column="role_id"/>
+        <result property="elevatorTypeId" column="elevator_type_id"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        rate,
+        company_id,
+        role_id,
+        elevator_type_id
+    </sql>
+
+    <!-- 根据主键查询数据 -->
+    <select id="getCompanyRateById" parameterType="Integer" resultMap="companyRateMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_company_rate
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <!-- 多参数查询数据 -->
+    <select id="findByParam" parameterType="com.bit.module.manager.bean.CompanyRate" resultMap="companyRateMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_company_rate
+        <where>
+            <if test="companyId!=null">
+                and company_id = #{companyId,jdbcType=BIGINT}
+            </if>
+            <if test="roleId!=null">
+                and role_id = #{roleId,jdbcType=BIGINT}
+            </if>
+            <if test="elevatorTypeId!=null">
+                and elevator_type_id = #{elevatorTypeId,jdbcType=BIGINT}
+            </if>
+
+        </where>
+    </select>
+
+
+    <!-- 新增数据 -->
+    <insert id="addCompanyRate" parameterType="com.bit.module.manager.bean.CompanyRate" keyColumn="id"
+            useGeneratedKeys="true">
+        insert into t_company_rate
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="rate!=null">
+                rate,
+            </if>
+            <if test="companyId!=null">
+                company_id,
+            </if>
+            <if test="roleId!=null">
+                role_id,
+            </if>
+            <if test="elevatorTypeId!=null">
+                elevator_type_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="companyId!=null">
+                #{companyId,jdbcType=BIGINT},
+            </if>
+            <if test="roleId!=null">
+                #{roleId,jdbcType=BIGINT},
+            </if>
+            <if test="elevatorTypeId!=null">
+                #{elevatorTypeId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+
+    <!-- 编辑数据 -->
+    <update id="updateCompanyRate" parameterType="com.bit.module.manager.bean.CompanyRate">
+        update t_company_rate
+        <trim prefix="set" suffixOverrides=",">
+            <if test="companyId!=null">
+                company_id = #{companyId,jdbcType=BIGINT},
+            </if>
+            <if test="roleId!=null">
+                role_id = #{roleId,jdbcType=BIGINT},
+            </if>
+            <if test="elevatorTypeId!=null">
+                elevator_type_id = #{elevatorTypeId,jdbcType=BIGINT},
+            </if>
+        </trim>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+
+    <!-- 删除数据 -->
+    <delete id="delCompanyRateById" parameterType="Integer">
+        delete from t_company_rate
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+
+</mapper>
