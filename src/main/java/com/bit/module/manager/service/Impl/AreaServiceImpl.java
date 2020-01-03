@@ -83,7 +83,9 @@ public class AreaServiceImpl extends BaseService implements AreaService {
 	public BaseVo<Area> listPage(Area area) {
 		List<Area> byParam = areaDao.findByParam(area);
 		for (Area ar : byParam) {
-			ar.setHasChildren(1);
+			if (ar.getArLeavel()<3){
+				ar.setHasChildren(1);
+			}
 		}
 		BaseVo baseVo = new BaseVo();
 		baseVo.setData(byParam);

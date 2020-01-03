@@ -40,7 +40,7 @@
         from t_area
         <where>
             <if test="arName!=null and arName!=''">
-                and ar_name = #{arName,jdbcType=VARCHAR}
+                and ar_name LIKE concat("%",#{arName,jdbcType=VARCHAR},"%")
             </if>
             <if test="arType!=null and arType!=''">
                 and ar_type = #{arType,jdbcType=VARCHAR}
