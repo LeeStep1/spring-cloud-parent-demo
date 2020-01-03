@@ -43,4 +43,9 @@ public class UserVo extends User {
 	 * 公司名称
 	 */
 	private String companyName;
+
+	/**
+	 * 邮箱
+	 */
+	private String email;
 }
