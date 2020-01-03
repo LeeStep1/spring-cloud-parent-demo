@@ -18,55 +18,60 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/wx/user")
 public class WxUserController {
 
-    @Autowired
-    private  WxUserService wxUserService;
+	@Autowired
+	private WxUserService wxUserService;
 
-    /**
-     * admin登陆
-     * @param wxUser   userName,passWord,code ,iv，encrypteData，signature
-     *
-     * @return
-     */
-    @PostMapping(value = "/login")
-    public BaseVo adminLogin(@RequestBody WxUser wxUser){
-
-        return wxUserService.wxUserLogin(wxUser);
-
-    }
 	/**
-	 * 微信端登出
+	 * admin登陆
+	 *
+	 * @param wxUser userName,passWord,code ,iv，encrypteData，signature
 	 * @return
 	 */
-    @GetMapping("/logout")
-    public BaseVo adminLogout(){
+	@PostMapping(value = "/login")
+	public BaseVo adminLogin(@RequestBody WxUser wxUser) {
+
+		return wxUserService.wxUserLogin(wxUser);
+
+	}
+
+	/**
+	 * 微信端登出
+	 *
+	 * @return
+	 */
+	@GetMapping("/logout")
+	public BaseVo adminLogout() {
 		return wxUserService.wxUserLogout();
-    }
+	}
 
 	/**
 	 * 密码修改
+	 *
 	 * @param portalUserVo
 	 * @return
 	 */
 	@PostMapping("/wxUpdatePassWord")
-    public BaseVo wxUpdatePassWord(@RequestBody PortalUserVo portalUserVo){
-    	return wxUserService.wxUpdatePassWord(portalUserVo);
+	public BaseVo wxUpdatePassWord(@RequestBody PortalUserVo portalUserVo) {
+		return wxUserService.wxUpdatePassWord(portalUserVo);
 	}
 
 	/**
 	 * 邮箱修改
+	 *
 	 * @return
 	 */
 	@PostMapping("/wxUpdateEmail")
-	public BaseVo wxUpdateEmail(@RequestBody PortalUserVo portalUserVo){
+	public BaseVo wxUpdateEmail(@RequestBody PortalUserVo portalUserVo) {
 		return wxUserService.wxUpdateEmail(portalUserVo);
 	}
 
 	/**
 	 * 微信用户信息返显
+	 *
 	 * @return
 	 */
 	@GetMapping("/wxUserReflect")
-	public BaseVo wxUserReflect(){
+	public BaseVo wxUserReflect() {
 		return wxUserService.wxUserReflect();
 	}
 }
