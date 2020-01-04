@@ -72,7 +72,54 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             executeInstallEquations(vars);
         }
         executeEquations(vars);//计算设备单价
-        updateOrder(vars);
+        if (Boolean.TRUE.equals(vars.get("isUpdate"))) {
+            updateOrder(vars);
+        }
+    }
+
+    /**
+     * 计算整个项目
+     *
+     * @param map
+     */
+    public List<Map> executeCountProjectPrice(Map map) {
+        ProjectPrice projectPrice = projectPriceDao.selectOne(new QueryWrapper<ProjectPrice>()
+                .eq("project_id", map.get("projectId"))
+                .eq("version", map.get("version")));
+        List<ProjectEleOrder> projectEleOrder = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
+                .eq("project_id", projectPrice.getProjectId())
+                .eq("version_id", projectPrice.getId()));
+
+        //事前计算平摊费用
+        List<Map> eleInputs = new ArrayList(projectEleOrder.size());
+        for (ProjectEleOrder eleOrder : projectEleOrder) {
+            Map input = new HashMap(3);
+            input.put("orderId", eleOrder.getId());
+            input.put("包括运费", map.get("包括运费"));
+            input.put("包括安装", map.get("包括安装"));
+            eleInputs.add(input);
+        }
+        beforeExecuteEquations(eleInputs);
+
+        //开始计算项目总价
+        for (Map vars : eleInputs) {
+            executeCount(vars);
+        }
+        BigDecimal bd = new BigDecimal("0");
+        List<ProjectEleOrder> projectEleOrderNew = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
+                .eq("project_id", projectPrice.getProjectId())
+                .eq("version_id", projectPrice.getId()));
+        for (ProjectEleOrder eleOrder : projectEleOrderNew) {
+            bd = NumberUtil.add(bd.toString(), eleOrder.getTotalPrice());
+        }
+        projectPrice.setTotalPrice(bd.toString());
+        if (map.get("stage") != null) {
+            projectPrice.setStage(Integer.parseInt(map.get("stage").toString()));
+        }
+        if (Boolean.TRUE.equals(map.get("isUpdate"))) {
+            projectPriceDao.updateById(projectPrice);
+        }
+        return eleInputs;
     }
 
     /**
@@ -130,49 +177,6 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         if (vars.get("平摊费用") == null) {
             vars.put("平摊费用", 0);
         }
-    }
-
-    /**
-     * 计算整个项目
-     *
-     * @param map
-     */
-    public List<Map> executeCountProjectPrice(Map map) {
-        ProjectPrice projectPrice = projectPriceDao.selectOne(new QueryWrapper<ProjectPrice>()
-                .eq("project_id", map.get("projectId"))
-                .eq("version", map.get("version")));
-        List<ProjectEleOrder> projectEleOrder = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
-                .eq("project_id", projectPrice.getProjectId())
-                .eq("version_id", projectPrice.getId()));
-
-        //事前计算平摊费用
-        List<Map> eleInputs = new ArrayList(projectEleOrder.size());
-        for (ProjectEleOrder eleOrder : projectEleOrder) {
-            Map input = new HashMap(3);
-            input.put("orderId", eleOrder.getId());
-            input.put("包括运费", map.get("包括运费"));
-            input.put("包括安装", map.get("包括安装"));
-            eleInputs.add(input);
-        }
-        beforeExecuteEquations(eleInputs);
-
-        //开始计算
-        for (Map vars : eleInputs) {
-            executeCount(vars);
-        }
-        BigDecimal bd = new BigDecimal("0");
-        List<ProjectEleOrder> projectEleOrderNew = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
-                .eq("project_id", projectPrice.getProjectId())
-                .eq("version_id", projectPrice.getId()));
-        for (ProjectEleOrder eleOrder : projectEleOrderNew) {
-            bd = NumberUtil.add(bd.toString(), eleOrder.getTotalPrice());
-        }
-        projectPrice.setTotalPrice(bd.toString());
-        if (map.get("stage") != null) {
-            projectPrice.setStage(Integer.parseInt(map.get("stage").toString()));
-        }
-        projectPriceDao.updateById(projectPrice);
-        return eleInputs;
     }
 
     public void executeInstallEquations(Map vars) {
