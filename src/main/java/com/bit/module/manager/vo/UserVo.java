@@ -16,6 +16,10 @@ import java.util.List;
 @Data
 public class UserVo extends User {
 
+
+
+	private Long id;
+
     /**
      * 登陆票据
      */
@@ -33,4 +37,19 @@ public class UserVo extends User {
 	 * 角色集合
 	 */
     private List<Role> roleIds;
+
+	/**
+	 * 公司id
+	 */
+    private Long companyId;
+
+	/**
+	 * 公司名称
+	 */
+	private String companyName;
+
+	/**
+	 * 邮箱
+	 */
+	private String email;
 }

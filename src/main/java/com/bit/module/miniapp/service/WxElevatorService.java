@@ -1,6 +1,7 @@
 package com.bit.module.miniapp.service;
 
 import com.bit.base.vo.BaseVo;
+import com.bit.module.manager.bean.ElevatorRate;
 import com.bit.module.manager.bean.Project;
 import com.bit.module.manager.bean.ProjectEleOrderBaseInfo;
 import com.bit.module.manager.bean.ProjectPrice;
@@ -121,6 +122,13 @@ public interface WxElevatorService {
 	 * @param projectPriceId  (id)
 	 * @return
 	 */
-	void sendPriceMail(Long projectPriceId);
+	void sendPriceMail(Long projectPriceId,List<String>ccAddress);
+
+	/**
+	 * 判断下浮率
+	 * @param elevatorRate
+	 * @return
+	 */
+	BaseVo judgeRate(ElevatorRate elevatorRate);
 
 }

@@ -36,19 +36,26 @@
 
 	<!-- 查询全部 -->
 	<select id="findAll" parameterType="com.bit.module.manager.vo.PortalUserVo"
-			resultType="com.bit.module.manager.bean.User">
+			resultType="com.bit.module.manager.vo.UserVo">
 		select
-			DISTINCT (t.id) id,
+			 DISTINCT (t.id) id,
 			t.user_name user_name,
+		    t.email,
 			t.real_name real_name,
 			t.mobile mobile,
 			t.insert_time insert_time,
 			t.update_time update_time,
-			t.STATUS STATUS
+			t.STATUS STATUS,
+        tca.id as companyId,
+        tca.company_name
 		FROM
 			t_user t
 			LEFT JOIN t_user_role tp ON t.id = tp.user_id
 			LEFT JOIN t_role tpr ON tp.role_id = tpr.id
+        INNER JOIN t_user_company tsr
+        on t.id = tsr.user_id
+        INNER JOIN t_company tca
+        on tsr.company_id = tca.id
 		<where>
 			<if test="portalUserVo.userName != null and portalUserVo.userName != ''">
 				and t.user_name LIKE CONCAT("%",#{portalUserVo.userName},"%")
@@ -67,7 +74,11 @@
 			</if>
 
 			<if test="portalUserVo.roleId != null">
-				and t.role_id = #{portalUserVo.roleId}
+				and tp.role_id = #{portalUserVo.roleId}
+			</if>
+
+			<if test="portalUserVo.companyId != null">
+				and tsr.company_id = #{portalUserVo.companyId}
 			</if>
 		</where>
 		ORDER BY

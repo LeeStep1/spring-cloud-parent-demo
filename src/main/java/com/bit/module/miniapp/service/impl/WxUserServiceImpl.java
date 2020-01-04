@@ -83,7 +83,7 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
     @Override
     public BaseVo  wxUserLogin(WxUser wxUser){
         //根据用户名密码查询用户是否存在
-        User portalUser = userDao.findByUsername(wxUser.getUserName(), UserRoleEnum.RESIDENT.getRoleId());
+        UserVo portalUser = userDao.findByUsername(wxUser.getUserName(), UserRoleEnum.RESIDENT.getRoleId());
 
         if(portalUser == null){
             throw new BusinessException("用户不存在！");
@@ -125,7 +125,9 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
 			if (company!=null){
 				userInfo.setCompanyId(company.getId());
 				userInfo.setCompanyName(company.getCompanyName());
-			}
+			}else{
+			    throw  new BusinessException("无所属机构");
+            }
 
             Integer tid = null;
             tid = TidUrlEnum.TERMINALURL_RESIDENT.getTid();
@@ -162,7 +164,7 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
             map.put("id",portalUser.getId());
             map.put("username",portalUser.getUserName());
             map.put("realName",portalUser.getRealName());
-           // map.put("role",portalUser.getRoleId());
+            map.put("role",portalUser.getRoleId());
             map.put("openId",portalUser.getOpenId());
             //根据人查询项目 返回前端
 			Project project = new Project();

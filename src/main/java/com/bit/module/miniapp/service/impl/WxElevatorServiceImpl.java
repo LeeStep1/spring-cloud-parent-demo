@@ -10,6 +10,7 @@ import com.bit.base.vo.BaseVo;
 import com.bit.common.consts.Const;
 import com.bit.common.informationEnum.StageEnum;
 import com.bit.common.informationEnum.StandardEnum;
+import com.bit.common.wxenum.ResultCode;
 import com.bit.module.manager.bean.*;
 import com.bit.module.manager.dao.*;
 import com.bit.module.manager.service.Impl.EquationServiceImpl;
@@ -17,7 +18,6 @@ import com.bit.module.miniapp.bean.ElevatorType;
 import com.bit.module.miniapp.bean.Options;
 import com.bit.module.miniapp.service.WxElevatorService;
 import com.bit.module.miniapp.vo.ExcelVo;
-import com.bit.module.miniapp.vo.ProjectEleOptionsVo;
 import com.bit.module.miniapp.vo.ReportInfoVO;
 import com.bit.utils.BeanReflectUtil;
 import com.bit.utils.ConvertMoneyUtil;
@@ -62,6 +62,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	@Autowired
 	private ProjectEleOrderBaseInfoDao projectEleOrderBaseInfoDao;
 
+	@Autowired
+	private CompanyRateDao companyRateDao;
 
 	@Autowired
 	private ProjectEleOrderDao projectEleOrderDao;
@@ -498,7 +500,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	 * @return
 	 */
 	@Override
-	public void sendPriceMail(Long projectPriceId) {
+	public void sendPriceMail(Long projectPriceId,List<String>ccAddress) {
 
 		Map cod = new HashMap();
 		cod.put("version_id", projectPriceId);
@@ -561,17 +563,43 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			rs.setInstallPrice("零");
 		}
 		listVo.add(rs);
-		export(listVo, "电梯价格单");
+		export(listVo, "电梯价格单",ccAddress);
 
 	}
 
+	/**
+	 * 判断下浮率
+	 * @param elevatorRate
+	 * @return
+	 */
+	@Override
+	public BaseVo judgeRate(ElevatorRate elevatorRate) {
+		BaseVo baseVo = new BaseVo();
+		Long roleId = getCurrentUserInfo().getRole().longValue();
+		Long companyId = getCurrentUserInfo().getCompanyId();
+		CompanyRate companyRate = new CompanyRate();
+		companyRate.setCompanyId(companyId);
+		companyRate.setElevatorTypeId(elevatorRate.getElevatorTypeId());
+		companyRate.setRoleId(roleId);
+		List<CompanyRate> byParam = companyRateDao.findByParam(companyRate);
+		if (byParam.size()==1){
+			CompanyRate crate = byParam.get(0);
+			//大于
+			if (crate.getRate().compareTo(elevatorRate.getRate())<0){
+				baseVo.setCode(ResultCode.RATE_TOO_BIG.getCode());
+				baseVo.setMsg(ResultCode.RATE_TOO_BIG.getInfo());
+			}
+		}else {
+			throw new BusinessException("查询结果异常");
+		}
 
-	public void export(List<ExcelVo> clsList, String sheetName) {
+		return baseVo;
+	}
+
+
+	public void export(List<ExcelVo> clsList, String sheetName,List<String>ccAdress) {
 		String filename = UUIDUtil.getUUID();
-        /*String path="D:/test/1/exportCls.xls";
-        File aa=new File("D:/test/1/exportCls.xls");*/
 		String path = filePath+"/xls/"+filename+".xls";
-//		String path = "D:\\upload\\1.xls";
 		File aa = new File(path);
 		if (!aa.getParentFile().exists()) {
 			aa.getParentFile().mkdirs();
@@ -592,7 +620,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			writer.finish();
 			EmailInfo emailInfo = new EmailInfo();
 			List<String> toList = new ArrayList<String>();
-			toList.add("star9c2009@163.com");
+			toList.add(getCurrentUserInfo().getEmail());
+			//toList.add("star9c2009@163.com");
 			emailInfo.setToAddress(toList);
 			List<EmailAttachment> attachments = new ArrayList<>();
 			EmailAttachment emailAttachment = new EmailAttachment();
@@ -604,7 +633,9 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			//内容
 			emailInfo.setContent("内容：<h1>电梯报价报价,请查收附件</h1>");
 			emailInfo.setAttachments(attachments);
-			emailInfo.setCcAddress(toList);
+            if(CollectionUtils.isNotEmpty(ccAdress)){
+				emailInfo.setCcAddress(ccAdress);
+			}
 			MailUtil.send(emailInfo);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -612,8 +643,6 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		} finally {
 			aa.delete();
 		}
-
-		//aa.getParentFile().delete();  删除上一级
 	}
 
 
