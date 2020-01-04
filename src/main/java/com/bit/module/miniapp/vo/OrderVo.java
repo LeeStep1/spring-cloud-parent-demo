@@ -19,14 +19,12 @@ public class OrderVo {
    /**所选中的电梯类型**/
    private  String elevatorTypeName;
 
-   /**所选中**/
+   /**台数**/
    private  Integer num;
 
-   /**所选中**/
+   /**所选中项**/
    private List<Options> options;
 
-
-   private List<ProjectEleNonstandard> list;
 
 
 

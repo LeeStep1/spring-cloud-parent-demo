@@ -1,5 +1,6 @@
 package com.bit.module.miniapp.vo;
 
+import com.bit.module.manager.bean.ProjectEleNonstandard;
 import com.bit.module.manager.bean.ProjectEleOptions;
 import com.bit.module.manager.bean.ProjectEleOrderBaseInfo;
 import com.bit.module.miniapp.bean.Options;
@@ -38,6 +39,9 @@ public class ReportInfoVO {
 
     /**非标标识**/
     private String status;
+
+    /**非标项**/
+    private List<ProjectEleNonstandard> projectEleNonstandardList;
 
 
 

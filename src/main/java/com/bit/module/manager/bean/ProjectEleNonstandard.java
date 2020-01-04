@@ -36,8 +36,14 @@ public class ProjectEleNonstandard {
     private Integer sysType;
 
     /**
-     * 价格（目前无用，仅为后期扩展）
+     * 单价格（目前无用，仅为后期扩展）
      **/
-    private String  price;
+    private String  signal_price;
+
+    /**
+     * 单价格（目前无用，仅为后期扩展）
+     **/
+    private String  total_price;
+
 
 }

@@ -75,4 +75,11 @@ public class ProjectEleOrder {
      */
     private Integer standard;
 
+    /**
+     * 是否标准，1：标准，0非标
+     */
+    private String standardName;
+
+
+
 }

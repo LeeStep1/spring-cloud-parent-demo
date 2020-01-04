@@ -1,6 +1,7 @@
 package com.bit.module.manager.vo;
 
 import com.bit.module.manager.bean.ElementParam;
+import com.bit.module.manager.bean.ProjectEleNonstandard;
 import com.bit.module.manager.bean.ProjectPriceDetailInfo;
 import com.bit.module.miniapp.bean.Options;
 import lombok.Data;
@@ -103,4 +104,18 @@ public class ProjectOrderDetailInfoVO {
 	 * 运输费用总价
 	 */
 	private String transportPrice;
+
+	/**
+	 * 订单的是否非标 1：标准，0非标',
+	 */
+	private Integer standard;
+	/**
+	 * 名称：1：标准，0非标',
+	 */
+	private String standardName;
+
+	/**
+	 * 非标时的额外非标项
+	 */
+	private List<ProjectEleNonstandard> projectEleNonstandardOptionList;
 }
