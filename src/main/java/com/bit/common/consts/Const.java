@@ -143,4 +143,8 @@ public class Const {
      */
     public static final Integer FLAG_NO = 0;
     public static final Integer FLAG_YES = 1;
+    /**
+     * 系统生成非标记录
+     */
+    public static final Integer NONSTANDARD_TYPE_SYS = 1;
 }

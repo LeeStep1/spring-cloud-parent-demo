@@ -27,6 +27,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.*;
 
+import static com.bit.common.consts.Const.NONSTANDARD_TYPE_SYS;
+
 
 /**
  * @description:
@@ -57,6 +59,8 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
     private AreaDao areaDao;
     @Autowired
     private ProjectDao projectDao;
+    @Autowired
+    private ProjectEleNonstandardDao projectEleNonstandardDao;
 
 
     /**
@@ -104,6 +108,13 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         boolean isStandard = true;
         //开始计算项目总价
         for (Map vars : eleInputs) {
+            double sum = 0;
+            List<ProjectEleNonstandard> projectEleNonStandards = projectEleNonstandardDao.selectList(new QueryWrapper<ProjectEleNonstandard>()
+                    .eq("order_id", vars.get("orderId").toString()));
+            for (ProjectEleNonstandard projectEleNonstandard : projectEleNonStandards) {
+                sum += Double.parseDouble(projectEleNonstandard.getSignalPrice());
+            }
+            vars.put("非标加价",sum );
             executeCount(vars);
             if (Boolean.TRUE.equals(vars.get("是否为非标"))){
                 isStandard = false;
@@ -249,45 +260,29 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
      * @param vars
      * @return
      */
-    public boolean checkHeightStandard(Map vars) {
+    public boolean checkHeightStandard(Map vars,String category) {
         String type = vars.get("系列").toString();
         vars.put("标准提升高度", getHeightForBasePrice(vars, "基价"));
-        boolean heightStandard = getEqBoolean(type, "顶层底坑是否超标", vars);//是否超标
+        boolean heightStandard = getEqBoolean(type, category, vars);//是否超标
         return heightStandard;
     }
 
     public Map executeEquations(Map vars) {
         checkMap(vars);
-        boolean heightStandard = checkHeightStandard(vars);//是否超标
-        double heightPrice = 0;
-        if (heightStandard) {
-            vars.put("高度单价", getNoEquationOut(vars, "高度单价"));
-            vars.put("标准顶层高度", getNoEquationOut(vars, "标准顶层高度"));
-            vars.put("标准底坑深度", getNoEquationOut(vars, "标准底坑深度"));
-            int temp = (Integer) simpleEquation("实际提升高度-标准提升高度", vars);
-            if (temp > 0) {
-                heightPrice += (double) simpleEquation("(实际提升高度-标准提升高度)/1000*高度单价", vars);
-            }
-            int temp1 = (Integer) simpleEquation("实际顶层高度-标准顶层高度", vars);
-            if (temp1 > 0) {
-                heightPrice += (double) simpleEquation("(实际顶层高度-标准顶层高度)/1000*高度单价", vars);
-            }
-            int temp2 = (Integer) simpleEquation("实际底坑深度-标准底坑深度", vars);
-            if (temp2 > 0) {
-                heightPrice += (double) simpleEquation("(实际底坑深度-标准底坑深度)/1000*高度单价", vars);
-            }
-            vars.put("是否为非标", false);
-        } else {
-            vars.put("是否为非标", true);
-        }
+        vars.put("高度单价", getNoEquationOut(vars, "高度单价"));
+        vars.put("标准顶层高度", getNoEquationOut(vars, "标准顶层高度"));
+        vars.put("标准底坑深度", getNoEquationOut(vars, "标准底坑深度"));
+
+        double heightPrice = checkNostandardAndPrice(vars);//判断是否为非标
+
         vars.put("小计_设备基价", getNoEquationOut(vars, "基价"));//设备基价
-        double optionPrice = countOptionPrice(vars);
-        optionPrice += heightPrice;
+        double optionPrice = countOptionPrice(vars) + heightPrice;
         vars.put("小计_高度价格", heightPrice);
         vars.put("小计_设备可选项价格", optionPrice);//设备可选项价格
-
-        //vars.put("小计_非标加价", optionPrice);
-        vars.put("小计_设备单价", simpleEquation("小计_设备基价*(1-下浮)+小计_设备可选项价格+平摊费用", vars)); //单价
+        if (vars.get("非标加价")==null){
+            vars.put("非标加价", 0);
+        }
+        vars.put("小计_设备单价", simpleEquation("小计_设备基价*(1-下浮)+小计_设备可选项价格+平摊费用+非标加价", vars)); //单价
         if (vars.get("小计_安装费用") == null) {
             vars.put("小计_安装费用", 0);
         }
@@ -296,16 +291,52 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         }
         vars.put("小计_单台总价", simpleEquation("小计_设备单价+小计_安装费用+小计_运费", vars)); //单价
         vars.put("小计_合价", simpleEquation("小计_单台总价*台量", vars)); //单价
-
         String service = "价格*系数*维保价格";//维保
         return vars;
+    }
+
+    private double checkNostandardAndPrice(Map vars) {
+        boolean noStandard = false;
+        double heightPrice = 0;
+        String noStandardDetail = "";
+        if (checkHeightStandard(vars,"提升高度是否超标")) {
+            int temp = (Integer) simpleEquation("实际提升高度-标准提升高度", vars);
+            if (temp > 0) {
+                heightPrice += (double) simpleEquation("(实际提升高度-标准提升高度)/1000*高度单价", vars);
+            }
+        }else {
+            noStandard = true;
+            noStandardDetail += "提升高度超标,";
+        }
+        if (checkHeightStandard(vars,"顶层高度是否超标")) {
+            int temp1 = (Integer) simpleEquation("实际顶层高度-标准顶层高度", vars);
+            if (temp1 > 0) {
+                heightPrice += (double) simpleEquation("(实际顶层高度-标准顶层高度)/1000*高度单价", vars);
+            }
+        }else {
+            noStandard = true;
+            noStandardDetail += "提升高度超标,";
+        }
+        if (checkHeightStandard(vars,"底坑深度是否超标")) {
+            int temp2 = (Integer) simpleEquation("实际底坑深度-标准底坑深度", vars);
+            if (temp2 > 0) {
+                heightPrice += (double) simpleEquation("(实际底坑深度-标准底坑深度)/1000*高度单价", vars);
+            }
+        }else {
+            noStandard = true;
+            noStandardDetail += "底坑深度超标,";
+        }
+        vars.put("是否为非标", noStandard);
+        vars.put("非标详情", noStandardDetail);
+        return heightPrice;
     }
 
     /**
      * 更新订单表
      */
     private void updateOrder(Map vars) {
-        ProjectEleOrder projectEleOrder = projectEleOrderDao.selectById(Long.parseLong(vars.get("orderId").toString()));
+        Long orderId = Long.parseLong(vars.get("orderId").toString());
+        ProjectEleOrder projectEleOrder = projectEleOrderDao.selectById(orderId);
         projectEleOrder.setUnitPrice(NumberUtil.roundStr(vars.get("小计_设备单价").toString(), 2));
         projectEleOrder.setSingleTotalPrice(NumberUtil.roundStr(vars.get("小计_单台总价").toString(), 2));
         projectEleOrder.setInstallPrice(NumberUtil.roundStr(vars.get("小计_安装费用").toString(), 2));
@@ -315,6 +346,18 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             projectEleOrder.setStandard(StandardEnum.STANDARD_ZERO.getCode());
         }
         projectEleOrderDao.updateById(projectEleOrder);
+
+        //插入非标记录
+        ProjectEleNonstandard nonstandard = projectEleNonstandardDao.selectOne(new QueryWrapper<ProjectEleNonstandard>()
+                .eq("order_id", orderId)
+                .eq("sys_type",NONSTANDARD_TYPE_SYS));
+        if (nonstandard == null) {
+            nonstandard = new ProjectEleNonstandard();
+            nonstandard.setOrderId(orderId);
+            nonstandard.setSysType(NONSTANDARD_TYPE_SYS);
+            nonstandard.setContent((String) vars.get("非标详情"));
+            projectEleNonstandardDao.insert(nonstandard);
+        }
     }
 
     public double countOptionPrice(Map vars) {
@@ -335,14 +378,14 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         return res;
     }
 
+    //特殊方法，写死只取val4,没有取output
     public int getHeightForBasePrice(Map vars, String category) {
         String type = vars.get("系列").toString();
-        List<BasePriceEquationRel> basePriceRel = basePriceEquationRelDao.selectList(
-                new QueryWrapper<BasePriceEquationRel>()
-                        .eq("type", type)
-                        .eq("category", category)
-        );
-
+//        List<BasePriceEquationRel> basePriceRel = basePriceEquationRelDao.selectList(
+//                new QueryWrapper<BasePriceEquationRel>()
+//                        .eq("type", type)
+//                        .eq("category", category)
+//        );
         QueryWrapper<BasePriceEquation> query = new QueryWrapper<BasePriceEquation>()
                 .eq("category", category)
                 .eq("type", vars.get("系列"))
