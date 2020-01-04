@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bit.base.exception.BusinessException;
+import com.bit.common.informationEnum.StandardEnum;
 import com.bit.module.equation.bean.BasePriceEquation;
 import com.bit.module.equation.bean.BasePriceEquationRel;
 import com.bit.module.equation.bean.Equation;
@@ -72,7 +73,61 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             executeInstallEquations(vars);
         }
         executeEquations(vars);//计算设备单价
-        updateOrder(vars);
+        if (Boolean.TRUE.equals(vars.get("isUpdate"))) {
+            updateOrder(vars);
+        }
+    }
+
+    /**
+     * 计算整个项目
+     *
+     * @param map
+     */
+    public List<Map> executeCountProjectPrice(Map map) {
+        ProjectPrice projectPrice = projectPriceDao.selectOne(new QueryWrapper<ProjectPrice>()
+                .eq("project_id", map.get("projectId"))
+                .eq("version", map.get("version")));
+        List<ProjectEleOrder> projectEleOrder = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
+                .eq("project_id", projectPrice.getProjectId())
+                .eq("version_id", projectPrice.getId()));
+
+        //事前计算平摊费用
+        List<Map> eleInputs = new ArrayList(projectEleOrder.size());
+        for (ProjectEleOrder eleOrder : projectEleOrder) {
+            Map input = new HashMap(3);
+            input.put("orderId", eleOrder.getId());
+            input.put("包括运费", map.get("包括运费"));
+            input.put("包括安装", map.get("包括安装"));
+            eleInputs.add(input);
+        }
+        beforeExecuteEquations(eleInputs);
+        boolean isStandard = true;
+        //开始计算项目总价
+        for (Map vars : eleInputs) {
+            executeCount(vars);
+            if (Boolean.TRUE.equals(vars.get("是否为非标"))){
+                isStandard = false;
+            }
+        }
+        BigDecimal bd = new BigDecimal("0");
+        List<ProjectEleOrder> projectEleOrderNew = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
+                .eq("project_id", projectPrice.getProjectId())
+                .eq("version_id", projectPrice.getId()));
+        for (ProjectEleOrder eleOrder : projectEleOrderNew) {
+            bd = NumberUtil.add(bd.toString(), eleOrder.getTotalPrice());
+        }
+        projectPrice.setTotalPrice(bd.toString());
+        if (map.get("stage") != null) {
+            projectPrice.setStage(Integer.parseInt(map.get("stage").toString()));
+        }
+        if (Boolean.TRUE.equals(map.get("isUpdate"))) {
+            if (isStandard == false){//如果是非标
+                projectPrice.setStandard(StandardEnum.STANDARD_ZERO.getCode());
+                projectPrice.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
+            }
+            projectPriceDao.updateById(projectPrice);
+        }
+        return eleInputs;
     }
 
     /**
@@ -130,49 +185,6 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         if (vars.get("平摊费用") == null) {
             vars.put("平摊费用", 0);
         }
-    }
-
-    /**
-     * 计算整个项目
-     *
-     * @param map
-     */
-    public List<Map> executeCountProjectPrice(Map map) {
-        ProjectPrice projectPrice = projectPriceDao.selectOne(new QueryWrapper<ProjectPrice>()
-                .eq("project_id", map.get("projectId"))
-                .eq("version", map.get("version")));
-        List<ProjectEleOrder> projectEleOrder = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
-                .eq("project_id", projectPrice.getProjectId())
-                .eq("version_id", projectPrice.getId()));
-
-        //事前计算平摊费用
-        List<Map> eleInputs = new ArrayList(projectEleOrder.size());
-        for (ProjectEleOrder eleOrder : projectEleOrder) {
-            Map input = new HashMap(3);
-            input.put("orderId", eleOrder.getId());
-            input.put("包括运费", map.get("包括运费"));
-            input.put("包括安装", map.get("包括安装"));
-            eleInputs.add(input);
-        }
-        beforeExecuteEquations(eleInputs);
-
-        //开始计算
-        for (Map vars : eleInputs) {
-            executeCount(vars);
-        }
-        BigDecimal bd = new BigDecimal("0");
-        List<ProjectEleOrder> projectEleOrderNew = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
-                .eq("project_id", projectPrice.getProjectId())
-                .eq("version_id", projectPrice.getId()));
-        for (ProjectEleOrder eleOrder : projectEleOrderNew) {
-            bd = NumberUtil.add(bd.toString(), eleOrder.getTotalPrice());
-        }
-        projectPrice.setTotalPrice(bd.toString());
-        if (map.get("stage") != null) {
-            projectPrice.setStage(Integer.parseInt(map.get("stage").toString()));
-        }
-        projectPriceDao.updateById(projectPrice);
-        return eleInputs;
     }
 
     public void executeInstallEquations(Map vars) {
@@ -299,6 +311,9 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         projectEleOrder.setInstallPrice(NumberUtil.roundStr(vars.get("小计_安装费用").toString(), 2));
         projectEleOrder.setTotalPrice(NumberUtil.roundStr(vars.get("小计_合价").toString(), 2));
         projectEleOrder.setTransportPrice(NumberUtil.roundStr(vars.get("小计_运费").toString(), 2));
+        if (Boolean.TRUE.equals(vars.get("是否为非标"))){
+            projectEleOrder.setStandard(StandardEnum.STANDARD_ZERO.getCode());
+        }
         projectEleOrderDao.updateById(projectEleOrder);
     }
 
