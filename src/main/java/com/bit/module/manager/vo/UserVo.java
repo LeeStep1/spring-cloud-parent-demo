@@ -16,6 +16,10 @@ import java.util.List;
 @Data
 public class UserVo extends User {
 
+
+
+	private Long id;
+
     /**
      * 登陆票据
      */

@@ -125,7 +125,9 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
 			if (company!=null){
 				userInfo.setCompanyId(company.getId());
 				userInfo.setCompanyName(company.getCompanyName());
-			}
+			}else{
+			    throw  new BusinessException("无所属机构");
+            }
 
             Integer tid = null;
             tid = TidUrlEnum.TERMINALURL_RESIDENT.getTid();
