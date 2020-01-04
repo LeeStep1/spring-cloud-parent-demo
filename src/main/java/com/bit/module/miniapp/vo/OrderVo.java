@@ -1,5 +1,6 @@
 package com.bit.module.miniapp.vo;
 
+import com.bit.module.manager.bean.ProjectEleNonstandard;
 import com.bit.module.miniapp.bean.Options;
 
 import java.util.List;
@@ -23,6 +24,9 @@ public class OrderVo {
 
    /**所选中**/
    private List<Options> options;
+
+
+   private List<ProjectEleNonstandard> list;
 
 
 
