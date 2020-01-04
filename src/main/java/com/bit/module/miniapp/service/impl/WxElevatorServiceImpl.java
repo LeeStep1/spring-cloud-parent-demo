@@ -73,6 +73,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
 	@Autowired
 	private EquationServiceImpl equationServiceImpl;
+
 	@Value("${upload.imagesPath}")
 	private String filePath;
 
@@ -644,6 +645,28 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			aa.delete();
 		}
 	}
+	/**
+	 * 根據人員數據和電梯類型，獲取最大下浮率
+	 * @param elevatorTypeId
+	 * @return
+	 */
+	@Override
+	 public Map getRate(Long elevatorTypeId){
+		Map cod=new HashMap();
+		if(elevatorTypeId==null){
+			throw new BusinessException("參數爲空");
+		}else{
+			cod.put("elevator_type_id",elevatorTypeId);
+			cod.put("company_id",getCurrentUserInfo().getCompanyId());
+			cod.put("role_id",getCurrentUserInfo().getRole());
+			List<CompanyRate>list=companyRateDao.selectByMap(cod);
+			cod.clear();
+			if(list.size()>0){
+				cod.put("rate",list.get(0).getRate());
+			}
+			return  cod;
+		}
 
+	}
 
 }

@@ -317,4 +317,19 @@ public class ElevatorController {
 		return wxElevatorService.judgeRate(elevatorRate);
 	}
 
+
+	/**
+	 * 判断下浮率
+	 *
+	 * @param elevatorTypeId  電梯的類型ID
+	 * @return
+	 */
+	@GetMapping("/rate/{elevatorTypeId}")
+	public BaseVo getRate(@PathVariable(value = "elevatorTypeId")Long elevatorTypeId) {
+
+		BaseVo vo=new BaseVo();
+		vo.setData(wxElevatorService.getRate(elevatorTypeId));
+		return vo;
+	}
+
 }

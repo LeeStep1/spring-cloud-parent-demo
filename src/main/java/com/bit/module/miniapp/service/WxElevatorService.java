@@ -131,4 +131,13 @@ public interface WxElevatorService {
 	 */
 	BaseVo judgeRate(ElevatorRate elevatorRate);
 
+
+	/**
+	 * 根據人員數據和電梯類型，獲取最大下浮率
+	 * @param elevatorTypeId
+	 * @return
+	 */
+	Map getRate(Long elevatorTypeId);
+
+
 }

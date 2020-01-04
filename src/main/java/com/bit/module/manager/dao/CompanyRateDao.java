@@ -2,6 +2,7 @@ package com.bit.module.manager.dao;
 
 import java.util.List;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bit.module.manager.bean.CompanyRate;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Repository;
  * @date 2020-01-03 13:19:11
  */
 @Repository
-public interface CompanyRateDao {
+public interface CompanyRateDao  extends BaseMapper<CompanyRate> {
 
 	/**
     * 根据id单查记录

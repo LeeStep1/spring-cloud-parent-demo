@@ -119,6 +119,7 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
             userInfo.setRealName(portalUser.getRealName());
 			userInfo.setEmail(portalUser.getEmail());
 			userInfo.setToken(token);
+            userInfo.setRole(portalUser.getRoleId());
 
 			//查询用户的公司
 			Company company = userCompanyDao.getUserCompanyByUserId(portalUser.getId());

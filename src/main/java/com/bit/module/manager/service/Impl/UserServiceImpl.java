@@ -124,6 +124,7 @@ public class UserServiceImpl extends BaseService implements UserService {
             userInfo.setRole(portalUser.getRoleId());
             userInfo.setRoleName(portalUser.getRoleName());
 			userInfo.setEmail(portalUser.getEmail());
+            userInfo.setRole(portalUser.getRoleId());
 			//查询用户的公司
 			Company company = userCompanyDao.getUserCompanyByUserId(portalUser.getId());
 			if (company!=null){
