@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bit.base.exception.BusinessException;
+import com.bit.common.informationEnum.StandardEnum;
 import com.bit.module.equation.bean.BasePriceEquation;
 import com.bit.module.equation.bean.BasePriceEquationRel;
 import com.bit.module.equation.bean.Equation;
@@ -100,10 +101,13 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             eleInputs.add(input);
         }
         beforeExecuteEquations(eleInputs);
-
+        boolean isStandard = true;
         //开始计算项目总价
         for (Map vars : eleInputs) {
             executeCount(vars);
+            if (Boolean.TRUE.equals(vars.get("是否为非标"))){
+                isStandard = false;
+            }
         }
         BigDecimal bd = new BigDecimal("0");
         List<ProjectEleOrder> projectEleOrderNew = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
@@ -117,6 +121,10 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             projectPrice.setStage(Integer.parseInt(map.get("stage").toString()));
         }
         if (Boolean.TRUE.equals(map.get("isUpdate"))) {
+            if (isStandard == false){//如果是非标
+                projectPrice.setStandard(StandardEnum.STANDARD_ZERO.getCode());
+                projectPrice.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
+            }
             projectPriceDao.updateById(projectPrice);
         }
         return eleInputs;
@@ -303,6 +311,9 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         projectEleOrder.setInstallPrice(NumberUtil.roundStr(vars.get("小计_安装费用").toString(), 2));
         projectEleOrder.setTotalPrice(NumberUtil.roundStr(vars.get("小计_合价").toString(), 2));
         projectEleOrder.setTransportPrice(NumberUtil.roundStr(vars.get("小计_运费").toString(), 2));
+        if (Boolean.TRUE.equals(vars.get("是否为非标"))){
+            projectEleOrder.setStandard(StandardEnum.STANDARD_ZERO.getCode());
+        }
         projectEleOrderDao.updateById(projectEleOrder);
     }
 

@@ -70,5 +70,9 @@ public class ProjectEleOrder {
      * 下浮率
      */
     private Double rate;
+    /**
+     * 是否标准，1：标准，0非标
+     */
+    private Integer standard;
 
 }
