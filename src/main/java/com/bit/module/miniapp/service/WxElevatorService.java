@@ -122,7 +122,7 @@ public interface WxElevatorService {
 	 * @param projectPriceId  (id)
 	 * @return
 	 */
-	void sendPriceMail(Long projectPriceId);
+	void sendPriceMail(Long projectPriceId,List<String>ccAddress);
 
 	/**
 	 * 判断下浮率

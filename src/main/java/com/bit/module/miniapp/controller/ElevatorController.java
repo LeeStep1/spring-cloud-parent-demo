@@ -299,9 +299,9 @@ public class ElevatorController {
 	 * @param projectPriceId 报价的id
 	 * @return
 	 */
-	@GetMapping("/sendMail/{projectPriceId}")
-	public BaseVo sendPriceMail(@PathVariable(value = "projectPriceId") Long projectPriceId) {
-		wxElevatorService.sendPriceMail(projectPriceId);
+	@PostMapping("/sendMail/{projectPriceId}")
+	public BaseVo sendPriceMail(@PathVariable(value = "projectPriceId") Long projectPriceId,@RequestBody List<String>ccAdress) {
+		wxElevatorService.sendPriceMail(projectPriceId,ccAdress);
 
 		return new BaseVo();
 	}
