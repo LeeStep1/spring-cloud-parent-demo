@@ -729,8 +729,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			writer.finish();
 			EmailInfo emailInfo = new EmailInfo();
 			List<String> toList = new ArrayList<String>();
-			//toList.add(getCurrentUserInfo().getEmail());
-			toList.add("star9c2009@163.com");
+			toList.add(getCurrentUserInfo().getEmail());
+			//toList.add("star9c2009@163.com");
 			emailInfo.setToAddress(toList);
 			List<EmailAttachment> attachments = new ArrayList<>();
 			EmailAttachment emailAttachment = new EmailAttachment();
