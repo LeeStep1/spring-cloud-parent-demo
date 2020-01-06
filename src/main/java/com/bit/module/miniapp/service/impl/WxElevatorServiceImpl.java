@@ -708,7 +708,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
 	public void export(List<ExcelVo> clsList, String sheetName,List<String>ccAdress) {
 		String filename = UUIDUtil.getUUID();
-		String path = filePath+"/xls/"+filename+".xls";
+		String path = filePath+"/filename/"+"电梯报价.xls";
 		File aa = new File(path);
 		if (!aa.getParentFile().exists()) {
 			aa.getParentFile().mkdirs();
@@ -735,7 +735,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			List<EmailAttachment> attachments = new ArrayList<>();
 			EmailAttachment emailAttachment = new EmailAttachment();
 			emailAttachment.setPath(path);
-			emailAttachment.setName("报价.xlsx");
+			emailAttachment.setName("电梯报价.xls");
 			attachments.add(emailAttachment);
 			//标题
 			emailInfo.setSubject("电梯报价报价");
@@ -751,6 +751,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			throw new BusinessException("发送失败{}" + e.getMessage());
 		} finally {
 			aa.delete();
+			aa.getParentFile().delete();
 		}
 	}
 	/**
