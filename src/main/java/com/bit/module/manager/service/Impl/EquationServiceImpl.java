@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bit.base.exception.BusinessException;
+import com.bit.common.businessEnum.NodeOrderCalculateStatusEnum;
 import com.bit.common.informationEnum.StandardEnum;
 import com.bit.module.equation.bean.BasePriceEquation;
 import com.bit.module.equation.bean.BasePriceEquationRel;
@@ -69,6 +70,10 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
      * @param vars
      */
     public void executeCount(Map vars) {
+        ProjectEleOrder projectEleOrder = projectEleOrderDao.selectById(Long.parseLong(vars.get("orderId").toString()));
+        if (projectEleOrder.getCalculateFlag() == NodeOrderCalculateStatusEnum.BUJISUAN.getCode()) {//不参与计算
+            return;
+        }
         getElevatorInfo(vars);
         if (Boolean.TRUE.equals(vars.get("包括运费"))) {
             executeTransportEquations(vars);
@@ -94,7 +99,10 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         List<ProjectEleOrder> projectEleOrder = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
                 .eq("project_id", projectPrice.getProjectId())
                 .eq("version_id", projectPrice.getId()));
+        if (checkCalculateFlag(projectEleOrder)){
+            return null;//不参与计算
 
+        }
         //事前计算平摊费用
         List<Map> eleInputs = new ArrayList(projectEleOrder.size());
         for (ProjectEleOrder eleOrder : projectEleOrder) {
@@ -139,6 +147,11 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             projectPriceDao.updateById(projectPrice);
         }
         return eleInputs;
+    }
+
+    private boolean checkCalculateFlag(List<ProjectEleOrder> projectEleOrder) {
+        boolean isMatch = projectEleOrder.stream().anyMatch(item -> item.getCalculateFlag() == NodeOrderCalculateStatusEnum.BUJISUAN.getCode());//不参与计算
+        return !isMatch;
     }
 
     /**
@@ -342,22 +355,25 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         projectEleOrder.setInstallPrice(NumberUtil.roundStr(vars.get("小计_安装费用").toString(), 2));
         projectEleOrder.setTotalPrice(NumberUtil.roundStr(vars.get("小计_合价").toString(), 2));
         projectEleOrder.setTransportPrice(NumberUtil.roundStr(vars.get("小计_运费").toString(), 2));
+        projectEleOrder.setBasePrice(NumberUtil.roundStr(vars.get("小计_设备基价").toString(), 2));
+        projectEleOrder.setAdditionPrice(NumberUtil.roundStr(vars.get("小计_高度价格").toString(), 2));
+        projectEleOrder.setTransportPrice(NumberUtil.roundStr(vars.get("小计_运费").toString(), 2));
         if (Boolean.TRUE.equals(vars.get("是否为非标"))){
             projectEleOrder.setStandard(StandardEnum.STANDARD_ZERO.getCode());
         }
         projectEleOrderDao.updateById(projectEleOrder);
 
         //插入非标记录
-        ProjectEleNonstandard nonstandard = projectEleNonstandardDao.selectOne(new QueryWrapper<ProjectEleNonstandard>()
-                .eq("order_id", orderId)
-                .eq("sys_type",NONSTANDARD_TYPE_SYS));
-        if (nonstandard == null && Boolean.TRUE.equals(vars.get("是否为非标"))) {
-            nonstandard = new ProjectEleNonstandard();
-            nonstandard.setOrderId(orderId);
-            nonstandard.setSysType(NONSTANDARD_TYPE_SYS);
-            nonstandard.setContent((String) vars.get("非标详情"));
-            projectEleNonstandardDao.insert(nonstandard);
-        }
+//        ProjectEleNonstandard nonstandard = projectEleNonstandardDao.selectOne(new QueryWrapper<ProjectEleNonstandard>()
+//                .eq("order_id", orderId)
+//                .eq("sys_type",NONSTANDARD_TYPE_SYS));
+//        if (nonstandard == null && Boolean.TRUE.equals(vars.get("是否为非标"))) {
+//            nonstandard = new ProjectEleNonstandard();
+//            nonstandard.setOrderId(orderId);
+//            nonstandard.setSysType(NONSTANDARD_TYPE_SYS);
+//            nonstandard.setContent((String) vars.get("非标详情"));
+//            projectEleNonstandardDao.insert(nonstandard);
+//        }
     }
 
     public double countOptionPrice(Map vars) {
