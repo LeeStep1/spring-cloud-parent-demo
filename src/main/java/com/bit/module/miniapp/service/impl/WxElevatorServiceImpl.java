@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.bit.base.exception.BusinessException;
 import com.bit.base.service.BaseService;
 import com.bit.base.vo.BaseVo;
+import com.bit.common.businessEnum.NonStandardApplyStatusEnum;
 import com.bit.common.consts.Const;
 import com.bit.common.informationEnum.StageEnum;
 import com.bit.common.informationEnum.StandardEnum;
@@ -74,6 +75,9 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	@Autowired
 	private EquationServiceImpl equationServiceImpl;
 
+	@Autowired
+	private ProjectEleNonstandardDao projectEleNonstandardDao;
+
 	@Value("${upload.imagesPath}")
 	private String filePath;
 
@@ -126,7 +130,6 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public Map wxAddReportInfo(ReportInfoVO vo) {
-
 		/**新增报价**/
 		Map<String, Object> baseParams = new HashMap<>(vo.getBaseinfo().size());
 		ProjectEleOrder order = new ProjectEleOrder();
@@ -141,26 +144,33 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		order.setRate(vo.getRate());
 		order.setProjectId(vo.getProjectId());
 		order.setNum(String.valueOf(baseParams.get("台量")));
+		order.setStandard(StandardEnum.STANDARD_ONE.getCode());
+		order.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
 		Map<String, Object> cod = new HashMap<>();
 		cod.put("project_id", vo.getProjectId());
 		cod.put("version", -1);
 		List<ProjectPrice> list1 = projectPriceDao.selectByMap(cod);
 		ProjectPrice a = new ProjectPrice();
 		if (list1.size() == 0) {
+			//todo 非标报价更新价格版本的信息，目前只更新一次，需要优化
 			a.setCreateTime(new Date());
 			a.setProjectId(vo.getProjectId());
 			a.setVersion(-1);
 			a.setCreateUserId(getCurrentUserInfo().getId());
 			a.setStage(StageEnum.STAGE_ONE.getCode());
 			a.setStageName(StageEnum.STAGE_ONE.getInfo());
-			a.setStandard(StandardEnum.STANDARD_DEFAULT.getCode());
-			a.setStandardName(StandardEnum.STANDARD_DEFAULT.getInfo());
+
+			//默认为标准
+			a.setStandard(StandardEnum.STANDARD_ONE.getCode());
+			a.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
 			projectPriceDao.insert(a);
 		} else {
 			a = list1.get(0);
 		}
 		order.setVersionId(a.getId());
+		//新增电梯订单
 		projectEleOrderDao.insert(order);
+
 		// 需要优化为批量新增方法,填写整体的基础信息
 		vo.getBaseinfo().stream().forEach(c -> {
 			c.setOrderId(order.getId());
@@ -180,24 +190,61 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			projectEleOptionsDao.batchAdd(projectEleOptions);
 		}
 
-		// 需要进行报价算法
+		// 需要进行报价算法,估价组织数据
 		Map par = new HashMap();
 		par.put("下浮", vo.getRate());
 		par.put("台量", order.getNum());
-
-
 		par.put("orderId", order.getId());
+
+		//新增参数
+		par.put("isUpdate", true);
+		//算价
 		equationServiceImpl.executeCount(par);
 		//Map rs = equationServiceImpl.executeEquations(par);
+		//反查报价
+		a=projectPriceDao.selectById(a.getId());
 		if (par != null || par.containsKey("是否为非标")) {
 			if (Boolean.TRUE.equals(par.get("是否为非标"))) {
-				a.setStandard(StandardEnum.STANDARD_ZERO.getCode());
-				a.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
+				order.setStandard(StandardEnum.STANDARD_ZERO.getCode());
+				if(!a.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
+					a.setStandard(StandardEnum.STANDARD_ZERO.getCode());
+					a.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
+					a.setNonStandardApplyStatus(NonStandardApplyStatusEnum.DAITIJIAO.getCode());
+					projectPriceDao.updateById(a);
+				}
+
 			} else {
 				a.setStandard(StandardEnum.STANDARD_ONE.getCode());
 				a.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
+				a.setNonStandardApplyStatus(NonStandardApplyStatusEnum.WUXUSHENPI.getCode());
 			}
-			projectPriceDao.updateById(a);
+
+			//新增电梯的非标项数据
+			if(CollectionUtils.isNotEmpty(vo.getProjectEleNonstandardList())){
+				vo.getProjectEleNonstandardList().forEach(non->{
+							//添加订单id
+							non.setOrderId(order.getId());
+							//人工输入
+							non.setSysType(0);
+						}
+
+				);
+				//新增非标项
+				projectEleNonstandardDao.batchAdd(vo.getProjectEleNonstandardList());
+                //报价非标
+				if(!a.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
+					a.setStandard(StandardEnum.STANDARD_ZERO.getCode());
+					a.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
+					a.setNonStandardApplyStatus(NonStandardApplyStatusEnum.DAITIJIAO.getCode());
+
+					projectPriceDao.updateById(a);
+				}
+				if(!order.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
+					order.setStandard(StandardEnum.STANDARD_ZERO.getCode());
+					order.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
+					projectEleOrderDao.updateById(order);
+				}
+			}
 		}
 
 		Map rrs = new HashMap();
@@ -246,7 +293,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	/**
 	 * @param projectId
 	 * @return : void
-	 * @description: 转正式版本
+	 * @description: 标准的草稿转正式版本，非标的草稿转正式并进行非标技术支持预审核
 	 * @author liyujun
 	 * @date 2019-12-19
 	 */
@@ -258,27 +305,20 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		Map<String, Object> cod = new HashMap<>();
 		cod.put("projectId", projectId);
 		cod.put("version", "-1");
-
+		ProjectPrice o = new ProjectPrice();
 		ProjectPrice projectPriceByProjectId = projectPriceDao.getProjectPriceByProjectIdWithVersion(projectId, -1);
 		if (projectPriceByProjectId != null) {
 			if (projectPriceByProjectId.getInstallFlag().equals(Const.FLAG_YES)) {
 				cod.put("包括安装", "true");
+				o.setStage(StageEnum.STAGE_ZERO.getCode());
+				o.setStageName(StageEnum.STAGE_ZERO.getInfo());
 			}
 			if (projectPriceByProjectId.getTransportFlag().equals(Const.FLAG_YES)) {
 				cod.put("包括运费", "true");
+				o.setStage(StageEnum.STAGE_ZERO.getCode());
+				o.setStageName(StageEnum.STAGE_ZERO.getInfo());
 			}
 		}
-
-//		if(proPriceToVersion.size()>0){
-//            proPriceToVersion.forEach(c->{
-//                if(c.equals(OrderPriceAddTypeEnum.SHISHI.getCode())){
-//                    cod.put("包括安装","true");
-//                }else{
-//                    cod.put("包括运费","true");
-//                }
-//            });
-//        }
-		equationServiceImpl.executeCountProjectPrice(cod);
 		if (version != null && version > -1) {
 			version = version + 1;
 
@@ -286,7 +326,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			version = 1;
 		}
 		//根据projectid和version查询记录 只有一条
-		ProjectPrice o = new ProjectPrice();
+
 		o.setVersion(-1);
 		o.setProjectId(projectId);
 		QueryWrapper<ProjectPrice> projectPriceQueryWrapper = new QueryWrapper<>();
@@ -295,8 +335,19 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		ProjectPrice entity = new ProjectPrice();
 		entity.setVersion(version);
 		projectPriceQueryWrapper.setEntity(o);
-		projectPriceDao.update(entity, projectPriceQueryWrapper);
 
+		// 新增非标预审核的状态,转为待审核
+		if(projectPriceByProjectId.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
+           //非标准的话进行状态转为待审批
+			entity.setNonStandardApplyStatus(NonStandardApplyStatusEnum.DAISHENHE.getCode());
+
+		}else{
+		  //标准不进行总价的计算
+			equationServiceImpl.executeCountProjectPrice(cod);
+			entity.setNonStandardApplyStatus(NonStandardApplyStatusEnum.WUXUSHENPI.getCode());
+		}
+
+		projectPriceDao.update(entity, projectPriceQueryWrapper);
 		BaseVo baseVo = new BaseVo();
 		baseVo.setData(projectPrice.getId());
 		return baseVo;
@@ -348,12 +399,24 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 				List<ProjectEleOptions> optionsList = projectEleOptionsDao.selectList(queryWrapper);//得到原来的关联的数据
 				for (ProjectEleOrder pro : list1) {
 					long orderIdOld = pro.getId();
-
-
 					pro.setId(null);
 					//批量新增 返回id
 					pro.setVersionId(projectPrice.getId());
 					projectEleOrderDao.insert(pro);
+
+					//新增非标项的复制功能
+					if(pro.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
+						Map cods=new HashMap(1);
+						cods.put("order_id",orderIdOld);
+						List<ProjectEleNonstandard>listNon=projectEleNonstandardDao.selectByMap(cods);
+						if(CollectionUtils.isNotEmpty(listNon)){
+							listNon.forEach(c->{
+								c.setOrderId(pro.getId());
+								c.setId(null);
+							});
+							projectEleNonstandardDao.batchAdd(listNon);
+						}
+					}
 					//新增基础数据
 					Map cod = new HashMap();
 					cod.put("order_id", orderIdOld);
@@ -373,17 +436,6 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 						}
 
 					}
-				   /* for (Long orderId : ids) {
-                        for (ProjectEleOptions options : optionsList) {
-                            //todo 优化批量插入
-                            if (options.getOrderId().equals(orderId)) {
-                                options.setOrderId(pro.getId());
-								options.setId(null);
-                                projectEleOptionsDao.insert(options);
-                            }
-
-                        }
-                    }*/
 				}
 			}
 
@@ -412,6 +464,10 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		//删除订单记录
 		projectEleOrderDao.deleteById(orderId);
 
+		//新增 删除非标项
+		Map cod=new HashMap(1);
+		cod.put("order_id",orderId);
+		projectEleNonstandardDao.deleteByMap(cod);
 		return successVo();
 	}
 
@@ -484,7 +540,14 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 				QueryWrapper<ProjectEleOrder> queryWrapper1 = new QueryWrapper<>();
 				queryWrapper1.eq("version_id", a.getId());
 				projectEleOrderDao.delete(queryWrapper1);//删除电梯订单；
+                //  新增删除非标的关联的数据
+				if(a.getStandard().equals(StandardEnum.STANDARD_ZERO)){
+					QueryWrapper<ProjectEleNonstandard> queryWrapperPd = new QueryWrapper<ProjectEleNonstandard>();
+					queryWrapperPd.in("order_id",ids);
+					projectEleNonstandardDao.delete(queryWrapperPd);
+				}
 			}
+
 		}
 		QueryWrapper<ProjectPrice> queryWrapper = new QueryWrapper<>();
 		queryWrapper.eq("version", -1);
@@ -663,10 +726,35 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			cod.clear();
 			if(list.size()>0){
 				cod.put("rate",list.get(0).getRate());
+			}else{
+				throw new BusinessException("无数据");
 			}
 			return  cod;
 		}
 
 	}
 
+
+	/**
+	 * 撤销申请
+	 * @param elevatorPriceId
+	 * @return
+	 */
+	@Override
+	public  BaseVo cancelApply(Long elevatorPriceId){
+		ProjectPrice projectPrice  = projectPriceDao.selectById(elevatorPriceId);
+		if(projectPrice!=null){
+			if(projectPrice.getCreateUserId().equals(getCurrentUserInfo().getId())){
+				throw new BusinessException("非本人撤销，无法操作");
+			}else{
+				if(projectPrice.getNonStandardApplyStatus()>=NonStandardApplyStatusEnum.TONGGUO.getCode()){
+					throw new BusinessException("已经审批过无法撤回");
+				}else{
+					projectPrice.setNonStandardApplyStatus(NonStandardApplyStatusEnum.CHEXIAO.getCode());
+					projectPriceDao.updateById(projectPrice);
+				}
+			}
+		}
+      return new BaseVo();
+	}
 }

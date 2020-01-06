@@ -11,6 +11,13 @@ public enum StandardEnum {
 	 */
 	STANDARD_DEFAULT(-1,"默认"),
 
+
+	/**
+	 * 非标
+	 */
+	//NON_STANDARD(0,"非标");
+
+
 	/**
 	 * 非标
 	 */

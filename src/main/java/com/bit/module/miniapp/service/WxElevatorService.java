@@ -139,5 +139,11 @@ public interface WxElevatorService {
 	 */
 	Map getRate(Long elevatorTypeId);
 
+	/**
+	 * 撤销申请
+	 * @param elevatorPriceId
+	 * @return
+	 */
+	BaseVo cancelApply(Long elevatorPriceId);
 
 }

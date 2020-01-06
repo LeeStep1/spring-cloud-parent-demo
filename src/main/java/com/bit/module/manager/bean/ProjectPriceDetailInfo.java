@@ -29,4 +29,17 @@ public class ProjectPriceDetailInfo {
 	 */
 	private List<Options> options;
 
+	/**
+	 * 订单的是否非标 1：标准，0非标',
+	 */
+	private Integer standard;
+	/**
+	 * 名称：1：标准，0非标',
+	 */
+	private String standardName;
+	/**
+	 * 非标时的额外非标项
+	 */
+	private List<ProjectEleNonstandard> projectEleNonstandardOptionList;
+
 }

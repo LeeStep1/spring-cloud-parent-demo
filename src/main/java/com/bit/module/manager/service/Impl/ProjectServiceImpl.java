@@ -8,13 +8,15 @@ import com.bit.base.service.BaseService;
 import com.bit.base.vo.BasePageVo;
 import com.bit.base.vo.BaseVo;
 import com.bit.common.businessEnum.ProjectEnum;
+import com.bit.common.informationEnum.StandardEnum;
 import com.bit.module.manager.bean.*;
 import com.bit.module.manager.dao.ProjectDao;
+import com.bit.module.manager.dao.ProjectEleNonstandardDao;
+import com.bit.module.manager.dao.ProjectEleOrderDao;
 import com.bit.module.manager.dao.ProjectPriceDao;
 import com.bit.module.manager.service.ProjectService;
 import com.bit.module.manager.vo.*;
 import com.bit.module.miniapp.bean.Options;
-import com.sun.xml.internal.rngom.parse.host.Base;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,12 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 
     @Autowired
     private ProjectPriceDao projectPriceDao;
+
+    @Autowired
+	private ProjectEleOrderDao projectEleOrderDao;
+
+	@Autowired
+	private ProjectEleNonstandardDao projectEleNonstandardDao;
 
     @Override
 	@Transactional
@@ -192,7 +200,20 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 				List<Options> projectOptions = projectDao.getProjectOptions(projectEleOrder.getId());
 				projectPriceDetailInfo.setOptions(projectOptions);
 
+				// 新增电梯非标项
+				projectPriceDetailInfo.setStandard(projectEleOrder.getStandard());
+				if (projectEleOrder.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
+					Map cod=new HashMap();
+					cod.put("order_id",projectEleOrder.getId());
+					List<ProjectEleNonstandard>  list =projectEleNonstandardDao.selectByMap(cod);
+					projectPriceDetailInfo.setProjectEleNonstandardOptionList(list);
+					projectPriceDetailInfo.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
+				}else{
+					projectPriceDetailInfo.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
+				}
 				projectPriceDetailInfos.add(projectPriceDetailInfo);
+
+
 			}
 		}
 		projectPriceDetailVO.setProjectPriceDetailInfos(projectPriceDetailInfos);
@@ -234,6 +255,7 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 					projectOrderDetailInfoVO.setTransportPrice(String.valueOf(totalMap.get("transportPrice")));
 				}
 			}
+
 		}
 		//组装电梯详情
 
@@ -243,6 +265,22 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 
 		List<Options> projectOptions = projectDao.getProjectOptions(orderId);
 		projectOrderDetailInfoVO.setProjectOptions(projectOptions);
+		ProjectEleOrder projectEleOrder=projectEleOrderDao.selectById(orderId);
+
+		//新增的附加项
+		if(projectEleOrder!=null){
+			projectOrderDetailInfoVO.setStandard(projectEleOrder.getStandard());
+			if(projectEleOrder.getStandard().equals(StandardEnum.STANDARD_ZERO)){
+				projectOrderDetailInfoVO.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
+				Map cod=new HashMap();
+				cod.put("order_id",orderId);
+				List<ProjectEleNonstandard>  list =projectEleNonstandardDao.selectByMap(cod);
+				projectOrderDetailInfoVO.setProjectEleNonstandardOptionList(list);
+
+			}else{
+				projectOrderDetailInfoVO.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
+			}
+		}
 
 		BaseVo baseVo = new BaseVo();
 		baseVo.setData(projectOrderDetailInfoVO);

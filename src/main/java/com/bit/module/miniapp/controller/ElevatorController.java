@@ -160,7 +160,7 @@ public class ElevatorController {
 
 	/**
 	 * 新建项目下的电梯 算钱
-	 *
+	 * 包括基础参数、选项、以及手动输入的非标项
 	 * @param vo 返回项目
 	 * @return
 	 */
@@ -227,15 +227,15 @@ public class ElevatorController {
    * @param projectId  项目ID
    * @return 返回总价和各个订单的价各
    */
-	@PostMapping("/poject/test/{projectId}")
+/*	@PostMapping("/poject/test/{projectId}")
 	public BaseVo<Map> pojectPriceTest(@PathVariable(value = "projectId") Long projectId) {
 		BaseVo<Map> rs = new BaseVo<>();
 		rs.setData(wxElevatorService.pojectPriceTest(projectId));
 		return rs;
-	}
+	}*/
 
 	/**
-	 * 草稿转正式版本  生成报价单
+	 * 草稿转正式版本生成报价单，标准的草稿转正式版本，非标的草稿转正式并进行非标技术支持预审核
 	 *
 	 * @param projectId 项目ID
 	 * @return 成功与失败
@@ -246,7 +246,19 @@ public class ElevatorController {
 		return wxElevatorService.proPriceToVersion(projectId);
 
 	}
+	/**
+	 * 各类草稿转正式版本（保存正式版，是否发送非标审批）
+	 *
+	 * @param projectId 项目ID
+	 * @param  operationType  操作类型：
+	 * @return 成功与失败
+	 */
+/*	@PostMapping("/project/versionApply/{projectId}/{operationType}")
+	public BaseVo proPriceToVersionMethod(@PathVariable(value = "projectId") Long projectId) {
 
+		return wxElevatorService.proPriceToVersion(projectId);
+
+	}*/
 	/**
 	 * 修改项目报价
 	 *
@@ -330,6 +342,18 @@ public class ElevatorController {
 		BaseVo vo=new BaseVo();
 		vo.setData(wxElevatorService.getRate(elevatorTypeId));
 		return vo;
+	}
+
+
+	/**
+	 * 判断下浮率
+	 *
+	 * @param elevatorTypeId  電梯的類型ID
+	 * @return
+	 */
+	@GetMapping("/nonstandardApply/elevatorPriceId")
+	public BaseVo cancelApply(@PathVariable(value = "elevatorPriceId")Long elevatorPriceId) {
+		return wxElevatorService.cancelApply(elevatorPriceId);
 	}
 
 }

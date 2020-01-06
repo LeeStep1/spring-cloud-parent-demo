@@ -1,7 +1,7 @@
 package com.bit.common.businessEnum;
 
 /**
- * @Description:
+ * @Description:  非标审批流程状态枚举类
  * @Author: liyujun
  * @Date: 2020-01-04
  **/
@@ -13,20 +13,30 @@ public enum  NonStandardApplyStatusEnum {
     WUXUSHENPI(0, "无需审批"),
 
     /**
+     *非标审批
+     */
+    DAITIJIAO(1, "非标的待提交"),
+
+    /**
      *待审核
      */
-    DAISHENHE(1, "待审核"),
+    DAISHENHE(2, "待审核"),
 
 
     /**
      *通过
      */
-    TONGGUO(2,"通过"),
+    TONGGUO(3,"通过"),
 
     /**
      *拒绝
      */
-    JUJUE(3,"拒绝");
+    JUJUE(4,"拒绝"),
+
+    /**
+     *撤销
+     */
+    CHEXIAO(-1,"撤销");
 
     /**
      * 操作码

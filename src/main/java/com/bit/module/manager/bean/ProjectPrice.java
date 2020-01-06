@@ -59,4 +59,10 @@ public class ProjectPrice {
      * 是否选择运输费 0-否 1-是
      */
     private Integer transportFlag;
+
+    /**
+     * 非标审批状态:0：无需审批，1:待提交 2：待审核，3：通过，4：拒绝  -1 :撤回
+     */
+    private Integer nonStandardApplyStatus;
+
 }
