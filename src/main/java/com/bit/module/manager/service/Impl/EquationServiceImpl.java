@@ -351,7 +351,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         ProjectEleNonstandard nonstandard = projectEleNonstandardDao.selectOne(new QueryWrapper<ProjectEleNonstandard>()
                 .eq("order_id", orderId)
                 .eq("sys_type",NONSTANDARD_TYPE_SYS));
-        if (nonstandard == null) {
+        if (nonstandard == null && Boolean.TRUE.equals(vars.get("是否为非标"))) {
             nonstandard = new ProjectEleNonstandard();
             nonstandard.setOrderId(orderId);
             nonstandard.setSysType(NONSTANDARD_TYPE_SYS);
