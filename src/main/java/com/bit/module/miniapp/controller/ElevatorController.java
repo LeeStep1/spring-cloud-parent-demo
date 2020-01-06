@@ -348,10 +348,10 @@ public class ElevatorController {
 	/**
 	 * 非标报价取消接口
 	 *
-	 * @param elevatorTypeId  電梯的類型ID
+	 * @param elevatorTypeId  电梯版本报价的id
 	 * @return
 	 */
-	@GetMapping("/nonstandardApply/elevatorPriceId")
+	@DeleteMapping("/nonstandardApply/{elevatorPriceId}")
 	public BaseVo cancelApply(@PathVariable(value = "elevatorPriceId")Long elevatorPriceId) {
 		return wxElevatorService.cancelApply(elevatorPriceId);
 	}

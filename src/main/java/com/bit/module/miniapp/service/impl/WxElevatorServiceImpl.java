@@ -208,6 +208,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		if (par != null || par.containsKey("是否为非标")) {
 			if (Boolean.TRUE.equals(par.get("是否为非标"))) {
 				order.setStandard(StandardEnum.STANDARD_ZERO.getCode());
+				order.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
 				if(!a.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
 					a.setStandard(StandardEnum.STANDARD_ZERO.getCode());
 					a.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
@@ -799,7 +800,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	public  BaseVo cancelApply(Long elevatorPriceId){
 		ProjectPrice projectPrice  = projectPriceDao.selectById(elevatorPriceId);
 		if(projectPrice!=null){
-			if(projectPrice.getCreateUserId().equals(getCurrentUserInfo().getId())){
+			if(!projectPrice.getCreateUserId().equals(getCurrentUserInfo().getId())){
 				throw new BusinessException("非本人撤销，无法操作");
 			}else{
 				if(projectPrice.getNonStandardApplyStatus()>=NonStandardApplyStatusEnum.TONGGUO.getCode()){

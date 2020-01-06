@@ -14,6 +14,15 @@ import java.util.List;
  **/
 public interface ProjectService {
 
+
+
+    /**
+     * @description:  新增项目
+     * @author liyujun
+     * @date 2020-01-06
+     * @param project :
+     * @return : void
+     */
 	void add(Project project);
 
 	/**

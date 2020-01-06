@@ -57,7 +57,7 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
         project.setCreateTime(new Date());
         project.setProjectStatus(ProjectEnum.PROJECT_SUC.getCode());
         project.setCreateUserId(getCurrentUserInfo().getId());
-        project.setCreateUserName(getCurrentUserInfo().getUserName());
+        project.setCreateUserName(getCurrentUserInfo().getRealName());
 		project.setCompanyId(getCurrentUserInfo().getCompanyId());
 		project.setCompanyName(getCurrentUserInfo().getCompanyName());
         projectDao.insert(project);
