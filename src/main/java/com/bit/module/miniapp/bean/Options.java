@@ -18,7 +18,6 @@ import lombok.Data;
 @Data
 @TableName("t_options")
 public class Options implements Serializable {
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 *
@@ -69,4 +68,10 @@ public class Options implements Serializable {
 	 */
 	@TableField(exist = false)
 	private Integer nums;
+
+	/**
+	 * 选装总价
+	 */
+	@TableField(exist = false)
+	private Double optionPrice;
 }

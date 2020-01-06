@@ -41,7 +41,7 @@ public class ProjectEleNonstandard {
     private String  signalPrice;
 
     /**
-     * 单价格（目前无用，仅为后期扩展）
+     * 总价格（目前无用，仅为后期扩展）
      **/
     private String  totalPrice;
 

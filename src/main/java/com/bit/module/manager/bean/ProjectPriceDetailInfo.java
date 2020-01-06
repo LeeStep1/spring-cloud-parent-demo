@@ -41,5 +41,9 @@ public class ProjectPriceDetailInfo {
 	 * 非标时的额外非标项
 	 */
 	private List<ProjectEleNonstandard> projectEleNonstandardOptionList;
+	/**
+	 * 订单价格
+	 */
+	private String orderPrice;
 
 }

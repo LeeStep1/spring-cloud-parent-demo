@@ -37,8 +37,8 @@
           version_id,
           rate,
           standard,
-          standardName,
-          calculateFlag
+          standard_name,
+          calculate_flag
 
     </sql>
     <!--批量添加-->
@@ -56,8 +56,8 @@
         version_id,
         rate,
         standard,
-        standardName,
-        calculateFlag
+        standard_name,
+        calculate_flag
         ) VALUES
         <foreach collection="list" item="item" index="index"  separator=",">
             (

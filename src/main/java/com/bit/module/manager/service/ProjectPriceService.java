@@ -25,7 +25,7 @@ public interface ProjectPriceService {
 
 
 	/**
-	 * 单查数据
+	 * 单查项目数据
 	 * @param id
 	 * @author chenduo
 	 * @since ${date}
