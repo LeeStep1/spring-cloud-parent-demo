@@ -203,6 +203,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		//Map rs = equationServiceImpl.executeEquations(par);
 		//反查报价
 		a=projectPriceDao.selectById(a.getId());
+		String   sysNodOptions="";
 		if (par != null || par.containsKey("是否为非标")) {
 			if (Boolean.TRUE.equals(par.get("是否为非标"))) {
 				order.setStandard(StandardEnum.STANDARD_ZERO.getCode());
@@ -211,6 +212,9 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 					a.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
 					a.setNonStandardApplyStatus(NonStandardApplyStatusEnum.DAITIJIAO.getCode());
 					projectPriceDao.updateById(a);
+				}
+				if(par.containsKey("非标详情")){
+					sysNodOptions=String.valueOf(par.get("非标详情"));
 				}
 
 			} else {
@@ -221,14 +225,23 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
 			//新增电梯的非标项数据
 			if(CollectionUtils.isNotEmpty(vo.getProjectEleNonstandardList())){
-				vo.getProjectEleNonstandardList().forEach(non->{
+
+				for(ProjectEleNonstandard non:vo.getProjectEleNonstandardList()){
+					//添加订单id
+					non.setOrderId(order.getId());
+					//人工输入
+					//non.setSysType(0);
+					non.setContent(sysNodOptions+non.getContent());
+				}
+			/*	vo.getProjectEleNonstandardList().forEach(non->{
 							//添加订单id
 							non.setOrderId(order.getId());
 							//人工输入
 							non.setSysType(0);
-						}
+							non.setContent(sysNodOptions+non.getContent());
+						}	);*/
 
-				);
+
 				//新增非标项
 				projectEleNonstandardDao.batchAdd(vo.getProjectEleNonstandardList());
                 //报价非标
@@ -564,6 +577,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	 * @return
 	 */
 	@Override
+	@Async
 	public void sendPriceMail(Long projectPriceId,List<String>ccAddress) {
 
 		Map cod = new HashMap();
@@ -637,6 +651,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	 * @return
 	 */
 	@Override
+	@Async
 	public BaseVo judgeRate(ElevatorRate elevatorRate) {
 		BaseVo baseVo = new BaseVo();
 		Long roleId = getCurrentUserInfo().getRole().longValue();
@@ -684,8 +699,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			writer.finish();
 			EmailInfo emailInfo = new EmailInfo();
 			List<String> toList = new ArrayList<String>();
-			toList.add(getCurrentUserInfo().getEmail());
-			//toList.add("star9c2009@163.com");
+			//toList.add(getCurrentUserInfo().getEmail());
+			toList.add("star9c2009@163.com");
 			emailInfo.setToAddress(toList);
 			List<EmailAttachment> attachments = new ArrayList<>();
 			EmailAttachment emailAttachment = new EmailAttachment();
@@ -755,6 +770,6 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 				}
 			}
 		}
-      return new BaseVo();
+		return new BaseVo();
 	}
 }
