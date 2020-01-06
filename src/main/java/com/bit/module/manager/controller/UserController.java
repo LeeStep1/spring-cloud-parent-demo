@@ -1,9 +1,12 @@
 package com.bit.module.manager.controller;
 
+import com.bit.base.exception.BusinessException;
 import com.bit.base.vo.BaseVo;
 
+import com.bit.base.vo.SuccessVo;
 import com.bit.module.manager.bean.User;
 import com.bit.module.manager.bean.UserLogin;
+import com.bit.module.manager.dao.UserDao;
 import com.bit.module.manager.service.UserService;
 import com.bit.module.manager.vo.PortalUserVo;
 import com.bit.module.manager.vo.UserVo;
@@ -12,6 +15,10 @@ import org.springframework.web.bind.annotation.*;
 
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.prefs.BackingStoreException;
 
 /**
  * @description:
@@ -24,6 +31,11 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+
+    @Autowired
+    private UserDao userDao;
+
 
     /**
      * 管理端登陆
@@ -148,5 +160,28 @@ public class UserController {
     @GetMapping("/status/{userId}/{status}")
     public BaseVo statusUser(@PathVariable(value = "userId")Long userId,@PathVariable(value = "status")Integer status){
 		return userService.statusUser(userId,status);
+    }
+
+
+    /**
+     * 校验用户名
+     * @param userName
+     * @return
+     */
+    @GetMapping("/username/{userName}")
+    public BaseVo checkUserName(@PathVariable(value = "userName")String userName){
+
+        Map cod=new HashMap(1);
+        cod.put("user_name",userName);
+        List<User> list=userDao.selectByMap(cod);
+        if(list.size()>0){
+            throw new BusinessException("账户名已存在");
+        }else{
+            return new SuccessVo();
+        }
+
+
+
+
     }
 }
