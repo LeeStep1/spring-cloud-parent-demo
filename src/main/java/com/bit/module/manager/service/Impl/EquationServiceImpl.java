@@ -310,7 +310,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
                 heightPrice += (double) simpleEquation("(实际提升高度-标准提升高度)/1000*高度单价", vars);
                 title.add("提升高度加价");
                 if (vars.get("实际提升高度")!=null) {
-                    height.add(vars.get("实际提升高度").toString());
+                    height.add(vars.get("实际提升高度")+"mm");
                 }
                 prices.add(heightPrice +"");
             }
@@ -324,7 +324,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
                 heightPrice += (double) simpleEquation("(实际顶层高度-标准顶层高度)/1000*高度单价", vars);
                 title.add("顶层高度加价");
                 if (vars.get("实际顶层高度")!=null) {
-                    height.add(vars.get("实际顶层高度").toString());
+                    height.add(vars.get("实际顶层高度")+"mm");
                 }
                 prices.add(heightPrice +"");
             }
@@ -338,7 +338,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
                 heightPrice += (double) simpleEquation("(实际底坑深度-标准底坑深度)/1000*高度单价", vars);
                 title.add("底坑深度加价");
                 if (vars.get("实际底坑深度")!=null) {
-                    height.add(vars.get("实际底坑深度").toString());
+                    height.add(vars.get("实际底坑深度")+"mm");
                 }
                 prices.add(heightPrice +"");
             }
@@ -347,9 +347,9 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             noStandardDetail += "底坑深度超标,";
         }
         if (!noStandard){
-            additionHeightInfo.put("title", title);
-            additionHeightInfo.put("height", height);
-            additionHeightInfo.put("prices", prices);
+            additionHeightInfo.put("title", CollUtil.join(title, ","));
+            additionHeightInfo.put("height", CollUtil.join(height, ","));
+            additionHeightInfo.put("prices", CollUtil.join(prices, ","));
             vars.put("高度加价", additionHeightInfo);
         }
         vars.put("是否为非标", noStandard);
