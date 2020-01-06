@@ -81,5 +81,13 @@ public class ProjectEleOrder {
     private String standardName;
 
 
+    /**
+     * 是否参与计算 1：参与，0 不参与
+     */
+    private Integer calculateFlag;
+
+
+
+
 
 }
