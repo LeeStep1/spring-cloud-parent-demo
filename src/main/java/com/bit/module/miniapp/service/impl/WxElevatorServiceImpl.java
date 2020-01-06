@@ -493,15 +493,15 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
 			projectEleOptionsDao.delByOrderId(orderId);
 			Long projectPriceId=projectEleOrder.getVersionId();
-
-			if(projectEleOrder.getStandard().equals(StandardEnum.STANDARD_ZERO)){
+               //删除订单记录
+			projectEleOrderDao.deleteById(orderId);
+			if(projectEleOrder.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
 				//新增 删除非标项
 				Map cod=new HashMap(1);
 				cod.put("order_id",orderId);
 				projectEleNonstandardDao.deleteByMap(cod);
 				cod.clear();
-				//删除订单记录
-				projectEleOrderDao.deleteById(orderId);
+
 				//判断整体删除数据后的逻辑
 				ProjectPrice projectPrice =projectPriceDao.selectById(projectPriceId);
 				if(projectPrice.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
@@ -511,6 +511,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 					List<ProjectEleOrder>list=projectEleOrderDao.selectByMap(codd);
 					if(list.size()==0){
 						projectPrice.setStandard(StandardEnum.STANDARD_ONE.getCode());
+						projectPrice.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
 						projectPriceDao.updateById(projectPrice);
 					}
 				}
