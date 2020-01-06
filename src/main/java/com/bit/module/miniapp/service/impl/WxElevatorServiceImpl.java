@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.bit.base.exception.BusinessException;
 import com.bit.base.service.BaseService;
 import com.bit.base.vo.BaseVo;
+import com.bit.common.businessEnum.NodeOrderCalculateStatusEnum;
 import com.bit.common.businessEnum.NonStandardApplyStatusEnum;
 import com.bit.common.consts.Const;
 import com.bit.common.informationEnum.StageEnum;
@@ -255,6 +256,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 				if(!order.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
 					order.setStandard(StandardEnum.STANDARD_ZERO.getCode());
 					order.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
+					order.setCalculateFlag(NodeOrderCalculateStatusEnum.BUJISUAN.getCode());
 					projectEleOrderDao.updateById(order);
 				}
 			}
@@ -470,17 +472,45 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	@Override
 	@Transactional
 	public BaseVo delOrderByOrderId(Long orderId) {
-		//先删除关联数据
-		projectEleOrderBaseInfoDao.delByOrderId(orderId);
 
-		projectEleOptionsDao.delByOrderId(orderId);
-		//删除订单记录
-		projectEleOrderDao.deleteById(orderId);
+		ProjectEleOrder projectEleOrder=projectEleOrderDao.selectById(orderId);
+		if (projectEleOrder==null){
 
-		//新增 删除非标项
-		Map cod=new HashMap(1);
-		cod.put("order_id",orderId);
-		projectEleNonstandardDao.deleteByMap(cod);
+			throw new BusinessException("无此数据");
+		}else{
+			//先删除关联数据
+			projectEleOrderBaseInfoDao.delByOrderId(orderId);
+
+			projectEleOptionsDao.delByOrderId(orderId);
+			Long projectPriceId=projectEleOrder.getVersionId();
+
+			if(projectEleOrder.getStandard().equals(StandardEnum.STANDARD_ZERO)){
+				//新增 删除非标项
+				Map cod=new HashMap(1);
+				cod.put("order_id",orderId);
+				projectEleNonstandardDao.deleteByMap(cod);
+				cod.clear();
+				//删除订单记录
+				projectEleOrderDao.deleteById(orderId);
+				//判断整体删除数据后的逻辑
+				ProjectPrice projectPrice =projectPriceDao.selectById(projectPriceId);
+				if(projectPrice.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
+					Map codd=new HashMap(1);
+					codd.put("version_id",projectPriceId);
+					codd.put("standard",StandardEnum.STANDARD_ZERO.getCode());
+					List<ProjectEleOrder>list=projectEleOrderDao.selectByMap(codd);
+					if(list.size()==0){
+						projectPrice.setStandard(StandardEnum.STANDARD_ONE.getCode());
+						projectPriceDao.updateById(projectPrice);
+					}
+				}
+
+			}
+
+
+
+		}
+
 		return successVo();
 	}
 

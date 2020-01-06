@@ -331,7 +331,7 @@ public class ElevatorController {
 
 
 	/**
-	 * 判断下浮率
+	 * 根据用户获取电梯类型下的下浮率
 	 *
 	 * @param elevatorTypeId  電梯的類型ID
 	 * @return
@@ -346,7 +346,7 @@ public class ElevatorController {
 
 
 	/**
-	 * 判断下浮率
+	 * 非标报价取消接口
 	 *
 	 * @param elevatorTypeId  電梯的類型ID
 	 * @return
