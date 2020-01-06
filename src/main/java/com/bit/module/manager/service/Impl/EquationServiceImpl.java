@@ -309,7 +309,9 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             if (temp > 0) {
                 heightPrice += (double) simpleEquation("(实际提升高度-标准提升高度)/1000*高度单价", vars);
                 title.add("提升高度加价");
-                height.add((String) vars.get("实际提升高度"));
+                if (vars.get("实际提升高度")!=null) {
+                    height.add(vars.get("实际提升高度").toString());
+                }
                 prices.add(heightPrice +"");
             }
         }else {
@@ -321,7 +323,9 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             if (temp1 > 0) {
                 heightPrice += (double) simpleEquation("(实际顶层高度-标准顶层高度)/1000*高度单价", vars);
                 title.add("顶层高度加价");
-                height.add((String) vars.get("实际顶层高度"));
+                if (vars.get("实际顶层高度")!=null) {
+                    height.add(vars.get("实际顶层高度").toString());
+                }
                 prices.add(heightPrice +"");
             }
         }else {
@@ -333,7 +337,9 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             if (temp2 > 0) {
                 heightPrice += (double) simpleEquation("(实际底坑深度-标准底坑深度)/1000*高度单价", vars);
                 title.add("底坑深度加价");
-                height.add((String) vars.get("实际底坑深度"));
+                if (vars.get("实际底坑深度")!=null) {
+                    height.add(vars.get("实际底坑深度").toString());
+                }
                 prices.add(heightPrice +"");
             }
         }else {
