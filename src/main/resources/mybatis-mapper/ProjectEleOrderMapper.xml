@@ -80,16 +80,6 @@
     </insert>
 
 
-
-
-    <!-- 根据主键查询数据 -->
-    <select id="getProjectEleOrderById" parameterType="Integer" resultMap="projectEleOrderMap">
-        select
-        <include refid="Base_Column_List"/>
-        from t_project_ele_order
-        where id = #{id,jdbcType=BIGINT}
-    </select>
-
     <!-- 多参数查询数据 -->
     <select id="findByParam" parameterType="com.bit.module.manager.bean.ProjectEleOrder" resultMap="projectEleOrderMap">
         select
@@ -131,78 +121,7 @@
     </select>
 
 
-    <!-- 新增数据 -->
-    <insert id="addProjectEleOrder" parameterType="com.bit.module.manager.bean.ProjectEleOrder" keyColumn="id"
-            useGeneratedKeys="true">
-        insert into t_project_ele_order
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="projectId!=null">
-                project_id,
-            </if>
-            <if test="elevatorTypeId!=null">
-                elevator_type_id,
-            </if>
-            <if test="elevatorTypeName!=null and elevatorTypeName!=''">
-                elevator_type_name,
-            </if>
-            <if test="num!=null">
-                num,
-            </if>
-            <if test="unitPrice!=null and unitPrice!=''">
-                unit_price,
-            </if>
-            <if test="installPrice!=null and installPrice!=''">
-                install_price,
-            </if>
-            <if test="transportPrice!=null and transportPrice!=''">
-                transport_price,
-            </if>
-            <if test="singleTotalPrice!=null and singleTotalPrice!=''">
-                single_total_price,
-            </if>
-            <if test="totalPrice!=null and totalPrice!=''">
-                total_price,
-            </if>
-            <if test="versionId!=null">
-                version_id,
-            </if>
-            <if test="rate!=null">
-                rate,
-            </if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="projectId!=null">
-                #{projectId,jdbcType=BIGINT},
-            </if>
-            <if test="elevatorTypeId!=null">
-                #{elevatorTypeId,jdbcType=BIGINT},
-            </if>
-            <if test="elevatorTypeName!=null and elevatorTypeName!=''">
-                #{elevatorTypeName,jdbcType=VARCHAR},
-            </if>
-            <if test="num!=null">
-                #{num,jdbcType=INTEGER},
-            </if>
-            <if test="unitPrice!=null and unitPrice!=''">
-                #{unitPrice,jdbcType=VARCHAR},
-            </if>
-            <if test="installPrice!=null and installPrice!=''">
-                #{installPrice,jdbcType=VARCHAR},
-            </if>
-            <if test="transportPrice!=null and transportPrice!=''">
-                #{transportPrice,jdbcType=VARCHAR},
-            </if>
-            <if test="singleTotalPrice!=null and singleTotalPrice!=''">
-                #{singleTotalPrice,jdbcType=VARCHAR},
-            </if>
-            <if test="totalPrice!=null and totalPrice!=''">
-                #{totalPrice,jdbcType=VARCHAR},
-            </if>
-            <if test="versionId!=null">
-                #{versionId,jdbcType=BIGINT},
-            </if>
-        </trim>
-    </insert>
+
 
 
     <select id="getPriceVersionByOrderId" parameterType="long" resultType="integer">
