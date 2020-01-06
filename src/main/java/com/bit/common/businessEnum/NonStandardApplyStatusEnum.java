@@ -29,11 +29,6 @@ public enum  NonStandardApplyStatusEnum {
     TONGGUO(3,"通过"),
 
     /**
-     *拒绝
-     */
-    JUJUE(4,"拒绝"),
-
-    /**
      *撤销
      */
     CHEXIAO(-1,"撤销");
