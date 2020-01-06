@@ -87,6 +87,14 @@ public class ProjectEleOrder {
     private Integer calculateFlag;
 
 
+    /**
+     * 基价
+     */
+    private String basePrice;
+    /**
+     * 高度加价
+     */
+    private String additionPrice;
 
 
 
