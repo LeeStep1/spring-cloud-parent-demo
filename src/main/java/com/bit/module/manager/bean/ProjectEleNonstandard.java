@@ -45,5 +45,15 @@ public class ProjectEleNonstandard {
      **/
     private String  totalPrice;
 
+    /**
+     * 审批备注
+     **/
+    private String  auditRemark;
+
+    /**
+     * 是否能做 0-否 1-是
+     **/
+    private Integer  productionFlag;
+
 
 }
