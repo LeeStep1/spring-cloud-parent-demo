@@ -1,10 +1,11 @@
 package com.bit.module.manager.dao;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bit.module.manager.bean.ProjectEleOrder;
 import com.bit.module.manager.bean.ProjectPrice;
-import com.bit.module.manager.vo.ElevatorOrderVo;
+import com.bit.module.manager.vo.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -54,4 +55,35 @@ public interface ProjectPriceDao extends BaseMapper<ProjectPrice> {
 	 * @return
 	 */
 	ProjectPrice getProjectPriceByProjectIdWithVersion(@Param(value = "projectId") Long projectId,@Param(value = "version")Integer version);
+
+	/**
+	 * 多参数查询
+	 * @param projectPrice
+	 * @return
+	 */
+	List<ProjectPrice> findByParam(ProjectPrice projectPrice);
+
+	/**
+	 * 根据主键查询数据
+	 * @param projectId
+	 * @return
+	 */
+	ProjectPrice getProjectPriceById(@Param(value = "projectId") Long projectId);
+
+	/**
+	 * 编辑数据
+	 * @param projectPrice
+	 */
+	void updateProjectPrice(ProjectPrice projectPrice);
+
+	/**
+	 * 分页查询
+	 * @param projectPricePageVO
+	 * @return
+	 */
+	/**
+	 * 参数列表查询
+	 * @return
+	 */
+	IPage<ProjectShowVO> listPage(@Param("pg")Page<ProjectShowVO> page, @Param("projectPageVO")ProjectPageVO projectPageVO);
 }

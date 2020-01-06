@@ -3,6 +3,39 @@
 
 <mapper namespace="com.bit.module.manager.dao.ProjectPriceDao">
 
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.bit.module.manager.bean.ProjectPrice" id="projectPriceMap">
+        <result property="id" column="id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="totalPrice" column="total_price"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createUserId" column="create_user_id"/>
+        <result property="version" column="version"/>
+        <result property="standard" column="standard"/>
+        <result property="standardName" column="standard_name"/>
+        <result property="stage" column="stage"/>
+        <result property="stageName" column="stage_name"/>
+        <result property="installFlag" column="install_flag"/>
+        <result property="transportFlag" column="transport_flag"/>
+        <result property="nonStandardApplyStatus" column="non_standard_apply_status"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        project_id,
+        total_price,
+        create_time,
+        create_user_id,
+        version,
+        standard,
+        standard_name,
+        stage,
+        stage_name,
+        install_flag,
+        transport_flag,
+        non_standard_apply_status
+    </sql>
 
     <!--根据项目id集合批量查询报价记录-->
     <select id="getLatestProjectPrice" resultType="com.bit.module.manager.bean.ProjectPrice" parameterType="map">
@@ -63,6 +96,133 @@
             <if test="projectId!=null">
                 AND project_id=#{projectId,jdbcType=BIGINT}
             </if>
+        </where>
+    </select>
+
+    <!-- 多参数查询数据 -->
+    <select id="findByParam" parameterType="com.bit.module.manager.bean.ProjectPrice" resultMap="projectPriceMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_project_price
+        <where>
+            <if test="projectId!=null">
+                and project_id = #{projectId,jdbcType=BIGINT}
+            </if>
+            <if test="totalPrice!=null and totalPrice!=''">
+                and total_price = #{totalPrice,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime!=null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="createUserId!=null">
+                and create_user_id = #{createUserId,jdbcType=BIGINT}
+            </if>
+            <if test="version!=null">
+                and version = #{version,jdbcType=INTEGER}
+            </if>
+            <if test="standard!=null">
+                and standard = #{standard,jdbcType=INTEGER}
+            </if>
+            <if test="standardName!=null and standardName!=''">
+                and standard_name = #{standardName,jdbcType=VARCHAR}
+            </if>
+            <if test="stage!=null">
+                and stage = #{stage,jdbcType=INTEGER}
+            </if>
+            <if test="stageName!=null and stageName!=''">
+                and stage_name = #{stageName,jdbcType=VARCHAR}
+            </if>
+            <if test="installFlag!=null">
+                and install_flag = #{installFlag,jdbcType=INTEGER}
+            </if>
+            <if test="transportFlag!=null">
+                and transport_flag = #{transportFlag,jdbcType=INTEGER}
+            </if>
+            <if test="nonStandardApplyStatus!=null">
+                and non_standard_apply_status = #{nonStandardApplyStatus,jdbcType=INTEGER}
+            </if>
+
+        </where>
+    </select>
+
+    <!-- 根据主键查询数据 -->
+    <select id="getProjectPriceById" parameterType="long" resultMap="projectPriceMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_project_price
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <!-- 编辑数据 -->
+    <update id="updateProjectPrice" parameterType="com.bit.module.manager.bean.ProjectPrice">
+        update t_project_price
+        <trim prefix="set" suffixOverrides=",">
+            <if test="projectId!=null">
+                project_id =  #{projectId,jdbcType=BIGINT},
+            </if>
+            <if test="totalPrice!=null and totalPrice!=''">
+                total_price = #{totalPrice,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime!=null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUserId!=null">
+                create_user_id =  #{createUserId,jdbcType=BIGINT},
+            </if>
+            <if test="version!=null">
+                version = #{version,jdbcType=INTEGER},
+            </if>
+            <if test="standard!=null">
+                standard = #{standard,jdbcType=INTEGER},
+            </if>
+            <if test="standardName!=null and standardName!=''">
+                standard_name = #{standardName,jdbcType=VARCHAR},
+            </if>
+            <if test="stage!=null">
+                stage = #{stage,jdbcType=INTEGER},
+            </if>
+            <if test="stageName!=null and stageName!=''">
+                stage_name = #{stageName,jdbcType=VARCHAR},
+            </if>
+            <if test="installFlag!=null">
+                install_flag = #{installFlag,jdbcType=INTEGER},
+            </if>
+            <if test="transportFlag!=null">
+                transport_flag = #{transportFlag,jdbcType=INTEGER},
+            </if>
+            <if test="nonStandardApplyStatus!=null">
+                non_standard_apply_status = #{nonStandardApplyStatus,jdbcType=INTEGER},
+            </if>
+        </trim>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <!--分页查询-->
+    <select id="listPage" parameterType="com.bit.module.manager.vo.ProjectPageVO" resultType="com.bit.module.manager.vo.ProjectShowVO">
+        SELECT t2.id as projectId,t2.customer_name,t2.agent_name,t2.address_name,t2.create_user_name,t1.non_standard_apply_status,t1.id as projectPriceId,t1.create_time,t3.mobile,t3.real_name
+        FROM t_project_price t1
+        INNER JOIN t_project t2
+        on t1.project_id = t2.id
+        INNER JOIN t_user t3
+        on t2.create_user_id = t3.id
+        <where>
+            and t1.non_standard_apply_status > 0
+            <if test="projectPageVO.customerName!=null and projectPageVO.customerName!=''">
+                and t2.customer_name LIKE concat("%",#{customerName,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="projectPageVO.agentName!=null and projectPageVO.agentName!=''">
+                and t2.agent_name LIKE concat("%",#{agentName,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="projectPageVO.createUserId!=null">
+                and t2.create_user_id = #{createUserId,jdbcType=BIGINT}
+            </if>
+            <if test="projectPageVO.createUserName!=null and projectPageVO.createUserName!=''">
+                and t2.create_user_name = concat("%", #{createUserName,jdbcType=VARCHAR} ,"%")
+            </if>
+            <if test="projectPageVO.createTime!=null">
+                and t2.create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+
         </where>
     </select>
 </mapper>

@@ -27,9 +27,13 @@ public class ProjectPrice {
      * 总价格
      */
     private String totalPrice;
-
+	/**
+	 * 创建时间
+	 */
     private Date createTime;
-
+	/**
+	 * 创建人员
+	 */
     private Long createUserId;
     /**
      * 版本号
