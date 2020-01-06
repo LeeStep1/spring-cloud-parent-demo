@@ -1,5 +1,7 @@
 package com.bit.module.manager.bean;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -14,12 +16,20 @@ import javax.xml.bind.Element;
 @TableName("t_project_ele_order_base_info")
 public class ProjectEleOrderBaseInfo {
 
-    /***数据id*/
+
+    /**
+     * id
+     */
+    @TableId(value = "id",type = IdType.AUTO)
     private Long id;
+
     /**参数的变量**/
     private String paramKey;
+
     /***所填写的属性参数*/
+
     private String infoValue;
+
     /***'数据id'*/
     private Long orderId;
 
