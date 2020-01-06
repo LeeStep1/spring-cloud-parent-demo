@@ -17,6 +17,9 @@
         <result property="totalPrice" column="total_price"/>
         <result property="versionId" column="version_id"/>
         <result property="rate" column="rate"/>
+        <result property="standard" column="standard"/>
+        <result property="standardName" column="standard_name"/>
+        <result property="calculateFlag" column="calculate_flag"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -32,7 +35,11 @@
           single_total_price,
           total_price,
           version_id,
-          rate
+          rate,
+          standard,
+          standardName,
+          calculateFlag
+
     </sql>
     <!--批量添加-->
     <insert id="batchInsert" parameterType="com.bit.module.manager.bean.ProjectEleOrder" keyProperty="id" useGeneratedKeys="true">
@@ -47,7 +54,10 @@
         single_total_price,
         total_price,
         version_id,
-        rate
+        rate,
+        standard,
+        standardName,
+        calculateFlag
         ) VALUES
         <foreach collection="list" item="item" index="index"  separator=",">
             (
@@ -60,7 +70,11 @@
                 #{transportPrice,jdbcType=VARCHAR},
                 #{singleTotalPrice,jdbcType=VARCHAR},
                 #{totalPrice,jdbcType=VARCHAR},
-                #{versionId,jdbcType=BIGINT}
+                #{versionId,jdbcType=BIGINT},
+                #{rate,jdbcType=DOUBLE},
+                #{standard,jdbcType=INTEGER},
+                #{standardName,jdbcType=VARCHAR},
+                #{calculateFlag,jdbcType=VARCHAR}
             )
         </foreach>
     </insert>
