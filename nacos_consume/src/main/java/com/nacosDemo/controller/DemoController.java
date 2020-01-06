@@ -3,11 +3,9 @@ package com.nacosDemo.controller;
 import com.alibaba.fastjson.JSON;
 import com.nacosDemo.bean.DirectMessage;
 import com.nacosDemo.commonEnum.RedisKey;
-import com.nacosDemo.until.CacheUtil;
-import com.nacosDemo.until.DistributedLock;
-import com.nacosDemo.until.RedisKeyUntil;
-import com.nacosDemo.until.RequestThread;
+import com.nacosDemo.until.*;
 import io.prometheus.client.Collector;
+import org.redisson.api.RLock;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageDeliveryMode;
@@ -16,10 +14,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,6 +52,12 @@ public class DemoController {
      */
     @Autowired
     private CacheUtil cacheUtil;
+
+    /**
+     * redission 工具类
+     */
+    @Autowired
+    private RedissionUntil redissionUntil;
 
     @Autowired
     private DistributedLock distributedLock;
@@ -274,5 +275,46 @@ public class DemoController {
     public void getThreadString(){
         String ss = RequestThread.getThread();
         System.out.println(Thread.currentThread().getName()+ "  取到的uuid 是..............."+ss);
+    }
+
+
+    /**
+     * 简单秒杀限流
+     * @author liyang
+     * @date 2020-01-06
+     * @param key : 锁名称
+    */
+    @PostMapping("/simpleSeckill")
+    public void simpleSeckill(@RequestParam(value = "key") String key){
+
+//        redissionUntil.lock(key,2);
+
+
+        boolean b = redissionUntil.tryLock(key,1000L,100L);
+
+
+//        String uuid = RequestThread.getThread();
+
+//        boolean b = distributedLock.setLock(key,uuid,1000);
+        if(b){
+            System.out.println(Thread.currentThread().getName()+"......上锁成功..准备扣减库存...");
+            int count = (int) cacheUtil.get("demo:product");
+            if(count>0){
+                int newCount = count - 1;
+                System.out.println(Thread.currentThread().getName()+ "......当前还剩余库存为....." + newCount);
+                cacheUtil.set("demo:product",newCount);
+                redissionUntil.unLock(key);
+
+
+//                distributedLock.releaseLock(key,uuid);
+            }else {
+                System.out.println(Thread.currentThread().getName()+".....没有库存了........");
+            }
+        }else {
+            System.out.println(Thread.currentThread().getName() + "没取到锁 跳出.........");
+        }
+
+
+
     }
 }

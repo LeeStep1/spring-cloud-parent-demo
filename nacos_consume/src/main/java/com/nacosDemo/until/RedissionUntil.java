@@ -41,4 +41,26 @@ public class RedissionUntil {
         return lock;
     }
 
+    /**
+     * redission tryOUt上锁
+     * @author liyang
+     * @date 2020-01-06
+     * @param key : 锁的key
+     * @param lockWait : 上锁最长时间
+     * @param timeOut : 锁过期时间
+     * @return : boolean 是否上锁成功
+    */
+    public boolean tryLock(String key,Long lockWait,Long timeOut){
+        RLock lock = redission.getLock(key);
+        boolean b = true;
+        try {
+            b = lock.tryLock(lockWait,timeOut,TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return b;
+    }
+
+
 }
