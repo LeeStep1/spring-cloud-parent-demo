@@ -401,6 +401,11 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 				projectPrice.setId(null);
 				projectPrice.setVersion(-1);
 				projectPrice.setCreateTime(new Date());
+
+				//非标的话，就强制将审批状态置为待提交
+				if(projectPrice.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
+					projectPrice.setNonStandardApplyStatus(NonStandardApplyStatusEnum.DAITIJIAO.getCode());
+				}
 				//新增一个草稿报价
 				projectPriceDao.insert(projectPrice);
 				//todo 优化查询算法
@@ -428,6 +433,10 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 							listNon.forEach(c->{
 								c.setOrderId(pro.getId());
 								c.setId(null);
+								c.setAuditRemark(null);
+								c.setProductionFlag(null);
+								c.setSignalPrice(null);
+								c.setTotalPrice(null);
 							});
 							projectEleNonstandardDao.batchAdd(listNon);
 						}
