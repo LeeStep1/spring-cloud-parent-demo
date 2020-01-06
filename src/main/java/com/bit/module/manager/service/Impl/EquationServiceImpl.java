@@ -70,10 +70,6 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
      * @param vars
      */
     public void executeCount(Map vars) {
-        ProjectEleOrder projectEleOrder = projectEleOrderDao.selectById(Long.parseLong(vars.get("orderId").toString()));
-        if (projectEleOrder.getCalculateFlag() == NodeOrderCalculateStatusEnum.BUJISUAN.getCode()) {//不参与计算
-            return;
-        }
         getElevatorInfo(vars);
         if (Boolean.TRUE.equals(vars.get("包括运费"))) {
             executeTransportEquations(vars);
@@ -99,10 +95,6 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         List<ProjectEleOrder> projectEleOrder = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
                 .eq("project_id", projectPrice.getProjectId())
                 .eq("version_id", projectPrice.getId()));
-        if (checkCalculateFlag(projectEleOrder)){
-            return null;//不参与计算
-
-        }
         //事前计算平摊费用
         List<Map> eleInputs = new ArrayList(projectEleOrder.size());
         for (ProjectEleOrder eleOrder : projectEleOrder) {
@@ -147,11 +139,6 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             projectPriceDao.updateById(projectPrice);
         }
         return eleInputs;
-    }
-
-    private boolean checkCalculateFlag(List<ProjectEleOrder> projectEleOrder) {
-        boolean isMatch = projectEleOrder.stream().anyMatch(item -> item.getCalculateFlag() == NodeOrderCalculateStatusEnum.BUJISUAN.getCode());//不参与计算
-        return !isMatch;
     }
 
     /**
