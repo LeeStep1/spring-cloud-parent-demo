@@ -276,6 +276,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         double heightPrice = checkNostandardAndPrice(vars);//判断是否为非标
 
         vars.put("小计_设备基价", getNoEquationOut(vars, "基价"));//设备基价
+        buildBasePriceJson(vars);
         double optionPrice = countOptionPrice(vars) + heightPrice;
         vars.put("小计_高度价格", heightPrice);
         vars.put("小计_设备可选项价格", optionPrice);//设备可选项价格
@@ -293,6 +294,15 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         vars.put("小计_合价", simpleEquation("小计_单台总价*台量", vars)); //单价
         String service = "价格*系数*维保价格";//维保
         return vars;
+    }
+
+    private void buildBasePriceJson(Map vars) {
+        Map map = new HashMap();
+        map.put("title", "规格参数基价");
+        String content = StrUtil.format("{}KG,{}m/s,{}", vars.get("载重"), vars.get("速度"), vars.get("层站"));
+        map.put("content", content);
+        map.put("price", vars.get("小计_设备基价"));
+        vars.put("基价后台显示JSON", JSON.toJSONString(map));
     }
 
     private double checkNostandardAndPrice(Map vars) {
@@ -372,6 +382,9 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         projectEleOrder.setTransportPrice(NumberUtil.roundStr(vars.get("小计_运费").toString(), 2));
         if (vars.get("高度加价") != null) {
             projectEleOrder.setAdditionPrice(JSON.toJSONString(vars.get("高度加价")));
+        }
+        if (vars.get("基价后台显示JSON") != null) {
+            projectEleOrder.setBasePrice(vars.get("基价后台显示JSON")+"");
         }
         if (Boolean.TRUE.equals(vars.get("是否为非标"))){
             projectEleOrder.setStandard(StandardEnum.STANDARD_ZERO.getCode());
