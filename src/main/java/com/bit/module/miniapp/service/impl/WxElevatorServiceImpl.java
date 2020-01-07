@@ -22,6 +22,7 @@ import com.bit.module.miniapp.bean.ElevatorType;
 import com.bit.module.miniapp.bean.Options;
 import com.bit.module.miniapp.service.WxElevatorService;
 import com.bit.module.miniapp.vo.ExcelVo;
+import com.bit.module.miniapp.vo.ProjectEleOptionsVo;
 import com.bit.module.miniapp.vo.ReportInfoVO;
 import com.bit.utils.BeanReflectUtil;
 import com.bit.utils.ConvertMoneyUtil;
@@ -700,10 +701,15 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 					vo.setFloors(cc.getInfoValue());
 				}
 			});
-
-			//List<ProjectEleOptionsVo> optins = projectEleOptionsDao.findOptionByOrder(c.getId(), 3);
+			//结束
 			listVo.add(vo);
-     /* 选装项      if (optins.size() > 0) {
+			int indexOder=listVo.size();
+			//
+			i++;
+			//选装项
+			List<ProjectEleOptionsVo> optins = projectEleOptionsDao.findOptionByOrder(c.getId(), 3);
+
+         /* if (optins.size() > 0) {
                 ExcelVo voOption1 = new ExcelVo();
                 voOption1.setElevatorName(c.getElevatorTypeName() + "非标项");//非标项单独一行
                 listVo.add(voOption1);
@@ -714,8 +720,46 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
                 });
 
             }*/
+            if(optins.size()>0&&optins.size()>1){
+            	for(int ii=0;ii<optins.size();ii++){
+            		if(ii==0){
+            			vo.setOptions(optins.get(ii).getOptionName());
+					}else{
+						ExcelVo voOption = new ExcelVo();
+						voOption.setElevatorName(optins.get(ii).getOptionName());
+						listVo.add(voOption);
+					}
+				}
+			}else if(optins.size()==1){
+                vo.setOptions(optins.get(0).getOptionName());
+			}
+            int endIndex=listVo.size();
+            //选装项结束
 
-			i++;
+			//非标项
+			if(c.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
+				Map cods=new HashMap();
+				cods.put("order_id",c.getId());
+				List<ProjectEleNonstandard>listNon= projectEleNonstandardDao.selectByMap(cods);
+
+				if(listNon.size()==1){
+                     vo.setNonStandard(listNon.get(0).getContent());
+				}else  if(listNon.size()>1){
+					vo.setNonStandard(listNon.get(0).getContent());
+					for(int ii=1;ii<listNon.size();ii++){
+						if((endIndex-1+ii)<=endIndex){
+							listVo.get(endIndex-1+ii).setNonStandard(listNon.get(ii).getContent());
+						}else{
+							ExcelVo voOption = new ExcelVo();
+							voOption.setNonStandard(listNon.get(ii).getContent());
+							listVo.add(voOption);
+						}
+
+					}
+				}
+			}
+
+
 		}
 		ExcelVo rs = new ExcelVo();
 		if (orderList.size() > 0) {
@@ -861,4 +905,5 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		}
 		return new BaseVo();
 	}
+
 }
