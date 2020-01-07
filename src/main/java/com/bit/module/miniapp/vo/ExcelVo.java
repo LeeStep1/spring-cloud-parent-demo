@@ -32,8 +32,15 @@ public class ExcelVo extends BaseRowModel {
     @ExcelProperty(value="载重（kg）",index=4)
     private String weight;
 
-    @ExcelProperty(value="停靠层淑",index=5)
+    @ExcelProperty(value="停靠层数",index=5)
     private String floors;
+
+    @ExcelProperty(value="常规选装",index=9)
+    private String options;
+
+
+    @ExcelProperty(value="非标项",index=10)
+    private String nonStandard;
 
 
     @ExcelProperty(value="设备单价(元)",index=6)
@@ -44,6 +51,8 @@ public class ExcelVo extends BaseRowModel {
 
     @ExcelProperty(value="总价(元)",index=8)
     private String totalPrice;
+
+
 
 
 }
