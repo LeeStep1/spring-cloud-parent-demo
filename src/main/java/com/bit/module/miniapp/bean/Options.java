@@ -52,10 +52,6 @@ public class Options implements Serializable {
 	 */
 	private String unit;
 	/**
-	 * 分组名称
-	 */
-	private String groupName;
-	/**
 	 * 分组值
 	 */
 	private String groupValue;
@@ -64,13 +60,23 @@ public class Options implements Serializable {
 	 */
 	private Integer rule;
 	/**
+	 * 元素属性 0为分组名称1为实际选项
+	 */
+	private Integer itemType;
+	/**
 	 * 选项数量
 	 */
 	@TableField(exist = false)
 	private Integer nums;
-
+	/**
+	 * 层级代码
+	 */
+	private String ocode;
+	/**
+	 * 层级父级代码
+	 */
 	@TableField(exist = false)
-	private String code;
+	private String pocode;
 
 	/**
 	 * 选装总价

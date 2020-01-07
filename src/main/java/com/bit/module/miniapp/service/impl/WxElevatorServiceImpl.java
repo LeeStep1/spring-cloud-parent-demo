@@ -24,10 +24,7 @@ import com.bit.module.miniapp.service.WxElevatorService;
 import com.bit.module.miniapp.vo.ExcelVo;
 import com.bit.module.miniapp.vo.ProjectEleOptionsVo;
 import com.bit.module.miniapp.vo.ReportInfoVO;
-import com.bit.utils.BeanReflectUtil;
-import com.bit.utils.ConvertMoneyUtil;
-import com.bit.utils.MailUtil;
-import com.bit.utils.UUIDUtil;
+import com.bit.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.mail.EmailAttachment;
@@ -43,6 +40,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.OpenOption;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Description:
@@ -109,24 +107,22 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	 * @author liyujun
 	 * @date 2019-12-25
 	 */
-	@Override
+//	@Override
+//	public List<Options> getOptions(Integer optionType, Long elevatorTypeId, List<ProjectEleOrderBaseInfo> orderBaseInfos) {
+//		ElevatorType e = elevatorTypeDao.selectById(elevatorTypeId);
+//		List<Options> ops = optionsDao.findOptionByElevatorType(elevatorTypeId, optionType);
+//		Map cod = new HashMap<>();
+//		cod.clear();
+//		orderBaseInfos.forEach(c -> {
+//			cod.put(c.getParamKey(), c.getInfoValue());
+//		});
+//		cod.put("系列", e.getParamsKey());
+//		cod.put("梯型", e.getCategory());
+//		List<Options> rs = equationServiceImpl.executeEquationsForOption(cod, ops);
+//		return rs;
+//	}
+
 	public List<Options> getOptions(Integer optionType, Long elevatorTypeId, List<ProjectEleOrderBaseInfo> orderBaseInfos) {
-		ElevatorType e = elevatorTypeDao.selectById(elevatorTypeId);
-		List<Options> ops = optionsDao.findOptionByElevatorType(elevatorTypeId, optionType);
-		Map cod = new HashMap<>();
-		cod.clear();
-		orderBaseInfos.forEach(c -> {
-			cod.put(c.getParamKey(), c.getInfoValue());
-		});
-		cod.put("系列", e.getParamsKey());
-		cod.put("梯型", e.getCategory());
-		List<Options> rs = equationServiceImpl.executeEquationsForOption(cod, ops);
-
-
-		return rs;
-	}
-
-	public List<Options> getOptionsNew(Integer optionType, Long elevatorTypeId, List<ProjectEleOrderBaseInfo> orderBaseInfos) {
 		ElevatorType e = elevatorTypeDao.selectById(elevatorTypeId);
 		List<Options> ops = optionsDao.findOptionByElevatorTypeNew(elevatorTypeId, optionType);
 		Map cod = new HashMap<>();
@@ -136,8 +132,39 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		});
 		cod.put("系列", e.getParamsKey());
 		cod.put("梯型", e.getCategory());
+		List<Options> allList = optionsDao.selectList(new QueryWrapper<Options>()
+				.isNotNull("ocode"));
+//		Map<String,Options> allMap = new HashMap<>();
+//		allList.forEach(item-> {
+//			allMap.put(item.getOcode(), item);
+//		});
+		Map<String,Options> allMap = allList.stream().collect(Collectors.toMap((key->key.getOcode()),(value->value)));
 		List<Options> rs = equationServiceImpl.executeEquationsForOption(cod, ops);
-		return rs;
+		HashSet<String> set = new HashSet();
+		rs.forEach(item-> {
+			if (StringUtil.isNotEmpty(item.getOcode())){
+				addSet (set,item.getOcode());
+			}
+		});
+		List<Options> res = new ArrayList<>();
+		for (String s : set) {
+			Options options = allMap.get(s);
+			if (options.getOcode().length()<=3){
+				options.setPocode(null);
+			}else {
+				options.setPocode(options.getOcode().substring(0,options.getOcode().length()-3));
+			}
+			res.add(allMap.get(s));
+		}
+		return res;
+	}
+	private void addSet (Set set,String code){
+		if (code.length() <= 3){
+			set.add(code);
+		}else {
+			set.add(code);
+			addSet(set,code.substring(0,code.length()-3));
+		}
 	}
 	/**
 	 * @param vo :

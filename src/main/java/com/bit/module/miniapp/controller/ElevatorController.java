@@ -144,13 +144,6 @@ public class ElevatorController {
 		return rs;
 	}
 	
-	@PostMapping("/optionsNew/{elevatorTypeId}/{optionType}")
-	public BaseVo<List<Options>> getElevatorOptionNew(@PathVariable(value = "elevatorTypeId") Long elevatorTypeId, @PathVariable(value = "optionType") Integer optionType,
-												   @RequestBody List<ProjectEleOrderBaseInfo> baseInfo) {
-		BaseVo rs = new BaseVo();
-		rs.setData(wxElevatorService.getOptionsNew(optionType, elevatorTypeId, baseInfo));
-		return rs;
-	}
 	/**
 	 * 新建项目
 	 *

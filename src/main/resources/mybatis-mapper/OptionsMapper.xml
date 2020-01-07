@@ -38,6 +38,6 @@
             </if>
 
         </where>
-        order by tos.group_name, tos.id
+        order by tos.ocode, tos.id
     </select>
 </mapper>
