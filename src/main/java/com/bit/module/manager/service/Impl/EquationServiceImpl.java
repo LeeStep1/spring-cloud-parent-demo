@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bit.base.exception.BusinessException;
+import com.bit.common.businessEnum.CalculateFlagEnum;
 import com.bit.common.businessEnum.NodeOrderCalculateStatusEnum;
 import com.bit.common.informationEnum.StandardEnum;
 import com.bit.module.equation.bean.BasePriceEquation;
@@ -112,6 +113,9 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             List<ProjectEleNonstandard> projectEleNonStandards = projectEleNonstandardDao.selectList(new QueryWrapper<ProjectEleNonstandard>()
                     .eq("order_id", vars.get("orderId").toString()));
             for (ProjectEleNonstandard projectEleNonstandard : projectEleNonStandards) {
+                if (CalculateFlagEnum.YES.getCode() != projectEleNonstandard.getProductionFlag()) {
+                    continue;
+                }
                 sum += Double.parseDouble(projectEleNonstandard.getSignalPrice());
             }
             vars.put("非标加价",sum );
