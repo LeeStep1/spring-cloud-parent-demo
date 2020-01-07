@@ -277,21 +277,12 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 				for(ProjectEleNonstandard non:vo.getProjectEleNonstandardList()){
 					//添加订单id
 					non.setOrderId(order.getId());
-					//人工输入
-					//non.setSysType(0);
-					//non.getContent().replace(sysNodOptions,sysNodOptions);
 				     Map rs=new HashMap();
 				     rs.put("input",non.getContent());
 					 rs.put("auto",sysNodOptions);
 					 non.setContent(JSON.toJSONString(rs));
 				}
-			/*	vo.getProjectEleNonstandardList().forEach(non->{
-							//添加订单id
-							non.setOrderId(order.getId());
-							//人工输入
-							non.setSysType(0);
-							non.setContent(sysNodOptions+non.getContent());
-						}	);*/
+
               //报价非标
 				if(!a.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
 					a.setStandard(StandardEnum.STANDARD_ZERO.getCode());
