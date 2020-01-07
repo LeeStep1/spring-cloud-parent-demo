@@ -234,6 +234,7 @@
         INNER JOIN t_user t3
         on t2.create_user_id = t3.id
         <where>
+            and t1.non_standard_apply_status > 1
             <if test="projectPageVO.customerName!=null and projectPageVO.customerName!=''">
                 and t2.customer_name LIKE concat("%",#{customerName,jdbcType=VARCHAR},"%")
             </if>
