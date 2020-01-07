@@ -3,6 +3,7 @@ package com.bit.module.miniapp.service.impl;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.bit.base.exception.BusinessException;
 import com.bit.base.service.BaseService;
@@ -278,7 +279,11 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 					non.setOrderId(order.getId());
 					//人工输入
 					//non.setSysType(0);
-					non.setContent(sysNodOptions+non.getContent());
+					//non.getContent().replace(sysNodOptions,sysNodOptions);
+				     Map rs=new HashMap();
+				     rs.put("input",non.getContent());
+					 rs.put("auto",sysNodOptions);
+					 non.setContent(JSON.toJSONString(rs));
 				}
 			/*	vo.getProjectEleNonstandardList().forEach(non->{
 							//添加订单id
@@ -307,8 +312,11 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
 			}else{
 				if(sysNodOptions!=null&&!sysNodOptions.equals("")){
+					Map rs=new HashMap();
+					rs.put("input","");
+					rs.put("auto",sysNodOptions);
 					ProjectEleNonstandard aaa=new ProjectEleNonstandard();
-					aaa.setContent(sysNodOptions);
+					aaa.setContent(JSON.toJSONString(rs));
 					aaa.setOrderId(order.getId());
 					projectEleNonstandardDao.insert(aaa);
 					//报价非标
