@@ -91,12 +91,10 @@ public class ProjectEleOrder {
     /**
      * 基价
      */
-    @TableField(exist = false)
     private String basePrice;
     /**
      * 高度加价
      */
-    @TableField(exist = false)
     private String additionPrice;
 
 
