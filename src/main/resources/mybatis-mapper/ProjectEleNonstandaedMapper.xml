@@ -28,7 +28,13 @@
     <update id="updatebatchNonstandard" parameterType="com.bit.module.manager.vo.ProjectEleNonstandardVO">
         UPDATE t_project_ele_nonstandard
         <trim prefix="set" suffixOverrides=",">
-
+            <trim prefix="signal_price = case" suffix="end,">
+                <foreach collection="projectPriceList" item="price" index="index" >
+                    <if test="price.signalPrice!=null and price.signalPrice!=''">
+                        WHEN id = #{price.id,jdbcType=BIGINT} then #{price.signalPrice,jdbcType=VARCHAR}
+                    </if>
+                </foreach>
+            </trim>
             <trim prefix="total_price = case" suffix="end,">
                 <foreach collection="projectPriceList" item="price" index="index" >
                     <if test="price.totalPrice!=null and price.totalPrice!=''">

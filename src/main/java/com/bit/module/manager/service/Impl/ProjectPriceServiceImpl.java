@@ -210,25 +210,27 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 			}
 
 			//插入审批表
-			auditDao.batchAdd(audits);
-			//算价钱
+			if (CollectionUtils.isNotEmpty(audits)){
+				auditDao.batchAdd(audits);
+				//算价钱
 
-			//查询项目id
-			ProjectPrice ppr = projectPriceDao.selectById(projectPrices.get(0).getPriceId());
-			Map<String, Object> cod = new HashMap<>();
-			cod.put("projectId", ppr.getProjectId());
-			cod.put("version", ppr.getVersion());
-			cod.put("isUpdate", true);
-			ProjectPrice projectPriceByProjectId = projectPriceDao.getProjectPriceByProjectIdWithVersion(ppr.getProjectId(), -1);
-			if (projectPriceByProjectId != null) {
-				if (projectPriceByProjectId.getInstallFlag().equals(InstallFlagEnum.YES.getCode())) {
-					cod.put("包括安装", true);
+				//查询项目id
+				ProjectPrice ppr = projectPriceDao.selectById(projectPrices.get(0).getPriceId());
+				Map<String, Object> cod = new HashMap<>();
+				cod.put("projectId", ppr.getProjectId());
+				cod.put("version", ppr.getVersion());
+				cod.put("isUpdate", true);
+				ProjectPrice projectPriceByProjectId = projectPriceDao.getProjectPriceByProjectIdWithVersion(ppr.getProjectId(), -1);
+				if (projectPriceByProjectId != null) {
+					if (projectPriceByProjectId.getInstallFlag().equals(InstallFlagEnum.YES.getCode())) {
+						cod.put("包括安装", true);
+					}
+					if (projectPriceByProjectId.getTransportFlag().equals(TransportFlagEnum.YES.getCode())) {
+						cod.put("包括运费", true);
+					}
 				}
-				if (projectPriceByProjectId.getTransportFlag().equals(TransportFlagEnum.YES.getCode())) {
-					cod.put("包括运费", true);
-				}
+				equationServiceImpl.executeCountProjectPrice(cod);
 			}
-			equationServiceImpl.executeCountProjectPrice(cod);
 
 		}
 

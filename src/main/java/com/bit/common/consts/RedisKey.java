@@ -29,16 +29,9 @@ public enum RedisKey {
      * {0}:接入端
      * {1}:UUID
      */
-    LOGIN_TOKEN("token:{0}:{1}"),
+    LOGIN_TOKEN("token:{0}:{1}");
 
 
-
-    /**
-     * 系统所有端登陆
-     * {0}:接入端
-     * {1}:UUID
-     */
-    REFRESHTOKEN_TOKEN_PREFIX("refreshToken:{0}:{1}");
 
     /**
      * 操作信息
