@@ -71,6 +71,7 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 				elevatorTypeNameAndUnitPrice.setBasePrice(projectEleOrder.getBasePrice());
 				elevatorTypeNameAndUnitPrice.setAdditionPrice(projectEleOrder.getAdditionPrice());
 				elevatorTypeNameAndUnitPrice.setTotalPrice(projectEleOrder.getTotalPrice());
+				elevatorTypeNameAndUnitPrice.setNums(projectEleOrder.getNum());
 				//查询订单总价
 				projectPriceDetailInfo.setElevatorTypeNameAndUnitPrice(elevatorTypeNameAndUnitPrice);
 				projectPriceDetailInfo.setOrderId(projectEleOrder.getId());

@@ -35,4 +35,8 @@ public class ElevatorTypeNameAndUnitPrice {
 	 * 总价
 	 */
 	private String totalPrice;
+	/**
+	 * 电梯数量
+	 */
+	private String nums;
 }
