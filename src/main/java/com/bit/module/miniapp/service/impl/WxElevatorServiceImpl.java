@@ -124,7 +124,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
 	public List<Options> getOptions(Integer optionType, Long elevatorTypeId, List<ProjectEleOrderBaseInfo> orderBaseInfos) {
 		ElevatorType e = elevatorTypeDao.selectById(elevatorTypeId);
-		List<Options> ops = optionsDao.findOptionByElevatorTypeNew(elevatorTypeId, optionType);
+		List<Options> ops = optionsDao.findOptionByElevatorType(elevatorTypeId, optionType);
 		Map cod = new HashMap<>();
 		cod.clear();
 		orderBaseInfos.forEach(c -> {
