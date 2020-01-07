@@ -64,4 +64,32 @@
 
         </where>
     </update>
+
+    <update id="updateNonstandard" parameterType="com.bit.module.manager.bean.ProjectEleNonstandard">
+        UPDATE t_project_ele_nonstandard
+        <trim prefix="set" suffixOverrides=",">
+            <if test="orderId!=null">
+                order_id =  #{orderId,jdbcType=BIGINT},
+            </if>
+            <if test="content!=null and content!=''">
+                content = #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="sysType!=null">
+                sys_type = #{sysType,jdbcType=INTEGER},
+            </if>
+            <if test="signalPrice!=null and signalPrice!=''">
+                signal_price =  #{signalPrice,jdbcType=VARCHAR},
+            </if>
+            <if test="totalPrice!=null and totalPrice!=''">
+                total_price = #{totalPrice,jdbcType=VARCHAR},
+            </if>
+            <if test="auditRemark!=null and auditRemark!=''">
+                audit_remark = #{auditRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="productionFlag!=null ">
+                production_flag = #{productionFlag,jdbcType=INTEGER},
+            </if>
+        </trim>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
 </mapper>

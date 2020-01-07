@@ -29,4 +29,10 @@ public interface ProjectEleNonstandardDao extends BaseMapper<ProjectEleNonstanda
      */
     void updatebatchNonstandard(@Param(value = "projectPriceList") List<ProjectEleNonstandardVO> projectPrices);
 
+    /**
+     * 单条更新数据
+     * @param projectEleNonstandard
+     */
+    void updateNonstandard(ProjectEleNonstandard projectEleNonstandard);
+
 }
