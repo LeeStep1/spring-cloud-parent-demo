@@ -6,11 +6,10 @@ import com.bit.base.dto.UserInfo;
 import com.bit.base.exception.BusinessException;
 import com.bit.base.service.BaseService;
 import com.bit.base.vo.BaseVo;
-import com.bit.common.consts.Const;
 import com.bit.common.consts.RedisKey;
-import com.bit.common.wx.WxLoginRs;
 import com.bit.common.informationEnum.TidUrlEnum;
 import com.bit.common.informationEnum.UserRoleEnum;
+import com.bit.common.wx.WxLoginRs;
 import com.bit.module.manager.bean.Company;
 import com.bit.module.manager.bean.Project;
 import com.bit.module.manager.bean.User;
@@ -21,7 +20,6 @@ import com.bit.module.manager.dao.UserDao;
 import com.bit.module.manager.dao.UserRoleDao;
 import com.bit.module.manager.service.UserService;
 import com.bit.module.manager.vo.PortalUserVo;
-import com.bit.module.manager.vo.RefreshTokenVO;
 import com.bit.module.manager.vo.UserVo;
 import com.bit.module.miniapp.bean.WxUser;
 import com.bit.module.miniapp.service.WxUserService;
@@ -150,18 +148,10 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
 			userRelRole.setRoleId(UserRoleEnum.RESIDENT.getRoleId());
             userRoleDao.updateTokenByUserId(userRelRole);
 
-          //  cacheUtil.set(Const.TOKEN_PREFIX+ tid+":"+token, userJson,Long.valueOf(atTokenExpire));
 
-            //rt token 失效时间为7天
-            String rtToken = UUIDUtil.getUUID();
-            RefreshTokenVO refreshTokenVO = new RefreshTokenVO();
-            refreshTokenVO.setUserInfo(userInfo);
-            refreshTokenVO.setAtKey(key1);
-            String rtJson = JSON.toJSONString(refreshTokenVO);
-            cacheUtil.set(RedisKeyUtil.getRedisKey(RedisKey.REFRESHTOKEN_TOKEN_PREFIX,String.valueOf(tid),rtToken),rtJson,rtTokenExpire);
+
             Map map = new HashMap<>();
             map.put("token", token);
-            map.put("refreshToken", rtToken);
             map.put("id",portalUser.getId());
             map.put("username",portalUser.getUserName());
             map.put("realName",portalUser.getRealName());

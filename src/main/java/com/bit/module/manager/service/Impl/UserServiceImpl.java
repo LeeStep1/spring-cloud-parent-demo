@@ -19,7 +19,6 @@ import com.bit.module.manager.dao.UserDao;
 import com.bit.module.manager.dao.UserRoleDao;
 import com.bit.module.manager.service.UserService;
 import com.bit.module.manager.vo.PortalUserVo;
-import com.bit.module.manager.vo.RefreshTokenVO;
 import com.bit.module.manager.vo.UserVo;
 import com.bit.utils.*;
 import org.apache.commons.collections.CollectionUtils;
@@ -74,16 +73,6 @@ public class UserServiceImpl extends BaseService implements UserService {
      */
     @Autowired
     private CompanyDao companyDao;
-
-
-
-
-
-    /**
-     * 微信登录工具
-     */
-    @Autowired
-    private WxUserComponent wxUserComponent;
 
     /**
      * 后台管理用户登陆
@@ -148,19 +137,10 @@ public class UserServiceImpl extends BaseService implements UserService {
 			userRelRole.setRoleId(UserRoleEnum.MANAGER.getRoleId());
 			userRoleDao.updateTokenByUserId(userRelRole);
             cacheUtil.set(key1,userJson,Long.valueOf(rtTokenExpire));
-           // cacheUtil.set(Const.TOKEN_PREFIX+ tid+":"+token, userJson,Long.valueOf(atTokenExpire));
-            //rt token 失效时间为7天
-            String rtToken = UUIDUtil.getUUID();
-            RefreshTokenVO refreshTokenVO = new RefreshTokenVO();
-            refreshTokenVO.setUserInfo(userInfo);
-            refreshTokenVO.setAtKey(key1);
-            String rtJson = JSON.toJSONString(refreshTokenVO);
-            cacheUtil.set(RedisKeyUtil.getRedisKey(RedisKey.REFRESHTOKEN_TOKEN_PREFIX,String.valueOf(adminLogin.getTid()),rtToken),rtJson,Long.valueOf(rtTokenExpire));
-           // cacheUtil.set(Const.REFRESHTOKEN_TOKEN_PREFIX + adminLogin.getTid() + ":" + rtToken, rtJson, Long.valueOf(rtTokenExpire));
+
 
             Map map = new HashMap<>();
             map.put("token", token);
-            map.put("refreshToken", rtToken);
             map.put("id",portalUser.getId());
             map.put("username",portalUser.getUserName());
             map.put("realName",portalUser.getRealName());
