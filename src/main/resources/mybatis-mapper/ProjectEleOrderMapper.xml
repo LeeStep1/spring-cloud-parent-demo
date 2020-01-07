@@ -9,6 +9,8 @@
         <result property="projectId" column="project_id"/>
         <result property="elevatorTypeId" column="elevator_type_id"/>
         <result property="elevatorTypeName" column="elevator_type_name"/>
+        <result property="basePrice" column="base_price"/>
+        <result property="additionPrice" column="addition_price"/>
         <result property="num" column="num"/>
         <result property="unitPrice" column="unit_price"/>
         <result property="installPrice" column="install_price"/>
@@ -29,6 +31,8 @@
           elevator_type_id,
           elevator_type_name,
           num,
+          base_price,
+          addition_price,
           unit_price,
           install_price,
           transport_price,
