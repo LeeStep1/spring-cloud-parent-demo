@@ -34,5 +34,9 @@ public class ElementParam {
 	 * 参数的变量
 	 */
 	private String paramsKey;
+	/**
+	 * 订单id  小程序 我的项目二级级页面 展示 批量查询电梯参数使用
+	 */
+	private Long orderId;
 
 }

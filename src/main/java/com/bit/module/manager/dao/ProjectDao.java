@@ -72,4 +72,11 @@ public interface ProjectDao extends BaseMapper<Project> {
 	 */
 
 	Map getPriceInfo(@Param(value = "projectPriceId")Long  projectPriceId);
+
+	/**
+	 * 批量根据订单id查询电梯参数
+	 * @param orderIds
+	 * @return
+	 */
+	List<ElementParam> getElementParamByOrderIdBatch(@Param(value = "orderIds")List<Long> orderIds);
 }

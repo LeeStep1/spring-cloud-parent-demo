@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bit.module.manager.dao.ProjectDao">
 
-	<!-- 可根据自己的需求，是否要使用 -->
-	<resultMap type="com.bit.module.manager.bean.Project" id="projectMap">
-		<result property="id" column="id"/>
-		<result property="projectName" column="project_name"/>
-		<result property="customerName" column="customer_name"/>
-		<result property="agentName" column="agent_name"/>
-		<result property="createUserId" column="create_user_id"/>
-		<result property="createUserName" column="create_user_name"/>
-		<result property="createTime" column="create_time"/>
-		<result property="addressId" column="address_id"/>
-		<result property="addressName" column="address_name"/>
-		<result property="projectStatus" column="project_status"/>
-	</resultMap>
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.bit.module.manager.bean.Project" id="projectMap">
+        <result property="id" column="id"/>
+        <result property="projectName" column="project_name"/>
+        <result property="customerName" column="customer_name"/>
+        <result property="agentName" column="agent_name"/>
+        <result property="createUserId" column="create_user_id"/>
+        <result property="createUserName" column="create_user_name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="addressId" column="address_id"/>
+        <result property="addressName" column="address_name"/>
+        <result property="projectStatus" column="project_status"/>
+    </resultMap>
 
-	<!-- 通用查询结果列 -->
-	<sql id="Base_Column_List">
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
 		id,
 		project_name,
 		customer_name,
@@ -32,36 +32,36 @@
 	</sql>
 
 
-
-	<!-- 查询项目信息和报价 -->
-	<select id="getProjectDetailById" resultType="com.bit.module.manager.vo.ProjectPriceDetailVO" parameterType="long">
-		SELECT
-		t1.project_name,
-		t1.customer_name,
-		t1.agent_name,
-		t1.create_user_name,
-		t1.create_time,
+    <!-- 查询项目信息和报价 -->
+    <select id="getProjectDetailById" resultType="com.bit.module.manager.vo.ProjectPriceDetailVO" parameterType="long">
+        SELECT
+        t1.project_name,
+        t1.customer_name,
+        t1.agent_name,
+        t1.create_user_name,
+        t1.create_time,
         t1.address_name,
         t1.project_status,
-		t2.total_price,
+        t2.total_price,
         t2.version,
         t2.install_flag,
         t2.transport_flag
-		FROM t_project t1
-		LEFT JOIN t_project_price t2
-		on t1.id = t2.project_id
-		<where>
-			<if test="projectId!=null">
-				and t1.id =#{projectId,jdbcType=BIGINT}
-			</if>
-			<if test="projectPriceId!=null">
-				and t2.id =#{projectPriceId,jdbcType=BIGINT}
-			</if>
-		</where>
-	</select>
+        FROM t_project t1
+        LEFT JOIN t_project_price t2
+        on t1.id = t2.project_id
+        <where>
+            <if test="projectId!=null">
+                and t1.id =#{projectId,jdbcType=BIGINT}
+            </if>
+            <if test="projectPriceId!=null">
+                and t2.id =#{projectPriceId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </select>
 
     <!-- 查询订单详情 -->
-    <select id="getOrderDetailById" resultType="com.bit.module.manager.vo.ProjectOrderDetailInfoVO" parameterType="long">
+    <select id="getOrderDetailById" resultType="com.bit.module.manager.vo.ProjectOrderDetailInfoVO"
+            parameterType="long">
         SELECT
         t1.id as projectId,
         t1.project_name,
@@ -101,7 +101,8 @@
     </select>
     <!--根据订单id查询电梯规格参数 和 井道参数-->
     <select id="getElementParamByOrderId" parameterType="long" resultType="com.bit.module.manager.bean.ElementParam">
-        SELECT DISTINCT t2.element_name,t2.category_type,t3.info_value,t4.params_unit,t3.element_id,t2.params_key FROM t_project_ele_order t1
+        SELECT DISTINCT t2.element_name,t2.category_type,t3.info_value,t4.params_unit,t3.element_id,t2.params_key FROM
+        t_project_ele_order t1
         INNER JOIN t_elevator_base_element t2
         on t1.elevator_type_id = t2.elevator_type_id
         <if test="orderId!=null">
@@ -119,7 +120,7 @@
     </select>
     <!--根据项目id查询电梯功能定制选项-->
     <select id="getProjectOptions" parameterType="long" resultType="com.bit.module.miniapp.bean.Options">
-        SELECT  t2.*,t1.nums,t1.option_price FROM `t_project_ele_options` t1
+        SELECT t2.*,t1.nums,t1.option_price FROM `t_project_ele_options` t1
         INNER JOIN t_options t2
         on t1.option_id = t2.id
         <where>
@@ -165,21 +166,48 @@
 
         </where>
     </select>
-        <select id="getPriceInfo" resultType="java.util.Map">
 
-            select sum(tt.install_price) installPrice,SUM(tt.transport_price) transportPrice from
+    <select id="getPriceInfo" resultType="java.util.Map">
 
-            (SELECT
-            t.num * t.install_price install_price,
-            t.num * t.transport_price transport_price
-            FROM
-            t_project_ele_order t
-            <where>
-                <if test="projectPriceId!=null">
-                    and   t.version_id=#{projectPriceId,jdbcType=BIGINT}
-                </if>
-            </where>
-            )tt
+        select sum(tt.install_price) installPrice,SUM(tt.transport_price) transportPrice from
 
-        </select>
+        (SELECT
+        t.num * t.install_price install_price,
+        t.num * t.transport_price transport_price
+        FROM
+        t_project_ele_order t
+        <where>
+            <if test="projectPriceId!=null">
+                and t.version_id=#{projectPriceId,jdbcType=BIGINT}
+            </if>
+        </where>
+        )tt
+
+    </select>
+
+    <!--批量根据订单id查询电梯参数-->
+    <select id="getElementParamByOrderIdBatch" parameterType="long" resultType="com.bit.module.manager.bean.ElementParam">
+        SELECT DISTINCT t1.id as orderId,t2.element_name,t2.category_type,t3.info_value,t4.params_unit,t3.element_id,t2.params_key FROM
+        t_project_ele_order t1
+        INNER JOIN t_elevator_base_element t2
+        on t1.elevator_type_id = t2.elevator_type_id
+        <if test="orderIds!=null and orderIds.size()>0">
+            and t1.id in
+            <foreach collection="orderIds" item="item" open="(" close=")" separator=",">
+                #{item,jdbcType=BIGINT}
+            </foreach>
+        </if>
+        LEFT JOIN t_project_ele_order_base_info t3
+        on t2.id = t3.element_id
+        LEFT JOIN t_params t4
+        on t2.params_key = t4.params_name
+        <where>
+            <if test="orderIds!=null and orderIds.size()>0">
+                and t3.order_id in
+                <foreach collection="orderIds" item="item" open="(" close=")" separator=",">
+                    #{item,jdbcType=BIGINT}
+                </foreach>
+            </if>
+        </where>
+    </select>
 </mapper>

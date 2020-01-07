@@ -145,11 +145,30 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
             projectEleOrder.setVersionId(p.getId());
             BeanUtils.copyProperties(p,projectPriceVo);
             projectPriceVo.setElevatorOrderVo(projectPriceDao.queryOrderByProjectId(projectEleOrder));
+
+            List<Long> orderIds = new ArrayList<>();
 			for (ElevatorOrderVo elevatorOrderVo : projectPriceVo.getElevatorOrderVo()) {
 				elevatorOrderVo.setPicture(contextPath + "/images/" + elevatorOrderVo.getPicture());
+				orderIds.add(elevatorOrderVo.getId());
 				//组装订单电梯的参数
-				List<ElementParam> elementParamByOrderId = projectDao.getElementParamByOrderId(elevatorOrderVo.getId());
-				elevatorOrderVo.setParams(elementParamByOrderId);
+//				List<ElementParam> elementParamByOrderId = projectDao.getElementParamByOrderId(elevatorOrderVo.getId());
+//				elevatorOrderVo.setParams(elementParamByOrderId);
+			}
+			//批量查询订单下的电梯参数
+			if (CollectionUtils.isNotEmpty(orderIds)){
+				List<ElementParam> elementParamByOrderId = projectDao.getElementParamByOrderIdBatch(orderIds);
+				if (CollectionUtils.isNotEmpty(elementParamByOrderId)){
+					for (ElevatorOrderVo elevatorOrderVo : projectPriceVo.getElevatorOrderVo()){
+						List<ElementParam> obj = new ArrayList<>();
+						obj.clear();
+						for (ElementParam elementParam : elementParamByOrderId) {
+							if (elevatorOrderVo.getId().equals(elementParam.getOrderId())){
+								obj.add(elementParam);
+							}
+						}
+						elevatorOrderVo.setParams(obj);
+					}
+				}
 			}
 			projectPriceVoList.add(projectPriceVo);
 
