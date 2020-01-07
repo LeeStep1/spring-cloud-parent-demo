@@ -116,7 +116,9 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
                 if (CalculateFlagEnum.YES.getCode() != projectEleNonstandard.getProductionFlag()) {
                     continue;
                 }
-                sum += Double.parseDouble(projectEleNonstandard.getSignalPrice());
+                if (projectEleNonstandard.getSignalPrice() != null) {
+                    sum += Double.parseDouble(projectEleNonstandard.getSignalPrice());
+                }
             }
             vars.put("非标加价",sum );
             executeCount(vars);
@@ -303,7 +305,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
     private void buildBasePriceJson(Map vars) {
         Map map = new HashMap();
         map.put("title", "规格参数基价");
-        if ("直梯".equals(vars.get("梯型"))){
+        if ("客梯".equals(vars.get("梯型")) || "货梯".equals(vars.get("梯型"))){
             String content = StrUtil.format("{}KG,{}m/s,{}", vars.get("载重"), vars.get("速度"), vars.get("层站"));
             map.put("content", content);
         }
