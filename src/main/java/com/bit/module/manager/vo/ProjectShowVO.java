@@ -13,6 +13,10 @@ import java.util.Date;
 @Data
 public class ProjectShowVO  {
 	/**
+	 * 项目名称
+	 */
+	private String projectName;
+	/**
 	 * '客户名称'
 	 **/
 	private String customerName;

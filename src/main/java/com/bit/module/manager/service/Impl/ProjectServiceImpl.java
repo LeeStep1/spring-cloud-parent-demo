@@ -139,18 +139,22 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
         List<ProjectPrice> prices =projectPriceDao.selectList(queryWrapper);
         ProjectEleOrder projectEleOrder=new ProjectEleOrder();
         projectEleOrder.setProjectId(projectId);
-        List<ProjectPriceVo>projectPriceVoList=new ArrayList<>();
+        List<ProjectPriceVo> projectPriceVoList = new ArrayList<>();
         for(ProjectPrice p:prices){
-            ProjectPriceVo  projectPriceVo=new ProjectPriceVo();
+            ProjectPriceVo projectPriceVo = new ProjectPriceVo();
             projectEleOrder.setVersionId(p.getId());
             BeanUtils.copyProperties(p,projectPriceVo);
             projectPriceVo.setElevatorOrderVo(projectPriceDao.queryOrderByProjectId(projectEleOrder));
 			for (ElevatorOrderVo elevatorOrderVo : projectPriceVo.getElevatorOrderVo()) {
 				elevatorOrderVo.setPicture(contextPath + "/images/" + elevatorOrderVo.getPicture());
+				//组装订单电梯的参数
+				List<ElementParam> elementParamByOrderId = projectDao.getElementParamByOrderId(elevatorOrderVo.getId());
+				elevatorOrderVo.setParams(elementParamByOrderId);
 			}
 			projectPriceVoList.add(projectPriceVo);
+
         }
-        vo.setProjectPriceOrderList(projectPriceVoList);
+		vo.setProjectPriceOrderList(projectPriceVoList);
         return vo;
     }
 

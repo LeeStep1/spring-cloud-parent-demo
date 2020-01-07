@@ -227,7 +227,7 @@
 
     <!--分页查询-->
     <select id="listPage" parameterType="com.bit.module.manager.vo.ProjectPageVO" resultType="com.bit.module.manager.vo.ProjectShowVO">
-        SELECT t2.id as projectId,t2.customer_name,t2.agent_name,t2.address_name,t2.create_user_name,t1.non_standard_apply_status,t1.id as projectPriceId,t1.create_time,t3.mobile,t3.real_name
+        SELECT t2.project_name,t2.id as projectId,t2.customer_name,t2.agent_name,t2.address_name,t2.create_user_name,t1.non_standard_apply_status,t1.id as projectPriceId,t1.create_time,t3.mobile,t3.real_name
         FROM t_project_price t1
         INNER JOIN t_project t2
         on t1.project_id = t2.id
