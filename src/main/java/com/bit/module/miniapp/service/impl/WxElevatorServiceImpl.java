@@ -7,8 +7,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.bit.base.exception.BusinessException;
 import com.bit.base.service.BaseService;
 import com.bit.base.vo.BaseVo;
+import com.bit.common.businessEnum.InstallFlagEnum;
 import com.bit.common.businessEnum.NodeOrderCalculateStatusEnum;
 import com.bit.common.businessEnum.NonStandardApplyStatusEnum;
+import com.bit.common.businessEnum.TransportFlagEnum;
 import com.bit.common.consts.Const;
 import com.bit.common.informationEnum.StageEnum;
 import com.bit.common.informationEnum.StandardEnum;
@@ -321,16 +323,17 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		Map<String, Object> cod = new HashMap<>();
 		cod.put("projectId", projectId);
 		cod.put("version", "-1");
+		cod.put("isUpdate", true);
 		ProjectPrice o = new ProjectPrice();
 		ProjectPrice projectPriceByProjectId = projectPriceDao.getProjectPriceByProjectIdWithVersion(projectId, -1);
 		if (projectPriceByProjectId != null) {
 			if (projectPriceByProjectId.getInstallFlag().equals(Const.FLAG_YES)) {
-				cod.put("包括安装", "true");
+				cod.put("包括安装", true);
 				o.setStage(StageEnum.STAGE_ZERO.getCode());
 				o.setStageName(StageEnum.STAGE_ZERO.getInfo());
 			}
 			if (projectPriceByProjectId.getTransportFlag().equals(Const.FLAG_YES)) {
-				cod.put("包括运费", "true");
+				cod.put("包括运费", true);
 				o.setStage(StageEnum.STAGE_ZERO.getCode());
 				o.setStageName(StageEnum.STAGE_ZERO.getInfo());
 			}
@@ -560,8 +563,37 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	 * @return
 	 */
 	@Override
+	@Transactional
 	public BaseVo updateProjectPriceFlag(ProjectPrice projectPrice) {
+		//查询项目id
+		ProjectPrice ppr = projectPriceDao.selectById(projectPrice.getId());
+		if (ppr==null){
+			throw new BusinessException("报价不存在");
+		}
+
+		if (projectPrice.getInstallFlag().equals(InstallFlagEnum.YES.getCode()) ||
+				projectPrice.getTransportFlag().equals(TransportFlagEnum.YES.getCode())){
+			projectPrice.setStage(StageEnum.STAGE_ZERO.getCode());
+			projectPrice.setStageName(StageEnum.STAGE_ZERO.getInfo());
+		}
+
 		projectPriceDao.updateById(projectPrice);
+
+		//算价钱
+		Map<String, Object> cod = new HashMap<>();
+		cod.put("projectId", ppr.getProjectId());
+		cod.put("version", "-1");
+		cod.put("isUpdate", true);
+		ProjectPrice projectPriceByProjectId = projectPriceDao.getProjectPriceByProjectIdWithVersion(ppr.getProjectId(), -1);
+		if (projectPriceByProjectId != null) {
+			if (projectPriceByProjectId.getInstallFlag().equals(InstallFlagEnum.YES.getCode())) {
+				cod.put("包括安装", true);
+			}
+			if (projectPriceByProjectId.getTransportFlag().equals(TransportFlagEnum.YES.getCode())) {
+				cod.put("包括运费", true);
+			}
+		}
+		equationServiceImpl.executeCountProjectPrice(cod);
 		return successVo();
 	}
 
