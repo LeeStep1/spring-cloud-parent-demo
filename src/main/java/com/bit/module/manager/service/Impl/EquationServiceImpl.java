@@ -303,8 +303,10 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
     private void buildBasePriceJson(Map vars) {
         Map map = new HashMap();
         map.put("title", "规格参数基价");
-        String content = StrUtil.format("{}KG,{}m/s,{}", vars.get("载重"), vars.get("速度"), vars.get("层站"));
-        map.put("content", content);
+        if ("直梯".equals(vars.get("梯型"))){
+            String content = StrUtil.format("{}KG,{}m/s,{}", vars.get("载重"), vars.get("速度"), vars.get("层站"));
+            map.put("content", content);
+        }
         map.put("price", vars.get("小计_设备基价"));
         vars.put("基价后台显示JSON", JSON.toJSONString(map));
     }
@@ -312,7 +314,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
     private double checkNostandardAndPrice(Map vars) {
         boolean noStandard = false;
         double heightPrice = 0;
-        String noStandardDetail = "";
+        List<String> noStandardDetail = new ArrayList<>(3);
         Map additionHeightInfo = new HashMap(3);
         List<String> title = new ArrayList<>(3);
         List<String> height = new ArrayList<>(3);
@@ -330,7 +332,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             }
         }else {
             noStandard = true;
-            noStandardDetail += "提升高度超标,";
+            noStandardDetail.add("提升高度超标");
         }
         if (checkHeightStandard(vars,"顶层高度是否超标")) {
             int temp1 = (Integer) simpleEquation("实际顶层高度-标准顶层高度", vars);
@@ -344,7 +346,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             }
         }else {
             noStandard = true;
-            noStandardDetail += "顶层高度超标,";
+            noStandardDetail.add("顶层高度超标");
         }
         if (checkHeightStandard(vars,"底坑深度是否超标")) {
             int temp2 = (Integer) simpleEquation("实际底坑深度-标准底坑深度", vars);
@@ -358,7 +360,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             }
         }else {
             noStandard = true;
-            noStandardDetail += "底坑深度超标,";
+            noStandardDetail.add("底坑深度超标");
         }
         if (!noStandard){
             additionHeightInfo.put("title", CollUtil.join(title, ","));
@@ -367,7 +369,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             vars.put("高度加价", additionHeightInfo);
         }
         vars.put("是否为非标", noStandard);
-        vars.put("非标详情", noStandardDetail);
+        vars.put("非标详情", CollUtil.join(noStandardDetail,","));
         return heightPrice;
     }
 
