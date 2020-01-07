@@ -287,11 +287,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 							non.setSysType(0);
 							non.setContent(sysNodOptions+non.getContent());
 						}	);*/
-
-
-				//新增非标项
-				projectEleNonstandardDao.batchAdd(vo.getProjectEleNonstandardList());
-                //报价非标
+              //报价非标
 				if(!a.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
 					a.setStandard(StandardEnum.STANDARD_ZERO.getCode());
 					a.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
@@ -305,7 +301,36 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 					order.setCalculateFlag(NodeOrderCalculateStatusEnum.BUJISUAN.getCode());
 					projectEleOrderDao.updateById(order);
 				}
+
+				//新增非标项
+				projectEleNonstandardDao.batchAdd(vo.getProjectEleNonstandardList());
+
+			}else{
+				if(sysNodOptions!=null&&!sysNodOptions.equals("")){
+					ProjectEleNonstandard aaa=new ProjectEleNonstandard();
+					aaa.setContent(sysNodOptions);
+					aaa.setOrderId(order.getId());
+					projectEleNonstandardDao.insert(aaa);
+					//报价非标
+					if(!a.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
+						a.setStandard(StandardEnum.STANDARD_ZERO.getCode());
+						a.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
+						a.setNonStandardApplyStatus(NonStandardApplyStatusEnum.DAITIJIAO.getCode());
+
+						projectPriceDao.updateById(a);
+					}
+					if(!order.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
+						order.setStandard(StandardEnum.STANDARD_ZERO.getCode());
+						order.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
+						order.setCalculateFlag(NodeOrderCalculateStatusEnum.BUJISUAN.getCode());
+						projectEleOrderDao.updateById(order);
+					}
+				}
+
+
 			}
+
+
 		}
 
 		Map rrs = new HashMap();
@@ -693,7 +718,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	 * @return
 	 */
 	@Override
-	@Async
+	//@Async
 	public void sendPriceMail(Long projectPriceId,List<String>ccAddress) {
 
 		Map cod = new HashMap();
@@ -858,8 +883,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			writer.finish();
 			EmailInfo emailInfo = new EmailInfo();
 			List<String> toList = new ArrayList<String>();
-			toList.add(getCurrentUserInfo().getEmail());
-			//toList.add("star9c2009@163.com");
+			//toList.add(getCurrentUserInfo().getEmail());
+			toList.add("star9c2009@163.com");
 			emailInfo.setToAddress(toList);
 			List<EmailAttachment> attachments = new ArrayList<>();
 			EmailAttachment emailAttachment = new EmailAttachment();
