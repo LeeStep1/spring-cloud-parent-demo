@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bit.module.manager.dao.AuditDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.bit.module.manager.bean.Audit" id="auditMap">
+        <result property="id" column="id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="auditType" column="audit_type"/>
+        <result property="auditUserId" column="audit_user_id"/>
+        <result property="auditUserName" column="audit_user_name"/>
+        <result property="auditTime" column="audit_time"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        project_id,
+        audit_type,
+        audit_user_id,
+        audit_user_name,
+        audit_time
+    </sql>
+
+    <!-- 根据主键查询数据 -->
+    <select id="getAuditById" parameterType="Integer" resultMap="auditMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_audit
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <!-- 多参数查询数据 -->
+    <select id="findByParam" parameterType="com.bit.module.manager.bean.Audit" resultMap="auditMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_audit
+        <where>
+            <if test="projectId!=null">
+                and project_id = #{projectId,jdbcType=BIGINT}
+            </if>
+
+            <if test="auditType!=null">
+                and audit_type = #{auditType,jdbcType=INTEGER}
+            </if>
+
+            <if test="auditUserId!=null">
+                and audit_user_id = #{auditUserId,jdbcType=BIGINT}
+            </if>
+            <if test="auditUserName!=null and auditUserName!=''">
+                and audit_user_name = #{auditUserName,jdbcType=VARCHAR}
+            </if>
+            <if test="auditTime!=null">
+                and audit_time = #{auditTime,jdbcType=TIMESTAMP}
+            </if>
+
+        </where>
+    </select>
+
+
+    <!-- 新增数据 -->
+    <insert id="addAudit" parameterType="com.bit.module.manager.bean.Audit" keyColumn="id"
+            useGeneratedKeys="true">
+        insert into t_audit
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="projectId!=null">
+                project_id,
+            </if>
+
+            <if test="auditType!=null">
+                audit_type,
+            </if>
+
+            <if test="auditUserId!=null">
+                audit_user_id,
+            </if>
+            <if test="auditUserName!=null and auditUserName!=''">
+                audit_user_name,
+            </if>
+            <if test="auditTime!=null">
+                audit_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="projectId!=null">
+                #{projectId,jdbcType=BIGINT},
+            </if>
+
+            <if test="auditType!=null">
+                #{auditType,jdbcType=INTEGER},
+            </if>
+
+            <if test="auditUserId!=null">
+                #{auditUserId,jdbcType=BIGINT},
+            </if>
+            <if test="auditUserName!=null and auditUserName!=''">
+                #{auditUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="auditTime!=null">
+                #{auditTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+
+    <!-- 编辑数据 -->
+    <update id="updateAudit" parameterType="com.bit.module.manager.bean.Audit">
+        update t_audit
+        <trim prefix="set" suffixOverrides=",">
+            <if test="projectId!=null">
+                project_id = #{projectId,jdbcType=BIGINT},
+            </if>
+
+            <if test="auditType!=null">
+                audit_type = #{auditType,jdbcType=INTEGER},
+            </if>
+
+            <if test="auditUserId!=null">
+                audit_user_id = #{auditUserId,jdbcType=BIGINT},
+            </if>
+            <if test="auditUserName!=null and auditUserName!=''">
+                audit_user_name = #{auditUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="auditTime!=null">
+                audit_time = #{auditTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+
+    <!-- 删除数据 -->
+    <delete id="delAuditById" parameterType="Integer">
+        delete from t_audit
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <!--批量新增-->
+    <insert id="batchAdd" parameterType="com.bit.module.manager.bean.Audit" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_audit
+        (
+        project_id,
+        audit_type,
+        audit_user_id,
+        audit_user_name,
+        audit_time
+        )VALUES (
+        <foreach collection="list" item="item" index="index"  separator=",">
+            #{item.projectId,jdbcType=BIGINT},
+            #{item.auditType,jdbcType=INTEGER},
+            #{item.auditUserId,jdbcType=BIGINT},
+            #{item.auditUserName,jdbcType=VARCHAR},
+            #{item.auditTime,jdbcType=TIMESTAMP}
+        </foreach>
+
+        )
+    </insert>
+
+
+</mapper>
