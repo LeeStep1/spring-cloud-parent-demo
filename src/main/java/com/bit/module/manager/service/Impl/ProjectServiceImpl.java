@@ -293,7 +293,7 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 		//新增的附加项
 		if(projectEleOrder!=null){
 			projectOrderDetailInfoVO.setStandard(projectEleOrder.getStandard());
-			if(projectEleOrder.getStandard().equals(StandardEnum.STANDARD_ZERO)){
+			if(projectEleOrder.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
 				projectOrderDetailInfoVO.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
 				Map cod=new HashMap();
 				cod.put("order_id",orderId);
