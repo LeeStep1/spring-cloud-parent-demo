@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bit.base.exception.BusinessException;
 import com.bit.base.service.BaseService;
 import com.bit.base.vo.BaseVo;
-import com.bit.common.businessEnum.AuditTypeEnum;
+import com.bit.common.businessEnum.*;
 import com.bit.common.informationEnum.StandardEnum;
 import com.bit.module.manager.bean.*;
 import com.bit.module.manager.dao.*;
@@ -38,6 +38,9 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 
 	@Autowired
 	private AuditDao auditDao;
+
+	@Autowired
+	private EquationServiceImpl equationServiceImpl;
 	/**
 	 * 项目下订单列表
 	 * @param projectId
@@ -159,6 +162,7 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 			throw new BusinessException("参数为空");
 		}
 		List<ProjectEleNonstandardVO> updatelist = new ArrayList<>();
+		List<ProjectEleOrder> orderList = new ArrayList<>();
 		for (ProjectEleNonstandardVO priceVO : projectPrices) {
 			Long priceId = priceVO.getPriceId();
 			ProjectPrice temp = projectPriceDao.selectById(priceId);
@@ -168,6 +172,15 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 			if (priceVO.getVersion().equals(temp.getVersion())){
 				updatelist.add(priceVO);
 			}
+			ProjectEleOrder order = new ProjectEleOrder();
+			order.setId(priceVO.getOrderId());
+			if (priceVO.getProductionFlag().equals(ProductionFlagEnum.YES.getCode())){
+				order.setCalculateFlag(CalculateFlagEnum.YES.getCode());
+			}else if (priceVO.getProductionFlag().equals(ProductionFlagEnum.NO.getCode())){
+				order.setCalculateFlag(CalculateFlagEnum.NO.getCode());
+			}
+
+			orderList.add(order);
 		}
 
 		if (CollectionUtils.isNotEmpty(updatelist)){
@@ -175,6 +188,10 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 			projectPriceDao.updatebatchProjectPrice(updatelist);
 			//更改t_project_ele_nonstandard的total_price
 			projectEleNonstandardDao.updatebatchNonstandard(projectPrices);
+			//更改t_project_ele_order的calculate_flag
+			if (CollectionUtils.isNotEmpty(orderList)){
+				projectEleOrderDao.updateBatchEleOrder(orderList);
+			}
 
 			Long userId = getCurrentUserInfo().getId();
 			String realName = getCurrentUserInfo().getRealName();
@@ -193,10 +210,26 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 
 			//插入审批表
 			auditDao.batchAdd(audits);
+			//算价钱
+
+			//查询项目id
+			ProjectPrice ppr = projectPriceDao.selectById(projectPrices.get(0).getPriceId());
+			Map<String, Object> cod = new HashMap<>();
+			cod.put("projectId", ppr.getProjectId());
+			cod.put("version", ppr.getVersion());
+			cod.put("isUpdate", true);
+			ProjectPrice projectPriceByProjectId = projectPriceDao.getProjectPriceByProjectIdWithVersion(ppr.getProjectId(), -1);
+			if (projectPriceByProjectId != null) {
+				if (projectPriceByProjectId.getInstallFlag().equals(InstallFlagEnum.YES.getCode())) {
+					cod.put("包括安装", true);
+				}
+				if (projectPriceByProjectId.getTransportFlag().equals(TransportFlagEnum.YES.getCode())) {
+					cod.put("包括运费", true);
+				}
+			}
+			equationServiceImpl.executeCountProjectPrice(cod);
 
 		}
-
-
 
 		return successVo();
 	}

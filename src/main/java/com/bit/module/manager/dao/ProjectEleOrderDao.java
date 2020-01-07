@@ -32,4 +32,10 @@ public interface ProjectEleOrderDao extends BaseMapper<ProjectEleOrder> {
 	 * @return
 	 */
 	Integer getPriceVersionByOrderId(@Param(value = "orderId")Long orderId);
+
+	/**
+	 * 批量更新
+	 * @param list
+	 */
+	void updateBatchEleOrder(@Param(value = "list") List<ProjectEleOrder> list);
 }

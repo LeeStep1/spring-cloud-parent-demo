@@ -65,5 +65,9 @@ public class ProjectEleNonstandardVO {
 	 * 项目id
 	 */
 	private Long projectId;
+	/**
+	 * 订单id
+	 */
+	private Long orderId;
 
 }

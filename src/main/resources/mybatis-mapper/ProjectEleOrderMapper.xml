@@ -137,4 +137,25 @@
     </select>
 
 
+    <!--批量编辑数据-->
+    <update id="updateBatchEleOrder" parameterType="com.bit.module.manager.bean.ProjectEleOrder">
+        UPDATE t_project_ele_order
+        <trim prefix="set" suffixOverrides=",">
+
+            <trim prefix="calculate_flag = case" suffix="end,">
+                <foreach collection="list" item="order" index="index" >
+                    <if test="order.calculateFlag!=null">
+                        WHEN id = #{order.id,jdbcType=BIGINT} then #{order.calculateFlag,jdbcType=INTEGER}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        <where>
+            <foreach collection="list" item="order" index="index" separator=") or (" close=")" open="(">
+                id = #{order.id,jdbcType=BIGINT}
+            </foreach>
+
+        </where>
+    </update>
+
 </mapper>

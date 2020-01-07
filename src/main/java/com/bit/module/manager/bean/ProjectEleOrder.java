@@ -1,6 +1,7 @@
 package com.bit.module.manager.bean;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -90,10 +91,12 @@ public class ProjectEleOrder {
     /**
      * 基价
      */
+    @TableField(exist = false)
     private String basePrice;
     /**
      * 高度加价
      */
+    @TableField(exist = false)
     private String additionPrice;
 
 
