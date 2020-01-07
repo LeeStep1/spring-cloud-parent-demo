@@ -69,6 +69,9 @@ public class Options implements Serializable {
 	@TableField(exist = false)
 	private Integer nums;
 
+	@TableField(exist = false)
+	private String code;
+
 	/**
 	 * 选装总价
 	 */

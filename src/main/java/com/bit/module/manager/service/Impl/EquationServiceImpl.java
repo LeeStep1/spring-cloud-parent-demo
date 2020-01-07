@@ -78,7 +78,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             executeInstallEquations(vars);
         }
         executeEquations(vars);//计算设备单价
-        if (Boolean.TRUE.equals(vars.get("isUpdate"))) {
+        if (Boolean.TRUE.equals(vars.get("isUpdate")) || "ture".equals(vars.get("isUpdate"))) {
             updateOrder(vars);
         }
     }
@@ -375,6 +375,10 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         }
         if (Boolean.TRUE.equals(vars.get("是否为非标"))){
             projectEleOrder.setStandard(StandardEnum.STANDARD_ZERO.getCode());
+            projectEleOrder.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
+        }else {
+            projectEleOrder.setStandard(StandardEnum.STANDARD_ONE.getCode());
+            projectEleOrder.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
         }
         projectEleOrderDao.updateById(projectEleOrder);
 

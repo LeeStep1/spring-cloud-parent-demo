@@ -43,6 +43,7 @@ public interface WxElevatorService {
 	 */
 
 	List<Options> getOptions(Integer optionType, Long elevatorId, List<ProjectEleOrderBaseInfo> orderBaseInfos);
+	List<Options> getOptionsNew(Integer optionType, Long elevatorId, List<ProjectEleOrderBaseInfo> orderBaseInfos);
 
 
 	/**

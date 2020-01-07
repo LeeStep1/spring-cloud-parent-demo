@@ -23,5 +23,21 @@
         order by tos.group_name, tos.id
     </select>
 
+    <!-- 多参数查询数据 -->
+    <select id="findOptionByElevatorTypeNew"  resultType="com.bit.module.miniapp.bean.Options">
+        SELECT
+        tos.*
+        from t_elevator_rela_options ts, t_options_bak tos
+        <where>
+            tos.id=ts.option_id
+            <if test="optionType!=null and optionType!=''">
+                and tos.option_type = #{optionType,jdbcType=INTEGER}
+            </if>
+            <if test="elevatorTypeId!=null and elevatorTypeId!=''">
+                and ts.elevator_type_id=#{elevatorTypeId,jdbcType=BIGINT}
+            </if>
 
+        </where>
+        order by tos.group_name, tos.id
+    </select>
 </mapper>

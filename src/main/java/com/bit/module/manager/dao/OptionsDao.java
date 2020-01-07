@@ -17,6 +17,7 @@ public interface OptionsDao  extends BaseMapper <Options> {
 
 
   List<Options> findOptionByElevatorType ( @Param("elevatorTypeId") Long elevatorTypeId,@Param("optionType") Integer optionType);
+  List<Options> findOptionByElevatorTypeNew ( @Param("elevatorTypeId") Long elevatorTypeId,@Param("optionType") Integer optionType);
 
 
 }
