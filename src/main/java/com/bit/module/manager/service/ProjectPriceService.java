@@ -1,8 +1,10 @@
 package com.bit.module.manager.service;
 
 import com.bit.base.vo.BaseVo;
-import com.bit.module.manager.bean.ProjectPrice;
+import com.bit.module.manager.vo.ProjectEleNonstandardVO;
 import com.bit.module.manager.vo.ProjectPageVO;
+
+import java.util.List;
 
 /**
  * 项目报价信息表
@@ -13,25 +15,30 @@ import com.bit.module.manager.vo.ProjectPageVO;
  */
 public interface ProjectPriceService {
 
-
+	/**
+	 * 项目下订单列表
+	 * @param projectId
+	 * @return
+	 */
+	BaseVo orderList(Long projectId);
 
 	/**
-	 * 编辑数据
-	 * @param projectPrice
+	 * 批量编辑数据
+	 * @param projectPrices
 	 * @author chenduo
 	 * @since ${date}
 	 */
-	BaseVo update(ProjectPrice projectPrice);
+	BaseVo update(List<ProjectEleNonstandardVO> projectPrices);
 
 
 	/**
 	 * 单查项目数据
-	 * @param id
+	 * @param orderId
 	 * @author chenduo
 	 * @since ${date}
 	 * @return ProjectPrice
 	 */
-	BaseVo reflectById(Long id);
+	BaseVo reflectById(Long orderId);
 
 	/**
 	 * 报价列表分页查询

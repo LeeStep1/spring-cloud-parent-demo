@@ -2,7 +2,7 @@ package com.bit.module.manager.controller;
 
 
 import com.bit.base.vo.BaseVo;
-import com.bit.module.manager.bean.ProjectPrice;
+import com.bit.module.manager.vo.ProjectEleNonstandardVO;
 import com.bit.module.manager.vo.ProjectPageVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.bit.module.manager.service.ProjectPriceService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 /**
@@ -29,28 +31,37 @@ public class ProjectPriceController {
 
 
 	/**
-	 * 编辑数据
-	 * @param projectPrice
+	 * 批量编辑数据
+	 * @param projectPrices
 	 * @author chenduo
 	 * @since ${date}
 	 */
-	@PostMapping("/update")
-	public BaseVo update(@RequestBody ProjectPrice projectPrice){
-        return projectPriceService.update(projectPrice);
+	@PutMapping("/update")
+	public BaseVo update(@RequestBody List<ProjectEleNonstandardVO> projectPrices){
+        return projectPriceService.update(projectPrices);
 	}
 
+	/**
+	 * 项目下订单列表
+	 * @param projectId
+	 * @return
+	 */
+	@GetMapping("/orderList/{projectId}")
+	public BaseVo orderList(@PathVariable(value = "projectId") Long projectId){
+		return projectPriceService.orderList(projectId);
+	}
 
 
 	/**
 	 * 单查项目数据
-	 * @param id
+	 * @param orderId
 	 * @author chenduo
 	 * @since ${date}
 	 * @return ${entity}
 	 */
-	@GetMapping("/reflectById/{id}")
-	public BaseVo reflectById(@PathVariable(value = "id") Long id){
-		return projectPriceService.reflectById(id);
+	@GetMapping("/reflectById/{orderId}")
+	public BaseVo reflectById(@PathVariable(value = "orderId") Long orderId){
+		return projectPriceService.reflectById(orderId);
     }
 
 	/**

@@ -22,4 +22,40 @@
             )
         </foreach>
     </insert>
+
+
+    <!--批量编辑数据-->
+    <update id="updatebatchNonstandard" parameterType="com.bit.module.manager.vo.ProjectEleNonstandardVO">
+        UPDATE t_project_ele_nonstandard
+        <trim prefix="set" suffixOverrides=",">
+
+            <trim prefix="total_price = case" suffix="end,">
+                <foreach collection="projectPriceList" item="price" index="index" >
+                    <if test="price.totalPrice!=null and price.totalPrice!=''">
+                        WHEN id = #{price.id,jdbcType=BIGINT} then #{price.totalPrice,jdbcType=VARCHAR}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="audit_remark = case" suffix="end,">
+                <foreach collection="projectPriceList" item="price" index="index" >
+                    <if test="price.auditRemark!=null and price.auditRemark!=''">
+                        WHEN id = #{price.id,jdbcType=BIGINT} then #{price.auditRemark,jdbcType=VARCHAR}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="production_flag = case" suffix="end,">
+                <foreach collection="projectPriceList" item="price" index="index" >
+                    <if test="price.productionFlag!=null">
+                        WHEN id = #{price.id,jdbcType=BIGINT} then #{price.productionFlag,jdbcType=INTEGER}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        <where>
+            <foreach collection="projectPriceList" item="price" index="index" separator=") or (" close=")" open="(">
+                id = #{price.id,jdbcType=BIGINT}
+            </foreach>
+
+        </where>
+    </update>
 </mapper>

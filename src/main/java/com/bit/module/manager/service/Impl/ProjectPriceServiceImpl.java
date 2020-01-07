@@ -2,30 +2,24 @@ package com.bit.module.manager.service.Impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.bit.base.exception.BusinessException;
 import com.bit.base.service.BaseService;
 import com.bit.base.vo.BaseVo;
+import com.bit.common.businessEnum.AuditTypeEnum;
 import com.bit.common.informationEnum.StandardEnum;
 import com.bit.module.manager.bean.*;
-import com.bit.module.manager.dao.ProjectDao;
-import com.bit.module.manager.dao.ProjectEleNonstandardDao;
-import com.bit.module.manager.dao.ProjectEleOrderDao;
-import com.bit.module.manager.vo.ProjectPageVO;
-import com.bit.module.manager.vo.ProjectPriceDetailVO;
-import com.bit.module.manager.vo.ProjectShowVO;
+import com.bit.module.manager.dao.*;
+import com.bit.module.manager.vo.*;
 import com.bit.module.miniapp.bean.Options;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import com.bit.module.manager.dao.ProjectPriceDao;
 import com.bit.module.manager.service.ProjectPriceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service("projectPriceService")
 public class ProjectPriceServiceImpl extends BaseService implements ProjectPriceService {
@@ -42,39 +36,22 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 	@Autowired
 	private ProjectEleNonstandardDao projectEleNonstandardDao;
 
-
+	@Autowired
+	private AuditDao auditDao;
 	/**
-	 * 编辑数据
-	 *
-	 * @param projectPrice
-	 * @author chenduo
-	 * @since ${date}
+	 * 项目下订单列表
+	 * @param projectId
+	 * @return
 	 */
 	@Override
-	@Transactional
-	public BaseVo update(ProjectPrice projectPrice) {
-		projectPriceDao.updateProjectPrice(projectPrice);
-		return successVo();
-	}
-
-	/**
-	 * 单查项目数据
-	 *
-	 * @param id
-	 * @return ProjectPrice
-	 * @author chenduo
-	 * @since ${date}
-	 */
-	@Override
-	public BaseVo reflectById(Long id) {
+	public BaseVo orderList(Long projectId) {
 		BaseVo baseVo = new BaseVo();
-
-		Project project = projectDao.selectById(id);
-		ProjectPriceDetailVO projectPriceDetailVO = new ProjectPriceDetailVO();
-		BeanUtils.copyProperties(project,projectPriceDetailVO);
+		Project project = projectDao.selectById(projectId);
+		ProjectOrderWebVO projectOrderWebVO = new ProjectOrderWebVO();
+		BeanUtils.copyProperties(project,projectOrderWebVO);
 		//根据projectid查询 所有的订单
 		ProjectEleOrder order = new ProjectEleOrder();
-		order.setProjectId(id);
+		order.setProjectId(projectId);
 		List<ProjectEleOrder> byParam = projectEleOrderDao.findByParam(order);
 
 		if (CollectionUtils.isNotEmpty(byParam)){
@@ -88,16 +65,22 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 				elevatorTypeNameAndUnitPrice.setElevatorTypeName(projectEleOrder.getElevatorTypeName());
 				elevatorTypeNameAndUnitPrice.setUnitPrice(projectEleOrder.getUnitPrice());
 				elevatorTypeNameAndUnitPrice.setRate(projectEleOrder.getRate());
+				elevatorTypeNameAndUnitPrice.setBasePrice(projectEleOrder.getBasePrice());
+				elevatorTypeNameAndUnitPrice.setAdditionPrice(projectEleOrder.getAdditionPrice());
+				elevatorTypeNameAndUnitPrice.setTotalPrice(projectEleOrder.getTotalPrice());
 				//查询订单总价
 				projectPriceDetailInfo.setElevatorTypeNameAndUnitPrice(elevatorTypeNameAndUnitPrice);
+				projectPriceDetailInfo.setOrderId(projectEleOrder.getId());
+				projectPriceDetailInfo.setPriceId(projectEleOrder.getVersionId());
+
 				ProjectPrice orderprice = projectPriceDao.selectById(projectEleOrder.getVersionId());
 				projectPriceDetailInfo.setOrderPrice(orderprice.getTotalPrice());
+				//报价的版本 更新时候使用
+				projectPriceDetailInfo.setVersion(orderprice.getVersion());
 				//设置规格参数 和 井道参数
 				List<ElementParam> elementParamByOrderId = projectDao.getElementParamByOrderId(projectEleOrder.getId());
 				projectPriceDetailInfo.setElementParams(elementParamByOrderId);
 
-				List<Options> projectOptions = projectDao.getProjectOptions(projectEleOrder.getId());
-				projectPriceDetailInfo.setOptions(projectOptions);
 
 				// 新增电梯非标项
 				projectPriceDetailInfo.setStandard(projectEleOrder.getStandard());
@@ -112,16 +95,113 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 						projectPriceDetailInfo.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
 					}
 				}
-
 				projectPriceDetailInfos.add(projectPriceDetailInfo);
 
 			}
-			projectPriceDetailVO.setProjectPriceDetailInfos(projectPriceDetailInfos);
-			baseVo.setData(projectPriceDetailVO);
+			//查询项目报价版本
+			List<ProjectPrice> latestProjectPrice = projectPriceDao.getLatestProjectPrice(projectId);
+			projectOrderWebVO.setVersion(latestProjectPrice.get(0).getVersion());
+			projectOrderWebVO.setStandard(latestProjectPrice.get(0).getStandard());
+			projectOrderWebVO.setStandardName(latestProjectPrice.get(0).getStandardName());
+			projectOrderWebVO.setProjectPriceDetailInfos(projectPriceDetailInfos);
+			baseVo.setData(projectOrderWebVO);
 		}
 
 		return baseVo;
 	}
+
+	/**
+	 * 单查项目数据
+	 *
+	 * @param orderId
+	 * @return ProjectPrice
+	 * @author chenduo
+	 * @since ${date}
+	 */
+	@Override
+	public BaseVo reflectById(Long orderId) {
+		BaseVo baseVo = new BaseVo();
+		ProjectPriceDetailInfo projectPriceDetailInfo = new ProjectPriceDetailInfo();
+
+//		ProjectEleOrder order = projectEleOrderDao.selectById(orderId);
+		List<Options> projectOptions = projectDao.getProjectOptions(orderId);
+		projectPriceDetailInfo.setOptions(projectOptions);
+
+		// 新增电梯非标项
+//		projectPriceDetailInfo.setStandard(order.getStandard());
+//		if (order.getStandard()!=null){
+//			if (order.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
+//				Map cod=new HashMap();
+//				cod.put("order_id",order.getId());
+//				List<ProjectEleNonstandard>  list =projectEleNonstandardDao.selectByMap(cod);
+//				projectPriceDetailInfo.setProjectEleNonstandardOptionList(list);
+//				projectPriceDetailInfo.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
+//			}else{
+//				projectPriceDetailInfo.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
+//			}
+//		}
+
+		baseVo.setData(projectPriceDetailInfo);
+		return baseVo;
+	}
+
+	/**
+	 * 批量编辑数据
+	 *
+	 * @param projectPrices
+	 * @author chenduo
+	 * @since ${date}
+	 */
+	@Override
+	@Transactional
+	public BaseVo update(List<ProjectEleNonstandardVO> projectPrices) {
+		if (CollectionUtils.isEmpty(projectPrices)){
+			throw new BusinessException("参数为空");
+		}
+		List<ProjectEleNonstandardVO> updatelist = new ArrayList<>();
+		for (ProjectEleNonstandardVO priceVO : projectPrices) {
+			Long priceId = priceVO.getPriceId();
+			ProjectPrice temp = projectPriceDao.selectById(priceId);
+			if (temp==null){
+				throw new BusinessException("无此记录");
+			}
+			if (priceVO.getVersion().equals(temp.getVersion())){
+				updatelist.add(priceVO);
+			}
+		}
+
+		if (CollectionUtils.isNotEmpty(updatelist)){
+			//更改t_project_price的non_standard_apply_status状态
+			projectPriceDao.updatebatchProjectPrice(updatelist);
+			//更改t_project_ele_nonstandard的total_price
+			projectEleNonstandardDao.updatebatchNonstandard(projectPrices);
+
+			Long userId = getCurrentUserInfo().getId();
+			String realName = getCurrentUserInfo().getRealName();
+			List<Audit> audits = new ArrayList<>();
+			for (ProjectEleNonstandardVO projectEleNonstandardVO : updatelist) {
+				Audit audit = new Audit();
+
+				audit.setAuditUserId(userId);
+				audit.setAuditUserName(realName);
+				audit.setAuditTime(new Date());
+				audit.setAuditType(AuditTypeEnum.SUBMIT.getCode());
+				audit.setProjectId(projectEleNonstandardVO.getProjectId());
+
+				audits.add(audit);
+			}
+
+			//插入审批表
+			auditDao.batchAdd(audits);
+
+		}
+
+
+
+		return successVo();
+	}
+
+
 
 	/**
 	 * 报价列表分页查询

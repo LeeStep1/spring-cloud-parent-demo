@@ -71,10 +71,11 @@ public interface ProjectPriceDao extends BaseMapper<ProjectPrice> {
 	ProjectPrice getProjectPriceById(@Param(value = "projectId") Long projectId);
 
 	/**
-	 * 编辑数据
-	 * @param projectPrice
+	 * 批量编辑数据
+	 * @param projectPrices
 	 */
-	void updateProjectPrice(ProjectPrice projectPrice);
+	void updatebatchProjectPrice(@Param(value = "projectPriceList") List<ProjectEleNonstandardVO> projectPrices);
+
 
 	/**
 	 * 分页查询

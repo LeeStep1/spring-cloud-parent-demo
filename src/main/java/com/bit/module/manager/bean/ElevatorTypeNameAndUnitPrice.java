@@ -22,4 +22,17 @@ public class ElevatorTypeNameAndUnitPrice {
 	 * 下浮率
 	 */
 	private Double rate;
+
+	/**
+	 * 基价
+	 */
+	private String basePrice;
+	/**
+	 * 高度加价
+	 */
+	private String additionPrice;
+	/**
+	 * 总价
+	 */
+	private String totalPrice;
 }

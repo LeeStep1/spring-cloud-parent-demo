@@ -45,5 +45,17 @@ public class ProjectPriceDetailInfo {
 	 * 订单价格
 	 */
 	private String orderPrice;
+	/**
+	 * 对应t_projec_price表中的id
+	 */
+	private Integer version;
 
+	/**
+	 * 订单id
+	 */
+	private Long orderId;
+	/**
+	 * 报价id
+	 */
+	private Long priceId;
 }

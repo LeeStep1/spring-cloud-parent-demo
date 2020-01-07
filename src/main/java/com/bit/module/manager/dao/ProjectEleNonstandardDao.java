@@ -2,6 +2,7 @@ package com.bit.module.manager.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.bit.module.manager.bean.ProjectEleNonstandard;
+import com.bit.module.manager.vo.ProjectEleNonstandardVO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -21,4 +22,11 @@ public interface ProjectEleNonstandardDao extends BaseMapper<ProjectEleNonstanda
      * @param list
      */
     void batchAdd(@Param(value = "list") List<ProjectEleNonstandard> list);
+
+    /**
+     * 批量编辑数据
+     * @param projectPrices
+     */
+    void updatebatchNonstandard(@Param(value = "projectPriceList") List<ProjectEleNonstandardVO> projectPrices);
+
 }

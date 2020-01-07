@@ -197,6 +197,34 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
+    <!--批量编辑数据-->
+    <update id="updatebatchProjectPrice" parameterType="com.bit.module.manager.vo.ProjectEleNonstandardVO">
+        UPDATE t_project_price
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="non_standard_apply_status = case" suffix="end,">
+                <foreach collection="projectPriceList" item="price" index="index" >
+                    <if test="price.nonStandardApplyStatus!=null">
+                        WHEN id = #{price.priceId,jdbcType=BIGINT} then #{price.nonStandardApplyStatus,jdbcType=INTEGER}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="version = case" suffix="end,">
+                <foreach collection="projectPriceList" item="price" index="index" >
+                    <if test="price.version!=null">
+                        WHEN id = #{price.priceId,jdbcType=BIGINT} then #{price.version,jdbcType=INTEGER} + 1
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        <where>
+            <foreach collection="projectPriceList" item="price" index="index" separator=") or (" close=")" open="(">
+                id = #{price.priceId,jdbcType=BIGINT} and version = #{price.version,jdbcType=INTEGER}
+            </foreach>
+
+        </where>
+    </update>
+
+
     <!--分页查询-->
     <select id="listPage" parameterType="com.bit.module.manager.vo.ProjectPageVO" resultType="com.bit.module.manager.vo.ProjectShowVO">
         SELECT t2.id as projectId,t2.customer_name,t2.agent_name,t2.address_name,t2.create_user_name,t1.non_standard_apply_status,t1.id as projectPriceId,t1.create_time,t3.mobile,t3.real_name
@@ -206,7 +234,6 @@
         INNER JOIN t_user t3
         on t2.create_user_id = t3.id
         <where>
-            and t1.non_standard_apply_status > 0
             <if test="projectPageVO.customerName!=null and projectPageVO.customerName!=''">
                 and t2.customer_name LIKE concat("%",#{customerName,jdbcType=VARCHAR},"%")
             </if>
