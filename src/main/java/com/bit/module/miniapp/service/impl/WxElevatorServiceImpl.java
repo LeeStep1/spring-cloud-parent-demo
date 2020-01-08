@@ -108,21 +108,6 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	 * @author liyujun
 	 * @date 2019-12-25
 	 */
-//	@Override
-//	public List<Options> getOptions(Integer optionType, Long elevatorTypeId, List<ProjectEleOrderBaseInfo> orderBaseInfos) {
-//		ElevatorType e = elevatorTypeDao.selectById(elevatorTypeId);
-//		List<Options> ops = optionsDao.findOptionByElevatorType(elevatorTypeId, optionType);
-//		Map cod = new HashMap<>();
-//		cod.clear();
-//		orderBaseInfos.forEach(c -> {
-//			cod.put(c.getParamKey(), c.getInfoValue());
-//		});
-//		cod.put("系列", e.getParamsKey());
-//		cod.put("梯型", e.getCategory());
-//		List<Options> rs = equationServiceImpl.executeEquationsForOption(cod, ops);
-//		return rs;
-//	}
-
 	@Override
 	public List<Options> getOptions(Integer optionType, Long elevatorTypeId, List<ProjectEleOrderBaseInfo> orderBaseInfos) {
 		ElevatorType e = elevatorTypeDao.selectById(elevatorTypeId);
