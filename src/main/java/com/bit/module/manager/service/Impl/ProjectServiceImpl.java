@@ -217,6 +217,9 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 				elevatorTypeNameAndUnitPrice.setUnitPrice(projectEleOrder.getUnitPrice());
 				elevatorTypeNameAndUnitPrice.setRate(projectEleOrder.getRate());
 
+				elevatorTypeNameAndUnitPrice.setInstallPrice(projectEleOrder.getInstallPrice());
+				elevatorTypeNameAndUnitPrice.setTransportPrice(projectEleOrder.getTransportPrice());
+
 				projectPriceDetailInfo.setElevatorTypeNameAndUnitPrice(elevatorTypeNameAndUnitPrice);
 				//设置规格参数 和 井道参数
 				List<ElementParam> elementParamByOrderId = projectDao.getElementParamByOrderId(projectEleOrder.getId());

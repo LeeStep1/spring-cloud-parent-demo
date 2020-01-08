@@ -39,4 +39,14 @@ public class ElevatorTypeNameAndUnitPrice {
 	 * 电梯数量
 	 */
 	private String nums;
+
+	/**
+	 * 安装价格
+	 */
+	private String installPrice;
+
+	/**
+	 * '运输单价'
+	 */
+	private String transportPrice;
 }
