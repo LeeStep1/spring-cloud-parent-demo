@@ -393,14 +393,14 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         if (vars.get("基价后台显示JSON") != null) {
             projectEleOrder.setBasePrice(vars.get("基价后台显示JSON")+"");
         }
-        if (Boolean.TRUE.equals(vars.get("是否为非标"))){
-            projectEleOrder.setStandard(StandardEnum.STANDARD_ZERO.getCode());
-            projectEleOrder.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
-        }
-        if (Boolean.FALSE.equals(vars.get("是否为非标"))){
-            projectEleOrder.setStandard(StandardEnum.STANDARD_ONE.getCode());
-            projectEleOrder.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
-        }
+//        if (Boolean.TRUE.equals(vars.get("是否为非标"))){
+//            projectEleOrder.setStandard(StandardEnum.STANDARD_ZERO.getCode());
+//            projectEleOrder.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
+//        }
+//        if (Boolean.FALSE.equals(vars.get("是否为非标"))){
+//            projectEleOrder.setStandard(StandardEnum.STANDARD_ONE.getCode());
+//            projectEleOrder.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
+//        }
         projectEleOrderDao.updateById(projectEleOrder);
 
         //插入非标记录
