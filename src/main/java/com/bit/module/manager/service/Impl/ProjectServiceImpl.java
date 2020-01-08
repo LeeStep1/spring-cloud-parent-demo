@@ -268,8 +268,8 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 			projectOrderDetailInfoVO.setVersion(projectPriceByProjectId.getVersion());
 			projectOrderDetailInfoVO.setInstallFlag(projectPriceByProjectId.getInstallFlag());
 			projectOrderDetailInfoVO.setTransportFlag(projectPriceByProjectId.getTransportFlag());
-			Map totalMap=projectDao.getPriceInfo(projectPriceByProjectId.getId());
-			if(totalMap!=null){
+			//Map totalMap=projectDao.getPriceInfo(projectPriceByProjectId.getId());
+			/*if(totalMap!=null){
 
 				if(totalMap.containsKey("installPrice")){
 					projectOrderDetailInfoVO.setInstallPrice(String.valueOf(totalMap.get("installPrice")));
@@ -277,7 +277,7 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 				if(totalMap.containsKey("transportPrice")){
 					projectOrderDetailInfoVO.setTransportPrice(String.valueOf(totalMap.get("transportPrice")));
 				}
-			}
+			}*/
 
 		}
 		//组装电梯详情
