@@ -12,10 +12,57 @@ import java.util.List;
  **/
 @Data
 public class ProjectPriceDetailInfo {
+
 	/**
-	 * 电梯类型名称和产品单价
+	 * 电梯名称
 	 */
-	private ElevatorTypeNameAndUnitPrice elevatorTypeNameAndUnitPrice;
+	private String elevatorTypeName;
+	/**
+	 * 设备单价
+	 */
+	private String unitPrice;
+	/**
+	 * 下浮率
+	 */
+	private Double rate;
+
+	/**
+	 * 基价
+	 */
+	private String basePrice;
+	/**
+	 * 高度加价
+	 */
+	private String additionPrice;
+	/**
+	 * 总价
+	 */
+	private String totalPrice;
+	/**
+	 * 电梯数量
+	 */
+	private String nums;
+
+	/**
+	 * 安装价格
+	 */
+	private String installPrice;
+
+	/**
+	 * '运输单价'
+	 */
+	private String transportPrice;
+
+	/**
+	 * 是否能做
+	 */
+	private Integer calculateFlag;
+
+
+	/**
+	 * 是否能做
+	 */
+	private String auditRemark;
 
 	//----规格参数----
 	/**

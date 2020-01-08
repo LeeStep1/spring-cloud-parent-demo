@@ -94,6 +94,10 @@ public class ProjectPriceDetailVO {
 	 * 电梯细节 集合
 	 */
 	private List<ProjectPriceDetailInfo> projectPriceDetailInfos;
+	/**
+	 * 非标审批状态:-1：撤销 0：无需审批，1：非标的待提交，2：待审核，3：通过
+	 */
+	private Integer nonStandardApplyStatus;
 
 
 }

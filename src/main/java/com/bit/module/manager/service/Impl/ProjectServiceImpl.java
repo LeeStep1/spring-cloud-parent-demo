@@ -204,7 +204,6 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 
 		List<ProjectPriceDetailInfo> projectPriceDetailInfos = new ArrayList<>();
 		//组装电梯详情
-		//List<ProjectEleOrder> orderByProjectId = projectDao.getOrderByProjectId(projectPriceId);
 		Map cods=new HashMap(1);
 		cods.put("version_id",projectPriceId);
 		List<ProjectEleOrder> orderByProjectId=projectEleOrderDao.selectByMap(cods);
@@ -212,14 +211,12 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 			for (ProjectEleOrder projectEleOrder : orderByProjectId) {
 				ProjectPriceDetailInfo projectPriceDetailInfo = new ProjectPriceDetailInfo();
 				//设置电梯类型和单价
-				ElevatorTypeNameAndUnitPrice elevatorTypeNameAndUnitPrice = new ElevatorTypeNameAndUnitPrice();
-				elevatorTypeNameAndUnitPrice.setElevatorTypeName(projectEleOrder.getElevatorTypeName());
-				elevatorTypeNameAndUnitPrice.setUnitPrice(projectEleOrder.getUnitPrice());
-				elevatorTypeNameAndUnitPrice.setRate(projectEleOrder.getRate());
-				elevatorTypeNameAndUnitPrice.setCalculateFlag(projectEleOrder.getCalculateFlag());
-				//elevatorTypeNameAndUnitPrice.
-				elevatorTypeNameAndUnitPrice.setInstallPrice(projectEleOrder.getInstallPrice());
-				elevatorTypeNameAndUnitPrice.setTransportPrice(projectEleOrder.getTransportPrice());
+				projectPriceDetailInfo.setElevatorTypeName(projectEleOrder.getElevatorTypeName());
+				projectPriceDetailInfo.setUnitPrice(projectEleOrder.getUnitPrice());
+				projectPriceDetailInfo.setRate(projectEleOrder.getRate());
+				projectPriceDetailInfo.setCalculateFlag(projectEleOrder.getCalculateFlag());
+				projectPriceDetailInfo.setInstallPrice(projectEleOrder.getInstallPrice());
+				projectPriceDetailInfo.setTransportPrice(projectEleOrder.getTransportPrice());
 
 
 				//设置规格参数 和 井道参数
@@ -238,12 +235,11 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 					projectPriceDetailInfo.setProjectEleNonstandardOptionList(list);
 					projectPriceDetailInfo.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
 					if(projectEleOrder.getCalculateFlag()==0){
-						elevatorTypeNameAndUnitPrice.setAuditRemark(list.get(0).getAuditRemark());
+						projectPriceDetailInfo.setAuditRemark(list.get(0).getAuditRemark());
 					}
 				}else{
 					projectPriceDetailInfo.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
 				}
-				projectPriceDetailInfo.setElevatorTypeNameAndUnitPrice(elevatorTypeNameAndUnitPrice);
 				projectPriceDetailInfos.add(projectPriceDetailInfo);
 
 

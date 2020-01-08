@@ -64,23 +64,24 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 			for (ProjectEleOrder projectEleOrder : byParam) {
 				ProjectPriceDetailInfo projectPriceDetailInfo = new ProjectPriceDetailInfo();
 				//设置电梯类型和单价
-				ElevatorTypeNameAndUnitPrice elevatorTypeNameAndUnitPrice = new ElevatorTypeNameAndUnitPrice();
-				elevatorTypeNameAndUnitPrice.setElevatorTypeName(projectEleOrder.getElevatorTypeName());
-				elevatorTypeNameAndUnitPrice.setUnitPrice(projectEleOrder.getUnitPrice());
-				elevatorTypeNameAndUnitPrice.setRate(projectEleOrder.getRate());
-				elevatorTypeNameAndUnitPrice.setBasePrice(projectEleOrder.getBasePrice());
-				elevatorTypeNameAndUnitPrice.setAdditionPrice(projectEleOrder.getAdditionPrice());
-				elevatorTypeNameAndUnitPrice.setTotalPrice(projectEleOrder.getTotalPrice());
-				elevatorTypeNameAndUnitPrice.setNums(projectEleOrder.getNum());
+				projectPriceDetailInfo.setElevatorTypeName(projectEleOrder.getElevatorTypeName());
+				projectPriceDetailInfo.setUnitPrice(projectEleOrder.getUnitPrice());
+				projectPriceDetailInfo.setRate(projectEleOrder.getRate());
+				projectPriceDetailInfo.setBasePrice(projectEleOrder.getBasePrice());
+				projectPriceDetailInfo.setAdditionPrice(projectEleOrder.getAdditionPrice());
+				projectPriceDetailInfo.setTotalPrice(projectEleOrder.getTotalPrice());
+				projectPriceDetailInfo.setNums(projectEleOrder.getNum());
 				//查询订单总价
-				projectPriceDetailInfo.setElevatorTypeNameAndUnitPrice(elevatorTypeNameAndUnitPrice);
 				projectPriceDetailInfo.setOrderId(projectEleOrder.getId());
 				projectPriceDetailInfo.setPriceId(projectEleOrder.getVersionId());
 
 				ProjectPrice orderprice = projectPriceDao.selectById(projectEleOrder.getVersionId());
-				projectPriceDetailInfo.setOrderPrice(orderprice.getTotalPrice());
-				//报价的版本 更新时候使用
-				projectPriceDetailInfo.setVersion(orderprice.getVersion());
+				if (orderprice!=null){
+					projectPriceDetailInfo.setOrderPrice(orderprice.getTotalPrice());
+					//报价的版本 更新时候使用
+					projectPriceDetailInfo.setVersion(orderprice.getVersion());
+				}
+
 				//设置规格参数 和 井道参数
 				List<ElementParam> elementParamByOrderId = projectDao.getElementParamByOrderId(projectEleOrder.getId());
 				projectPriceDetailInfo.setElementParams(elementParamByOrderId);
@@ -152,21 +153,20 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 		for (ProjectEleNonstandardVO priceVO : projectPrices) {
 			Long priceId = priceVO.getPriceId();
 			ProjectPrice temp = projectPriceDao.selectById(priceId);
-			if (temp==null){
-				throw new BusinessException("无此记录");
-			}
-			if (priceVO.getVersion().equals(temp.getVersion())){
-				updatelist.add(priceVO);
-			}
-			ProjectEleOrder order = new ProjectEleOrder();
-			order.setId(priceVO.getOrderId());
-			if (priceVO.getProductionFlag().equals(ProductionFlagEnum.YES.getCode())){
-				order.setCalculateFlag(CalculateFlagEnum.YES.getCode());
-			}else if (priceVO.getProductionFlag().equals(ProductionFlagEnum.NO.getCode())){
-				order.setCalculateFlag(CalculateFlagEnum.NO.getCode());
-			}
+			if (temp!=null){
+				if (priceVO.getVersion().equals(temp.getVersion())){
+					updatelist.add(priceVO);
+				}
+				ProjectEleOrder order = new ProjectEleOrder();
+				order.setId(priceVO.getOrderId());
+				if (priceVO.getProductionFlag().equals(ProductionFlagEnum.YES.getCode())){
+					order.setCalculateFlag(CalculateFlagEnum.YES.getCode());
+				}else if (priceVO.getProductionFlag().equals(ProductionFlagEnum.NO.getCode())){
+					order.setCalculateFlag(CalculateFlagEnum.NO.getCode());
+				}
 
-			orderList.add(order);
+				orderList.add(order);
+			}
 		}
 
 		if (CollectionUtils.isNotEmpty(updatelist)){

@@ -47,7 +47,8 @@
         t2.install_flag,
         t2.transport_flag,
         t2.standard,
-        t2.standard_name
+        t2.standard_name,
+        t2.non_standard_apply_status
         FROM t_project t1
         LEFT JOIN t_project_price t2
         on t1.id = t2.project_id
