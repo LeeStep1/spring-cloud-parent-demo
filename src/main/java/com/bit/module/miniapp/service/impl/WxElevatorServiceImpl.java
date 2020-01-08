@@ -657,22 +657,23 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 				cod.put("包括运费", true);
 			}
 		}
-		equationServiceImpl.executeCountProjectPrice(cod);
-		//批量更新运费和安装费
 		ProjectEleOrder order = new ProjectEleOrder();
 		order.setVersionId(projectPrice.getId());
 		List<ProjectEleOrder> byParam = projectEleOrderDao.findByParam(order);
 		if (CollectionUtils.isNotEmpty(byParam)){
 			for (ProjectEleOrder projectEleOrder : byParam) {
-				if (cod.get("包括安装")==null){
+				if (!cod.containsKey("包括安装")){
 					projectEleOrder.setInstallPrice("");
 				}
-				if (cod.get("包括运费")==null){
+				if (!cod.containsKey("包括运费")){
 					projectEleOrder.setTransportPrice("");
 				}
 			}
 			projectEleOrderDao.updateBatchEleOrder(byParam);
 		}
+
+		equationServiceImpl.executeCountProjectPrice(cod);
+		//批量更新运费和安装费
 
 		return successVo();
 	}
@@ -735,10 +736,12 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
 		Map cod = new HashMap();
 		cod.put("version_id", projectPriceId);
+		Project  j=new Project();
 
 		ProjectPrice p = projectPriceDao.selectById(projectPriceId);
 		if (p != null) {
 			cod.put("project_id", p.getProjectId());
+			j=projectDao.selectById(p.getProjectId());
 		//	ProjectDao.
 		}else{
 			throw new BusinessException("无此项目数据");
@@ -756,7 +759,10 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			vo.setSingleTotalPrice(c.getSingleTotalPrice());
 			vo.setTotalPrice(c.getTotalPrice());
 			vo.setCid(i);
-			//vo.setProjectName();
+			//项目名称
+			if(i==1){
+				vo.setProjectName(j.getProjectName());
+			}
 			Map codss = new HashMap();
 			codss.put("order_id", c.getId());
 			List<ProjectEleOrderBaseInfo> list = projectEleOrderBaseInfoDao.selectByMap(codss);
