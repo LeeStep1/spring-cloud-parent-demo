@@ -639,6 +639,9 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 				projectPrice.getTransportFlag().equals(TransportFlagEnum.YES.getCode())){
 			projectPrice.setStage(StageEnum.STAGE_ZERO.getCode());
 			projectPrice.setStageName(StageEnum.STAGE_ZERO.getInfo());
+		}else {
+			projectPrice.setStage(StageEnum.STAGE_ONE.getCode());
+			projectPrice.setStageName(StageEnum.STAGE_ONE.getInfo());
 		}
 
 		projectPriceDao.updateById(projectPrice);
