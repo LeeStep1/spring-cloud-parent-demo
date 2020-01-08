@@ -278,6 +278,7 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 			projectOrderDetailInfoVO.setVersion(projectPriceByProjectId.getVersion());
 			projectOrderDetailInfoVO.setInstallFlag(projectPriceByProjectId.getInstallFlag());
 			projectOrderDetailInfoVO.setTransportFlag(projectPriceByProjectId.getTransportFlag());
+			projectOrderDetailInfoVO.setNonStandardApplyStatus(projectPriceByProjectId.getNonStandardApplyStatus());
 			//Map totalMap=projectDao.getPriceInfo(projectPriceByProjectId.getId());
 			/*if(totalMap!=null){
 

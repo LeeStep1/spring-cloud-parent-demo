@@ -124,10 +124,11 @@ public class ProjectOrderDetailInfoVO {
 	 */
 	private Integer calculateFlag;
 
-
-
 	/**
 	 * 非标审批的备注
 	 */
 	private String auditRemark;
+
+
+	private Integer nonStandardApplyStatus;
 }
