@@ -78,6 +78,17 @@ public class ProjectPriceDetailVO {
 	 * 运输费用
 	 */
 	private String transportPrice;
+
+	/**
+	 * 非标
+	 */
+	private Integer standard;
+
+	/**
+	 * 非标名称
+	 */
+	private String standardName;
+
 	//----电梯细节----
 	/**
 	 * 电梯细节 集合
