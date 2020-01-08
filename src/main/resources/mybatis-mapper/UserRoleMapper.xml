@@ -4,7 +4,7 @@
 <mapper namespace="com.bit.module.manager.dao.UserRoleDao">
 
     <!-- 用于select查询公用抽取的列 -->
-    <sql id="UserRole_columns">
+    <sql id="Base_Column_List">
 	    <![CDATA[
 
 			id as id,
@@ -60,6 +60,25 @@
             <if test="roleId!=null">
                 and role_id = #{roleId,jdbcType=BIGINT}
             </if>
+        </where>
+    </select>
+
+    <!-- 多参数查询数据 -->
+    <select id="findByParam" parameterType="com.bit.module.manager.bean.UserRelRole" resultType="com.bit.module.manager.bean.UserRelRole">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user_role
+        <where>
+            <if test="userId!=null">
+                and user_id = #{userId,jdbcType=BIGINT}
+            </if>
+            <if test="roleId!=null">
+                and role_id = #{roleId,jdbcType=BIGINT}
+            </if>
+            <if test="token!=null and token!=''">
+                and token = #{token,jdbcType=VARCHAR}
+            </if>
+
         </where>
     </select>
 

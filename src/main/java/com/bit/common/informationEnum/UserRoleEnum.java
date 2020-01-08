@@ -8,14 +8,24 @@ package com.bit.common.informationEnum;
 public enum UserRoleEnum {
 
     /**
-     * 启用标识
+     * 销售
      */
-    RESIDENT(1,"销售"),
+    SALES(1,"销售"),
 
     /**
-     * 停用标识
+     * 管理
      */
-    MANAGER(2,"管理"),
+    SUPPORT(2,"管理"),
+
+    /**
+     * 分公司经理
+     */
+    MANAGER(3,"分公司经理"),
+
+    /**
+     * 集团总经理
+     */
+    BOSS(4,"集团总经理"),
 
     ;
 

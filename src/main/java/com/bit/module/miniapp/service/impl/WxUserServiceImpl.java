@@ -25,6 +25,7 @@ import com.bit.module.miniapp.bean.WxUser;
 import com.bit.module.miniapp.service.WxUserService;
 import com.bit.utils.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -47,9 +48,6 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
 
     @Value("${atToken.expire}")
     private Long atTokenExpire;
-
-    @Value("${rtToken.expire}")
-    private Long rtTokenExpire;
 
     @Autowired
     private WxUserComponent wxUserComponent;
@@ -79,9 +77,13 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
      * @return : void
      */
     @Override
-    public BaseVo  wxUserLogin(WxUser wxUser){
+    public BaseVo wxUserLogin(WxUser wxUser){
+
+		if(!wxUser.getTid().equals(TidUrlEnum.TERMINALURL_WX.getTid())){
+			throw  new RuntimeException("此端不支持");
+		}
         //根据用户名密码查询用户是否存在
-        UserVo portalUser = userDao.findByUsername(wxUser.getUserName(), UserRoleEnum.RESIDENT.getRoleId());
+        UserVo portalUser = userDao.findByUsername(wxUser.getUserName(),null);
 
         if(portalUser == null){
             throw new BusinessException("用户不存在！");
@@ -90,6 +92,14 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
         if(Integer.valueOf(DISABLE_FLAG.getCode()).equals(portalUser.getStatus())){
             throw new BusinessException("该用户已被停用！");
         }
+
+		//查询权限
+		UserRelRole obj = new UserRelRole();
+		obj.setUserId(portalUser.getId());
+		List<UserRelRole> byParam = userRoleDao.findByParam(obj);
+		if (CollectionUtils.isEmpty(byParam)){
+			throw new BusinessException("未分配权限！");
+		}
 
         if(portalUser!=null){
 
@@ -125,30 +135,37 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
 				userInfo.setCompanyId(company.getId());
 				userInfo.setCompanyName(company.getCompanyName());
 			}else{
-			    throw  new BusinessException("无所属机构");
+			    throw new BusinessException("无所属机构");
             }
 
             Integer tid = null;
-            tid = TidUrlEnum.TERMINALURL_RESIDENT.getTid();
+            tid = TidUrlEnum.TERMINALURL_WX.getTid();
             String key1=RedisKeyUtil.getRedisKey(RedisKey.LOGIN_TOKEN,String.valueOf(tid),token);
 			String userJson = JSON.toJSONString(userInfo);
             cacheUtil.set(key1,userJson,atTokenExpire);
 
 			//干掉之前的token
-			Long role = Long.valueOf(UserRoleEnum.RESIDENT.getRoleId());
-			UserRelRole userRelRoleByUserIdRoleId = userRoleDao.getUserRelRoleByUserIdRoleId(portalUser.getId(), role);
+			UserRelRole userRelRoleByUserIdRoleId = userRoleDao.getUserRelRoleByUserIdRoleId(portalUser.getId(), null);
 			if (userRelRoleByUserIdRoleId!=null){
-				cacheUtil.del(userRelRoleByUserIdRoleId.getToken());
+				String tt = userRelRoleByUserIdRoleId.getToken();
+				Map maps = new HashMap();
+				if (StringUtil.isNotEmpty(tt)){
+					maps = (Map) JSON.parse(tt);
+					if (maps!=null){
+						String ss = maps.get(TidUrlEnum.TERMINALURL_WX.getTid()).toString();
+						cacheUtil.del(ss);
+					}
+				}
+
+				maps.put(String.valueOf(TidUrlEnum.TERMINALURL_WX.getTid()),key1);
+				//更新t_user_role 刷新token值
+				UserRelRole userRelRole = new UserRelRole();
+				userRelRole.setId(byParam.get(0).getId());
+
+				String tokenkey = JSONObject.toJSONString(maps);
+				userRelRole.setToken(tokenkey);
+				userRoleDao.updateById(userRelRole);
 			}
-
-
-			UserRelRole userRelRole = new UserRelRole();
-            userRelRole.setUserId(portalUser.getId());
-            userRelRole.setToken(key1);
-			userRelRole.setRoleId(UserRoleEnum.RESIDENT.getRoleId());
-            userRoleDao.updateTokenByUserId(userRelRole);
-
-
 
             Map map = new HashMap<>();
             map.put("token", token);
@@ -160,8 +177,8 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
             //根据人查询项目 返回前端
 			Project project = new Project();
 			project.setCreateUserId(portalUser.getId());
-			List<Project> byParam = projectDao.findByParam(project);
-			map.put("project",byParam);
+			List<Project> byParamProject = projectDao.findByParam(project);
+			map.put("project",byParamProject);
 			map.put("companyId",company.getId());
 			map.put("companyName",company.getCompanyName());
 

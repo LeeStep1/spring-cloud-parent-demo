@@ -93,11 +93,11 @@ public class TokenFilter implements Filter {
                              filterChain.doFilter(servletRequest, servletResponse);
                              return;
                          }
-                        //接入端与请求地址匹配(居民端)
-                        if(String.valueOf(TidUrlEnum.TERMINALURL_RESIDENT.getTid()).equals(terminalId)){
+                        //接入端与请求地址匹配(小程序端)
+                        if(String.valueOf(TidUrlEnum.TERMINALURL_WX.getTid()).equals(terminalId)){
                             String ss = request.getServletPath();
                             String url = ss.substring(1,ss.indexOf("/",2));
-                            if(!TidUrlEnum.TERMINALURL_RESIDENT.getUrl().equals(url)){
+                            if(!TidUrlEnum.TERMINALURL_WX.getUrl().equals(url)){
                                 responseOutWithJson(response, new BaseVo(ResultCode.FORBIDDEN.getCode(), ResultCode.FORBIDDEN.getInfo(), null));
                                 return;
                             }

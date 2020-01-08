@@ -5,6 +5,8 @@ import com.bit.module.manager.bean.UserRelRole;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @Description
  * @Author chenduo
@@ -25,4 +27,11 @@ public interface UserRoleDao extends BaseMapper<UserRelRole>{
 	 * @return
 	 */
 	UserRelRole getUserRelRoleByUserIdRoleId(@Param(value = "userId")Long userId,@Param(value = "roleId")Long roleId);
+
+	/**
+	 * 多参数查询
+	 * @param userRelRole
+	 * @return
+	 */
+	List<UserRelRole> findByParam(UserRelRole userRelRole);
 }
