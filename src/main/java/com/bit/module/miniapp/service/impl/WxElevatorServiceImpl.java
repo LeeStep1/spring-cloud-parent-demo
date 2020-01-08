@@ -81,6 +81,9 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	@Autowired
 	private ProjectEleNonstandardDao projectEleNonstandardDao;
 
+	@Autowired
+	private ProjectDao  projectDao;
+
 	@Value("${upload.imagesPath}")
 	private String filePath;
 
@@ -232,10 +235,10 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		par.put("台量", order.getNum());
 		par.put("orderId", order.getId());
 		if (a.getInstallFlag().equals(InstallFlagEnum.YES.getCode())){
-			par.put("包括安装", order.getInstallPrice());
+			par.put("包括安装", true);
 		}
 		if (a.getTransportFlag().equals(TransportFlagEnum.YES.getCode())){
-			par.put("包括运费", order.getTransportPrice());
+			par.put("包括运费", true);
 		}
 		//新增参数
 		par.put("isUpdate", true);
@@ -732,14 +735,18 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
 		Map cod = new HashMap();
 		cod.put("version_id", projectPriceId);
+
 		ProjectPrice p = projectPriceDao.selectById(projectPriceId);
 		if (p != null) {
 			cod.put("project_id", p.getProjectId());
+		//	ProjectDao.
+		}else{
+			throw new BusinessException("无此项目数据");
 		}
 		//订单数据
 		List<ProjectEleOrder> orderList = projectEleOrderDao.selectByMap(cod);
 		List<ExcelVo> listVo = new ArrayList<ExcelVo>();
-		List<OpenOption> optionList = new ArrayList<>();
+
 		int i = 1;
 		for (ProjectEleOrder c : orderList) {
 			ExcelVo vo = new ExcelVo();
@@ -749,6 +756,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			vo.setSingleTotalPrice(c.getSingleTotalPrice());
 			vo.setTotalPrice(c.getTotalPrice());
 			vo.setCid(i);
+			//vo.setProjectName();
 			Map codss = new HashMap();
 			codss.put("order_id", c.getId());
 			List<ProjectEleOrderBaseInfo> list = projectEleOrderBaseInfoDao.selectByMap(codss);
@@ -770,17 +778,6 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			//选装项
 			List<ProjectEleOptionsVo> optins = projectEleOptionsDao.findOptionByOrder(c.getId(), 3);
 
-         /* if (optins.size() > 0) {
-                ExcelVo voOption1 = new ExcelVo();
-                voOption1.setElevatorName(c.getElevatorTypeName() + "非标项");//非标项单独一行
-                listVo.add(voOption1);
-                optins.forEach(op1 -> {
-                    ExcelVo voOption = new ExcelVo();
-                    voOption.setElevatorName(op1.getGroupName()+"_"+op1.getOptionName());
-                    listVo.add(voOption);
-                });
-
-            }*/
             if(optins.size()>0&&optins.size()>1){
             	for(int ii=0;ii<optins.size();ii++){
             		if(ii==0){
