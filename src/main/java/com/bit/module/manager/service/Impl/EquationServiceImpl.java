@@ -79,7 +79,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             executeInstallEquations(vars);
         }
         executeEquations(vars);//计算设备单价
-        if (Boolean.TRUE.equals(vars.get("isUpdate")) || "ture".equals(vars.get("isUpdate"))) {
+        if (Boolean.TRUE.equals(vars.get("isUpdate")) || "true".equals(vars.get("isUpdate"))) {
             updateOrder(vars);
         }
     }
@@ -103,6 +103,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             input.put("orderId", eleOrder.getId());
             input.put("包括运费", map.get("包括运费"));
             input.put("包括安装", map.get("包括安装"));
+            input.put("isUpdate", map.get("isUpdate"));
             eleInputs.add(input);
         }
         beforeExecuteEquations(eleInputs);
@@ -385,7 +386,6 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         projectEleOrder.setSingleTotalPrice(NumberUtil.roundStr(vars.get("小计_单台总价").toString(), 2));
         projectEleOrder.setInstallPrice(NumberUtil.roundStr(vars.get("小计_安装费用").toString(), 2));
         projectEleOrder.setTotalPrice(NumberUtil.roundStr(vars.get("小计_合价").toString(), 2));
-        projectEleOrder.setTransportPrice(NumberUtil.roundStr(vars.get("小计_运费").toString(), 2));
         projectEleOrder.setTransportPrice(NumberUtil.roundStr(vars.get("小计_运费").toString(), 2));
         if (vars.get("高度加价") != null) {
             projectEleOrder.setAdditionPrice(JSON.toJSONString(vars.get("高度加价")));
