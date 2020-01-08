@@ -78,7 +78,8 @@
         t2.elevator_type_name,
         t2.rate,
         t2.install_price,
-        t2.transport_price
+        t2.transport_price,
+        t2.calculate_flag
         FROM t_project t1
         INNER JOIN t_project_ele_order t2
         on t1.id = t2.project_id

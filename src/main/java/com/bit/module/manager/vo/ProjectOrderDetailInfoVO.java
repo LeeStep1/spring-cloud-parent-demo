@@ -118,4 +118,16 @@ public class ProjectOrderDetailInfoVO {
 	 * 非标时的额外非标项
 	 */
 	private List<ProjectEleNonstandard> projectEleNonstandardOptionList;
+
+	/**
+	 * 是否参与计算 1：参与，0 不参与
+	 */
+	private Integer calculateFlag;
+
+
+
+	/**
+	 * 非标审批的备注
+	 */
+	private String auditRemark;
 }

@@ -216,11 +216,12 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 				elevatorTypeNameAndUnitPrice.setElevatorTypeName(projectEleOrder.getElevatorTypeName());
 				elevatorTypeNameAndUnitPrice.setUnitPrice(projectEleOrder.getUnitPrice());
 				elevatorTypeNameAndUnitPrice.setRate(projectEleOrder.getRate());
-
+				elevatorTypeNameAndUnitPrice.setCalculateFlag(projectEleOrder.getCalculateFlag());
+				//elevatorTypeNameAndUnitPrice.
 				elevatorTypeNameAndUnitPrice.setInstallPrice(projectEleOrder.getInstallPrice());
 				elevatorTypeNameAndUnitPrice.setTransportPrice(projectEleOrder.getTransportPrice());
 
-				projectPriceDetailInfo.setElevatorTypeNameAndUnitPrice(elevatorTypeNameAndUnitPrice);
+
 				//设置规格参数 和 井道参数
 				List<ElementParam> elementParamByOrderId = projectDao.getElementParamByOrderId(projectEleOrder.getId());
 				projectPriceDetailInfo.setElementParams(elementParamByOrderId);
@@ -236,9 +237,13 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 					List<ProjectEleNonstandard>  list =projectEleNonstandardDao.selectByMap(cod);
 					projectPriceDetailInfo.setProjectEleNonstandardOptionList(list);
 					projectPriceDetailInfo.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
+					if(projectEleOrder.getCalculateFlag()==0){
+						elevatorTypeNameAndUnitPrice.setAuditRemark(list.get(0).getAuditRemark());
+					}
 				}else{
 					projectPriceDetailInfo.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
 				}
+				projectPriceDetailInfo.setElevatorTypeNameAndUnitPrice(elevatorTypeNameAndUnitPrice);
 				projectPriceDetailInfos.add(projectPriceDetailInfo);
 
 
@@ -304,6 +309,9 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 				cod.put("order_id",orderId);
 				List<ProjectEleNonstandard>  list =projectEleNonstandardDao.selectByMap(cod);
 				projectOrderDetailInfoVO.setProjectEleNonstandardOptionList(list);
+				if(projectOrderDetailInfoVO.getCalculateFlag()==0){
+					projectOrderDetailInfoVO.setAuditRemark(list.get(0).getAuditRemark());
+				}
 
 			}else{
 				projectOrderDetailInfoVO.setStandardName(StandardEnum.STANDARD_ONE.getInfo());

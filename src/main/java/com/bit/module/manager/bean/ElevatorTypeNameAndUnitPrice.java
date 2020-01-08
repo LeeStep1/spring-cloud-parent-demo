@@ -49,4 +49,17 @@ public class ElevatorTypeNameAndUnitPrice {
 	 * '运输单价'
 	 */
 	private String transportPrice;
+
+	/**
+	 * 是否能做
+	 */
+	private Integer calculateFlag;
+
+
+	/**
+	 * 是否能做
+	 */
+	private String auditRemark;
+
+
 }
