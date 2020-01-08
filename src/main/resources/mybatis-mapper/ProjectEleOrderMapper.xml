@@ -146,6 +146,20 @@
         UPDATE t_project_ele_order
         <trim prefix="set" suffixOverrides=",">
 
+            <trim prefix="install_price = case" suffix="end,">
+                <foreach collection="list" item="order" index="index" >
+                    <if test="order.installPrice!=null">
+                        WHEN id = #{order.id,jdbcType=BIGINT} then #{order.installPrice,jdbcType=VARCHAR}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="transport_price = case" suffix="end,">
+                <foreach collection="list" item="order" index="index" >
+                    <if test="order.transportPrice!=null">
+                        WHEN id = #{order.id,jdbcType=BIGINT} then #{order.transportPrice,jdbcType=VARCHAR}
+                    </if>
+                </foreach>
+            </trim>
             <trim prefix="calculate_flag = case" suffix="end,">
                 <foreach collection="list" item="order" index="index" >
                     <if test="order.calculateFlag!=null">

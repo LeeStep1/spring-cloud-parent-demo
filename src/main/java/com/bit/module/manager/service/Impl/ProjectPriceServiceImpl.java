@@ -127,23 +127,8 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 		BaseVo baseVo = new BaseVo();
 		ProjectPriceDetailInfo projectPriceDetailInfo = new ProjectPriceDetailInfo();
 
-//		ProjectEleOrder order = projectEleOrderDao.selectById(orderId);
 		List<Options> projectOptions = projectDao.getProjectOptions(orderId);
 		projectPriceDetailInfo.setOptions(projectOptions);
-
-		// 新增电梯非标项
-//		projectPriceDetailInfo.setStandard(order.getStandard());
-//		if (order.getStandard()!=null){
-//			if (order.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
-//				Map cod=new HashMap();
-//				cod.put("order_id",order.getId());
-//				List<ProjectEleNonstandard>  list =projectEleNonstandardDao.selectByMap(cod);
-//				projectPriceDetailInfo.setProjectEleNonstandardOptionList(list);
-//				projectPriceDetailInfo.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
-//			}else{
-//				projectPriceDetailInfo.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
-//			}
-//		}
 
 		baseVo.setData(projectPriceDetailInfo);
 		return baseVo;

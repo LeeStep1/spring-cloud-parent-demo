@@ -123,6 +123,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 //		return rs;
 //	}
 
+	@Override
 	public List<Options> getOptions(Integer optionType, Long elevatorTypeId, List<ProjectEleOrderBaseInfo> orderBaseInfos) {
 		ElevatorType e = elevatorTypeDao.selectById(elevatorTypeId);
 		List<Options> ops = optionsDao.findOptionByElevatorType(elevatorTypeId, optionType);
@@ -210,6 +211,9 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			//默认为标准
 			a.setStandard(StandardEnum.STANDARD_ONE.getCode());
 			a.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
+
+			a.setInstallFlag(InstallFlagEnum.NO.getCode());
+			a.setTransportFlag(TransportFlagEnum.NO.getCode());
 			projectPriceDao.insert(a);
 		} else {
 			a = list1.get(0);
@@ -242,7 +246,12 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		par.put("下浮", vo.getRate());
 		par.put("台量", order.getNum());
 		par.put("orderId", order.getId());
-
+		if (a.getInstallFlag().equals(InstallFlagEnum.YES.getCode())){
+			par.put("包括安装", order.getInstallPrice());
+		}
+		if (a.getTransportFlag().equals(TransportFlagEnum.YES.getCode())){
+			par.put("包括运费", order.getTransportPrice());
+		}
 		//新增参数
 		par.put("isUpdate", true);
 		//算价
@@ -661,6 +670,22 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			}
 		}
 		equationServiceImpl.executeCountProjectPrice(cod);
+		//批量更新运费和安装费
+		ProjectEleOrder order = new ProjectEleOrder();
+		order.setVersionId(projectPrice.getId());
+		List<ProjectEleOrder> byParam = projectEleOrderDao.findByParam(order);
+		if (CollectionUtils.isNotEmpty(byParam)){
+			for (ProjectEleOrder projectEleOrder : byParam) {
+				if (cod.get("包括安装")==null){
+					projectEleOrder.setInstallPrice("");
+				}
+				if (cod.get("包括运费")==null){
+					projectEleOrder.setTransportPrice("");
+				}
+			}
+			projectEleOrderDao.updateBatchEleOrder(byParam);
+		}
+
 		return successVo();
 	}
 
