@@ -4,6 +4,7 @@ import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.bit.base.exception.BusinessException;
 import com.bit.base.service.BaseService;
@@ -643,7 +644,6 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			projectPrice.setStage(StageEnum.STAGE_ONE.getCode());
 			projectPrice.setStageName(StageEnum.STAGE_ONE.getInfo());
 		}
-
 		projectPriceDao.updateById(projectPrice);
 
 		//算价钱
@@ -722,7 +722,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		QueryWrapper<ProjectPrice> queryWrapper = new QueryWrapper<>();
 		queryWrapper.eq("version", -1);
 		queryWrapper.eq("project_id", projectId);
-		projectPriceDao.delete(queryWrapper);//删除草稿状态
+		//删除草稿状态
+		projectPriceDao.delete(queryWrapper);
 
 	}
 
@@ -777,6 +778,10 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 					vo.setWeight(cc.getInfoValue());
 				} else if (cc.getParamKey().equals("层站")) {
 					vo.setFloors(cc.getInfoValue());
+				}else if(cc.getParamKey().equals("角度")){
+					vo.setFloors(cc.getInfoValue()+"°");
+				}else if(cc.getParamKey().equals("梯级宽度")){
+					vo.setWeight(cc.getInfoValue());
 				}
 			});
 			//结束
@@ -785,7 +790,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			//
 			i++;
 			//选装项
-			List<ProjectEleOptionsVo> optins = projectEleOptionsDao.findOptionByOrder(c.getId(), 3);
+			List<ProjectEleOptionsVo> optins = projectEleOptionsDao.findOptionByOrder(c.getId(), null);
 
             if(optins.size()>0&&optins.size()>1){
             	for(int ii=0;ii<optins.size();ii++){
@@ -793,7 +798,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
             			vo.setOptions(optins.get(ii).getOptionName());
 					}else{
 						ExcelVo voOption = new ExcelVo();
-						voOption.setElevatorName(optins.get(ii).getOptionName());
+						voOption.setOptions(optins.get(ii).getOptionName());
 						listVo.add(voOption);
 					}
 				}
@@ -810,7 +815,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 				List<ProjectEleNonstandard>listNon= projectEleNonstandardDao.selectByMap(cods);
 
 				if(listNon.size()==1){
-                     vo.setNonStandard(listNon.get(0).getContent());
+					 JSONObject object= JSON.parseObject(listNon.get(0).getContent());
+                     vo.setNonStandard( object.get("input").toString()+object.get("auto").toString());
 				}else  if(listNon.size()>1){
 					vo.setNonStandard(listNon.get(0).getContent());
 					for(int ii=1;ii<listNon.size();ii++){
@@ -850,7 +856,6 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	 * @return
 	 */
 	@Override
-	@Async
 	public BaseVo judgeRate(ElevatorRate elevatorRate) {
 		BaseVo baseVo = new BaseVo();
 		Long roleId = getCurrentUserInfo().getRole().longValue();
@@ -877,7 +882,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
 	public void export(List<ExcelVo> clsList, String sheetName,List<String>ccAdress) {
 		String filename = UUIDUtil.getUUID();
-		String path = filePath+"/filename/"+"电梯报价.xls";
+		String path = filePath+  System.getProperty("file.separator")+filename+ System.getProperty("file.separator")+"电梯报价.xls";
 		File aa = new File(path);
 		if (!aa.getParentFile().exists()) {
 			aa.getParentFile().mkdirs();
