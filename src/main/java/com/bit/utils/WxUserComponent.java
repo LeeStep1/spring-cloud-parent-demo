@@ -21,8 +21,6 @@ import java.security.Security;
 import java.text.MessageFormat;
 import java.util.Arrays;
 
-import static com.bit.common.informationEnum.TidUrlEnum.TERMINALURL_MANAGER;
-import static com.bit.common.informationEnum.TidUrlEnum.TERMINALURL_RESIDENT;
 
 
 /**
