@@ -11,5 +11,5 @@ import lombok.Data;
 @Data
 public class ProjectEleOptionsVo  extends ProjectEleOptions {
 
-    private  String groupName;
+ /*   private  String groupName;*/
 }

@@ -28,8 +28,7 @@
     <select id="findOptionByOrder" resultType="com.bit.module.miniapp.vo.ProjectEleOptionsVo">
 
     SELECT
-    tpe.*,
-    ts.group_name
+    tpe.*
     FROM
     t_project_ele_options tpe
     LEFT JOIN t_options ts ON ts.id = tpe.option_id
