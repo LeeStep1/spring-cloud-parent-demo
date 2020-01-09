@@ -907,6 +907,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			if (!clsList.isEmpty()) {
 				Sheet sheet = new Sheet(1, 0, clsList.get(0).getClass());
 				sheet.setSheetName(sheetName);
+				sheet.setAutoWidth(Boolean.TRUE);
 				writer.write(clsList, sheet);
 			}
 			writer.finish();
