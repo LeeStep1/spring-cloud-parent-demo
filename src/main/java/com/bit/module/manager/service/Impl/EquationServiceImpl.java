@@ -315,6 +315,10 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
     private double checkNostandardAndPrice(Map vars) {
         boolean noStandard = false;
         double heightPrice = 0;
+
+        if ("扶梯".equals(vars.get("梯型")) || "人行道梯".equals(vars.get("梯型"))) {
+            return 0;
+        }
         List<String> noStandardDetail = new ArrayList<>(3);
         Map additionHeightInfo = new HashMap(3);
         List<String> title = new ArrayList<>(3);
