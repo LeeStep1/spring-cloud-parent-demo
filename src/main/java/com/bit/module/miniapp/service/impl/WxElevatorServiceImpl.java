@@ -236,6 +236,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		par.put("下浮", vo.getRate());
 		par.put("台量", order.getNum());
 		par.put("orderId", order.getId());
+		par.put("预估安装费",true);
+		par.put("预估运费",true);
 		if (a.getInstallFlag().equals(InstallFlagEnum.YES.getCode())){
 			par.put("包括安装", true);
 		}
@@ -288,12 +290,22 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 					a.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
 					a.setNonStandardApplyStatus(NonStandardApplyStatusEnum.DAITIJIAO.getCode());
 
-					projectPriceDao.updateById(a);
+					//projectPriceDao.updateById(a);
+				}else{
+					a.setStandard(StandardEnum.STANDARD_ONE.getCode());
+					a.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
+					a.setNonStandardApplyStatus(NonStandardApplyStatusEnum.WUXUSHENPI.getCode());
 				}
+				projectPriceDao.updateById(a);
 				if(!order.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
 					order.setStandard(StandardEnum.STANDARD_ZERO.getCode());
 					order.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
 					order.setCalculateFlag(NodeOrderCalculateStatusEnum.BUJISUAN.getCode());
+					projectEleOrderDao.updateById(order);
+				}else{
+					order.setStandard(StandardEnum.STANDARD_ONE.getCode());
+					order.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
+					order.setCalculateFlag(NodeOrderCalculateStatusEnum.JISUAN.getCode());
 					projectEleOrderDao.updateById(order);
 				}
 
@@ -967,8 +979,14 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			writer.finish();
 			EmailInfo emailInfo = new EmailInfo();
 			List<String> toList = new ArrayList<String>();
-			//toList.add(getCurrentUserInfo().getEmail());
-			toList.add("star9c2009@163.com");
+			if(getCurrentUserInfo().getEmail()==null||"".equals(getCurrentUserInfo().getEmail())){
+				toList.add(getCurrentUserInfo().getEmail());
+			}else{
+				log.info("------------当前用户邮件为空，userId为{}-------------"+getCurrentUserInfo().getId());
+				throw new BusinessException("当前用户邮件为空");
+			}
+
+			//toList.add("star9c2009@163.com");
 			emailInfo.setToAddress(toList);
 			List<EmailAttachment> attachments = new ArrayList<>();
 			EmailAttachment emailAttachment = new EmailAttachment();
