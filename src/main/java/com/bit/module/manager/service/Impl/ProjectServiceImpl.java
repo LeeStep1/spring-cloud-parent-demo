@@ -87,12 +87,25 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 			       	Map cods=new HashMap();
 			       	cods.put("version_id",latestProjectPrice.get(0).getId());
 			       	cods.put("calculate_flag",0);
-                       List odrList=  projectEleOrderDao.selectByMap(cods);
-                       if(CollectionUtils.isNotEmpty(odrList)){
-						   project.setCalculateFlag(1);
-					   }else{
-						   project.setCalculateFlag(0);
-					   }
+			       	if(latestProjectPrice.get(0).getNonStandardApplyStatus()==2){
+						project.setCalculateFlag(0);
+					}else if(latestProjectPrice.get(0).getNonStandardApplyStatus()==3){
+						List<ProjectEleOrder> odrList=  projectEleOrderDao.selectByMap(cods);
+						if(CollectionUtils.isNotEmpty(odrList)){
+							for(ProjectEleOrder or:odrList){
+								if(or.getCalculateFlag()==0){
+									project.setCalculateFlag(0);
+									break;
+								}else{
+								   continue;
+								}
+							}
+
+						}else{
+							project.setCalculateFlag(0);
+						}
+					}
+
 				   }else{
 					   project.setCalculateFlag(1);
 				   }
