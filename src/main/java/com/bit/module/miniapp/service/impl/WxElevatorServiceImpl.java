@@ -589,10 +589,14 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 					if(list==null||list.size()==0){
 						projectPrice.setStandard(StandardEnum.STANDARD_ONE.getCode());
 						projectPrice.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
+						log.info("系统判定为：标准");
 
 					}else{
 						projectPrice.setStandard(StandardEnum.STANDARD_ZERO.getCode());
 						projectPrice.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
+
+						log.info("系统判定为："+StandardEnum.STANDARD_ZERO.getInfo());
+
 					}
 					projectPriceDao.updateById(projectPrice);
 				}
