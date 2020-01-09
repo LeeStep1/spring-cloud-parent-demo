@@ -53,4 +53,8 @@ public class ProjectShowVO  {
 	 * 地址名称
 	 **/
 	private String addressName;
+	/**
+	 * 审批人姓名
+	 */
+	private String auditUserName;
 }

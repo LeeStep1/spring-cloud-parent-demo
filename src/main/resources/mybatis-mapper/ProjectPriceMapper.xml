@@ -242,7 +242,8 @@
         t1.id as projectPriceId,
         t4.audit_time as createTime,
         t3.mobile,
-        t3.real_name
+        t3.real_name,
+        t4.audit_user_name as auditUserName
         FROM t_project_price t1
         INNER JOIN t_project t2
         on t1.project_id = t2.id
