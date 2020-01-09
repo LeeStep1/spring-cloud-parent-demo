@@ -48,12 +48,16 @@ public class MailUtil {
 			InternetAddress[] internetAddressTo = InternetAddress.parse(receiver);
 //			InternetAddress[] internetAddressTo = new InternetAddress().parse(receiver);
 			mimeMessage.setRecipients(Message.RecipientType.TO, internetAddressTo);
+            if(emailInfo.getCcAddress()!=null&&emailInfo.getCcAddress().size()>0){
+				String copyReceiver = assembleReceiver(emailInfo.getCcAddress());
+				InternetAddress[] copyAddress = InternetAddress.parse(copyReceiver);
+				mimeMessage.setRecipients(Message.RecipientType.CC, copyAddress);
+			}
 
-			String copyReceiver = assembleReceiver(emailInfo.getCcAddress());
 			// 抄收人,多人接收
-			InternetAddress[] copyAddress = InternetAddress.parse(copyReceiver);
+
 //			InternetAddress[] copyAddress = new InternetAddress().parse(copyReceiver);
-			mimeMessage.setRecipients(Message.RecipientType.CC, copyAddress);
+
 			// 主题
 			mimeMessage.setSubject(emailInfo.getSubject());
 			// 时间
