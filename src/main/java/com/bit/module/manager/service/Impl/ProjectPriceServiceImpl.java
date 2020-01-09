@@ -159,6 +159,9 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 			Long priceId = priceVO.getPriceId();
 			ProjectPrice temp = projectPriceDao.selectById(priceId);
 			if (temp!=null){
+				if (temp.getNonStandardApplyStatus().equals(NonStandardApplyStatusEnum.TONGGUO.getCode())){
+					throw new BusinessException("此报价已经通过");
+				}
 				if (priceVO.getPositiveLock().equals(temp.getPositiveLock())){
 					updatelist.add(priceVO);
 				}
