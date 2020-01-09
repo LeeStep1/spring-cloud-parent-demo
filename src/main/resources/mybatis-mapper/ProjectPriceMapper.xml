@@ -18,6 +18,7 @@
         <result property="installFlag" column="install_flag"/>
         <result property="transportFlag" column="transport_flag"/>
         <result property="nonStandardApplyStatus" column="non_standard_apply_status"/>
+        <result property="positiveLock" column="positive_lock"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -34,7 +35,8 @@
         stage_name,
         install_flag,
         transport_flag,
-        non_standard_apply_status
+        non_standard_apply_status,
+        positive_lock
     </sql>
 
     <!--根据项目id集合批量查询报价记录-->
@@ -193,6 +195,9 @@
             <if test="nonStandardApplyStatus!=null">
                 non_standard_apply_status = #{nonStandardApplyStatus,jdbcType=INTEGER},
             </if>
+            <if test="positiveLock!=null">
+                positive_lock = #{positiveLock,jdbcType=INTEGER},
+            </if>
         </trim>
         where id = #{id,jdbcType=BIGINT}
     </update>
@@ -208,17 +213,17 @@
                     </if>
                 </foreach>
             </trim>
-            <trim prefix="version = case" suffix="end,">
+            <trim prefix="positive_lock = case" suffix="end,">
                 <foreach collection="projectPriceList" item="price" index="index" >
-                    <if test="price.version!=null">
-                        WHEN id = #{price.priceId,jdbcType=BIGINT} then #{price.version,jdbcType=INTEGER} + 1
+                    <if test="price.positiveLock!=null">
+                        WHEN id = #{price.priceId,jdbcType=BIGINT} then #{price.positiveLock,jdbcType=INTEGER} + 1
                     </if>
                 </foreach>
             </trim>
         </trim>
         <where>
             <foreach collection="projectPriceList" item="price" index="index" separator=") or (" close=")" open="(">
-                id = #{price.priceId,jdbcType=BIGINT} and version = #{price.version,jdbcType=INTEGER}
+                id = #{price.priceId,jdbcType=BIGINT} and positive_lock = #{price.positiveLock,jdbcType=INTEGER}
             </foreach>
 
         </where>

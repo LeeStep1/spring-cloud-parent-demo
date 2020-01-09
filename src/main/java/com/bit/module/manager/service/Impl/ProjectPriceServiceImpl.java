@@ -79,11 +79,11 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 				projectPriceDetailInfo.setOrderId(projectEleOrder.getId());
 				projectPriceDetailInfo.setPriceId(projectEleOrder.getVersionId());
 
-				ProjectPrice orderprice = projectPriceDao.selectById(projectEleOrder.getVersionId());
+				ProjectPrice orderprice = projectPriceDao.getProjectPriceById(projectEleOrder.getVersionId());
 				if (orderprice!=null){
 					projectPriceDetailInfo.setOrderPrice(orderprice.getTotalPrice());
-					//报价的版本 更新时候使用
-					projectPriceDetailInfo.setVersion(orderprice.getVersion());
+					//乐观锁 更新时候使用
+					projectPriceDetailInfo.setPositiveLock(orderprice.getPositiveLock());
 				}
 
 				//设置规格参数 和 井道参数
@@ -108,10 +108,10 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 
 			}
 			//查询项目报价版本
-			List<ProjectPrice> latestProjectPrice = projectPriceDao.getLatestProjectPrice(projectPriceById.getProjectId());
-			projectOrderWebVO.setVersion(latestProjectPrice.get(0).getVersion());
-			projectOrderWebVO.setStandard(latestProjectPrice.get(0).getStandard());
-			projectOrderWebVO.setStandardName(latestProjectPrice.get(0).getStandardName());
+			ProjectPrice projectPrice = projectPriceDao.selectById(projectPriceId);
+			projectOrderWebVO.setVersion(projectPrice.getVersion());
+			projectOrderWebVO.setStandard(projectPrice.getStandard());
+			projectOrderWebVO.setStandardName(projectPrice.getStandardName());
 			projectOrderWebVO.setProjectPriceDetailInfos(projectPriceDetailInfos);
 			baseVo.setData(projectOrderWebVO);
 		}
@@ -158,7 +158,7 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 			Long priceId = priceVO.getPriceId();
 			ProjectPrice temp = projectPriceDao.selectById(priceId);
 			if (temp!=null){
-				if (priceVO.getVersion().equals(temp.getVersion())){
+				if (priceVO.getPositiveLock().equals(temp.getPositiveLock())){
 					updatelist.add(priceVO);
 				}
 				ProjectEleOrder order = new ProjectEleOrder();

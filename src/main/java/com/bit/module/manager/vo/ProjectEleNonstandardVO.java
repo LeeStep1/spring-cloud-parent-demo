@@ -52,7 +52,7 @@ public class ProjectEleNonstandardVO {
     /**
      * 版本号
      */
-    private Integer version;
+    private Integer positiveLock;
 	/**
 	 * 报价id
 	 */

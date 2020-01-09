@@ -60,7 +60,7 @@ public class ProjectPriceDetailInfo {
 
 
 	/**
-	 * 是否能做
+	 * 审批备注
 	 */
 	private String auditRemark;
 
@@ -105,4 +105,8 @@ public class ProjectPriceDetailInfo {
 	 * 报价id
 	 */
 	private Long priceId;
+	/**
+	 * 乐观锁
+	 */
+	private Integer positiveLock;
 }

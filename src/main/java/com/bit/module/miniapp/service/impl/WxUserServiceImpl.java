@@ -152,8 +152,10 @@ public class WxUserServiceImpl extends BaseService implements WxUserService  {
 				if (StringUtil.isNotEmpty(tt)){
 					maps = (Map) JSON.parse(tt);
 					if (maps!=null){
-						String ss = maps.get(TidUrlEnum.TERMINALURL_WX.getTid()).toString();
-						cacheUtil.del(ss);
+						if (maps.get(TidUrlEnum.TERMINALURL_WX.getTid())!=null){
+							String ss = maps.get(TidUrlEnum.TERMINALURL_WX.getTid()).toString();
+							cacheUtil.del(ss);
+						}
 					}
 				}
 

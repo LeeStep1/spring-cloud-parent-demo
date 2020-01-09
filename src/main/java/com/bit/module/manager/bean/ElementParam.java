@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class ElementParam {
 	/**
-	 * id
+	 * 参数id
 	 */
 	private Long elementId;
 	/**
