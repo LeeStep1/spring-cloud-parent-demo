@@ -13,11 +13,15 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  */
 @Data
 @TableName("t_equation")
-public class Equation {
+public class Equation implements Serializable {
+
+    private static final long serialVersionUID = -6099289237019187959L;
 
     @TableId(type = IdType.AUTO)
     private Long id;

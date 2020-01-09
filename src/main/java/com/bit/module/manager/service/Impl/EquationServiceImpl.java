@@ -42,11 +42,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
 
 
     @Autowired
-    private EquationDao equationDao;
-    @Autowired
     private BasePriceEquationDao basePriceEquationDao;
-    @Autowired
-    private BasePriceEquationRelDao basePriceEquationRelDao;
     @Autowired
     private ProjectEleOptionsDao projectEleOptionsDao;
     @Autowired
@@ -63,6 +59,8 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
     private ProjectDao projectDao;
     @Autowired
     private ProjectEleNonstandardDao projectEleNonstandardDao;
+    @Autowired
+    private EquationCacheServiceImpl equationCacheService;
 
 
     /**
@@ -436,17 +434,9 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
 
     //特殊方法，写死只取val4,没有取output
     public int getHeightForBasePrice(Map vars, String category) {
-        String type = vars.get("系列").toString();
-//        List<BasePriceEquationRel> basePriceRel = basePriceEquationRelDao.selectList(
-//                new QueryWrapper<BasePriceEquationRel>()
-//                        .eq("type", type)
-//                        .eq("category", category)
-//        );
-        QueryWrapper<BasePriceEquation> query = new QueryWrapper<BasePriceEquation>()
-                .eq("category", category)
-                .eq("type", vars.get("系列"))
-                .eq("val3", vars.get("层站")).last(" limit 1");
-        BasePriceEquation basePriceEquation = basePriceEquationDao.selectOne(query);
+
+        BasePriceEquation basePriceEquation = equationCacheService.getBasePriceEquation(
+                vars.get("系列")+"",vars.get("层站")+"",category);
         if (basePriceEquation == null) {
             return 0;
         }
@@ -455,12 +445,8 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
 
     public int getNoEquationOut(Map vars, String category) {
         String type = vars.get("系列").toString();
-        List<BasePriceEquationRel> basePriceRel = basePriceEquationRelDao.selectList(
-                new QueryWrapper<BasePriceEquationRel>()
-                        .eq("type", type)
-                        .eq("category", category)
-        );
 
+        List<BasePriceEquationRel> basePriceRel = equationCacheService.getBasePriceEquationRelList(type,category);
         QueryWrapper<BasePriceEquation> query = new QueryWrapper<BasePriceEquation>()
                 .eq("category", category)
                 .eq("type", vars.get("系列"));
@@ -477,7 +463,6 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
 
     private Object simpleEquation(String equation, Map vars) {
         Object object = MVEL.eval(equation, vars);
-        System.out.println(object);
         return object;
     }
 
@@ -548,14 +533,11 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         }
         String all = getObject(type, category, defaultValue);
         Object res = MVEL.eval(all, vars);
-        System.out.println("计算结果:" + res);
         return Double.parseDouble(res.toString());
     }
 
     private Boolean getEqBoolean(String type, String category, Map vars) {
-        List<Equation> testEntities = equationDao.selectList(new QueryWrapper<Equation>()
-                .eq(StringUtils.isNotEmpty(type), "type", type)
-                .eq("category", category));
+        List<Equation> testEntities = equationCacheService.getEquations(type, category);
         String s = "if ({}){ \n" +
                 " res = true; \n" +
                 "} \n";
@@ -572,9 +554,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
     }
 
     private String getObject(String type, String category, String result) {
-        List<Equation> testEntities = equationDao.selectList(new QueryWrapper<Equation>()
-                .eq(StringUtils.isNotEmpty(type), "type", type)
-                .eq("category", category));
+        List<Equation> testEntities = equationCacheService.getEquations(type, category);
 
         String s = "if ({}){ \n" +
                 " res = {}; \n" +
@@ -589,5 +569,6 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         all = StrUtil.format(all, result, expression);
         return all;
     }
+
 
 }

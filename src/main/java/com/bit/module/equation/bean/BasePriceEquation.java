@@ -13,11 +13,16 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  */
 @Data
 @TableName("t_base_price_equation")
-public class BasePriceEquation {
+public class BasePriceEquation implements Serializable {
+
+    private static final long serialVersionUID = -5710707056860294136L;
+
     @TableId(type = IdType.AUTO)
     private Long id;
     private String type;
