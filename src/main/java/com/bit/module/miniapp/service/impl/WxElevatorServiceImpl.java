@@ -586,11 +586,15 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 					codd.put("version_id",projectPriceId);
 					codd.put("standard",StandardEnum.STANDARD_ZERO.getCode());
 					List<ProjectEleOrder>list=projectEleOrderDao.selectByMap(codd);
-					if(list.size()==0){
+					if(list==null||list.size()==0){
 						projectPrice.setStandard(StandardEnum.STANDARD_ONE.getCode());
 						projectPrice.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
-						projectPriceDao.updateById(projectPrice);
+
+					}else{
+						projectPrice.setStandard(StandardEnum.STANDARD_ZERO.getCode());
+						projectPrice.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
 					}
+					projectPriceDao.updateById(projectPrice);
 				}
 
 			}
@@ -957,7 +961,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			if(list.size()>0){
 				cod.put("rate",list.get(0).getRate());
 			}else{
-				throw new BusinessException("无数据");
+				throw new BusinessException("当前人无此梯型的下浮率");
 			}
 			return  cod;
 		}
