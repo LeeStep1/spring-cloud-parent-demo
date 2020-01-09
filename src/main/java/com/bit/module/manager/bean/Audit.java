@@ -1,5 +1,7 @@
 package com.bit.module.manager.bean;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
@@ -18,9 +20,8 @@ import lombok.Data;
 @TableName("t_audit")
 public class Audit {
 
-	/**
-	 *
-	 */
+
+	@TableId(value = "id",type = IdType.AUTO)
 	private Long id;
 	/**
 	 * 项目id
