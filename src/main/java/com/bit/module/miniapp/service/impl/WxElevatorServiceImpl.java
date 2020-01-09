@@ -591,11 +591,24 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 					Map codd=new HashMap(1);
 					codd.put("version_id",projectPriceId);
 					codd.put("standard",StandardEnum.STANDARD_ZERO.getCode());
+					//查询非标的数据剩下多少
 					List<ProjectEleOrder>list=projectEleOrderDao.selectByMap(codd);
 					if(list==null||list.size()==0){
-						projectPrice.setStandard(StandardEnum.STANDARD_ONE.getCode());
-						projectPrice.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
-						log.info("系统判定为：标准");
+						//判断项目下订单还有多少
+						ProjectEleOrder t1 = new ProjectEleOrder();
+						t1.setProjectId(projectEleOrder.getProjectId());
+						t1.setVersionId(projectPriceId);
+						List<ProjectEleOrder> byParam = projectEleOrderDao.findByParam(t1);
+						if (CollectionUtils.isEmpty(byParam)){
+							projectPrice.setStandard(StandardEnum.STANDARD_DEFAULT.getCode());
+							projectPrice.setStandardName(StandardEnum.STANDARD_DEFAULT.getInfo());
+							log.info("系统判定为：正常");
+						}else {
+							projectPrice.setStandard(StandardEnum.STANDARD_ONE.getCode());
+							projectPrice.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
+							log.info("系统判定为：标准");
+						}
+
 
 					}else{
 						projectPrice.setStandard(StandardEnum.STANDARD_ZERO.getCode());
@@ -613,19 +626,29 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 				//查询剩下的订单有几个是非标的 大于0 报价非标 否则标准
 				ProjectEleOrder tt = new ProjectEleOrder();
 				tt.setProjectId(projectEleOrder.getProjectId());
-				tt.setStandard(StandardEnum.STANDARD_ZERO.getCode());
 				tt.setVersionId(projectPriceId);
 				List<ProjectEleOrder> byParam = projectEleOrderDao.findByParam(tt);
-				if (CollectionUtils.isNotEmpty(byParam)){
-					projectPrice.setStandard(StandardEnum.STANDARD_ZERO.getCode());
-					projectPrice.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
-					log.info("剩余非标订单数量{}",byParam.size());
-					log.info("系统判定为："+StandardEnum.STANDARD_ZERO.getInfo());
+				if (CollectionUtils.isEmpty(byParam)){
+					//如果是空  项目下没订单
+					log.info("剩余非标订单数量{}",0);
+					projectPrice.setStandard(StandardEnum.STANDARD_DEFAULT.getCode());
+					projectPrice.setStandardName(StandardEnum.STANDARD_DEFAULT.getInfo());
+					log.info("系统判定为：正常");
 				}else {
-					projectPrice.setStandard(StandardEnum.STANDARD_ONE.getCode());
-					projectPrice.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
-					log.info("系统判定为：标准");
+					tt.setStandard(StandardEnum.STANDARD_ZERO.getCode());
+					List<ProjectEleOrder> byParam1 = projectEleOrderDao.findByParam(tt);
+					if (CollectionUtils.isNotEmpty(byParam1)){
+						projectPrice.setStandard(StandardEnum.STANDARD_ZERO.getCode());
+						projectPrice.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
+						log.info("剩余非标订单数量{}",byParam.size());
+						log.info("系统判定为："+StandardEnum.STANDARD_ZERO.getInfo());
+					}else {
+						projectPrice.setStandard(StandardEnum.STANDARD_ONE.getCode());
+						projectPrice.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
+						log.info("系统判定为：标准");
+					}
 				}
+
 				projectPriceDao.updateById(projectPrice);
 			}
 		}

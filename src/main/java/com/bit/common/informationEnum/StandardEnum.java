@@ -9,7 +9,7 @@ public enum StandardEnum {
 	/**
 	 * 默认值
 	 */
-	STANDARD_DEFAULT(-1,"默认"),
+	STANDARD_DEFAULT(-1,"正常"),
 
 
 	/**
