@@ -78,5 +78,11 @@ public class Project {
 	@TableField(exist = false)
 	private List<ProjectPrice> projectPriceList;
 
+	/**
+	 * 是否能做
+	 */
+	@TableField(exist = false)
+	private Integer  calculateFlag;
+
 
 }

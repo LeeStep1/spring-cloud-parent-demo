@@ -82,6 +82,23 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 
         for(Project project:iPage.getRecords()){
 			List<ProjectPrice> latestProjectPrice = projectPriceDao.getLatestProjectPrice(project.getId());
+			if(latestProjectPrice.size()>0){
+			       if(latestProjectPrice.get(0).getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
+			       	Map cods=new HashMap();
+			       	cods.put("version_id",latestProjectPrice.get(0).getId());
+			       	cods.put("calculate_flag",0);
+                       List odrList=  projectEleOrderDao.selectByMap(cods);
+                       if(CollectionUtils.isNotEmpty(odrList)){
+						   project.setCalculateFlag(1);
+					   }else{
+						   project.setCalculateFlag(0);
+					   }
+				   }else{
+					   project.setCalculateFlag(1);
+				   }
+			}else{
+				project.setCalculateFlag(1);
+			}
 			project.setProjectPriceList(latestProjectPrice);
         }
 
