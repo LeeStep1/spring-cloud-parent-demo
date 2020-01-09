@@ -614,6 +614,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 				ProjectEleOrder tt = new ProjectEleOrder();
 				tt.setProjectId(projectEleOrder.getProjectId());
 				tt.setStandard(StandardEnum.STANDARD_ZERO.getCode());
+				tt.setVersionId(projectPriceId);
 				List<ProjectEleOrder> byParam = projectEleOrderDao.findByParam(tt);
 				if (CollectionUtils.isNotEmpty(byParam)){
 					projectPrice.setStandard(StandardEnum.STANDARD_ZERO.getCode());
