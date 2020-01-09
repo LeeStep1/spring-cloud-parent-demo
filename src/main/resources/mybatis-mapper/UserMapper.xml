@@ -47,7 +47,8 @@
 			t.update_time update_time,
 			t.STATUS STATUS,
         tca.id as companyId,
-        tca.company_name
+        tca.company_name,
+		tpr.role_name
 		FROM
 			t_user t
 			LEFT JOIN t_user_role tp ON t.id = tp.user_id

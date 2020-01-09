@@ -43,12 +43,12 @@ public class ProjectPriceController {
 
 	/**
 	 * 项目下订单列表
-	 * @param projectId
+	 * @param projectPriceId
 	 * @return
 	 */
-	@GetMapping("/orderList/{projectId}")
-	public BaseVo orderList(@PathVariable(value = "projectId") Long projectId){
-		return projectPriceService.orderList(projectId);
+	@GetMapping("/orderList/{projectPriceId}")
+	public BaseVo orderList(@PathVariable(value = "projectPriceId") Long projectPriceId){
+		return projectPriceService.orderList(projectPriceId);
 	}
 
 

@@ -17,10 +17,10 @@ public interface ProjectPriceService {
 
 	/**
 	 * 项目下订单列表
-	 * @param projectId
+	 * @param projectPriceId
 	 * @return
 	 */
-	BaseVo orderList(Long projectId);
+	BaseVo orderList(Long projectPriceId);
 
 	/**
 	 * 批量编辑数据

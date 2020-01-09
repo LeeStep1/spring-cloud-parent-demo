@@ -432,7 +432,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			audit.setAuditTime(new Date());
 			audit.setAuditType(AuditTypeEnum.SUBMIT.getCode());
 			audit.setProjectId(projectId);
-			audit.setProjectPriceId();
+			audit.setProjectPriceId(projectPrice.getId());
 			auditDao.insert(audit);
 		}else{
 		  //标准不进行总价的计算

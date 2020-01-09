@@ -43,18 +43,22 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 	private EquationServiceImpl equationServiceImpl;
 	/**
 	 * 项目下订单列表
-	 * @param projectId
+	 * @param projectPriceId
 	 * @return
 	 */
 	@Override
-	public BaseVo orderList(Long projectId) {
+	public BaseVo orderList(Long projectPriceId) {
 		BaseVo baseVo = new BaseVo();
-		Project project = projectDao.selectById(projectId);
+		ProjectPrice projectPriceById = projectPriceDao.getProjectPriceById(projectPriceId);
+		if (projectPriceById==null){
+			throw new BusinessException("报价不存在");
+		}
+		Project project = projectDao.selectById(projectPriceById.getProjectId());
 		ProjectOrderWebVO projectOrderWebVO = new ProjectOrderWebVO();
 		BeanUtils.copyProperties(project,projectOrderWebVO);
 		//根据projectid查询 所有的订单
 		ProjectEleOrder order = new ProjectEleOrder();
-		order.setProjectId(projectId);
+		order.setProjectId(projectPriceById.getProjectId());
 		List<ProjectEleOrder> byParam = projectEleOrderDao.findByParam(order);
 
 		if (CollectionUtils.isNotEmpty(byParam)){
@@ -104,7 +108,7 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 
 			}
 			//查询项目报价版本
-			List<ProjectPrice> latestProjectPrice = projectPriceDao.getLatestProjectPrice(projectId);
+			List<ProjectPrice> latestProjectPrice = projectPriceDao.getLatestProjectPrice(projectPriceById.getProjectId());
 			projectOrderWebVO.setVersion(latestProjectPrice.get(0).getVersion());
 			projectOrderWebVO.setStandard(latestProjectPrice.get(0).getStandard());
 			projectOrderWebVO.setStandardName(latestProjectPrice.get(0).getStandardName());
@@ -189,6 +193,7 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 			audit.setAuditTime(new Date());
 			audit.setAuditType(AuditTypeEnum.SUBMIT.getCode());
 			audit.setProjectId(projectPrices.get(0).getProjectId());
+			audit.setProjectPriceId(projectPrices.get(0).getPriceId());
 			auditDao.insert(audit);
 
 
