@@ -236,8 +236,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		par.put("下浮", vo.getRate());
 		par.put("台量", order.getNum());
 		par.put("orderId", order.getId());
-		par.put("预估安装费",true);
-		par.put("预估运费",true);
+		//par.put("预估安装费",true);
+		//par.put("预估运费",true);
 		if (a.getInstallFlag().equals(InstallFlagEnum.YES.getCode())){
 			par.put("包括安装", true);
 		}
