@@ -128,54 +128,35 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
      * @param projectId :
      * @return : java.util.List<com.bit.module.manager.vo.ProjectVo>
      */
-    @Override
-    public  ProjectVo queryProjectPri(Long projectId){
-        ProjectVo vo=new ProjectVo();
-        BeanUtils.copyProperties(projectDao.selectById(projectId),vo);
-        QueryWrapper<ProjectPrice> queryWrapper =  new QueryWrapper<>();
-        queryWrapper.orderByDesc("version");
-        queryWrapper.eq("project_id",projectId);
-        //历史报价
-        List<ProjectPrice> prices =projectPriceDao.selectList(queryWrapper);
-        ProjectEleOrder projectEleOrder=new ProjectEleOrder();
-        projectEleOrder.setProjectId(projectId);
-        List<ProjectPriceVo> projectPriceVoList = new ArrayList<>();
-        for(ProjectPrice p:prices){
-            ProjectPriceVo projectPriceVo = new ProjectPriceVo();
-            projectEleOrder.setVersionId(p.getId());
-            BeanUtils.copyProperties(p,projectPriceVo);
-            projectPriceVo.setElevatorOrderVo(projectPriceDao.queryOrderByProjectId(projectEleOrder));
-
-            List<Long> orderIds = new ArrayList<>();
+	@Override
+	public  ProjectVo queryProjectPri(Long projectId){
+		ProjectVo vo=new ProjectVo();
+		BeanUtils.copyProperties(projectDao.selectById(projectId),vo);
+		QueryWrapper<ProjectPrice> queryWrapper =  new QueryWrapper<>();
+		queryWrapper.orderByDesc("version");
+		queryWrapper.eq("project_id",projectId);
+		//历史报价
+		List<ProjectPrice> prices =projectPriceDao.selectList(queryWrapper);
+		ProjectEleOrder projectEleOrder=new ProjectEleOrder();
+		projectEleOrder.setProjectId(projectId);
+		List<ProjectPriceVo> projectPriceVoList = new ArrayList<>();
+		for(ProjectPrice p:prices){
+			ProjectPriceVo projectPriceVo = new ProjectPriceVo();
+			projectEleOrder.setVersionId(p.getId());
+			BeanUtils.copyProperties(p,projectPriceVo);
+			projectPriceVo.setElevatorOrderVo(projectPriceDao.queryOrderByProjectId(projectEleOrder));
 			for (ElevatorOrderVo elevatorOrderVo : projectPriceVo.getElevatorOrderVo()) {
 				elevatorOrderVo.setPicture(contextPath + "/images/" + elevatorOrderVo.getPicture());
-				orderIds.add(elevatorOrderVo.getId());
 				//组装订单电梯的参数
-//				List<ElementParam> elementParamByOrderId = projectDao.getElementParamByOrderId(elevatorOrderVo.getId());
-//				elevatorOrderVo.setParams(elementParamByOrderId);
-			}
-			//批量查询订单下的电梯参数
-			if (CollectionUtils.isNotEmpty(orderIds)){
-				List<ElementParam> elementParamByOrderId = projectDao.getElementParamByOrderIdBatch(orderIds);
-				if (CollectionUtils.isNotEmpty(elementParamByOrderId)){
-					for (ElevatorOrderVo elevatorOrderVo : projectPriceVo.getElevatorOrderVo()){
-						List<ElementParam> obj = new ArrayList<>();
-						obj.clear();
-						for (ElementParam elementParam : elementParamByOrderId) {
-							if (elevatorOrderVo.getId().equals(elementParam.getOrderId())){
-								obj.add(elementParam);
-							}
-						}
-						elevatorOrderVo.setParams(obj);
-					}
-				}
+				List<ElementParam> elementParamByOrderId = projectDao.getElementParamByOrderId(elevatorOrderVo.getId());
+				elevatorOrderVo.setParams(elementParamByOrderId);
 			}
 			projectPriceVoList.add(projectPriceVo);
 
-        }
+		}
 		vo.setProjectPriceOrderList(projectPriceVoList);
-        return vo;
-    }
+		return vo;
+	}
 
     /**
      * 查询项目报价详情
