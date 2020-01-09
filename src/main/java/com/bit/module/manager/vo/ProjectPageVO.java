@@ -14,7 +14,6 @@ import java.util.Date;
  * @Date: 2019-12-25
  **/
 @Data
-@TableName(value = "t_project")
 public class ProjectPageVO extends BasePageVo {
 
 	/**
@@ -67,4 +66,8 @@ public class ProjectPageVO extends BasePageVo {
 	 * 公司名称
 	 **/
 	private String companyName;
+	/**
+	 * 非标审批状态:-1：撤销 0：无需审批，1：非标的待提交，2：待审核，3：通过
+	 */
+	private Integer nonStandardApplyStatus;
 }

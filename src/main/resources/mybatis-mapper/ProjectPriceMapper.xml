@@ -253,21 +253,24 @@
         <where>
             and t1.non_standard_apply_status > 1
             <if test="projectPageVO.customerName!=null and projectPageVO.customerName!=''">
-                and t2.customer_name LIKE concat("%",#{customerName,jdbcType=VARCHAR},"%")
+                and t2.customer_name LIKE concat("%",#{projectPageVO.customerName,jdbcType=VARCHAR},"%")
             </if>
             <if test="projectPageVO.agentName!=null and projectPageVO.agentName!=''">
-                and t2.agent_name LIKE concat("%",#{agentName,jdbcType=VARCHAR},"%")
+                and t2.agent_name LIKE concat("%",#{projectPageVO.agentName,jdbcType=VARCHAR},"%")
             </if>
             <if test="projectPageVO.createUserId!=null">
-                and t2.create_user_id = #{createUserId,jdbcType=BIGINT}
+                and t2.create_user_id = #{projectPageVO.createUserId,jdbcType=BIGINT}
             </if>
             <if test="projectPageVO.createUserName!=null and projectPageVO.createUserName!=''">
-                and t2.create_user_name = concat("%", #{createUserName,jdbcType=VARCHAR} ,"%")
+                and t2.create_user_name = concat("%", #{projectPageVO.createUserName,jdbcType=VARCHAR} ,"%")
             </if>
             <if test="projectPageVO.createTime!=null">
-                and t2.create_time = #{createTime,jdbcType=TIMESTAMP}
+                and t2.create_time = #{projectPageVO.createTime,jdbcType=TIMESTAMP}
             </if>
-
+            <if test="projectPageVO.nonStandardApplyStatus!=null">
+                and t1.non_standard_apply_status = #{projectPageVO.nonStandardApplyStatus,jdbcType=INTEGER}
+            </if>
         </where>
+        order by createTime desc
     </select>
 </mapper>

@@ -112,6 +112,7 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 			projectOrderWebVO.setVersion(projectPrice.getVersion());
 			projectOrderWebVO.setStandard(projectPrice.getStandard());
 			projectOrderWebVO.setStandardName(projectPrice.getStandardName());
+			projectOrderWebVO.setTotalPrice(projectPrice.getTotalPrice());
 			projectOrderWebVO.setProjectPriceDetailInfos(projectPriceDetailInfos);
 			baseVo.setData(projectOrderWebVO);
 		}
@@ -161,16 +162,16 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 				if (priceVO.getPositiveLock().equals(temp.getPositiveLock())){
 					updatelist.add(priceVO);
 				}
-				ProjectEleOrder order = new ProjectEleOrder();
-				order.setId(priceVO.getOrderId());
-				if (priceVO.getProductionFlag().equals(ProductionFlagEnum.YES.getCode())){
-					order.setCalculateFlag(CalculateFlagEnum.YES.getCode());
-				}else if (priceVO.getProductionFlag().equals(ProductionFlagEnum.NO.getCode())){
-					order.setCalculateFlag(CalculateFlagEnum.NO.getCode());
-				}
-
-				orderList.add(order);
 			}
+			ProjectEleOrder order = new ProjectEleOrder();
+			order.setId(priceVO.getOrderId());
+			if (priceVO.getProductionFlag().equals(ProductionFlagEnum.YES.getCode())){
+				order.setCalculateFlag(CalculateFlagEnum.YES.getCode());
+			}else if (priceVO.getProductionFlag().equals(ProductionFlagEnum.NO.getCode())){
+				order.setCalculateFlag(CalculateFlagEnum.NO.getCode());
+			}
+
+			orderList.add(order);
 		}
 
 		if (CollectionUtils.isNotEmpty(updatelist)){
@@ -191,7 +192,7 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 			audit.setAuditUserId(userId);
 			audit.setAuditUserName(realName);
 			audit.setAuditTime(new Date());
-			audit.setAuditType(AuditTypeEnum.SUBMIT.getCode());
+			audit.setAuditType(AuditTypeEnum.AUDIT.getCode());
 			audit.setProjectId(projectPrices.get(0).getProjectId());
 			audit.setProjectPriceId(projectPrices.get(0).getPriceId());
 			auditDao.insert(audit);
