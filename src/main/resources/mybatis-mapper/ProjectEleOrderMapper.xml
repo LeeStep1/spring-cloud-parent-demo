@@ -120,7 +120,9 @@
             <if test="versionId!=null">
                 and version_id = #{versionId,jdbcType=BIGINT}
             </if>
-
+            <if test="standard!=null">
+                and standard = #{standard,jdbcType=INTEGER}
+            </if>
         </where>
     </select>
 

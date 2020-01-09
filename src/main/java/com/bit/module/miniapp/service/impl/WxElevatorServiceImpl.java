@@ -576,6 +576,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			Long projectPriceId=projectEleOrder.getVersionId();
                //删除订单记录
 			projectEleOrderDao.deleteById(orderId);
+
+			ProjectPrice projectPrice =projectPriceDao.selectById(projectPriceId);
 			if(projectEleOrder.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
 				//新增 删除非标项
 				Map cod=new HashMap(1);
@@ -584,7 +586,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 				cod.clear();
 
 				//判断整体删除数据后的逻辑
-				ProjectPrice projectPrice =projectPriceDao.selectById(projectPriceId);
+
 				if(projectPrice.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
 					Map codd=new HashMap(1);
 					codd.put("version_id",projectPriceId);
@@ -602,41 +604,29 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 						log.info("系统判定为："+StandardEnum.STANDARD_ZERO.getInfo());
 
 					}
-					//添加判断订单数量 更新报价的标准和非标状态
-					ProjectEleOrder tt = new ProjectEleOrder();
-					tt.setProjectId(projectEleOrder.getProjectId());
-					List<ProjectEleOrder> byParam = projectEleOrderDao.findByParam(tt);
-					if (CollectionUtils.isNotEmpty(byParam)){
-						log.info("剩余订单数量{}",byParam.size());
-						//判断剩余订单是不是非标
-						List<Long> priceIds = new ArrayList<>();
-						for (ProjectEleOrder order : byParam) {
-							priceIds.add(order.getVersionId());
-						}
-						List<ProjectPrice> projectPrices = projectPriceDao.selectBatchIds(priceIds);
-						if (CollectionUtils.isNotEmpty(projectPrices)){
-							for (ProjectPrice price : projectPrices) {
-								if (price.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
-									projectPrice.setStandard(StandardEnum.STANDARD_ZERO.getCode());
-									projectPrice.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
-
-									log.info("系统判定为："+StandardEnum.STANDARD_ZERO.getInfo());
-									break;
-								}
-							}
-						}
-					}else {
-						projectPrice.setStandard(StandardEnum.STANDARD_ONE.getCode());
-						projectPrice.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
-						log.info("系统判定为：标准");
-					}
 					projectPriceDao.updateById(projectPrice);
 				}
 
+			}else {
+				//添加判断订单数量 更新报价的标准和非标状态
+
+				//查询剩下的订单有几个是非标的 大于0 报价非标 否则标准
+				ProjectEleOrder tt = new ProjectEleOrder();
+				tt.setProjectId(projectEleOrder.getProjectId());
+				tt.setStandard(StandardEnum.STANDARD_ZERO.getCode());
+				List<ProjectEleOrder> byParam = projectEleOrderDao.findByParam(tt);
+				if (CollectionUtils.isNotEmpty(byParam)){
+					projectPrice.setStandard(StandardEnum.STANDARD_ZERO.getCode());
+					projectPrice.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
+					log.info("剩余非标订单数量{}",byParam.size());
+					log.info("系统判定为："+StandardEnum.STANDARD_ZERO.getInfo());
+				}else {
+					projectPrice.setStandard(StandardEnum.STANDARD_ONE.getCode());
+					projectPrice.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
+					log.info("系统判定为：标准");
+				}
+				projectPriceDao.updateById(projectPrice);
 			}
-
-
-
 		}
 
 		return successVo();
