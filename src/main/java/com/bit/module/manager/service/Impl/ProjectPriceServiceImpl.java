@@ -59,7 +59,9 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 		//根据projectid查询 所有的订单
 		ProjectEleOrder order = new ProjectEleOrder();
 		order.setProjectId(projectPriceById.getProjectId());
+		order.setVersionId(projectPriceId);
 		List<ProjectEleOrder> byParam = projectEleOrderDao.findByParam(order);
+		//List<ProjectEleOrder> byParam = projectEleOrderDao.findByParam(order);
 
 		if (CollectionUtils.isNotEmpty(byParam)){
 
