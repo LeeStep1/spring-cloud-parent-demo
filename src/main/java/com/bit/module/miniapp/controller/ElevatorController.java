@@ -312,7 +312,7 @@ public class ElevatorController {
 	 * @return
 	 */
 	@PostMapping("/sendMail/{projectPriceId}")
-	public BaseVo sendPriceMail(@PathVariable(value = "projectPriceId") Long projectPriceId,@RequestBody List<String>ccAdress) {
+	public BaseVo sendPriceMail(@PathVariable(value = "projectPriceId") Long projectPriceId,@RequestBody(required = false) List<String>ccAdress) {
 		wxElevatorService.sendPriceMail(projectPriceId,ccAdress);
 
 		return new BaseVo();
