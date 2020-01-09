@@ -321,8 +321,12 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 						order.setStandard(StandardEnum.STANDARD_ZERO.getCode());
 						order.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
 						order.setCalculateFlag(NodeOrderCalculateStatusEnum.BUJISUAN.getCode());
-						projectEleOrderDao.updateById(order);
+					}else {
+						order.setStandard(StandardEnum.STANDARD_ZERO.getCode());
+						order.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
+						order.setCalculateFlag(NodeOrderCalculateStatusEnum.BUJISUAN.getCode());
 					}
+					projectEleOrderDao.updateById(order);
 				}
 
 
@@ -597,6 +601,34 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
 						log.info("系统判定为："+StandardEnum.STANDARD_ZERO.getInfo());
 
+					}
+					//添加判断订单数量 更新报价的标准和非标状态
+					ProjectEleOrder tt = new ProjectEleOrder();
+					tt.setProjectId(projectEleOrder.getProjectId());
+					List<ProjectEleOrder> byParam = projectEleOrderDao.findByParam(tt);
+					if (CollectionUtils.isNotEmpty(byParam)){
+						log.info("剩余订单数量{}",byParam.size());
+						//判断剩余订单是不是非标
+						List<Long> priceIds = new ArrayList<>();
+						for (ProjectEleOrder order : byParam) {
+							priceIds.add(order.getVersionId());
+						}
+						List<ProjectPrice> projectPrices = projectPriceDao.selectBatchIds(priceIds);
+						if (CollectionUtils.isNotEmpty(projectPrices)){
+							for (ProjectPrice price : projectPrices) {
+								if (price.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
+									projectPrice.setStandard(StandardEnum.STANDARD_ZERO.getCode());
+									projectPrice.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
+
+									log.info("系统判定为："+StandardEnum.STANDARD_ZERO.getInfo());
+									break;
+								}
+							}
+						}
+					}else {
+						projectPrice.setStandard(StandardEnum.STANDARD_ONE.getCode());
+						projectPrice.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
+						log.info("系统判定为：标准");
 					}
 					projectPriceDao.updateById(projectPrice);
 				}
