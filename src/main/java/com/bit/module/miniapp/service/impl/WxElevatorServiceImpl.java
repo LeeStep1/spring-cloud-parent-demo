@@ -9,10 +9,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.bit.base.exception.BusinessException;
 import com.bit.base.service.BaseService;
 import com.bit.base.vo.BaseVo;
-import com.bit.common.businessEnum.InstallFlagEnum;
-import com.bit.common.businessEnum.NodeOrderCalculateStatusEnum;
-import com.bit.common.businessEnum.NonStandardApplyStatusEnum;
-import com.bit.common.businessEnum.TransportFlagEnum;
+import com.bit.common.businessEnum.*;
 import com.bit.common.consts.Const;
 import com.bit.common.informationEnum.StageEnum;
 import com.bit.common.informationEnum.StandardEnum;
@@ -20,6 +17,7 @@ import com.bit.common.wxenum.ResultCode;
 import com.bit.module.manager.bean.*;
 import com.bit.module.manager.dao.*;
 import com.bit.module.manager.service.Impl.EquationServiceImpl;
+import com.bit.module.manager.vo.ProjectEleNonstandardVO;
 import com.bit.module.miniapp.bean.ElevatorType;
 import com.bit.module.miniapp.bean.Options;
 import com.bit.module.miniapp.service.WxElevatorService;
@@ -84,6 +82,9 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
 	@Autowired
 	private ProjectDao  projectDao;
+
+	@Autowired
+	private AuditDao auditDao;
 
 	@Value("${upload.imagesPath}")
 	private String filePath;
@@ -425,6 +426,14 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
            //非标准的话进行状态转为待审批
 			entity.setNonStandardApplyStatus(NonStandardApplyStatusEnum.DAISHENHE.getCode());
 
+			Audit audit = new Audit();
+			audit.setAuditUserId(getCurrentUserInfo().getId());
+			audit.setAuditUserName(getCurrentUserInfo().getRealName());
+			audit.setAuditTime(new Date());
+			audit.setAuditType(AuditTypeEnum.SUBMIT.getCode());
+			audit.setProjectId(projectId);
+			audit.setProjectPriceId();
+			auditDao.insert(audit);
 		}else{
 		  //标准不进行总价的计算
 			equationServiceImpl.executeCountProjectPrice(cod);

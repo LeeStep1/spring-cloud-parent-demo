@@ -47,5 +47,9 @@ public class Audit {
 	 * 审批时间
 	 */
 	private Date auditTime;
+	/**
+	 * 报价id
+	 */
+	private Long projectPriceId;
 
 }

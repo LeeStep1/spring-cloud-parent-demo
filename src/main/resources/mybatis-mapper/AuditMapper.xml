@@ -11,6 +11,7 @@
         <result property="auditUserId" column="audit_user_id"/>
         <result property="auditUserName" column="audit_user_name"/>
         <result property="auditTime" column="audit_time"/>
+        <result property="projectPriceId" column="project_price_id"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -20,7 +21,8 @@
         audit_type,
         audit_user_id,
         audit_user_name,
-        audit_time
+        audit_time,
+        project_price_id
     </sql>
 
     <!-- 根据主键查询数据 -->
@@ -40,7 +42,9 @@
             <if test="projectId!=null">
                 and project_id = #{projectId,jdbcType=BIGINT}
             </if>
-
+            <if test="projectPriceId!=null">
+                and project_price_id = #{projectPriceId,jdbcType=BIGINT}
+            </if>
             <if test="auditType!=null">
                 and audit_type = #{auditType,jdbcType=INTEGER}
             </if>
@@ -67,7 +71,9 @@
             <if test="projectId!=null">
                 project_id,
             </if>
-
+            <if test="projectPriceId!=null">
+                project_price_id,
+            </if>
             <if test="auditType!=null">
                 audit_type,
             </if>
@@ -86,7 +92,9 @@
             <if test="projectId!=null">
                 #{projectId,jdbcType=BIGINT},
             </if>
-
+            <if test="projectPriceId!=null">
+                #{projectPriceId,jdbcType=BIGINT},
+            </if>
             <if test="auditType!=null">
                 #{auditType,jdbcType=INTEGER},
             </if>
@@ -111,7 +119,9 @@
             <if test="projectId!=null">
                 project_id = #{projectId,jdbcType=BIGINT},
             </if>
-
+            <if test="projectPriceId!=null">
+                project_price_id = #{projectPriceId,jdbcType=BIGINT},
+            </if>
             <if test="auditType!=null">
                 audit_type = #{auditType,jdbcType=INTEGER},
             </if>
@@ -144,7 +154,8 @@
         audit_type,
         audit_user_id,
         audit_user_name,
-        audit_time
+        audit_time,
+        project_price_id
         )VALUES
         <foreach collection="list" item="item" index="index"  separator=",">
             (
@@ -152,7 +163,8 @@
             #{item.auditType,jdbcType=INTEGER},
             #{item.auditUserId,jdbcType=BIGINT},
             #{item.auditUserName,jdbcType=VARCHAR},
-            #{item.auditTime,jdbcType=TIMESTAMP}
+            #{item.auditTime,jdbcType=TIMESTAMP},
+            #{item.projectPriceId,jdbcType=BIGINT}
             )
         </foreach>
 

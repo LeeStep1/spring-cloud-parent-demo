@@ -227,12 +227,24 @@
 
     <!--分页查询-->
     <select id="listPage" parameterType="com.bit.module.manager.vo.ProjectPageVO" resultType="com.bit.module.manager.vo.ProjectShowVO">
-        SELECT t2.project_name,t2.id as projectId,t2.customer_name,t2.agent_name,t2.address_name,t2.create_user_name,t1.non_standard_apply_status,t1.id as projectPriceId,t1.create_time,t3.mobile,t3.real_name
+        SELECT t2.project_name,
+        t2.id as projectId,
+        t2.customer_name,
+        t2.agent_name,
+        t2.address_name,
+        t2.create_user_name,
+        t1.non_standard_apply_status,
+        t1.id as projectPriceId,
+        t4.audit_time as createTime,
+        t3.mobile,
+        t3.real_name
         FROM t_project_price t1
         INNER JOIN t_project t2
         on t1.project_id = t2.id
         INNER JOIN t_user t3
         on t2.create_user_id = t3.id
+        LEFT JOIN t_audit t4
+        on t1.id = t4.project_price_id
         <where>
             and t1.non_standard_apply_status > 1
             <if test="projectPageVO.customerName!=null and projectPageVO.customerName!=''">

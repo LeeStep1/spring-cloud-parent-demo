@@ -181,41 +181,35 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 
 			Long userId = getCurrentUserInfo().getId();
 			String realName = getCurrentUserInfo().getRealName();
-			List<Audit> audits = new ArrayList<>();
-			for (ProjectEleNonstandardVO projectEleNonstandardVO : updatelist) {
-				Audit audit = new Audit();
-
-				audit.setAuditUserId(userId);
-				audit.setAuditUserName(realName);
-				audit.setAuditTime(new Date());
-				audit.setAuditType(AuditTypeEnum.SUBMIT.getCode());
-				audit.setProjectId(projectEleNonstandardVO.getProjectId());
-
-				audits.add(audit);
-			}
-
 			//插入审批表
-			if (CollectionUtils.isNotEmpty(audits)){
-				auditDao.batchAdd(audits);
-				//算价钱
+			Audit audit = new Audit();
 
-				//查询项目id
-				ProjectPrice ppr = projectPriceDao.selectById(projectPrices.get(0).getPriceId());
-				Map<String, Object> cod = new HashMap<>();
-				cod.put("projectId", ppr.getProjectId());
-				cod.put("version", ppr.getVersion());
-				cod.put("isUpdate", true);
-				ProjectPrice projectPriceByProjectId = projectPriceDao.getProjectPriceByProjectIdWithVersion(ppr.getProjectId(), -1);
-				if (projectPriceByProjectId != null) {
-					if (projectPriceByProjectId.getInstallFlag().equals(InstallFlagEnum.YES.getCode())) {
-						cod.put("包括安装", true);
-					}
-					if (projectPriceByProjectId.getTransportFlag().equals(TransportFlagEnum.YES.getCode())) {
-						cod.put("包括运费", true);
-					}
+			audit.setAuditUserId(userId);
+			audit.setAuditUserName(realName);
+			audit.setAuditTime(new Date());
+			audit.setAuditType(AuditTypeEnum.SUBMIT.getCode());
+			audit.setProjectId(projectPrices.get(0).getProjectId());
+			auditDao.insert(audit);
+
+
+			//算价钱
+
+			//查询项目id
+			ProjectPrice ppr = projectPriceDao.selectById(projectPrices.get(0).getPriceId());
+			Map<String, Object> cod = new HashMap<>();
+			cod.put("projectId", ppr.getProjectId());
+			cod.put("version", ppr.getVersion());
+			cod.put("isUpdate", true);
+			ProjectPrice projectPriceByProjectId = projectPriceDao.getProjectPriceByProjectIdWithVersion(ppr.getProjectId(), -1);
+			if (projectPriceByProjectId != null) {
+				if (projectPriceByProjectId.getInstallFlag().equals(InstallFlagEnum.YES.getCode())) {
+					cod.put("包括安装", true);
 				}
-				equationServiceImpl.executeCountProjectPrice(cod);
+				if (projectPriceByProjectId.getTransportFlag().equals(TransportFlagEnum.YES.getCode())) {
+					cod.put("包括运费", true);
+				}
 			}
+			equationServiceImpl.executeCountProjectPrice(cod);
 
 		}
 
