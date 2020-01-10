@@ -211,7 +211,7 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 			cod.put("projectId", ppr.getProjectId());
 			cod.put("version", ppr.getVersion());
 			cod.put("isUpdate", true);
-			ProjectPrice projectPriceByProjectId = projectPriceDao.getProjectPriceByProjectIdWithVersion(ppr.getProjectId(), -1);
+			ProjectPrice projectPriceByProjectId = projectPriceDao.getProjectPriceByProjectIdWithVersion(ppr.getProjectId(), ppr.getVersion());
 			if (projectPriceByProjectId != null) {
 				if (projectPriceByProjectId.getInstallFlag().equals(InstallFlagEnum.YES.getCode())) {
 					cod.put("包括安装", true);
