@@ -46,14 +46,14 @@ public class EquationCacheServiceImpl extends ServiceImpl<EquationDao, Equation>
     @Autowired
     private BasePriceEquationRelDao basePriceEquationRelDao;
 
-    @Cacheable(value = "cache:equation")
+    //@Cacheable(value = "cache:equation")
     public List<Equation> getEquations(String type, String category) {
         return equationDao.selectList(new QueryWrapper<Equation>()
                 .eq(StringUtils.isNotEmpty(type), "type", type)
                 .eq("category", category));
     }
 
-    @Cacheable(value = "cache:basePriceEquation")
+    //@Cacheable(value = "cache:basePriceEquation")
     public BasePriceEquation getBasePriceEquation(String type, String val3,String category) {
         QueryWrapper<BasePriceEquation> query = new QueryWrapper<BasePriceEquation>()
                 .eq("category", category)
@@ -63,7 +63,7 @@ public class EquationCacheServiceImpl extends ServiceImpl<EquationDao, Equation>
         return basePriceEquation;
     }
 
-    @Cacheable(value = "cache:basePriceEquationRel")
+    //@Cacheable(value = "cache:basePriceEquationRel")
     public List<BasePriceEquationRel> getBasePriceEquationRelList(String type, String category) {
         List<BasePriceEquationRel> basePriceRel = basePriceEquationRelDao.selectList(
                 new QueryWrapper<BasePriceEquationRel>()

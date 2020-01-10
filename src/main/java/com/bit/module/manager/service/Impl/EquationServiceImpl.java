@@ -97,7 +97,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         //事前计算平摊费用
         List<Map> eleInputs = new ArrayList(projectEleOrder.size());
         for (ProjectEleOrder eleOrder : projectEleOrder) {
-            Map input = new HashMap(3);
+            Map input = new HashMap(4);
             input.put("orderId", eleOrder.getId());
             input.put("包括运费", map.get("包括运费"));
             input.put("包括安装", map.get("包括安装"));

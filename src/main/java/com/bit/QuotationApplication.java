@@ -24,7 +24,7 @@ import org.springframework.web.client.RestTemplate;
 @ServletComponentScan
 @EnableAsync
 @EnableScheduling
-@EnableCaching  //开启缓存
+//@EnableCaching  //开启缓存
 public class QuotationApplication {
     public static void main(String[] args) {
         
