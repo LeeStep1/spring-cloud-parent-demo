@@ -102,7 +102,7 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 							}
 
 						}else{
-							project.setCalculateFlag(0);
+							project.setCalculateFlag(1);
 						}
 					}
 
