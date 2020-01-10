@@ -3,7 +3,14 @@ package com.bit.module.manager.dao;
 import java.util.List;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bit.module.manager.bean.CompanyRate;
+import com.bit.module.manager.vo.CompanyRatePageVO;
+import com.bit.module.manager.vo.CompanyRateVO;
+import com.bit.module.manager.vo.ProjectPageVO;
+import com.bit.module.manager.vo.ProjectShowVO;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -44,5 +51,11 @@ public interface CompanyRateDao  extends BaseMapper<CompanyRate> {
     */
 	void delCompanyRateById(Long id);
 
-	
+	/**
+	 * 分页查询
+	 * @param page
+	 * @param companyRatePageVO
+	 * @return
+	 */
+	IPage<CompanyRateVO> listPage(@Param("pg")Page<CompanyRateVO> page, @Param("companyRatePageVO")CompanyRatePageVO companyRatePageVO);
 }

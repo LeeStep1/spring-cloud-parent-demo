@@ -462,7 +462,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 		UserVo vo = new UserVo();
 		if (listc.size() > 0) {
 			vo.setCompanyId(listc.get(0).getCompanyId());
-			Company company = companyDao.selectById(listc.get(0).getId());
+			Company company = companyDao.selectById(listc.get(0).getCompanyId());
 			vo.setCompanyName(company.getCompanyName());
 		}
 		BeanUtils.copyProperties(user, vo);
