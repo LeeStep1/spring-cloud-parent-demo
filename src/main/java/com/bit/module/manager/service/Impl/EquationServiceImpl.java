@@ -71,6 +71,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
      * @param vars
      */
     public void executeCount(Map vars) {
+        logger.info("计算单个电梯入参:"+vars.toString());
         getElevatorInfo(vars);
         if (Boolean.TRUE.equals(vars.get("包括运费"))) {
             executeTransportEquations(vars);
@@ -90,7 +91,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
      * @param map
      */
     public List<Map> executeCountProjectPrice(Map map) {
-        logger.info("计算总价时入参",map);
+        logger.info("计算总价时入参:"+map.toString());
         ProjectPrice projectPrice = projectPriceDao.selectOne(new QueryWrapper<ProjectPrice>()
                 .eq("project_id", map.get("projectId"))
                 .eq("version", map.get("version")));
