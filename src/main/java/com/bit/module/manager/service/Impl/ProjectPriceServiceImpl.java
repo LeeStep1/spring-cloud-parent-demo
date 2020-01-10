@@ -238,6 +238,13 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 	public BaseVo listPage(ProjectPageVO projectPageVO) {
 		Page<ProjectShowVO> page = new Page<>(projectPageVO.getPageNum(), projectPageVO.getPageSize());
 		IPage<ProjectShowVO> listPage = projectPriceDao.listPage(page, projectPageVO);
+		if (CollectionUtils.isNotEmpty(listPage.getRecords())){
+			for (ProjectShowVO projectShowVO : listPage.getRecords()) {
+				if (projectShowVO.getNonStandardApplyStatus().equals(NonStandardApplyStatusEnum.DAISHENHE.getCode())){
+					projectShowVO.setAuditUserName("");
+				}
+			}
+		}
 		BaseVo baseVo = new BaseVo();
 		baseVo.setData(listPage);
 		return baseVo;
