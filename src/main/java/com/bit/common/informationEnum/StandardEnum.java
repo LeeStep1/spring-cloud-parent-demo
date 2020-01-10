@@ -7,7 +7,7 @@ public enum StandardEnum {
 	STANDARD_ONE(1,"标准"),
 
 	/**
-	 * 默认值
+	 * 默认值,当版本报价下为order为空时，projectPrice表中的的值
 	 */
 	STANDARD_DEFAULT(-1,"正常"),
 

@@ -997,7 +997,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			//标题
 			emailInfo.setSubject("电梯报价报价");
 			//内容
-			emailInfo.setContent("内容：<h1>电梯报价报价,请查收附件</h1>");
+			emailInfo.setContent("内容：<h1>电梯报价,请查收附件</h1>");
 			emailInfo.setAttachments(attachments);
             if(CollectionUtils.isNotEmpty(ccAdress)){
 				emailInfo.setCcAddress(ccAdress);

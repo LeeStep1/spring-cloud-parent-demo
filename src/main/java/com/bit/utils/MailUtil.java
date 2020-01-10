@@ -3,6 +3,7 @@ package com.bit.utils;
 import com.bit.module.manager.bean.EmailInfo;
 import com.sun.mail.util.MailSSLSocketFactory;
 import org.apache.commons.mail.EmailAttachment;
+import org.springframework.stereotype.Component;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -22,16 +23,21 @@ import java.util.Properties;
  * @Author chenduo
  * @Date 2019/12/30 14:46
  **/
+//@Component
 public class MailUtil {
 
 	// 腾讯企业邮箱 SMTP 服务器地址为: smtp.163.com
 	private static String TencentEntmailServerHost = "smtp.exmail.qq.com";
 	// 发件人
-	private static String TencentEntmailSenderAddress  = "duo.chen@xblgroup.com";
+	//private static String TencentEntmailSenderAddress  = "duo.chen@xblgroup.com";
+
+	private static String TencentEntmailSenderAddress  = "GEBJ@xblgroup.com";
 	// 发件人邮箱账号
-	private static String TencentEntmailSenderUsername  = "duo.chen@xblgroup.com";
+	//private static String TencentEntmailSenderUsername  = "duo.chen@xblgroup.com";
+	private static String TencentEntmailSenderUsername  = "GEBJ@xblgroup.com";
 	// 发件人邮箱密码
-	private static String TencentEntmailSenderPassword  = "14475SolidSnake";
+	//private static String TencentEntmailSenderPassword  = "14475SolidSnake";
+	private static String TencentEntmailSenderPassword  = "GEdtbj123456";
 	// 邮箱服务器端口
 	private static String TencentEntmailServerHostPort  = "465";
 	// 协议
