@@ -65,6 +65,10 @@ public class ProjectOrderDetailInfoVO {
 	 */
 	private String elevatorTypeName;
 	/**
+	 * 用途大类：1:客梯,2:货梯，3：扶梯
+	 */
+	private Integer type;
+	/**
 	 * 项目地点
 	 */
 	private String addressName;

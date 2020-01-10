@@ -80,10 +80,13 @@
         t2.rate,
         t2.install_price,
         t2.transport_price,
-        t2.calculate_flag
+        t2.calculate_flag,
+        t3.type
         FROM t_project t1
         INNER JOIN t_project_ele_order t2
         on t1.id = t2.project_id
+        INNER JOIN t_elevator_type t3
+        on t2.elevator_type_id = t3.id
         <where>
             <if test="projectId!=null">
                 and t1.id =#{projectId,jdbcType=BIGINT}
