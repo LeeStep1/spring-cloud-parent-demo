@@ -245,11 +245,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		//新增参数
 		par.put("isUpdate", true);
 		//算价
-		//par.put("projectId",vo.getProjectId());
-		//par.put("version",-1);
 		equationServiceImpl.executeCount(par);
-		//equationServiceImpl.executeCountProjectPrice(par);
-		//Map rs = equationServiceImpl.executeEquations(par);
 		//反查报价
 		a=projectPriceDao.selectById(a.getId());
 		String   sysNodOptions="";
@@ -293,24 +289,12 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
 					projectPriceDao.updateById(a);
 				}
-//				else{
-//					a.setStandard(StandardEnum.STANDARD_ONE.getCode());
-//					a.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
-//					a.setNonStandardApplyStatus(NonStandardApplyStatusEnum.WUXUSHENPI.getCode());
-//				}
 				if(!order.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
 					order.setStandard(StandardEnum.STANDARD_ZERO.getCode());
 					order.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
 					order.setCalculateFlag(NodeOrderCalculateStatusEnum.BUJISUAN.getCode());
 				}
 				projectEleOrderDao.updateById(order);
-//				else{
-//					order.setStandard(StandardEnum.STANDARD_ONE.getCode());
-//					order.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
-//					order.setCalculateFlag(NodeOrderCalculateStatusEnum.JISUAN.getCode());
-//					projectEleOrderDao.updateById(order);
-//				}
-
 				//新增非标项
 				projectEleNonstandardDao.batchAdd(vo.getProjectEleNonstandardList());
 
@@ -497,6 +481,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 				projectPrice.setId(null);
 				projectPrice.setVersion(-1);
 				projectPrice.setCreateTime(new Date());
+				projectPrice.setTotalPrice(null);
+				projectPrice.setPositiveLock(1);
 
 				//非标的话，就强制将审批状态置为待提交
 				if(projectPrice.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
@@ -518,6 +504,12 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 					pro.setId(null);
 					//批量新增 返回id
 					pro.setVersionId(projectPrice.getId());
+					if(pro.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
+						pro.setCalculateFlag(CalculateFlagEnum.NO.getCode());
+					}else{
+						pro.setCalculateFlag(CalculateFlagEnum.YES.getCode());
+					}
+
 					projectEleOrderDao.insert(pro);
 
 					//新增非标项的复制功能
@@ -703,15 +695,6 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		this.delOrderByOrderId(vo.getOrderId());
 		Map map = this.wxAddReportInfo(vo);
 		baseVo.setData(map);
-//		if (version.equals(-1)){
-//			//草稿状态
-//			Map map = this.wxAddReportInfo(vo);
-//			baseVo.setData(map);
-//		}else {
-//			//正式状态
-//			Map map = this.wxUpdateReportInfo(vo);
-//			baseVo.setData(map);
-//		}
 
 		return baseVo;
 	}
@@ -801,10 +784,12 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 				});
 				QueryWrapper<ProjectEleOptions> queryWrapper = new QueryWrapper<>();
 				queryWrapper.in("order_id", ids);
-				projectEleOptionsDao.delete(queryWrapper);//删除所选项；
+				//删除所选项；
+				projectEleOptionsDao.delete(queryWrapper);
 				QueryWrapper<ProjectEleOrder> queryWrapper1 = new QueryWrapper<>();
 				queryWrapper1.eq("version_id", a.getId());
-				projectEleOrderDao.delete(queryWrapper1);//删除电梯订单；
+				//删除电梯订单；
+				projectEleOrderDao.delete(queryWrapper1);
                 //  新增删除非标的关联的数据
 				if(a.getStandard().equals(StandardEnum.STANDARD_ZERO)){
 					QueryWrapper<ProjectEleNonstandard> queryWrapperPd = new QueryWrapper<ProjectEleNonstandard>();
@@ -830,7 +815,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	 * @return
 	 */
 	@Override
-	//@Async
+	@Async
 	public void sendPriceMail(Long projectPriceId,List<String>ccAddress) {
 
 		Map cod = new HashMap();
@@ -841,7 +826,6 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		if (p != null) {
 			cod.put("project_id", p.getProjectId());
 			j=projectDao.selectById(p.getProjectId());
-		//	ProjectDao.
 		}else{
 			throw new BusinessException("无此项目数据");
 		}
