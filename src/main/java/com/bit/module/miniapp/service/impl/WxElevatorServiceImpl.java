@@ -247,6 +247,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		//新增参数
 		par.put("isUpdate", true);
 		//算价
+		par.put("project_id",vo.getProjectId());
+		par.put("version",-1);
 		equationServiceImpl.executeCount(par);
 		//Map rs = equationServiceImpl.executeEquations(par);
 		//反查报价
