@@ -160,7 +160,10 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 		Long priceId =null;
 		ProjectPrice temp =null;
 		for (ProjectEleNonstandardVO priceVO : projectPrices) {
-			priceId=priceVO.getPriceId();
+
+			if(priceId==null){
+				priceId=priceVO.getPriceId();
+			}
 			if(temp==null){
 				temp=projectPriceDao.selectById(priceId);
 			}
