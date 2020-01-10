@@ -236,8 +236,6 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		par.put("下浮", vo.getRate());
 		par.put("台量", order.getNum());
 		par.put("orderId", order.getId());
-		//par.put("预估安装费",true);
-		//par.put("预估运费",true);
 		if (a.getInstallFlag().equals(InstallFlagEnum.YES.getCode())){
 			par.put("包括安装", true);
 		}
@@ -247,9 +245,10 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		//新增参数
 		par.put("isUpdate", true);
 		//算价
-		par.put("projectId",vo.getProjectId());
-		par.put("version",-1);
+		//par.put("projectId",vo.getProjectId());
+		//par.put("version",-1);
 		equationServiceImpl.executeCount(par);
+		//equationServiceImpl.executeCountProjectPrice(par);
 		//Map rs = equationServiceImpl.executeEquations(par);
 		//反查报价
 		a=projectPriceDao.selectById(a.getId());
@@ -670,7 +669,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
 			//增加统一计算报价
 			//新增参数
-			Map<String, Object> cod = new HashMap<>();
+			/*Map<String, Object> cod = new HashMap<>();
 			cod.put("isUpdate", true);
 			//算价
 			ProjectPrice projectPrice1 =projectPriceDao.selectById(projectEleOrder.getVersionId());
@@ -683,7 +682,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			cod.put("projectId",projectEleOrder.getProjectId());
 
 			cod.put("version",projectPrice1.getVersion());
-			equationServiceImpl.executeCount(cod);
+			equationServiceImpl.executeCount(cod);*/
 		}
 
 		return successVo();
