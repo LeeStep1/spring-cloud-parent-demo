@@ -157,9 +157,13 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 		}
 		List<ProjectEleNonstandardVO> updatelist = new ArrayList<>();
 		List<ProjectEleOrder> orderList = new ArrayList<>();
+		Long priceId =null;
+		ProjectPrice temp =null;
 		for (ProjectEleNonstandardVO priceVO : projectPrices) {
-			Long priceId = priceVO.getPriceId();
-			ProjectPrice temp = projectPriceDao.selectById(priceId);
+			priceId=priceVO.getPriceId();
+			if(temp==null){
+				temp=projectPriceDao.selectById(priceId);
+			}
 			if (temp!=null){
 				if (temp.getNonStandardApplyStatus().equals(NonStandardApplyStatusEnum.TONGGUO.getCode())){
 					throw new BusinessException("此报价已经通过");
@@ -211,16 +215,22 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 			cod.put("projectId", ppr.getProjectId());
 			cod.put("version", ppr.getVersion());
 			cod.put("isUpdate", true);
-			ProjectPrice projectPriceByProjectId = projectPriceDao.getProjectPriceByProjectIdWithVersion(ppr.getProjectId(), ppr.getVersion());
-			if (projectPriceByProjectId != null) {
-				if (projectPriceByProjectId.getInstallFlag().equals(InstallFlagEnum.YES.getCode())) {
-					cod.put("包括安装", true);
-				}
-				if (projectPriceByProjectId.getTransportFlag().equals(TransportFlagEnum.YES.getCode())) {
-					cod.put("包括运费", true);
-				}
+            if(temp!=null){
+
+					if (temp.getInstallFlag().equals(InstallFlagEnum.YES.getCode())) {
+						cod.put("包括安装", true);
+					}
+					if (temp.getTransportFlag().equals(TransportFlagEnum.YES.getCode())) {
+						cod.put("包括运费", true);
+					}
+
+				equationServiceImpl.executeCountProjectPrice(cod);
+
+			}else{
+            	throw new BusinessException("无此报价数据");
 			}
-			equationServiceImpl.executeCountProjectPrice(cod);
+			//ProjectPrice projectPriceByProjectId = projectPriceDao.getProjectPriceByProjectIdWithVersion(ppr.getProjectId(), ppr.getVersion());
+
 
 		}
 
