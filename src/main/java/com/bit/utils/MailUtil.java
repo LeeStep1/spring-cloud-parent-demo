@@ -28,15 +28,13 @@ public class MailUtil {
 
 	// 腾讯企业邮箱 SMTP 服务器地址为: smtp.163.com
 	private static String TencentEntmailServerHost = "smtp.exmail.qq.com";
-	// 发件人
-	//private static String TencentEntmailSenderAddress  = "duo.chen@xblgroup.com";
 
+	// 发件人
 	private static String TencentEntmailSenderAddress  = "GEBJ@xblgroup.com";
 	// 发件人邮箱账号
-	//private static String TencentEntmailSenderUsername  = "duo.chen@xblgroup.com";
+
 	private static String TencentEntmailSenderUsername  = "GEBJ@xblgroup.com";
 	// 发件人邮箱密码
-	//private static String TencentEntmailSenderPassword  = "14475SolidSnake";
 	private static String TencentEntmailSenderPassword  = "GEdtbj123456";
 	// 邮箱服务器端口
 	private static String TencentEntmailServerHostPort  = "465";
@@ -48,11 +46,11 @@ public class MailUtil {
 		try {
 			Session session = initProperties();
 			MimeMessage mimeMessage = new MimeMessage(session);
-			mimeMessage.setFrom(new InternetAddress(TencentEntmailSenderUsername, sender));// 发件人,可以设置发件人的别名
+			// 发件人,可以设置发件人的别名
+			mimeMessage.setFrom(new InternetAddress(TencentEntmailSenderUsername, sender));
 			String receiver = assembleReceiver(emailInfo.getToAddress());
 			// 收件人,多人接收
 			InternetAddress[] internetAddressTo = InternetAddress.parse(receiver);
-//			InternetAddress[] internetAddressTo = new InternetAddress().parse(receiver);
 			mimeMessage.setRecipients(Message.RecipientType.TO, internetAddressTo);
             if(emailInfo.getCcAddress()!=null&&emailInfo.getCcAddress().size()>0){
 				String copyReceiver = assembleReceiver(emailInfo.getCcAddress());
@@ -61,8 +59,6 @@ public class MailUtil {
 			}
 
 			// 抄收人,多人接收
-
-//			InternetAddress[] copyAddress = new InternetAddress().parse(copyReceiver);
 
 			// 主题
 			mimeMessage.setSubject(emailInfo.getSubject());
@@ -81,8 +77,6 @@ public class MailUtil {
 				bodyPart.attachFile(emailAttachment.getPath());
 				mimeMultipart.addBodyPart(bodyPart);
 			}
-//			bodyPart.attachFile(fileSrc);
-//			mimeMultipart.addBodyPart(bodyPart);
 			mimeMessage.setContent(mimeMultipart);
 			mimeMessage.saveChanges();
 			Transport.send(mimeMessage);
