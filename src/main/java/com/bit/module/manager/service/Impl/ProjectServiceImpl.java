@@ -7,6 +7,7 @@ import com.bit.base.exception.BusinessException;
 import com.bit.base.service.BaseService;
 import com.bit.base.vo.BasePageVo;
 import com.bit.base.vo.BaseVo;
+import com.bit.common.businessEnum.CalculateFlagEnum;
 import com.bit.common.businessEnum.ProjectEnum;
 import com.bit.common.informationEnum.StandardEnum;
 import com.bit.module.manager.bean.*;
@@ -86,15 +87,18 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 			       if(latestProjectPrice.get(0).getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
 			       	Map cods=new HashMap();
 			       	cods.put("version_id",latestProjectPrice.get(0).getId());
-			       	cods.put("calculate_flag",0);
+			       	//cods.put("calculate_flag",0);
+			       	cods.put("calculate_flag",CalculateFlagEnum.NO.getCode());
 			       	if(latestProjectPrice.get(0).getNonStandardApplyStatus()==2){
-						project.setCalculateFlag(0);
+						//project.setCalculateFlag(0);
+						project.setCalculateFlag(CalculateFlagEnum.NO.getCode());
 					}else if(latestProjectPrice.get(0).getNonStandardApplyStatus()==3){
 						List<ProjectEleOrder> odrList=  projectEleOrderDao.selectByMap(cods);
 						if(CollectionUtils.isNotEmpty(odrList)){
 							for(ProjectEleOrder or:odrList){
 								if(or.getCalculateFlag()==0){
-									project.setCalculateFlag(0);
+									//project.setCalculateFlag(0);
+									project.setCalculateFlag(CalculateFlagEnum.NO.getCode());
 									break;
 								}else{
 								   continue;
@@ -102,15 +106,18 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 							}
 
 						}else{
-							project.setCalculateFlag(1);
+							//project.setCalculateFlag(1);
+							project.setCalculateFlag(CalculateFlagEnum.YES.getCode());
 						}
 					}
 
 				   }else{
-					   project.setCalculateFlag(1);
+					   //project.setCalculateFlag(1);
+					   project.setCalculateFlag(CalculateFlagEnum.YES.getCode());
 				   }
 			}else{
-				project.setCalculateFlag(1);
+				//project.setCalculateFlag(1);
+				project.setCalculateFlag(CalculateFlagEnum.YES.getCode());
 			}
 			project.setProjectPriceList(latestProjectPrice);
         }
