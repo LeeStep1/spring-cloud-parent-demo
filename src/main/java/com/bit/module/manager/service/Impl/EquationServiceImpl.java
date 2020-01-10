@@ -23,6 +23,7 @@ import com.bit.module.miniapp.bean.ElevatorType;
 import com.bit.module.miniapp.bean.Options;
 import org.apache.commons.lang.StringUtils;
 import org.mvel2.MVEL;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -63,6 +64,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
     private EquationCacheServiceImpl equationCacheService;
 
 
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(EquationServiceImpl.class);
     /**
      * 计算单个电梯
      *
@@ -88,6 +90,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
      * @param map
      */
     public List<Map> executeCountProjectPrice(Map map) {
+        logger.info("计算总价时入参",map);
         ProjectPrice projectPrice = projectPriceDao.selectOne(new QueryWrapper<ProjectPrice>()
                 .eq("project_id", map.get("projectId"))
                 .eq("version", map.get("version")));
