@@ -107,6 +107,7 @@
 		u.update_time as updateTime,
 		u.status as status,
 		u.open_id as openId,
+		u.email as email,
 		ro.id as roleId,
 		ro.role_name as roleName
 		   from t_user u , t_user_role r,t_role ro
