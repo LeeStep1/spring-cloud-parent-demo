@@ -985,7 +985,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			writer.finish();
 			EmailInfo emailInfo = new EmailInfo();
 			List<String> toList = new ArrayList<String>();
-			if(getCurrentUserInfo().getEmail()==null||"".equals(getCurrentUserInfo().getEmail())){
+			if(getCurrentUserInfo().getEmail()!=null&&!"".equals(getCurrentUserInfo().getEmail())){
 				toList.add(getCurrentUserInfo().getEmail());
 			}else{
 				log.info("------------当前用户邮件为空，userId为{}-------------"+getCurrentUserInfo().getId());
