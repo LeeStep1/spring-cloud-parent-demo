@@ -6,9 +6,11 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.bit.base.dto.UserInfo;
 import com.bit.base.exception.BusinessException;
 import com.bit.base.service.BaseService;
 import com.bit.base.vo.BaseVo;
+import com.bit.base.vo.SuccessVo;
 import com.bit.common.businessEnum.*;
 import com.bit.common.consts.Const;
 import com.bit.common.informationEnum.StageEnum;
@@ -20,6 +22,7 @@ import com.bit.module.manager.service.Impl.EquationServiceImpl;
 import com.bit.module.manager.vo.ProjectEleNonstandardVO;
 import com.bit.module.miniapp.bean.ElevatorType;
 import com.bit.module.miniapp.bean.Options;
+import com.bit.module.miniapp.service.ExportService;
 import com.bit.module.miniapp.service.WxElevatorService;
 import com.bit.module.miniapp.vo.ExcelVo;
 import com.bit.module.miniapp.vo.ProjectEleOptionsVo;
@@ -27,6 +30,7 @@ import com.bit.module.miniapp.vo.ReportInfoVO;
 import com.bit.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.mail.EmailAttachment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -85,6 +89,10 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
 	@Autowired
 	private AuditDao auditDao;
+
+	@Autowired
+	private ExportService exportService;
+
 
 	@Value("${upload.imagesPath}")
 	private String filePath;
@@ -809,7 +817,6 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
 	}
 
-
 	/**
 	 * 生成报价单发送邮件
 	 *
@@ -817,8 +824,24 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	 * @return
 	 */
 	@Override
-	@Async
-	public void sendPriceMail(Long projectPriceId,List<String>ccAddress) {
+	public BaseVo sendPriceMail(Long projectPriceId,List<String>ccAddress){
+		if(StringUtils.isEmpty( getCurrentUserInfo().getEmail())){
+           throw new BusinessException("无邮件地址");
+		}else{
+			exportService.sendPriceMail( projectPriceId,ccAddress,getCurrentUserInfo().getEmail());
+		}
+
+		return new SuccessVo();
+	}
+
+	/**
+	 * 生成报价单发送邮件
+	 *
+	 * @param projectPriceId (id)
+	 * @return
+	 */
+	/* @Async
+	 void sendPriceMail(Long projectPriceId, List<String>ccAddress, String toAdress) {
 
 		Map cod = new HashMap();
 		cod.put("version_id", projectPriceId);
@@ -927,9 +950,9 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			rs.setInstallPrice("零");
 		}
 		listVo.add(rs);
-		export(listVo, "电梯价格单",ccAddress);
+		export(listVo, "电梯价格单",ccAddress,toAdress);
 
-	}
+	}*/
 
 	/**
 	 * 判断下浮率
@@ -960,62 +983,6 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		return baseVo;
 	}
 
-
-	public void export(List<ExcelVo> clsList, String sheetName,List<String>ccAdress) {
-		String filename = UUIDUtil.getUUID();
-		String path = filePath+  System.getProperty("file.separator")+filename+ System.getProperty("file.separator")+"电梯报价.xls";
-		File aa = new File(path);
-		if (!aa.getParentFile().exists()) {
-			aa.getParentFile().mkdirs();
-		}
-		try {
-			aa.createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try (OutputStream out = new FileOutputStream(aa)) {
-			ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLSX);
-
-			if (!clsList.isEmpty()) {
-				Sheet sheet = new Sheet(1, 0, clsList.get(0).getClass());
-				sheet.setSheetName(sheetName);
-				sheet.setAutoWidth(Boolean.TRUE);
-				writer.write(clsList, sheet);
-			}
-			writer.finish();
-			EmailInfo emailInfo = new EmailInfo();
-			List<String> toList = new ArrayList<String>();
-			if(getCurrentUserInfo().getEmail()!=null&&!"".equals(getCurrentUserInfo().getEmail())){
-				toList.add(getCurrentUserInfo().getEmail());
-			}else{
-				log.info("------------当前用户邮件为空，userId为{}-------------"+getCurrentUserInfo().getId());
-				throw new BusinessException("当前用户邮件为空");
-			}
-
-			//toList.add("star9c2009@163.com");
-			emailInfo.setToAddress(toList);
-			List<EmailAttachment> attachments = new ArrayList<>();
-			EmailAttachment emailAttachment = new EmailAttachment();
-			emailAttachment.setPath(path);
-			emailAttachment.setName("电梯报价.xls");
-			attachments.add(emailAttachment);
-			//标题
-			emailInfo.setSubject("电梯报价报价");
-			//内容
-			emailInfo.setContent("内容：<h1>电梯报价,请查收附件</h1>");
-			emailInfo.setAttachments(attachments);
-            if(CollectionUtils.isNotEmpty(ccAdress)){
-				emailInfo.setCcAddress(ccAdress);
-			}
-			MailUtil.send(emailInfo);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new BusinessException("发送失败{}" + e.getMessage());
-		} finally {
-			aa.delete();
-			aa.getParentFile().delete();
-		}
-	}
 	/**
 	 * 根據人員數據和電梯類型，獲取最大下浮率
 	 * @param elevatorTypeId
