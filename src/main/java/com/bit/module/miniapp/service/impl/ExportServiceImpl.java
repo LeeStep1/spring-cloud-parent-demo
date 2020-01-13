@@ -197,7 +197,7 @@ public class ExportServiceImpl  extends BaseService implements ExportService {
                 rs.setInstallPrice("零");
             }
             listVo.add(rs);
-            export(listVo, "电梯价格单",ccAddress,toAdress);
+            export(listVo, "电梯价格单",ccAddress,toAdress,j.getProjectName()+"项目报价");
         }
 
 
@@ -205,9 +205,9 @@ public class ExportServiceImpl  extends BaseService implements ExportService {
 
 
 
-    public void export(List<ExcelVo> clsList, String sheetName,List<String>ccAdress,String toAdress) {
+    public void export(List<ExcelVo> clsList, String sheetName,List<String>ccAdress,String toAdress,String title) {
         String filename = UUIDUtil.getUUID();
-        String path = filePath+  System.getProperty("file.separator")+filename+ System.getProperty("file.separator")+"电梯报价.xls";
+        String path = filePath+  System.getProperty("file.separator")+filename+ System.getProperty("file.separator")+title+".xls";
         File aa = new File(path);
         if (!aa.getParentFile().exists()) {
             aa.getParentFile().mkdirs();
@@ -240,10 +240,11 @@ public class ExportServiceImpl  extends BaseService implements ExportService {
             List<EmailAttachment> attachments = new ArrayList<>();
             EmailAttachment emailAttachment = new EmailAttachment();
             emailAttachment.setPath(path);
-            emailAttachment.setName("电梯报价.xls");
+            emailAttachment.setName(title+".xls");
             attachments.add(emailAttachment);
             //标题
-            emailInfo.setSubject("电梯报价报价");
+           // emailInfo.setSubject("电梯报价报价");
+            emailInfo.setSubject(title);
             //内容
             emailInfo.setContent("内容：<h1>电梯报价,请查收附件</h1>");
             emailInfo.setAttachments(attachments);
