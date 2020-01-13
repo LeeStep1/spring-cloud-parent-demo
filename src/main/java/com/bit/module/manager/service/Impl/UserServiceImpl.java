@@ -575,6 +575,8 @@ public class UserServiceImpl extends BaseService implements UserService {
 				for (String s : list) {
 					if (s.equals(user.getRoleName())) {
 						User uu = new User();
+						uu.setInsertTime(new Date());
+						uu.setStatus(1);
 						BeanUtils.copyProperties(user, uu);
 						//插入用户
 						userDao.addUser(uu);
