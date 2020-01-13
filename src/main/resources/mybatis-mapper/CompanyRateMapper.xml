@@ -114,21 +114,26 @@
 
     <!-- 多参数查询数据 -->
     <select id="listPage" parameterType="com.bit.module.manager.vo.CompanyRatePageVO" resultType="com.bit.module.manager.vo.CompanyRateVO">
-        select
-        <include refid="Base_Column_List"/>
-        from t_company_rate
+        select t1.*, t2.company_name as companyName, t3.role_name as roleName ,t4.type_name as elevatorTypeName
+        from t_company_rate t1
+        INNER JOIN t_company t2
+        on t1.company_id = t2.id
+        INNER JOIN t_role t3
+        on t1.role_id = t3.id
+        INNER JOIN t_elevator_type t4
+        on t1.elevator_type_id = t4.id
         <where>
             <if test="companyRatePageVO.rate!=null">
-                and rate = #{companyRatePageVO.rate,jdbcType=DECIMAL}
+                and t1.rate = #{companyRatePageVO.rate,jdbcType=DECIMAL}
             </if>
             <if test="companyRatePageVO.companyId!=null">
-                and company_id = #{companyRatePageVO.companyId,jdbcType=BIGINT}
+                and t1.company_id = #{companyRatePageVO.companyId,jdbcType=BIGINT}
             </if>
             <if test="companyRatePageVO.roleId!=null">
-                and role_id = #{companyRatePageVO.roleId,jdbcType=BIGINT}
+                and t1.role_id = #{companyRatePageVO.roleId,jdbcType=BIGINT}
             </if>
             <if test="companyRatePageVO.elevatorTypeId!=null">
-                and elevator_type_id = #{companyRatePageVO.elevatorTypeId,jdbcType=BIGINT}
+                and t1.elevator_type_id = #{companyRatePageVO.elevatorTypeId,jdbcType=BIGINT}
             </if>
 
         </where>

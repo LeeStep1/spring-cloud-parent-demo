@@ -35,6 +35,18 @@ public class CompanyRateVO implements Serializable {
 	 * 电梯类型id,电梯类型表中的id
 	 */
 	private Long elevatorTypeId;
+	/**
+	 * 角色名称
+	 */
+	private String roleName;
+	/**
+	 * 电梯类型名称
+	 */
+	private String elevatorTypeName;
+	/**
+	 * 公司名称
+	 */
+	private String companyName;
 
 
 }

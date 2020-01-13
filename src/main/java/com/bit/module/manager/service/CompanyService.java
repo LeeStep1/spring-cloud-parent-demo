@@ -13,12 +13,15 @@ import com.bit.module.miniapp.bean.Area;
 public interface CompanyService {
 
 	/**
-	 * 所以公司
+	 * 全部公司
 	 * @return
 	 */
 	BaseVo getCompany( );
 
-
-
+	/**
+	 * 公司树
+	 * @return
+	 */
+	BaseVo companyTree();
 }
 

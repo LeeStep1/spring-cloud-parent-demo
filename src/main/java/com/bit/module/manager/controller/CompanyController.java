@@ -20,12 +20,23 @@ public class CompanyController {
     @Autowired
     private CompanyService companyService;
 
-
+	/**
+	 * 全部公司
+	 * @return
+	 */
     @GetMapping(value = "/allCompany")
     public BaseVo allCompany(){
 
         return companyService.getCompany();
     }
 
+	/**
+	 * 公司树
+	 * @return
+	 */
+    @PostMapping("/companyTree")
+    public BaseVo companyTree(){
+		return companyService.companyTree();
+    }
 
 }

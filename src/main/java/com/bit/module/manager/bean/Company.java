@@ -1,9 +1,11 @@
 package com.bit.module.manager.bean;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import lombok.Data;
 
@@ -34,5 +36,10 @@ public class Company implements Serializable {
 	 * 父id
 	 */
 	private Long parentId;
+	/**
+	 * 子公司
+	 */
+	@TableField(exist = false)
+	private List<Company> childList;
 
 }

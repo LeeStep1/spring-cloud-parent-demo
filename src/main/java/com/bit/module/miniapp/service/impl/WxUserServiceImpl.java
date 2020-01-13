@@ -8,7 +8,6 @@ import com.bit.base.service.BaseService;
 import com.bit.base.vo.BaseVo;
 import com.bit.common.consts.RedisKey;
 import com.bit.common.informationEnum.TidUrlEnum;
-import com.bit.common.informationEnum.UserRoleEnum;
 import com.bit.common.wx.WxLoginRs;
 import com.bit.module.manager.bean.Company;
 import com.bit.module.manager.bean.Project;

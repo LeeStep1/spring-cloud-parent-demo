@@ -174,5 +174,17 @@ public class ElevatorTypeServiceImpl extends BaseService implements ElevatorType
 		return baseVo;
 	}
 
+	/**
+	 * 电梯类型全查
+	 * @return
+	 */
+	@Override
+	public BaseVo findAll() {
+		List<ElevatorType> byParam = elevatorTypeDao.findByParam(null);
+		BaseVo baseVo = new BaseVo();
+		baseVo.setData(byParam);
+		return baseVo;
+	}
+
 
 }

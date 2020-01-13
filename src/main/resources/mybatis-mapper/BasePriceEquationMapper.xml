@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bit.module.equation.dao.BasePriceEquationDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.bit.module.equation.bean.BasePriceEquation" id="basePriceEquationMap">
+        <result property="id" column="id"/>
+        <result property="category" column="category"/>
+        <result property="type" column="type"/>
+        <result property="val1" column="val1"/>
+        <result property="val2" column="val2"/>
+        <result property="val3" column="val3"/>
+        <result property="val4" column="val4"/>
+        <result property="val5" column="val5"/>
+        <result property="output" column="output"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+                id
+        ,
+                    category
+        ,
+                    type
+        ,
+                    val1
+        ,
+                    val2
+        ,
+                    val3
+        ,
+                    val4
+        ,
+                    val5
+        ,
+                    output
+                </sql>
+
+    <!-- 根据主键查询数据 -->
+    <select id="getBasePriceEquationById" parameterType="Integer" resultMap="basePriceEquationMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_base_price_equation
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <!-- 多参数查询数据 -->
+    <select id="findByParam" parameterType="com.bit.module.equation.bean.BasePriceEquation"
+            resultMap="basePriceEquationMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_base_price_equation
+        <where>
+            <if test="category!=null and category!=''">
+                and category = #{category,jdbcType=VARCHAR}
+            </if>
+            <if test="type!=null and type!=''">
+                and type = #{type,jdbcType=VARCHAR}
+            </if>
+            <if test="val1!=null and val1!=''">
+                and val1 = #{val1,jdbcType=VARCHAR}
+            </if>
+            <if test="val2!=null and val2!=''">
+                and val2 = #{val2,jdbcType=VARCHAR}
+            </if>
+            <if test="val3!=null and val3!=''">
+                and val3 = #{val3,jdbcType=VARCHAR}
+            </if>
+            <if test="val4!=null and val4!=''">
+                and val4 = #{val4,jdbcType=VARCHAR}
+            </if>
+            <if test="val5!=null and val5!=''">
+                and val5 = #{val5,jdbcType=VARCHAR}
+            </if>
+            <if test="output!=null and output!=''">
+                and output = #{output,jdbcType=VARCHAR}
+            </if>
+
+        </where>
+    </select>
+
+
+    <!-- 新增数据 -->
+    <insert id="addBasePriceEquation" parameterType="com.bit.module.equation.bean.BasePriceEquation" keyColumn="id"
+            useGeneratedKeys="true">
+        insert into t_base_price_equation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="category!=null and category!=''">
+                category,
+            </if>
+            <if test="type!=null and type!=''">
+                type,
+            </if>
+            <if test="val1!=null and val1!=''">
+                val1,
+            </if>
+            <if test="val2!=null and val2!=''">
+                val2,
+            </if>
+            <if test="val3!=null and val3!=''">
+                val3,
+            </if>
+            <if test="val4!=null and val4!=''">
+                val4,
+            </if>
+            <if test="val5!=null and val5!=''">
+                val5,
+            </if>
+            <if test="output!=null and output!=''">
+                output,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="category!=null and category!=''">
+                #{category,jdbcType=VARCHAR},
+            </if>
+            <if test="type!=null and type!=''">
+                #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="val1!=null and val1!=''">
+                #{val1,jdbcType=VARCHAR},
+            </if>
+            <if test="val2!=null and val2!=''">
+                #{val2,jdbcType=VARCHAR},
+            </if>
+            <if test="val3!=null and val3!=''">
+                #{val3,jdbcType=VARCHAR},
+            </if>
+            <if test="val4!=null and val4!=''">
+                #{val4,jdbcType=VARCHAR},
+            </if>
+            <if test="val5!=null and val5!=''">
+                #{val5,jdbcType=VARCHAR},
+            </if>
+            <if test="output!=null and output!=''">
+                #{output,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+
+    <!-- 编辑数据 -->
+    <update id="updateBasePriceEquation" parameterType="com.bit.module.equation.bean.BasePriceEquation">
+        update t_base_price_equation
+        <trim prefix="set" suffixOverrides=",">
+            <if test="category!=null and category!=''">
+                category = #{category,jdbcType=VARCHAR},
+            </if>
+            <if test="type!=null and type!=''">
+                type = #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="val1!=null and val1!=''">
+                val1 = #{val1,jdbcType=VARCHAR},
+            </if>
+            <if test="val2!=null and val2!=''">
+                val2 = #{val2,jdbcType=VARCHAR},
+            </if>
+            <if test="val3!=null and val3!=''">
+                val3 = #{val3,jdbcType=VARCHAR},
+            </if>
+            <if test="val4!=null and val4!=''">
+                val4 = #{val4,jdbcType=VARCHAR},
+            </if>
+            <if test="val5!=null and val5!=''">
+                val5 = #{val5,jdbcType=VARCHAR},
+            </if>
+            <if test="output!=null and output!=''">
+                output = #{output,jdbcType=VARCHAR},
+            </if>
+        </trim>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+
+    <!-- 删除数据 -->
+    <delete id="delBasePriceEquationById" parameterType="Integer">
+        delete from t_base_price_equation
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+
+    <select id="listPage" parameterType="com.bit.module.manager.vo.BasePriceEquationPageVO" resultType="com.bit.module.manager.vo.BasePriceEquationVO">
+        SELECT <include refid="Base_Column_List"/>
+        FROM t_base_price_equation
+        <where>
+            <if test="basePriceEquationPageVO.category!=null and basePriceEquationPageVO.category!=''">
+                and category = #{basePriceEquationPageVO.category,jdbcType=VARCHAR}
+            </if>
+            <if test="basePriceEquationPageVO.type!=null and basePriceEquationPageVO.type!=''">
+                and type = #{basePriceEquationPageVO.type,jdbcType=VARCHAR}
+            </if>
+            <if test="basePriceEquationPageVO.val1!=null and basePriceEquationPageVO.val1!=''">
+                and val1 = #{basePriceEquationPageVO.val1,jdbcType=VARCHAR}
+            </if>
+            <if test="basePriceEquationPageVO.val2!=null and basePriceEquationPageVO.val2!=''">
+                and val2 = #{basePriceEquationPageVO.val2,jdbcType=VARCHAR}
+            </if>
+            <if test="basePriceEquationPageVO.val3!=null and basePriceEquationPageVO.val3!=''">
+                and val3 = #{basePriceEquationPageVO.val3,jdbcType=VARCHAR}
+            </if>
+            <if test="basePriceEquationPageVO.val4!=null and basePriceEquationPageVO.val4!=''">
+                and val4 = #{basePriceEquationPageVO.val4,jdbcType=VARCHAR}
+            </if>
+            <if test="basePriceEquationPageVO.val5!=null and basePriceEquationPageVO.val5!=''">
+                and val5 = #{basePriceEquationPageVO.val5,jdbcType=VARCHAR}
+            </if>
+            <if test="basePriceEquationPageVO.output!=null and basePriceEquationPageVO.output!=''">
+                and output = #{basePriceEquationPageVO.output,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+
+</mapper>

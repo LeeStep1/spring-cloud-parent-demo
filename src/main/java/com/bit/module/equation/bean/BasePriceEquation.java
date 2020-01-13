@@ -23,15 +23,42 @@ public class BasePriceEquation implements Serializable {
 
     private static final long serialVersionUID = -5710707056860294136L;
 
+
+    /**
+     *
+     */
     @TableId(type = IdType.AUTO)
     private Long id;
-    private String type;
+    /**
+     *
+     */
     private String category;
+    /**
+     *
+     */
+    private String type;
+    /**
+     *
+     */
     private String val1;
+    /**
+     *
+     */
     private String val2;
+    /**
+     *
+     */
     private String val3;
+    /**
+     *
+     */
     private String val4;
+    /**
+     *
+     */
     private String val5;
+    /**
+     *
+     */
     private String output;
-
 }

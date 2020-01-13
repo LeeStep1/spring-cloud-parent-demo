@@ -33,4 +33,11 @@ public interface QueryParamsDao extends BaseMapper<QueryParams>{
 	 */
 	List<QueryParams> getEleParam(QueryParams queryParams);
 
+	/**
+	 * 根据id 和 key,value查询
+	 * @param queryParams
+	 * @return
+	 */
+	List<QueryParams> getDetailParam(QueryParams queryParams);
+
 }

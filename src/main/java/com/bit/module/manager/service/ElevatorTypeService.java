@@ -66,5 +66,10 @@ public interface ElevatorTypeService {
 	 * @return
 	 */
 	BaseVo distinctParams(ElevatorType elevatorType);
+	/**
+	 * 电梯类型全查
+	 * @return
+	 */
+	BaseVo findAll();
 }
 

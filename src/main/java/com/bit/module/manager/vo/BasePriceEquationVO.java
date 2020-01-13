@@ -6,7 +6,7 @@
  * 版权所有，侵权必究！
  */
 
-package com.bit.module.equation.bean;
+package com.bit.module.manager.vo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -18,13 +18,16 @@ import java.io.Serializable;
 /**
  */
 @Data
-@TableName("t_base_price_equation_rel")
-public class BasePriceEquationRel implements Serializable {
+public class BasePriceEquationVO implements Serializable {
 
-    private static final long serialVersionUID = 3513678474186344712L;
-
-    @TableId(type = IdType.AUTO)
+    /**
+     *
+     */
     private Long id;
+    /**
+     *
+     */
+    private String category;
     /**
      *
      */
@@ -32,13 +35,25 @@ public class BasePriceEquationRel implements Serializable {
     /**
      *
      */
-    private String params;
+    private String val1;
     /**
      *
      */
-    private String val;
+    private String val2;
     /**
      *
      */
-    private String category;
+    private String val3;
+    /**
+     *
+     */
+    private String val4;
+    /**
+     *
+     */
+    private String val5;
+    /**
+     *
+     */
+    private String output;
 }

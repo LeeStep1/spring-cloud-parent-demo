@@ -110,4 +110,13 @@ public class ElevatorTypeController {
 		return elevatorTypeService.elevatorTypeListPage(elevatorTypePageVO);
 	}
 
+	/**
+	 * 电梯类型全查
+	 * @return
+	 */
+	@PostMapping("/findAll")
+	public BaseVo findAll(){
+		return elevatorTypeService.findAll();
+	}
+
 }

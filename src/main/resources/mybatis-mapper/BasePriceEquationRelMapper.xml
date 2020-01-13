@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bit.module.equation.dao.BasePriceEquationRelDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.bit.module.equation.bean.BasePriceEquationRel" id="basePriceEquationRelMap">
+        <result property="id" column="id"/>
+        <result property="type" column="type"/>
+        <result property="params" column="params"/>
+        <result property="val" column="val"/>
+        <result property="category" column="category"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        type,
+        params,
+        val,
+        category
+     </sql>
+
+    <!-- 根据主键查询数据 -->
+    <select id="getBasePriceEquationRelById" parameterType="Integer" resultMap="basePriceEquationRelMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_base_price_equation_rel
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <!-- 多参数查询数据 -->
+    <select id="findByParam" parameterType="com.bit.module.equation.bean.BasePriceEquationRel"
+            resultMap="basePriceEquationRelMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_base_price_equation_rel
+        <where>
+            <if test="type!=null and type!=''">
+                and type = #{type,jdbcType=VARCHAR}
+            </if>
+            <if test="params!=null and params!=''">
+                and params = #{params,jdbcType=VARCHAR}
+            </if>
+            <if test="val!=null and val!=''">
+                and val = #{val,jdbcType=VARCHAR}
+            </if>
+            <if test="category!=null and category!=''">
+                and category = #{category,jdbcType=VARCHAR}
+            </if>
+
+        </where>
+    </select>
+
+
+    <!-- 新增数据 -->
+    <insert id="addBasePriceEquationRel" parameterType="com.bit.module.equation.bean.BasePriceEquationRel" keyColumn="id"
+            useGeneratedKeys="true">
+        insert into t_base_price_equation_rel
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="type!=null and type!=''">
+                type,
+            </if>
+            <if test="params!=null and params!=''">
+                params,
+            </if>
+            <if test="val!=null and val!=''">
+                val,
+            </if>
+            <if test="category!=null and category!=''">
+                category,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="type!=null and type!=''">
+                #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="params!=null and params!=''">
+                #{params,jdbcType=VARCHAR},
+            </if>
+            <if test="val!=null and val!=''">
+                #{val,jdbcType=VARCHAR},
+            </if>
+            <if test="category!=null and category!=''">
+                #{category,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+
+    <!-- 编辑数据 -->
+    <update id="updateBasePriceEquationRel" parameterType="com.bit.module.equation.bean.BasePriceEquationRel">
+        update t_base_price_equation_rel
+        <trim prefix="set" suffixOverrides=",">
+            <if test="type!=null and type!=''">
+                type = #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="params!=null and params!=''">
+                params = #{params,jdbcType=VARCHAR},
+            </if>
+            <if test="val!=null and val!=''">
+                val = #{val,jdbcType=VARCHAR},
+            </if>
+            <if test="category!=null and category!=''">
+                category = #{category,jdbcType=VARCHAR},
+            </if>
+        </trim>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+
+    <!-- 删除数据 -->
+    <delete id="delBasePriceEquationRelById" parameterType="Integer">
+        delete from t_base_price_equation_rel
+                        where id = #{id,jdbcType=BIGINT}
+                    </delete>
+
+</mapper>

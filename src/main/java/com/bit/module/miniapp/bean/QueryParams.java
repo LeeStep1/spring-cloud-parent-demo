@@ -56,4 +56,9 @@ public class QueryParams implements Serializable {
 	 */
 	@TableField(exist = false)
 	private String elevatorTypeParamsKey;
+	/**
+	 * key的集合
+	 */
+	@TableField(exist = false)
+	private List<String> keys;
 }

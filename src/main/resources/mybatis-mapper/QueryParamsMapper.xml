@@ -67,5 +67,34 @@
         </where>
     </select>
 
+    <!--查询电梯参数-->
+    <select id="getDetailParam" parameterType="com.bit.module.miniapp.bean.QueryParams" resultMap="queryParamsMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_query_params
+        <where>
+            <if test="keys!=null and keys.size()>0">
+                AND `key` IN
+                <foreach collection="keys" item="key" open="(" close=")" separator=",">
+                    #{key,jdbcType=VARCHAR}
+                </foreach>
+
+            </if>
+            and id like concat(
+
+            (select id
+            from t_query_params
+            <where>
+                <if test="value!=null and value!=''">
+                    AND `value` = #{value,jdbcType=VARCHAR}
+                </if>
+            </where>
+            )
+
+
+            ,"%")
+        </where>
+    </select>
+
 
 </mapper>
