@@ -111,8 +111,10 @@ public class ExportServiceImpl  extends BaseService implements ExportService {
                 vo.setElevatorName(c.getElevatorTypeName());
                 vo.setNums(c.getNum());
                 vo.setInstallPrice(c.getInstallPrice());
+                vo.setTransportPrice(c.getTransportPrice());
                 vo.setSingleTotalPrice(c.getSingleTotalPrice());
                 vo.setTotalPrice(c.getTotalPrice());
+                vo.setUnitPrice(c.getUnitPrice());
                 vo.setCid(i);
                 //项目名称
                 if(i==1){

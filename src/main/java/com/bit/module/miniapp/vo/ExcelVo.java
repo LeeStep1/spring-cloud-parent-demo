@@ -46,12 +46,19 @@ public class ExcelVo extends BaseRowModel {
 
 
     @ExcelProperty(value="设备单价(元)",index=9)
-    private String singleTotalPrice;
+    private String unitPrice;
 
     @ExcelProperty(value="安装单价(元)",index=10)
     private String installPrice;
 
-    @ExcelProperty(value="总价(元)",index=11)
+    @ExcelProperty(value="运输单价(元)",index=11)
+    private String transportPrice;
+
+    @ExcelProperty(value="单台总价(元)",index=12)
+    private String singleTotalPrice;
+
+
+    @ExcelProperty(value="合价(元)",index=13)
     private String totalPrice;
 
 
