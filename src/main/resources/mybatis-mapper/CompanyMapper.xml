@@ -31,7 +31,7 @@
     <select id="findByParam" parameterType="com.bit.module.manager.bean.Company" resultMap="companyMap">
         select
         <include refid="Base_Column_List"/>
-        from t_company
+        from t_company_copy
         <where>
             <if test="companyName!=null and companyName!=''">
                 and company_name = #{companyName,jdbcType=VARCHAR}
