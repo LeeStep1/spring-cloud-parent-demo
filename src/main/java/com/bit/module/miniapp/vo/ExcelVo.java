@@ -27,38 +27,38 @@ public class ExcelVo extends BaseRowModel {
     private String nums;
 
 
-    @ExcelProperty(value="速度(m/s)",index=5)
+    @ExcelProperty(value="速度(m/s)",index=4)
     private String speed;
 
 
-    @ExcelProperty(value="载重（KG）/梯阶宽度（MM）",index=6)
+    @ExcelProperty(value="载重（KG）/梯阶宽度（MM）",index=5)
     private String weight;
 
-    @ExcelProperty(value="层站/倾斜度",index=7)
+    @ExcelProperty(value="层站/倾斜度",index=6)
     private String floors;
 
 
-    @ExcelProperty(value="功能选项",index=8)
+    @ExcelProperty(value="功能选项",index=7)
     private String options;
 
-    @ExcelProperty(value="非标项",index=9)
+    @ExcelProperty(value="非标项",index=8)
     private String nonStandard;
 
 
-    @ExcelProperty(value="设备单价(元)",index=10)
+    @ExcelProperty(value="设备单价(元)",index=9)
     private String unitPrice;
 
-    @ExcelProperty(value="安装单价(元)",index=11)
+    @ExcelProperty(value="安装单价(元)",index=10)
     private String installPrice;
 
-    @ExcelProperty(value="运输单价(元)",index=12)
+    @ExcelProperty(value="运输单价(元)",index=11)
     private String transportPrice;
 
-    @ExcelProperty(value="单台总价(元)",index=13)
+    @ExcelProperty(value="单台总价(元)",index=12)
     private String singleTotalPrice;
 
 
-    @ExcelProperty(value="合价(元)",index=14)
+    @ExcelProperty(value="合价(元)",index=13)
     private String totalPrice;
 
 
