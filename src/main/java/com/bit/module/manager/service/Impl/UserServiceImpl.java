@@ -345,15 +345,16 @@ public class UserServiceImpl extends BaseService implements UserService {
 				a.setRoleId(c.getId());
 				userDao.addUserRelRole(a);
 			});
-			Map cd = new HashMap();
-			cd.put("user_id", portalUser.getId());
-			List<UserCompany> ucList = userCompanyDao.selectByMap(cd);
-			if (ucList.size() > 0) {
-				UserCompany aa = ucList.get(0);
-				aa.setCompanyId(portalUser.getCompanyId());
-				userCompanyDao.updateUserCompany(aa);
-			}
 
+
+		}
+		Map cd = new HashMap();
+		cd.put("user_id", portalUser.getId());
+		List<UserCompany> ucList = userCompanyDao.selectByMap(cd);
+		if (ucList.size() > 0) {
+			UserCompany aa = ucList.get(0);
+			aa.setCompanyId(portalUser.getCompanyId());
+			userCompanyDao.updateUserCompany(aa);
 		}
 
 		userDao.update(portalUser);
