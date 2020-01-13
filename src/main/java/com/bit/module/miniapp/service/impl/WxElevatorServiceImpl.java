@@ -606,8 +606,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 						t1.setVersionId(projectPriceId);
 						List<ProjectEleOrder> byParam = projectEleOrderDao.findByParam(t1);
 						if (CollectionUtils.isEmpty(byParam)) {
-							projectPrice.setStandard(StandardEnum.STANDARD_DEFAULT.getCode());
-							projectPrice.setStandardName(StandardEnum.STANDARD_DEFAULT.getInfo());
+							projectPrice.setStandard(StandardEnum.STANDARD_ONE.getCode());
+							projectPrice.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
 							log.info("系统判定为：正常");
 						} else {
 							projectPrice.setStandard(StandardEnum.STANDARD_ONE.getCode());
@@ -637,8 +637,10 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 				if (CollectionUtils.isEmpty(byParam)) {
 					//如果是空  项目下没订单
 					log.info("剩余非标订单数量{}", 0);
-					projectPrice.setStandard(StandardEnum.STANDARD_DEFAULT.getCode());
-					projectPrice.setStandardName(StandardEnum.STANDARD_DEFAULT.getInfo());
+					/*projectPrice.setStandard(StandardEnum.STANDARD_DEFAULT.getCode());
+					projectPrice.setStandardName(StandardEnum.STANDARD_DEFAULT.getInfo());*/
+					projectPrice.setStandard(StandardEnum.STANDARD_ONE.getCode());
+					projectPrice.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
 					log.info("系统判定为：正常");
 				} else {
 					tt.setStandard(StandardEnum.STANDARD_ZERO.getCode());
