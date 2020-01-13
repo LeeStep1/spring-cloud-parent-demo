@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -146,10 +147,10 @@ public class UserServiceImpl extends BaseService implements UserService {
 			if (userRelRoleByUserIdRoleId != null) {
 				String tt = userRelRoleByUserIdRoleId.getToken();
 				Map maps = new HashMap();
-				if (StringUtil.isNotEmpty(tt)){
+				if (StringUtil.isNotEmpty(tt)) {
 					maps = (Map) JSON.parse(tt);
 					if (maps != null) {
-						if (maps.get(TidUrlEnum.TERMINALURL_MANAGER.getTid())!=null){
+						if (maps.get(TidUrlEnum.TERMINALURL_MANAGER.getTid()) != null) {
 							String ss = maps.get(TidUrlEnum.TERMINALURL_MANAGER.getTid()).toString();
 							cacheUtil.del(ss);
 						}
@@ -200,24 +201,24 @@ public class UserServiceImpl extends BaseService implements UserService {
 		if (userRelRoleByUserIdRoleId != null) {
 			String tt = userRelRoleByUserIdRoleId.getToken();
 			Map maps = new HashMap();
-			if (StringUtil.isNotEmpty(tt)){
+			if (StringUtil.isNotEmpty(tt)) {
 				maps = (Map) JSON.parse(tt);
 				if (maps != null) {
 					String ss = "";
-					if (TidUrlEnum.TERMINALURL_MANAGER.getTid()== tid.intValue()){
+					if (TidUrlEnum.TERMINALURL_MANAGER.getTid() == tid.intValue()) {
 						ss = maps.get(TidUrlEnum.TERMINALURL_MANAGER.getTid()).toString();
 					}
-					if (TidUrlEnum.TERMINALURL_WX.getTid()== tid.intValue()){
+					if (TidUrlEnum.TERMINALURL_WX.getTid() == tid.intValue()) {
 						ss = maps.get(TidUrlEnum.TERMINALURL_WX.getTid()).toString();
 					}
 					cacheUtil.del(ss);
 				}
 			}
 			//去掉maps中此平台的值
-			if (TidUrlEnum.TERMINALURL_MANAGER.getTid()== tid.intValue()){
+			if (TidUrlEnum.TERMINALURL_MANAGER.getTid() == tid.intValue()) {
 				maps.remove(String.valueOf(TidUrlEnum.TERMINALURL_MANAGER.getTid()));
 			}
-			if (TidUrlEnum.TERMINALURL_WX.getTid()== tid.intValue()){
+			if (TidUrlEnum.TERMINALURL_WX.getTid() == tid.intValue()) {
 				maps.remove(String.valueOf(TidUrlEnum.TERMINALURL_WX.getTid()));
 			}
 
@@ -225,9 +226,9 @@ public class UserServiceImpl extends BaseService implements UserService {
 			UserRelRole userRelRole = new UserRelRole();
 			userRelRole.setUserId(userInfo.getId());
 			String tokenkey = "";
-			if (maps.size()==0){
+			if (maps.size() == 0) {
 				tokenkey = "";
-			}else {
+			} else {
 				tokenkey = JSONObject.toJSONString(maps);
 			}
 			userRelRole.setToken(tokenkey);
@@ -400,12 +401,12 @@ public class UserServiceImpl extends BaseService implements UserService {
 				//得到token放进数组
 				if (StringUtil.isNotEmpty(userRelRole.getToken())) {
 					Map maps = (Map) JSON.parse(userRelRole.getToken());
-					if (maps!=null){
+					if (maps != null) {
 						//删除全平台token
-						if (maps.get(TidUrlEnum.TERMINALURL_WX.getTid())!=null){
+						if (maps.get(TidUrlEnum.TERMINALURL_WX.getTid()) != null) {
 							cacheUtil.del(maps.get(TidUrlEnum.TERMINALURL_WX.getTid()).toString());
 						}
-						if (maps.get(TidUrlEnum.TERMINALURL_MANAGER.getTid())!=null){
+						if (maps.get(TidUrlEnum.TERMINALURL_MANAGER.getTid()) != null) {
 							cacheUtil.del(maps.get(TidUrlEnum.TERMINALURL_MANAGER.getTid()).toString());
 						}
 						//清除map
@@ -556,6 +557,50 @@ public class UserServiceImpl extends BaseService implements UserService {
 			userRoleDao.updateTokenByUserId(userRelRole);
 		}
 
+		return successVo();
+	}
+
+	/**
+	 * 用户导入
+	 * @param multipartFile
+	 * @return
+	 */
+	@Override
+	@Transactional
+	public BaseVo importUser(MultipartFile multipartFile) {
+		List<ExcelUser> users = ExcelUtil.importExcel(multipartFile, 0, 1, ExcelUser.class);
+		if (CollectionUtils.isNotEmpty(users)) {
+			List<String> list = UserRoleEnum.getList();
+			for (ExcelUser user : users) {
+				for (String s : list) {
+					if (s.equals(user.getRoleName())) {
+						User uu = new User();
+						BeanUtils.copyProperties(user, uu);
+						//插入用户
+						userDao.addUser(uu);
+
+						UserRelRole relRole = new UserRelRole();
+						relRole.setUserId(uu.getId());
+						Integer codeByValue = UserRoleEnum.getCodeByValue(user.getRoleName());
+						relRole.setRoleId(codeByValue);
+						//插入用户与角色关系
+						userDao.addUserRelRole(relRole);
+
+						//插入用户与公司关系
+						Company cp = new Company();
+						cp.setCompanyName(user.getCompanyName());
+						List<Company> byParam = companyDao.findByParam(cp);
+						if (CollectionUtils.isNotEmpty(byParam)) {
+							UserCompany userCompany = new UserCompany();
+							userCompany.setCompanyId(byParam.get(0).getId());
+							userCompany.setUserId(uu.getId());
+							userCompanyDao.addUserCompany(userCompany);
+						}
+					}
+				}
+
+			}
+		}
 		return successVo();
 	}
 

@@ -12,6 +12,7 @@ import com.bit.module.manager.vo.PortalUserVo;
 import com.bit.module.manager.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import javax.validation.Valid;
@@ -179,9 +180,15 @@ public class UserController {
         }else{
             return new SuccessVo();
         }
+    }
 
-
-
-
+	/**
+	 * 用户导入
+	 * @param multipartFile
+	 * @return
+	 */
+	@PostMapping("/import")
+    public BaseVo importUser(@RequestParam MultipartFile multipartFile){
+		return userService.importUser(multipartFile);
     }
 }

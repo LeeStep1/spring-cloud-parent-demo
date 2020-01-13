@@ -1,5 +1,8 @@
 package com.bit.common.informationEnum;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @Description:
  * @Author: liyujun
@@ -10,22 +13,32 @@ public enum UserRoleEnum {
     /**
      * 销售
      */
-    SALES(1,"销售"),
+    SALES(1,"销售经理"),
 
     /**
-     * 管理
+     * 支持人员
      */
-    SUPPORT(2,"管理"),
+    SUPPORT(2,"支持人员"),
 
     /**
-     * 分公司经理
+     * 分公司总经理
      */
-    MANAGER(3,"分公司经理"),
+    MANAGER(3,"分公司总经理"),
 
     /**
      * 集团总经理
      */
     BOSS(4,"集团总经理"),
+    /**
+     * 区域总经理
+     */
+    REGIONAL_MANAGER(5,"区域总经理"),
+
+    /**
+     * 销售总监
+     */
+    SALES_BOSS(6,"销售总监"),
+
 
     ;
 
@@ -56,4 +69,42 @@ public enum UserRoleEnum {
         return roleName;
     }
 
+    /**
+     * 根据code得到info
+     * @param code
+     * @return
+     */
+    public static String getValueByCode(int code){
+        for(UserRoleEnum typeEnum : UserRoleEnum.values()){
+            if(code==typeEnum.getRoleId()){
+                return typeEnum.getRoleName();
+            }
+        }
+        return  null;
+    }
+    /**
+     * 根据info得到code
+     * @param roleName
+     * @return
+     */
+    public static Integer getCodeByValue(String roleName){
+        for(UserRoleEnum typeEnum : UserRoleEnum.values()){
+            if(roleName.equals(typeEnum.getRoleName())){
+                return typeEnum.getRoleId();
+            }
+        }
+        return  null;
+    }
+
+	/**
+	 * 枚举转换成list
+	 * @return
+	 */
+	public static List<String> getList(){
+		List<String> categories = new ArrayList<>();
+		for (UserRoleEnum typeEnum : UserRoleEnum.values()){
+			categories.add(typeEnum.getRoleName());
+		}
+		return categories;
+	}
 }

@@ -204,6 +204,35 @@
         </trim>
 	</insert>
 
+    <insert id="batchAdd" parameterType="com.bit.module.manager.bean.User" keyProperty="id" useGeneratedKeys="true" keyColumn="id">
+        insert into t_user(
+        user_name,
+        real_name,
+        mobile,
+        pass_word,
+        salt,
+        insert_time,
+        update_time,
+        status,
+        open_id,
+        email,
+        )VALUES
+        <foreach collection="list" item="item" index="index" >
+            (
+            #{item.userName,jdbcType=VARCHAR},
+            #{item.realName,jdbcType=VARCHAR},
+            #{item.mobile,jdbcType=VARCHAR},
+            #{item.passWord,jdbcType=VARCHAR},
+            #{item.salt,jdbcType=VARCHAR},
+            #{item.insertTime,jdbcType=TIMESTAMP},
+            #{item.updateTime,jdbcType=TIMESTAMP},
+            #{item.status,jdbcType=INTEGER},
+            #{item.openId,jdbcType=VARCHAR},
+            #{item.email,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+
 
 	<!-- 添加一条记录 -->
 	<insert id="addUserRelRole" parameterType="com.bit.module.manager.bean.UserRelRole" keyProperty="id" useGeneratedKeys="true" keyColumn="id">

@@ -5,6 +5,7 @@ import com.bit.module.manager.bean.User;
 import com.bit.module.manager.bean.UserLogin;
 import com.bit.module.manager.vo.PortalUserVo;
 import com.bit.module.manager.vo.UserVo;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @description:
@@ -92,5 +93,12 @@ public interface UserService {
      * @return
      */
     BaseVo statusUser(Long userId,Integer status);
+
+    /**
+     * 用户导入
+     * @param multipartFile
+     * @return
+     */
+    BaseVo importUser(MultipartFile multipartFile);
 
 }

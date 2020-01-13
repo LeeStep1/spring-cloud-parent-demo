@@ -9,6 +9,7 @@ import com.bit.base.exception.BusinessException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -129,5 +130,32 @@ public class ExcelUtil {
         return list;
     }
 
+
+    /**
+     * 上传文件导入数据
+     * @param file
+     * @param titleRows
+     * @param headerRows
+     * @param pojoClass
+     * @param <T>
+     * @return
+     */
+    public static <T> List<T> importExcel(MultipartFile file, Integer titleRows, Integer headerRows, Class<T> pojoClass){
+        if (file == null){
+            return null;
+        }
+        ImportParams params = new ImportParams();
+        params.setTitleRows(titleRows);
+        params.setHeadRows(headerRows);
+        List<T> list = null;
+        try {
+            list = ExcelImportUtil.importExcel(file.getInputStream(), pojoClass, params);
+        }catch (NoSuchElementException e){
+            throw new BusinessException("excel文件不能为空");
+        } catch (Exception e) {
+            throw new BusinessException(e.getMessage());
+        }
+        return list;
+    }
 
 }

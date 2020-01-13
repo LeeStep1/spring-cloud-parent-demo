@@ -102,8 +102,17 @@ public interface UserDao extends BaseMapper<User> {
 	 */
 	List<Role>findRoleByUserId (@Param(value = "userId")Long userId);
 
-
+	/**
+	 * 查询所有角色
+	 * @return
+	 */
 	List<Role> findRoles();
+
+	/**
+	 * 批量新增
+	 * @param users
+	 */
+	void batchAdd(@Param(value = "list")List<User> users);
 
 
 }
