@@ -34,8 +34,8 @@ public class CompanyRatePageVO extends BasePageVo implements Serializable {
 	 */
 	private Long roleId;
 	/**
-	 * 电梯类型id,电梯类型表中的id
+	 * 电梯类型参数key
 	 */
-	private Long elevatorTypeId;
+	private String elevatorParamsKey;
 
 }

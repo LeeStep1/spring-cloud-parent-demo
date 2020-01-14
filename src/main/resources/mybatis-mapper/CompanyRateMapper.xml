@@ -132,8 +132,8 @@
             <if test="companyRatePageVO.roleId!=null">
                 and t1.role_id = #{companyRatePageVO.roleId,jdbcType=BIGINT}
             </if>
-            <if test="companyRatePageVO.elevatorTypeId!=null">
-                and t1.elevator_type_id = #{companyRatePageVO.elevatorTypeId,jdbcType=BIGINT}
+            <if test="companyRatePageVO.elevatorParamsKey!=null">
+                and t4.params_key = #{companyRatePageVO.elevatorParamsKey,jdbcType=VARCHAR}
             </if>
 
         </where>
