@@ -166,6 +166,7 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 			if (priceId == null) {
 				priceId = priceVO.getPriceId();
 			}
+
 			if (temp == null) {
 				temp = projectPriceDao.selectById(priceId);
 			}
@@ -207,8 +208,11 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 			audit.setAuditUserName(realName);
 			audit.setAuditTime(new Date());
 			audit.setAuditType(AuditTypeEnum.AUDIT.getCode());
-			audit.setProjectId(projectPrices.get(0).getProjectId());
-			audit.setProjectPriceId(projectPrices.get(0).getPriceId());
+			ProjectPrice pp = projectPriceDao.selectById(priceId);
+			if (pp!=null){
+				audit.setProjectId(pp.getProjectId());
+			}
+			audit.setProjectPriceId(priceId);
 			auditDao.insert(audit);
 
 
