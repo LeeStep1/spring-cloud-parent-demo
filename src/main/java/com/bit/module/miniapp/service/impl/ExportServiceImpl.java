@@ -209,7 +209,7 @@ public class ExportServiceImpl  extends BaseService implements ExportService {
 
     public void export(List<ExcelVo> clsList, String sheetName,List<String>ccAdress,String toAdress,String title) {
         String filename = UUIDUtil.getUUID();
-        String path = filePath+  System.getProperty("file.separator")+filename+ System.getProperty("file.separator")+title+".xls";
+        String path = filePath+  System.getProperty("file.separator")+filename+ System.getProperty("file.separator")+title+".xlsx";
         File aa = new File(path);
         if (!aa.getParentFile().exists()) {
             aa.getParentFile().mkdirs();
