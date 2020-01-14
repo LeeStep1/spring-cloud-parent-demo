@@ -2,6 +2,7 @@ package com.bit.module.manager.service;
 
 
 import com.bit.base.vo.BaseVo;
+import com.bit.module.equation.bean.BasePriceEquation;
 import com.bit.module.equation.bean.BasePriceEquationRel;
 import com.bit.module.miniapp.bean.QueryParams;
 import com.bit.module.manager.vo.BasePriceEquationPageVO;
@@ -35,5 +36,32 @@ public interface BasePriceEquationService {
 	 */
 	BaseVo listPage(BasePriceEquationPageVO basePriceEquationPageVO);
 
+	/**
+	 * 更新数据
+	 * @param basePriceEquation
+	 * @return
+	 */
+	BaseVo update(BasePriceEquation basePriceEquation);
+
+	/**
+	 * 删除数据
+	 * @param id
+	 * @return
+	 */
+	BaseVo delete(Long id);
+
+	/**
+	 * 参数验重
+	 * @param basePriceEquation
+	 * @return
+	 */
+	BaseVo distinctParam(BasePriceEquation basePriceEquation);
+
+	/**
+	 * 新增数据
+	 * @param basePriceEquation
+	 * @return
+	 */
+	BaseVo add(BasePriceEquation basePriceEquation);
 }
 

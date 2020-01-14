@@ -2,6 +2,7 @@ package com.bit.module.manager.controller;
 
 
 import com.bit.base.vo.BaseVo;
+import com.bit.module.equation.bean.BasePriceEquation;
 import com.bit.module.equation.bean.BasePriceEquationRel;
 import com.bit.module.manager.service.BasePriceEquationService;
 import com.bit.module.miniapp.bean.QueryParams;
@@ -54,5 +55,44 @@ public class BasePriceEquationController {
 		return basePriceEquationService.listPage(basePriceEquationPageVO);
 	}
 
+	/**
+	 * 更新数据
+	 * @param basePriceEquation
+	 * @return
+	 */
+	@PutMapping("/update")
+	public BaseVo update(@RequestBody BasePriceEquation basePriceEquation){
+		return basePriceEquationService.update(basePriceEquation);
+	}
+
+	/**
+	 * 删除数据
+	 * @param id
+	 * @return
+	 */
+	@DeleteMapping("/delete/{id}")
+	public BaseVo delete(@PathVariable(value = "id")Long id){
+		return basePriceEquationService.delete(id);
+	}
+
+	/**
+	 * 参数验重
+	 * @param basePriceEquation
+	 * @return
+	 */
+	@PostMapping("/distinctParam")
+	public BaseVo distinctParam(@RequestBody BasePriceEquation basePriceEquation){
+		return basePriceEquationService.distinctParam(basePriceEquation);
+	}
+
+	/**
+	 * 新增数据
+	 * @param basePriceEquation
+	 * @return
+	 */
+	@PostMapping("/add")
+	public BaseVo add(@RequestBody BasePriceEquation basePriceEquation){
+		return basePriceEquationService.add(basePriceEquation);
+	}
 
 }

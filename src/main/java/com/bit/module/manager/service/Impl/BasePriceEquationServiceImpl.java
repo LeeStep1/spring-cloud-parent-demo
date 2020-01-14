@@ -2,22 +2,30 @@ package com.bit.module.manager.service.Impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.bit.base.exception.BusinessException;
+import com.bit.base.service.BaseService;
 import com.bit.base.vo.BaseVo;
+import com.bit.common.wxenum.ResultCode;
+import com.bit.module.equation.bean.BasePriceEquation;
 import com.bit.module.equation.bean.BasePriceEquationRel;
 import com.bit.module.equation.dao.BasePriceEquationDao;
 import com.bit.module.equation.dao.BasePriceEquationRelDao;
 import com.bit.module.manager.dao.QueryParamsDao;
+import com.bit.module.manager.service.QueryParamsService;
 import com.bit.module.manager.vo.BasePriceEquationVO;
 import com.bit.module.miniapp.bean.QueryParams;
 import com.bit.module.manager.vo.BasePriceEquationPageVO;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.bit.module.manager.service.BasePriceEquationService;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("basePriceEquationService")
-public class BasePriceEquationServiceImpl implements BasePriceEquationService {
+public class BasePriceEquationServiceImpl extends BaseService implements BasePriceEquationService {
 
 	@Autowired
 	private BasePriceEquationDao basePriceEquationDao;
@@ -27,6 +35,9 @@ public class BasePriceEquationServiceImpl implements BasePriceEquationService {
 
 	@Autowired
 	private QueryParamsDao queryParamsDao;
+
+	@Autowired
+	private QueryParamsService queryParamsService;
 
 	/**
 	 * 查询电梯的属性 载重 速度 层站 提升高度
@@ -48,11 +59,10 @@ public class BasePriceEquationServiceImpl implements BasePriceEquationService {
 	 */
 	@Override
 	public BaseVo findQueryParamsByParam(QueryParams queryParams) {
-		List<QueryParams> byParam = queryParamsDao.getDetailParam(queryParams);
-		BaseVo baseVo = new BaseVo();
-		baseVo.setData(byParam);
-		return baseVo;
+		BaseVo<QueryParams> eleParamTree = queryParamsService.getEleParamTree(queryParams);
+		return eleParamTree;
 	}
+
 
 	/**
 	 * 列表查询
@@ -66,5 +76,64 @@ public class BasePriceEquationServiceImpl implements BasePriceEquationService {
 		BaseVo baseVo = new BaseVo();
 		baseVo.setData(basePriceEquationVOIPage);
 		return baseVo;
+	}
+
+	/**
+	 * 更新数据
+	 * @param basePriceEquation
+	 * @return
+	 */
+	@Override
+	@Transactional
+	public BaseVo update(BasePriceEquation basePriceEquation) {
+
+		basePriceEquationDao.updateBasePriceEquation(basePriceEquation);
+		return successVo();
+	}
+
+	/**
+	 * 删除数据
+	 * @param id
+	 * @return
+	 */
+	@Override
+	@Transactional
+	public BaseVo delete(Long id) {
+		basePriceEquationDao.delBasePriceEquationById(id);
+		return successVo();
+	}
+
+	/**
+	 * 参数验重
+	 * @param basePriceEquation
+	 * @return
+	 */
+	@Override
+	public BaseVo distinctParam(BasePriceEquation basePriceEquation) {
+		BaseVo baseVo = new BaseVo();
+		List<BasePriceEquation> byParam = basePriceEquationDao.findByParam(basePriceEquation);
+		if (CollectionUtils.isNotEmpty(byParam)){
+			baseVo.setCode(ResultCode.PARAMS_KEY_EXIST.getCode());
+			baseVo.setMsg(ResultCode.PARAMS_KEY_EXIST.getInfo());
+		}else {
+			baseVo.setCode(ResultCode.PARAMS_KEY_NOT_EXIST.getCode());
+			baseVo.setMsg(ResultCode.PARAMS_KEY_NOT_EXIST.getInfo());
+		}
+		return baseVo;
+	}
+
+
+	/**
+	 * 新增数据
+	 * @param basePriceEquation
+	 * @return
+	 */
+	@Override
+	@Transactional
+	public BaseVo add(BasePriceEquation basePriceEquation) {
+
+		basePriceEquationDao.addBasePriceEquation(basePriceEquation);
+
+		return successVo();
 	}
 }

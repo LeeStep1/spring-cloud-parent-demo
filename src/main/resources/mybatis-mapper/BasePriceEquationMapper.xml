@@ -174,7 +174,7 @@
 
 
     <!-- 删除数据 -->
-    <delete id="delBasePriceEquationById" parameterType="Integer">
+    <delete id="delBasePriceEquationById" parameterType="long">
         delete from t_base_price_equation
         where id = #{id,jdbcType=BIGINT}
     </delete>
