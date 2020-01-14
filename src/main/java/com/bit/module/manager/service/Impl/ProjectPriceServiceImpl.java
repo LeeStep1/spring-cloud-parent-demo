@@ -295,7 +295,7 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 			}*/
 			for (int i=0;i<listPage.getRecords().size();i++) {
 				for (Audit audit : byParamOnlyOne) {
-					if (audit.getProjectId().equals(listPage.getRecords().get(i).getProjectId()) &&
+					if (
 							audit.getProjectPriceId().equals(listPage.getRecords().get(i).getProjectPriceId())){
 						listPage.getRecords().get(i).setCreateTime(audit.getAuditTime());
 						listPage.getRecords().get(i).setAuditUserName(audit.getAuditUserName());
