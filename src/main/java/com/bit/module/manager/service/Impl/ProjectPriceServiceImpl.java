@@ -277,7 +277,7 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 		map.put("projectIds", projectIds);
 		map.put("projectPriceIds", projectPriceIds);
 
-		List<Audit> byParamOnlyOne = auditDao.findByParamOnlyOne(map);
+		List<Audit> byParamOnlyOne = auditDao.findByParamBatchByProjectIdAndProjectPriceId(map);
 		if (CollectionUtils.isNotEmpty(byParamOnlyOne)){
 			for (ProjectShowVO projectShowVO : listPage.getRecords()) {
 				for (Audit audit : byParamOnlyOne) {

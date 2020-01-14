@@ -56,5 +56,5 @@ public interface AuditDao extends BaseMapper<Audit>{
 	 * 多参数查询 只取一个
 	 * @return
 	 */
-	List<Audit> findByParamOnlyOne(@Param(value = "map")Map map);
+	List<Audit> findByParamBatchByProjectIdAndProjectPriceId(@Param(value = "map")Map map);
 }
