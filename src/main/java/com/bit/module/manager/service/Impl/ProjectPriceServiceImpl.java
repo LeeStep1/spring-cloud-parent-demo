@@ -285,6 +285,7 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 							audit.getProjectPriceId().equals(projectShowVO.getProjectPriceId())){
 						projectShowVO.setCreateTime(audit.getAuditTime());
 						projectShowVO.setAuditUserName(audit.getAuditUserName());
+						break;
 					}
 				}
 			}
