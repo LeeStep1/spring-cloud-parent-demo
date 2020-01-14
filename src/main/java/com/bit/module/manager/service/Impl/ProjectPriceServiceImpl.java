@@ -279,12 +279,22 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 
 		List<Audit> byParamOnlyOne = auditDao.findByParamBatchByProjectIdAndProjectPriceId(map);
 		if (CollectionUtils.isNotEmpty(byParamOnlyOne)){
-			for (ProjectShowVO projectShowVO : listPage.getRecords()) {
+			/*for (ProjectShowVO projectShowVO : listPage.getRecords()) {
 				for (Audit audit : byParamOnlyOne) {
 					if (audit.getProjectId().equals(projectShowVO.getProjectId()) &&
 							audit.getProjectPriceId().equals(projectShowVO.getProjectPriceId())){
 						projectShowVO.setCreateTime(audit.getAuditTime());
 						projectShowVO.setAuditUserName(audit.getAuditUserName());
+						break;
+					}
+				}
+			}*/
+			for (int i=0;i<listPage.getRecords().size();i++) {
+				for (Audit audit : byParamOnlyOne) {
+					if (audit.getProjectId().equals(listPage.getRecords().get(i).getProjectId()) &&
+							audit.getProjectPriceId().equals(listPage.getRecords().get(i).getProjectPriceId())){
+						listPage.getRecords().get(i).setCreateTime(audit.getAuditTime());
+						listPage.getRecords().get(i).setAuditUserName(audit.getAuditUserName());
 						break;
 					}
 				}
