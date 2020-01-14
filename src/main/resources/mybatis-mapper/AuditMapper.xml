@@ -176,12 +176,6 @@
         FROM t_audit
         <where>
             <if test="map!=null">
-                <if test="map.projectIds!=null and map.projectIds.size()>0">
-                    and project_id IN
-                    <foreach collection="map.projectIds" item="projectId" index="index" open="(" close=")" separator=",">
-                        #{projectId,jdbcType=BIGINT}
-                    </foreach>
-                </if>
                 <if test="map.projectPriceIds!=null and map.projectPriceIds.size()>0">
                     and project_price_id IN
                     <foreach collection="map.projectPriceIds" item="projectPriceId" index="index" open="(" close=")" separator=",">
@@ -191,10 +185,10 @@
             </if>
 
             <!--<if test="projectId!=null">-->
-                <!--and project_id = #{projectId,jdbcType=BIGINT}-->
+            <!--and project_id = #{projectId,jdbcType=BIGINT}-->
             <!--</if>-->
             <!--<if test="projectPriceId!=null">-->
-                <!--and project_price_id = #{projectPriceId,jdbcType=BIGINT}-->
+            <!--and project_price_id = #{projectPriceId,jdbcType=BIGINT}-->
             <!--</if>-->
 
 
