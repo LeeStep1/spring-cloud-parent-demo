@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 /**
@@ -117,6 +118,16 @@ public class ElevatorTypeController {
 	@PostMapping("/findAll")
 	public BaseVo findAll(){
 		return elevatorTypeService.findAll();
+	}
+
+	/**
+	 * 上传图片
+	 * @param multipartFile
+	 * @return
+	 */
+	@PostMapping("/uploadImage")
+	public BaseVo uploadImage(@RequestParam MultipartFile multipartFile,@RequestParam String fileName){
+		return elevatorTypeService.uploadImage(multipartFile,fileName);
 	}
 
 }

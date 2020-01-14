@@ -23,10 +23,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.*;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service("elevatorTypeService")
 public class ElevatorTypeServiceImpl extends BaseService implements ElevatorTypeService {
@@ -38,6 +40,8 @@ public class ElevatorTypeServiceImpl extends BaseService implements ElevatorType
 
 	@Value("${server.servlet.context-path}")
 	private String contextPath;
+	@Value("${upload.imagesPath}")
+	private String imagePath;
 
 
 	/**
@@ -186,5 +190,65 @@ public class ElevatorTypeServiceImpl extends BaseService implements ElevatorType
 		return baseVo;
 	}
 
+	/**
+	 * 上传图片
+	 * @param multipartFile
+	 * @return
+	 */
+	@Override
+	public BaseVo uploadImage(MultipartFile multipartFile,String fileName) {
+		if (multipartFile==null){
+			throw new BusinessException("文件是空");
+		}
+		OutputStream out =null;
+		OutputStream toClient = null;
+		String filePath = "ele/"+fileName;
+		try {
 
+			byte[] buffer = multipartFile.getBytes();
+			File file = new File(imagePath+"ele\\"+fileName);
+			if (file.exists()){
+				deleteFile(file);
+			}else {
+				file.createNewFile();
+			}
+			out = new FileOutputStream(file);
+			toClient = new BufferedOutputStream(out);
+			toClient.write(buffer);
+		}catch (Exception e){
+			e.printStackTrace();
+		}finally {
+			try {
+				toClient.flush();
+				toClient.close();
+				out.flush();
+				out.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		BaseVo baseVo = new BaseVo();
+		baseVo.setData(filePath);
+		return baseVo;
+	}
+
+	//递归删除文件夹
+	private boolean deleteFile(File dirFile){
+		// 如果dir对应的文件不存在，则退出
+		if (!dirFile.exists()) {
+			return false;
+		}
+
+		if (dirFile.isFile()) {
+			return dirFile.delete();
+		} else {
+
+			for (File file : dirFile.listFiles()) {
+				deleteFile(file);
+			}
+		}
+
+		return dirFile.delete();
+
+	}
 }

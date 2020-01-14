@@ -5,6 +5,7 @@ import java.util.List;
 import com.bit.base.vo.BaseVo;
 import com.bit.module.manager.vo.ElevatorTypePageVO;
 import com.bit.module.miniapp.bean.ElevatorType;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 电梯系列基础信息表
@@ -71,5 +72,12 @@ public interface ElevatorTypeService {
 	 * @return
 	 */
 	BaseVo findAll();
+
+	/**
+	 * 上传图片
+	 * @param multipartFile
+	 * @return
+	 */
+	BaseVo uploadImage(MultipartFile multipartFile,String fileName);
 }
 
