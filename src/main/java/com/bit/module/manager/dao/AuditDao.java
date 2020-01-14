@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 审批表
@@ -50,4 +51,10 @@ public interface AuditDao extends BaseMapper<Audit>{
 	 * @param audits
 	 */
 	void batchAdd(@Param(value = "list")List<Audit> audits);
+
+	/**
+	 * 多参数查询 只取一个
+	 * @return
+	 */
+	List<Audit> findByParamOnlyOne(@Param(value = "map")Map map);
 }

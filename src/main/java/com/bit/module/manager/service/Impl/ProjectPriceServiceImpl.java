@@ -26,7 +26,7 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 
 	@Autowired
 	private ProjectPriceDao projectPriceDao;
-	
+
 	@Autowired
 	private ProjectEleOrderDao projectEleOrderDao;
 
@@ -41,8 +41,10 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 
 	@Autowired
 	private EquationServiceImpl equationServiceImpl;
+
 	/**
 	 * 项目下订单列表
+	 *
 	 * @param projectPriceId
 	 * @return
 	 */
@@ -50,12 +52,12 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 	public BaseVo orderList(Long projectPriceId) {
 		BaseVo baseVo = new BaseVo();
 		ProjectPrice projectPriceById = projectPriceDao.getProjectPriceById(projectPriceId);
-		if (projectPriceById==null){
+		if (projectPriceById == null) {
 			throw new BusinessException("报价不存在");
 		}
 		Project project = projectDao.selectById(projectPriceById.getProjectId());
 		ProjectOrderWebVO projectOrderWebVO = new ProjectOrderWebVO();
-		BeanUtils.copyProperties(project,projectOrderWebVO);
+		BeanUtils.copyProperties(project, projectOrderWebVO);
 		//根据projectid查询 所有的订单
 		ProjectEleOrder order = new ProjectEleOrder();
 		order.setProjectId(projectPriceById.getProjectId());
@@ -63,7 +65,7 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 		List<ProjectEleOrder> byParam = projectEleOrderDao.findByParam(order);
 		//List<ProjectEleOrder> byParam = projectEleOrderDao.findByParam(order);
 
-		if (CollectionUtils.isNotEmpty(byParam)){
+		if (CollectionUtils.isNotEmpty(byParam)) {
 
 			List<ProjectPriceDetailInfo> projectPriceDetailInfos = new ArrayList<>();
 
@@ -82,7 +84,7 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 				projectPriceDetailInfo.setPriceId(projectEleOrder.getVersionId());
 
 				ProjectPrice orderprice = projectPriceDao.getProjectPriceById(projectEleOrder.getVersionId());
-				if (orderprice!=null){
+				if (orderprice != null) {
 					projectPriceDetailInfo.setOrderPrice(orderprice.getTotalPrice());
 					//乐观锁 更新时候使用
 					projectPriceDetailInfo.setPositiveLock(orderprice.getPositiveLock());
@@ -95,14 +97,14 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 
 				// 新增电梯非标项
 				projectPriceDetailInfo.setStandard(projectEleOrder.getStandard());
-				if (projectEleOrder.getStandard()!=null){
-					if (projectEleOrder.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
-						Map cod=new HashMap();
-						cod.put("order_id",projectEleOrder.getId());
-						List<ProjectEleNonstandard>  list =projectEleNonstandardDao.selectByMap(cod);
+				if (projectEleOrder.getStandard() != null) {
+					if (projectEleOrder.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())) {
+						Map cod = new HashMap();
+						cod.put("order_id", projectEleOrder.getId());
+						List<ProjectEleNonstandard> list = projectEleNonstandardDao.selectByMap(cod);
 						projectPriceDetailInfo.setProjectEleNonstandardOptionList(list);
 						projectPriceDetailInfo.setStandardName(StandardEnum.STANDARD_ZERO.getInfo());
-					}else{
+					} else {
 						projectPriceDetailInfo.setStandardName(StandardEnum.STANDARD_ONE.getInfo());
 					}
 				}
@@ -152,47 +154,47 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 	@Override
 	@Transactional
 	public BaseVo update(List<ProjectEleNonstandardVO> projectPrices) {
-		if (CollectionUtils.isEmpty(projectPrices)){
+		if (CollectionUtils.isEmpty(projectPrices)) {
 			throw new BusinessException("参数为空");
 		}
 		List<ProjectEleNonstandardVO> updatelist = new ArrayList<>();
 		List<ProjectEleOrder> orderList = new ArrayList<>();
-		Long priceId =null;
-		ProjectPrice temp =null;
+		Long priceId = null;
+		ProjectPrice temp = null;
 		for (ProjectEleNonstandardVO priceVO : projectPrices) {
 
-			if(priceId==null){
-				priceId=priceVO.getPriceId();
+			if (priceId == null) {
+				priceId = priceVO.getPriceId();
 			}
-			if(temp==null){
-				temp=projectPriceDao.selectById(priceId);
+			if (temp == null) {
+				temp = projectPriceDao.selectById(priceId);
 			}
-			if (temp!=null){
-				if (temp.getNonStandardApplyStatus().equals(NonStandardApplyStatusEnum.TONGGUO.getCode())){
+			if (temp != null) {
+				if (temp.getNonStandardApplyStatus().equals(NonStandardApplyStatusEnum.TONGGUO.getCode())) {
 					throw new BusinessException("此报价已经通过");
 				}
-				if (priceVO.getPositiveLock().equals(temp.getPositiveLock())){
+				if (priceVO.getPositiveLock().equals(temp.getPositiveLock())) {
 					updatelist.add(priceVO);
 				}
 			}
 			ProjectEleOrder order = new ProjectEleOrder();
 			order.setId(priceVO.getOrderId());
-			if (priceVO.getProductionFlag().equals(ProductionFlagEnum.YES.getCode())){
+			if (priceVO.getProductionFlag().equals(ProductionFlagEnum.YES.getCode())) {
 				order.setCalculateFlag(CalculateFlagEnum.YES.getCode());
-			}else if (priceVO.getProductionFlag().equals(ProductionFlagEnum.NO.getCode())){
+			} else if (priceVO.getProductionFlag().equals(ProductionFlagEnum.NO.getCode())) {
 				order.setCalculateFlag(CalculateFlagEnum.NO.getCode());
 			}
 
 			orderList.add(order);
 		}
 
-		if (CollectionUtils.isNotEmpty(updatelist)){
+		if (CollectionUtils.isNotEmpty(updatelist)) {
 			//更改t_project_price的non_standard_apply_status状态
 			projectPriceDao.updatebatchProjectPrice(updatelist);
 			//更改t_project_ele_nonstandard的total_price
 			projectEleNonstandardDao.updatebatchNonstandard(projectPrices);
 			//更改t_project_ele_order的calculate_flag
-			if (CollectionUtils.isNotEmpty(orderList)){
+			if (CollectionUtils.isNotEmpty(orderList)) {
 				projectEleOrderDao.updateBatchEleOrder(orderList);
 			}
 
@@ -218,19 +220,19 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 			cod.put("projectId", ppr.getProjectId());
 			cod.put("version", ppr.getVersion());
 			cod.put("isUpdate", true);
-            if(temp!=null){
+			if (temp != null) {
 
-					if (temp.getInstallFlag().equals(InstallFlagEnum.YES.getCode())) {
-						cod.put("包括安装", true);
-					}
-					if (temp.getTransportFlag().equals(TransportFlagEnum.YES.getCode())) {
-						cod.put("包括运费", true);
-					}
+				if (temp.getInstallFlag().equals(InstallFlagEnum.YES.getCode())) {
+					cod.put("包括安装", true);
+				}
+				if (temp.getTransportFlag().equals(TransportFlagEnum.YES.getCode())) {
+					cod.put("包括运费", true);
+				}
 
 				equationServiceImpl.executeCountProjectPrice(cod);
 
-			}else{
-            	throw new BusinessException("无此报价数据");
+			} else {
+				throw new BusinessException("无此报价数据");
 			}
 			//ProjectPrice projectPriceByProjectId = projectPriceDao.getProjectPriceByProjectIdWithVersion(ppr.getProjectId(), ppr.getVersion());
 
@@ -241,9 +243,9 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 	}
 
 
-
 	/**
 	 * 报价列表分页查询
+	 *
 	 * @param projectPageVO
 	 * @return
 	 */
@@ -251,10 +253,39 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 	public BaseVo listPage(ProjectPageVO projectPageVO) {
 		Page<ProjectShowVO> page = new Page<>(projectPageVO.getPageNum(), projectPageVO.getPageSize());
 		IPage<ProjectShowVO> listPage = projectPriceDao.listPage(page, projectPageVO);
-		if (CollectionUtils.isNotEmpty(listPage.getRecords())){
+		List<Long> projectIds = new ArrayList<>();
+		List<Long> projectPriceIds = new ArrayList<>();
+
+		if (CollectionUtils.isNotEmpty(listPage.getRecords())) {
 			for (ProjectShowVO projectShowVO : listPage.getRecords()) {
-				if (projectShowVO.getNonStandardApplyStatus().equals(NonStandardApplyStatusEnum.DAISHENHE.getCode())){
+				if (projectShowVO.getNonStandardApplyStatus().equals(NonStandardApplyStatusEnum.DAISHENHE.getCode())) {
 					projectShowVO.setAuditUserName("");
+				}
+				projectIds.add(projectShowVO.getProjectId());
+				projectPriceIds.add(projectShowVO.getProjectPriceId());
+//				Audit au = new Audit();
+//				au.setProjectPriceId(projectShowVO.getProjectPriceId());
+//				au.setProjectId(projectShowVO.getProjectId());
+//				Audit byParamOnlyOne = auditDao.findByParamOnlyOne(au);
+//				if (byParamOnlyOne!=null){
+//					projectShowVO.setCreateTime(byParamOnlyOne.getAuditTime());
+//					projectShowVO.setAuditUserName(byParamOnlyOne.getAuditUserName());
+//				}
+			}
+		}
+		Map map = new HashMap();
+		map.put("projectIds", projectIds);
+		map.put("projectPriceIds", projectPriceIds);
+
+		List<Audit> byParamOnlyOne = auditDao.findByParamOnlyOne(map);
+		if (CollectionUtils.isNotEmpty(byParamOnlyOne)){
+			for (ProjectShowVO projectShowVO : listPage.getRecords()) {
+				for (Audit audit : byParamOnlyOne) {
+					if (audit.getProjectId().equals(projectShowVO.getProjectId()) &&
+							audit.getProjectPriceId().equals(projectShowVO.getProjectPriceId())){
+						projectShowVO.setCreateTime(audit.getAuditTime());
+						projectShowVO.setAuditUserName(audit.getAuditUserName());
+					}
 				}
 			}
 		}

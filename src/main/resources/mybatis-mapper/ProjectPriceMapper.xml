@@ -240,17 +240,13 @@
         t2.create_user_name,
         t1.non_standard_apply_status,
         t1.id as projectPriceId,
-        t4.audit_time as createTime,
         t3.mobile,
-        t3.real_name,
-        t4.audit_user_name as auditUserName
+        t3.real_name
         FROM t_project_price t1
         INNER JOIN t_project t2
         on t1.project_id = t2.id
         INNER JOIN t_user t3
         on t2.create_user_id = t3.id
-        LEFT JOIN t_audit t4
-        on t1.id = t4.project_price_id
         <where>
             and t1.non_standard_apply_status > 1
             <if test="projectPageVO.customerName!=null and projectPageVO.customerName!=''">
@@ -272,6 +268,7 @@
                 and t1.non_standard_apply_status = #{projectPageVO.nonStandardApplyStatus,jdbcType=INTEGER}
             </if>
         </where>
-        order by createTime desc
+        order by t1.create_time desc
     </select>
+
 </mapper>

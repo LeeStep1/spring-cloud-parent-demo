@@ -171,5 +171,31 @@
 
     </insert>
 
+    <select id="findByParamOnlyOne" parameterType="map" resultType="com.bit.module.manager.bean.Audit">
+        SELECT <include refid="Base_Column_List"/>
+        FROM t_audit
+        <where>
+            <if test="map!=null">
+                and project_id IN
+                <foreach collection="map.projectIds" item="projectId" index="index" open="(" close=")" separator=",">
+                    #{projectId,jdbcType=BIGINT}
+                </foreach>
+                and project_price_id IN
+                <foreach collection="map.projectPriceIds" item="projectPriceId" index="index" open="(" close=")" separator=",">
+                    #{projectPriceId,jdbcType=BIGINT}
+                </foreach>
+            </if>
+
+            <!--<if test="projectId!=null">-->
+                <!--and project_id = #{projectId,jdbcType=BIGINT}-->
+            <!--</if>-->
+            <!--<if test="projectPriceId!=null">-->
+                <!--and project_price_id = #{projectPriceId,jdbcType=BIGINT}-->
+            <!--</if>-->
+
+
+        </where>
+        order by id desc
+    </select>
 
 </mapper>
