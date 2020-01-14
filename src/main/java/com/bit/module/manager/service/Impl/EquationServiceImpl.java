@@ -71,7 +71,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
      * @param vars
      */
     public void executeCount(Map vars) {
-        logger.info("计算单个电梯入参:"+vars.toString());
+        logger.info("计算单个电梯入参:"+vars);
         getElevatorInfo(vars);
         if (Boolean.TRUE.equals(vars.get("包括运费"))) {
             executeTransportEquations(vars);
@@ -309,7 +309,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         Map map = new HashMap();
         map.put("title", "规格参数基价");
         if ("客梯".equals(vars.get("梯型")) || "货梯".equals(vars.get("梯型"))){
-            String content = StrUtil.format("{}KG,{}m/s,{}", vars.get("载重"), vars.get("速度"), vars.get("层站"));
+            String content = StrUtil.format("{}KG,{}m/s,{}层", vars.get("载重"), vars.get("速度"), vars.get("层站"));
             map.put("content", content);
         }
         map.put("price", vars.get("小计_设备基价"));
