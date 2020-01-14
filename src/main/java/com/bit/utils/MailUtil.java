@@ -6,10 +6,8 @@ import org.apache.commons.mail.EmailAttachment;
 import org.springframework.stereotype.Component;
 
 import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.*;
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
@@ -44,6 +42,7 @@ public class MailUtil {
 
 	public static void send(String sender,EmailInfo emailInfo) {
 		try {
+			System.setProperty("mail.mime.splitlongparameters","false");
 			Session session = initProperties();
 			MimeMessage mimeMessage = new MimeMessage(session);
 			// 发件人,可以设置发件人的别名
@@ -61,7 +60,7 @@ public class MailUtil {
 			// 抄收人,多人接收
 
 			// 主题
-			mimeMessage.setSubject(emailInfo.getSubject());
+			mimeMessage.setSubject(emailInfo.getSubject(),"UTF-8");
 			// 时间
 			mimeMessage.setSentDate(new Date());
 			// 容器类 附件
@@ -75,6 +74,8 @@ public class MailUtil {
 			bodyPart = new MimeBodyPart();
 			for (EmailAttachment emailAttachment : emailInfo.getAttachments()) {
 				bodyPart.attachFile(emailAttachment.getPath());
+				bodyPart.setFileName(MimeUtility.encodeText(emailAttachment.getName(), "UTF-8", "B"));
+
 				mimeMultipart.addBodyPart(bodyPart);
 			}
 			mimeMessage.setContent(mimeMultipart);

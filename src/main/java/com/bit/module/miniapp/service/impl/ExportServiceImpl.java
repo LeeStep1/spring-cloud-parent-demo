@@ -28,10 +28,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import javax.mail.internet.MimeUtility;
+import java.io.*;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -84,7 +83,7 @@ public class ExportServiceImpl  extends BaseService implements ExportService {
      * @return
      */
 
-    @Async
+   // @Async
     @Override
     public void sendPriceMail(Long projectPriceId, List<String>ccAddress, String toAdress){
         if(StringUtils.isEmpty(toAdress)){
@@ -199,7 +198,13 @@ public class ExportServiceImpl  extends BaseService implements ExportService {
                 rs.setInstallPrice("零");
             }
             listVo.add(rs);
-            export(listVo, "电梯价格单",ccAddress,toAdress,j.getProjectName()+"项目报价");
+            //export(listVo, "电梯价格单",ccAddress,toAdress,j.getProjectName()+"项目报价.xlsx");
+           ;
+            try {
+                export(listVo, "电梯价格单",ccAddress,toAdress, URLDecoder.decode(j.getProjectName()+"项目报价","UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         }
 
 
@@ -209,7 +214,8 @@ public class ExportServiceImpl  extends BaseService implements ExportService {
 
     public void export(List<ExcelVo> clsList, String sheetName,List<String>ccAdress,String toAdress,String title) {
         String filename = UUIDUtil.getUUID();
-        String path = filePath+  System.getProperty("file.separator")+filename+ System.getProperty("file.separator")+title+".xlsx";
+        String path = null;
+        path = filePath+  System.getProperty("file.separator")+filename+ System.getProperty("file.separator")+title+".xlsx";
         File aa = new File(path);
         if (!aa.getParentFile().exists()) {
             aa.getParentFile().mkdirs();
@@ -242,10 +248,9 @@ public class ExportServiceImpl  extends BaseService implements ExportService {
             List<EmailAttachment> attachments = new ArrayList<>();
             EmailAttachment emailAttachment = new EmailAttachment();
             emailAttachment.setPath(path);
-            emailAttachment.setName(title+".xls");
+            emailAttachment.setName(title+".xlsx");
             attachments.add(emailAttachment);
             //标题
-           // emailInfo.setSubject("电梯报价报价");
             emailInfo.setSubject(title);
             //内容
             emailInfo.setContent("内容：<h1>电梯报价,请查收附件</h1>");

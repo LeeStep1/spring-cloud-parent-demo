@@ -830,7 +830,6 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		}else{
 			exportService.sendPriceMail( projectPriceId,ccAddress,getCurrentUserInfo().getEmail());
 		}
-
 		return new SuccessVo();
 	}
 
