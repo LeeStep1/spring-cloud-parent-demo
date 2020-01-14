@@ -262,19 +262,9 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 
 		if (CollectionUtils.isNotEmpty(listPage.getRecords())) {
 			for (ProjectShowVO projectShowVO : listPage.getRecords()) {
-				if (projectShowVO.getNonStandardApplyStatus().equals(NonStandardApplyStatusEnum.DAISHENHE.getCode())) {
-					projectShowVO.setAuditUserName("");
-				}
+
 				projectIds.add(projectShowVO.getProjectId());
 				projectPriceIds.add(projectShowVO.getProjectPriceId());
-//				Audit au = new Audit();
-//				au.setProjectPriceId(projectShowVO.getProjectPriceId());
-//				au.setProjectId(projectShowVO.getProjectId());
-//				Audit byParamOnlyOne = auditDao.findByParamOnlyOne(au);
-//				if (byParamOnlyOne!=null){
-//					projectShowVO.setCreateTime(byParamOnlyOne.getAuditTime());
-//					projectShowVO.setAuditUserName(byParamOnlyOne.getAuditUserName());
-//				}
 			}
 		}
 		Map map = new HashMap();
@@ -295,12 +285,15 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 			}*/
 			for (int i=0;i<listPage.getRecords().size();i++) {
 				for (Audit audit : byParamOnlyOne) {
-					if (
-							audit.getProjectPriceId().equals(listPage.getRecords().get(i).getProjectPriceId())){
+					if (audit.getProjectPriceId().equals(listPage.getRecords().get(i).getProjectPriceId())){
 						listPage.getRecords().get(i).setCreateTime(audit.getAuditTime());
 						listPage.getRecords().get(i).setAuditUserName(audit.getAuditUserName());
 						break;
 					}
+				}
+				//如果待审批 就把审批人设置为空
+				if (listPage.getRecords().get(i).getNonStandardApplyStatus().equals(NonStandardApplyStatusEnum.DAISHENHE.getCode())) {
+					listPage.getRecords().get(i).setAuditUserName("");
 				}
 			}
 		}
