@@ -136,4 +136,17 @@ public class BasePriceEquationServiceImpl extends BaseService implements BasePri
 
 		return successVo();
 	}
+
+	/**
+	 * 返显数据
+	 * @param id
+	 * @return
+	 */
+	@Override
+	public BaseVo reflectById(Long id) {
+		BasePriceEquation basePriceEquationById = basePriceEquationDao.getBasePriceEquationById(id);
+		BaseVo baseVo = new BaseVo();
+		baseVo.setData(basePriceEquationById);
+		return baseVo;
+	}
 }

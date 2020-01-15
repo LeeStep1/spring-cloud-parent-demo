@@ -63,5 +63,12 @@ public interface BasePriceEquationService {
 	 * @return
 	 */
 	BaseVo add(BasePriceEquation basePriceEquation);
+
+	/**
+	 * 返显数据
+	 * @param id
+	 * @return
+	 */
+	BaseVo reflectById(Long id);
 }
 

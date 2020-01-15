@@ -18,27 +18,19 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-                id
-        ,
-                    category
-        ,
-                    type
-        ,
-                    val1
-        ,
-                    val2
-        ,
-                    val3
-        ,
-                    val4
-        ,
-                    val5
-        ,
-                    output
-                </sql>
+        id,
+        category,
+        type,
+        val1,
+        val2,
+        val3,
+        val4,
+        val5,
+        output
+    </sql>
 
     <!-- 根据主键查询数据 -->
-    <select id="getBasePriceEquationById" parameterType="Integer" resultMap="basePriceEquationMap">
+    <select id="getBasePriceEquationById" parameterType="long" resultMap="basePriceEquationMap">
         select
         <include refid="Base_Column_List"/>
         from t_base_price_equation

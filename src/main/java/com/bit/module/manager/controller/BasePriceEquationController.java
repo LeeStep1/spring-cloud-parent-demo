@@ -95,4 +95,14 @@ public class BasePriceEquationController {
 		return basePriceEquationService.add(basePriceEquation);
 	}
 
+	/**
+	 * 返显数据
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/reflectById/{id}")
+	public BaseVo reflectById(@PathVariable(value = "id")Long id){
+		return basePriceEquationService.reflectById(id);
+	}
+
 }
