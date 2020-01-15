@@ -83,7 +83,7 @@ public class ExportServiceImpl  extends BaseService implements ExportService {
      * @return
      */
 
-   // @Async
+    @Async
     @Override
     public void sendPriceMail(Long projectPriceId, List<String>ccAddress, String toAdress){
         if(StringUtils.isEmpty(toAdress)){
