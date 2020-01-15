@@ -162,6 +162,7 @@
                 and category = #{elevatorTypePageVO.category,jdbcType=VARCHAR}
             </if>
         </where>
+        order by type,id asc
     </select>
 
 </mapper>
