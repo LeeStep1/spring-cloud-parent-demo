@@ -1,13 +1,20 @@
 package com.bit.module.manager.service.Impl;
 
+import com.bit.base.exception.BusinessException;
 import com.bit.base.service.BaseService;
 import com.bit.base.vo.BaseVo;
 import com.bit.module.manager.bean.Company;
+import com.bit.module.manager.bean.CompanyRate;
+import com.bit.module.manager.bean.UserCompany;
 import com.bit.module.manager.dao.CompanyDao;
+import com.bit.module.manager.dao.CompanyRateDao;
+import com.bit.module.manager.dao.UserCompanyDao;
+import com.bit.module.manager.dao.UserDao;
 import com.bit.module.manager.service.CompanyService;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +29,11 @@ public class CompanyServiceImpl extends BaseService implements CompanyService {
 
 	@Autowired
 	private CompanyDao companyDao;
+	@Autowired
+	private UserCompanyDao userCompanyDao;
+	@Autowired
+	private CompanyRateDao companyRateDao;
+
 
 	/**
 	 * 全部公司
@@ -59,6 +71,74 @@ public class CompanyServiceImpl extends BaseService implements CompanyService {
 		}
 		BaseVo baseVo = new BaseVo();
 		baseVo.setData(rootList);
+		return baseVo;
+	}
+
+	/**
+	 * 新增公司
+	 * @return
+	 */
+	@Override
+	@Transactional
+	public BaseVo addCompany(Company company) {
+		companyDao.addCompany(company);
+		return successVo();
+	}
+
+	/**
+	 * 更新公司
+	 * @param company
+	 * @return
+	 */
+	@Override
+	@Transactional
+	public BaseVo updateCompany(Company company) {
+		companyDao.updateCompany(company);
+		return successVo();
+	}
+
+	/**
+	 * 删除公司
+	 * @param id
+	 * @return
+	 */
+	@Override
+	@Transactional
+	public BaseVo delCompany(Long id) {
+		Company companyById = companyDao.getCompanyById(id);
+		if (companyById==null){
+			throw new BusinessException("公司不存在");
+		}
+		//查询公司下有没有人
+		UserCompany userCompany = new UserCompany();
+		userCompany.setCompanyId(id);
+		List<UserCompany> byParam = userCompanyDao.findByParam(userCompany);
+		if (CollectionUtils.isNotEmpty(byParam)){
+			throw new BusinessException("公司下有用户，不能删除");
+		}
+		//查询公司下有没有下浮率
+		CompanyRate rate = new CompanyRate();
+		rate.setCompanyId(id);
+		List<CompanyRate> rateParam = companyRateDao.findByParam(rate);
+		if (CollectionUtils.isNotEmpty(rateParam)){
+			throw new BusinessException("公司下有下浮率，不能删除");
+		}
+		//删除公司
+		companyDao.delCompanyById(id);
+
+		return successVo();
+	}
+
+	/**
+	 * 单查公司
+	 * @param id
+	 * @return
+	 */
+	@Override
+	public BaseVo reflectById(Long id) {
+		Company companyById = companyDao.getCompanyById(id);
+		BaseVo baseVo = new BaseVo();
+		baseVo.setData(companyById);
 		return baseVo;
 	}
 

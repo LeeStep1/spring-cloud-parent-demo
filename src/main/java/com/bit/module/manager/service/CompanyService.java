@@ -1,6 +1,7 @@
 package com.bit.module.manager.service;
 
 import com.bit.base.vo.BaseVo;
+import com.bit.module.manager.bean.Company;
 import com.bit.module.miniapp.bean.Area;
 
 /**
@@ -23,5 +24,32 @@ public interface CompanyService {
 	 * @return
 	 */
 	BaseVo companyTree();
+
+	/**
+	 * 新增公司
+	 * @return
+	 */
+	BaseVo addCompany(Company company);
+
+	/**
+	 * 更新公司
+	 * @param company
+	 * @return
+	 */
+	BaseVo updateCompany(Company company);
+
+	/**
+	 * 删除公司
+	 * @param id
+	 * @return
+	 */
+	BaseVo delCompany(Long id);
+
+	/**
+	 * 单查公司
+	 * @param id
+	 * @return
+	 */
+	BaseVo reflectById(Long id);
 }
 

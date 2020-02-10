@@ -20,7 +20,7 @@
     </sql>
 
     <!-- 根据主键查询数据 -->
-    <select id="getCompanyById" parameterType="Integer" resultMap="companyMap">
+    <select id="getCompanyById" parameterType="Long" resultMap="companyMap">
         select
         <include refid="Base_Column_List"/>
         from t_company
@@ -95,7 +95,7 @@
 
 
     <!-- 删除数据 -->
-    <delete id="delCompanyById" parameterType="Integer">
+    <delete id="delCompanyById" parameterType="Long">
         delete from t_company
         where id = #{id,jdbcType=BIGINT}
     </delete>
