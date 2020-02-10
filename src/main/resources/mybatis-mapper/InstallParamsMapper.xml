@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bit.module.manager.dao.InstallParamsDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.bit.module.manager.bean.InstallParams" id="installParamsMap">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="value" column="value"/>
+        <result property="minValue" column="min_value"/>
+        <result property="maxValue" column="max_value"/>
+        <result property="moduleCode" column="module_code"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        name,
+        value,
+        min_value,
+        max_value,
+        module_code
+    </sql>
+
+    <!-- 根据主键查询数据 -->
+    <select id="getInstallParamsById" parameterType="Long" resultMap="installParamsMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_install_params
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <!-- 多参数查询数据 -->
+    <select id="findByParam" parameterType="com.bit.module.manager.bean.InstallParams" resultMap="installParamsMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_install_params
+        <where>
+            <if test="name!=null and name!=''">
+                and `name` = #{name,jdbcType=VARCHAR}
+            </if>
+            <if test="value!=null">
+                and `value` = #{value,jdbcType=FLOAT}
+            </if>
+            <if test="minValue!=null">
+                and min_value = #{minValue,jdbcType=FLOAT}
+            </if>
+            <if test="maxValue!=null">
+                and max_value = #{maxValue,jdbcType=FLOAT}
+            </if>
+            <if test="moduleCode!=null and moduleCode!=''">
+                and module_code = #{moduleCode,jdbcType=VARCHAR}
+            </if>
+
+        </where>
+    </select>
+
+
+    <!-- 新增数据 -->
+    <insert id="addInstallParams" parameterType="com.bit.module.manager.bean.InstallParams" keyColumn="id"
+            useGeneratedKeys="true">
+        insert into t_install_params
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name!=null and name!=''">
+                name,
+            </if>
+            <if test="value!=null">
+                value,
+            </if>
+            <if test="minValue!=null">
+                min_value,
+            </if>
+            <if test="maxValue!=null">
+                max_value,
+            </if>
+            <if test="moduleCode!=null and moduleCode!=''">
+                module_code,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name!=null and name!=''">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="value!=null">
+                #{value,jdbcType=FLOAT},
+            </if>
+            <if test="minValue!=null">
+                #{minValue,jdbcType=FLOAT},
+            </if>
+            <if test="maxValue!=null">
+                #{maxValue,jdbcType=FLOAT},
+            </if>
+            <if test="moduleCode!=null and moduleCode!=''">
+                #{moduleCode,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+
+    <!-- 编辑数据 -->
+    <update id="updateInstallParams" parameterType="com.bit.module.manager.bean.InstallParams">
+        update t_install_params
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name!=null and name!=''">
+                `name` = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="value!=null">
+                `value` = #{value,jdbcType=FLOAT},
+            </if>
+            <if test="minValue!=null">
+                min_value = #{minValue,jdbcType=FLOAT},
+            </if>
+            <if test="maxValue!=null">
+                max_value = #{maxValue,jdbcType=FLOAT},
+            </if>
+            <if test="moduleCode!=null and moduleCode!=''">
+                module_code = #{moduleCode,jdbcType=VARCHAR},
+            </if>
+        </trim>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+
+    <!-- 删除数据 -->
+    <delete id="delInstallParamsById" parameterType="Long">
+        delete from t_install_params
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <!-- 分页查询数据 -->
+    <select id="listPage" parameterType="com.bit.module.manager.vo.InstallParamsPageVO" resultType="com.bit.module.manager.vo.InstallParamsVO">
+        select
+        <include refid="Base_Column_List"/>
+        from t_install_params
+        <where>
+            <if test="installParamsPageVO.name!=null and installParamsPageVO.name!=''">
+                and `name` = #{installParamsPageVO.name,jdbcType=VARCHAR}
+            </if>
+            <if test="installParamsPageVO.value!=null">
+                and `value` = #{installParamsPageVO.value,jdbcType=FLOAT}
+            </if>
+            <if test="installParamsPageVO.minValue!=null">
+                and min_value = #{installParamsPageVO.minValue,jdbcType=FLOAT}
+            </if>
+            <if test="installParamsPageVO.maxValue!=null">
+                and max_value = #{installParamsPageVO.maxValue,jdbcType=FLOAT}
+            </if>
+            <if test="installParamsPageVO.moduleCode!=null and installParamsPageVO.moduleCode!=''">
+                and module_code = #{installParamsPageVO.moduleCode,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+
+</mapper>
