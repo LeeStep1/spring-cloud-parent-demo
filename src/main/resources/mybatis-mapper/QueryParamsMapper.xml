@@ -96,5 +96,127 @@
         </where>
     </select>
 
+    <!-- 根据主键查询数据 -->
+    <select id="getQueryParamsById" parameterType="string" resultMap="queryParamsMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_query_params
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
 
+    <!-- 新增数据 -->
+    <insert id="addQueryParams" parameterType="com.bit.module.miniapp.bean.QueryParams" keyColumn="id"
+            useGeneratedKeys="true">
+        insert into t_query_params
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id!=null and id!=''">
+                id,
+            </if>
+            <if test="title!=null and title!=''">
+                title,
+            </if>
+            <if test="key!=null and key!=''">
+                `key`,
+            </if>
+            <if test="value!=null and value!=''">
+                `value`,
+            </if>
+            <if test="category!=null and category!=''">
+                category,
+            </if>
+            <if test="level!=null">
+                `level`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id!=null and id!=''">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="title!=null and title!=''">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="key!=null and key!=''">
+                #{key,jdbcType=VARCHAR},
+            </if>
+            <if test="value!=null and value!=''">
+                #{value,jdbcType=VARCHAR},
+            </if>
+            <if test="category!=null and category!=''">
+                #{category,jdbcType=VARCHAR},
+            </if>
+            <if test="level!=null">
+                #{level,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+
+    <!-- 编辑数据 -->
+    <update id="updateQueryParams" parameterType="com.bit.module.miniapp.bean.QueryParams">
+        update t_query_params
+        <trim prefix="set" suffixOverrides=",">
+            <if test="title!=null and title!=''">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="key!=null and key!=''">
+                `key` = #{key,jdbcType=VARCHAR},
+            </if>
+            <if test="value!=null and value!=''">
+                `value` = #{value,jdbcType=VARCHAR},
+            </if>
+            <if test="category!=null and category!=''">
+                category = #{category,jdbcType=VARCHAR},
+            </if>
+            <if test="level!=null">
+                `level` = #{level,jdbcType=INTEGER},
+            </if>
+        </trim>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+
+    <!-- 删除数据 -->
+    <delete id="delQueryParamsById" parameterType="string">
+        delete from t_query_params
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+
+
+    <!-- 分页查询数据 -->
+    <select id="listPage" parameterType="com.bit.module.manager.vo.QueryParamsPageVO" resultType="com.bit.module.manager.vo.QueryParamsVO">
+        select
+        <include refid="Base_Column_List"/>
+        from t_query_params
+        <where>
+            <if test="queryParamsPageVO.title!=null and queryParamsPageVO.title!=''">
+                and title = #{queryParamsPageVO.title,jdbcType=VARCHAR}
+            </if>
+            <if test="queryParamsPageVO.key!=null and queryParamsPageVO.key!=''">
+                and `key` = #{queryParamsPageVO.key,jdbcType=VARCHAR}
+            </if>
+            <if test="queryParamsPageVO.value!=null and queryParamsPageVO.value!=''">
+                and `value` = #{queryParamsPageVO.value,jdbcType=VARCHAR}
+            </if>
+            <if test="queryParamsPageVO.category!=null and queryParamsPageVO.category!=''">
+                and category = #{queryParamsPageVO.category,jdbcType=VARCHAR}
+            </if>
+            <if test="queryParamsPageVO.level!=null">
+                and `level` = #{queryParamsPageVO.level,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+
+    <!--批量删除-->
+    <delete id="deleteByIds" parameterType="string">
+        DELETE FROM t_query_params
+        WHERE id in
+        <foreach collection="list" item="id" separator="," open="(" close=")">
+            #{id,jdbcType=VARCHAR}
+        </foreach>
+    </delete>
+
+    <!--不同的key-->
+    <select id="distinctKey" resultType="string">
+        SELECT DISTINCT `KEY` FROM `t_query_params`
+    </select>
 </mapper>

@@ -1,18 +1,27 @@
 package com.bit.module.manager.service.Impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.bit.base.exception.BusinessException;
+import com.bit.base.service.BaseService;
 import com.bit.base.vo.BaseVo;
 import com.bit.module.manager.dao.QueryParamsDao;
 import com.bit.module.manager.service.QueryParamsService;
+import com.bit.module.manager.vo.QueryParamsPageVO;
+import com.bit.module.manager.vo.QueryParamsVO;
 import com.bit.module.miniapp.bean.QueryParams;
+import com.bit.utils.StringUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service("queryParamsService")
-public class QueryParamsServiceImpl implements QueryParamsService {
+public class QueryParamsServiceImpl extends BaseService implements QueryParamsService {
 
 	@Autowired
 	private QueryParamsDao queryParamsDao;
@@ -73,6 +82,103 @@ public class QueryParamsServiceImpl implements QueryParamsService {
 		baseVo.setData(root);
 		return baseVo;
 	}
+	/**
+	 * 新增数据
+	 * @param queryParams
+	 * @author chenduo
+	 * @since ${date}
+	 */
+	@Override
+	@Transactional
+	public BaseVo add(QueryParams queryParams) {
+		//计算id
+		String s = this.calucateId(queryParams.getParentId(), queryParams.getLevel());
+		queryParams.setId(s);
+		queryParamsDao.addQueryParams(queryParams);
+		return successVo();
+	}
+	/**
+	 * 编辑数据
+	 * @param queryParams
+	 * @author chenduo
+	 * @since ${date}
+	 */
+	@Override
+	@Transactional
+	public BaseVo update(QueryParams queryParams) {
+		queryParamsDao.updateQueryParams(queryParams);
+		return successVo();
+	}
+	/**
+	 * 删除数据
+	 * @param id
+	 * @author chenduo
+	 * @since ${date}
+	 */
+	@Override
+	@Transactional
+	public BaseVo delete(String id) {
+		QueryParams queryParamsById = queryParamsDao.getQueryParamsById(id);
+		if (queryParamsById==null){
+			throw new BusinessException("数据不存在");
+		}
+		//先查询有没有子集
+		QueryParams params = new QueryParams();
+		params.setId(id);
+		List<QueryParams> eleParam = queryParamsDao.getEleParam(params);
+		if (CollectionUtils.isNotEmpty(eleParam)){
+
+			List<String> ids = new ArrayList<>();
+			for (QueryParams queryParams : eleParam) {
+				ids.add(queryParams.getId());
+			}
+			//批量删除
+			queryParamsDao.deleteByIds(ids);
+		}else {
+			queryParamsDao.delQueryParamsById(id);
+		}
+		return successVo();
+	}
+	/**
+	 * 单查数据
+	 * @param id
+	 * @author chenduo
+	 * @since ${date}
+	 * @return QueryParams
+	 */
+	@Override
+	public BaseVo reflectById(String id) {
+		QueryParams queryParamsById = queryParamsDao.getQueryParamsById(id);
+		BaseVo baseVo = new BaseVo();
+		baseVo.setData(queryParamsById);
+		return baseVo;
+	}
+	/**
+	 * 分页查询
+	 * @param queryParamsPageVO
+	 * @return
+	 */
+	@Override
+	public BaseVo listPage(QueryParamsPageVO queryParamsPageVO) {
+		Page<QueryParamsVO> page = new Page<>(queryParamsPageVO.getPageNum(), queryParamsPageVO.getPageSize());
+		IPage<QueryParamsVO> installParamsList = queryParamsDao.listPage(page, queryParamsPageVO);
+
+		BaseVo baseVo = new BaseVo();
+		baseVo.setData(installParamsList);
+		return baseVo;
+	}
+
+	/**
+	 * 不同的key
+	 * @return
+	 */
+	@Override
+	public BaseVo distinctKey() {
+		List<String> strings = queryParamsDao.distinctKey();
+		BaseVo baseVo = new BaseVo();
+		baseVo.setData(strings);
+		return baseVo;
+	}
 
 	/**
 	 * 查询子节点
@@ -98,5 +204,71 @@ public class QueryParamsServiceImpl implements QueryParamsService {
 			return null;
 		}
 		return list;
+	}
+
+	/**
+	 * 计算id
+	 * @param parentId
+	 * @param level
+	 * @return
+	 */
+	private String calucateId(String parentId,Integer level){
+		QueryParams params = new QueryParams();
+		params.setLevel(level);
+		//判断父id是否为空
+		//父id为空说明 新增的是系列数据
+		//父id不为空说明 新增的是参数数据
+		if (StringUtil.isNotEmpty(parentId)){
+			params.setId(parentId);
+		}
+
+		List<QueryParams> eleParam = queryParamsDao.getEleParam(params);
+
+		String id = getMaxId(eleParam,level,parentId);
+
+		return id;
+	}
+
+	/**
+	 * 根据层级算id
+	 * @param eleParam
+	 * @param level
+	 * @return
+	 */
+	private String getMaxId(List<QueryParams> eleParam,Integer level,String parentId){
+		String id = "";
+		if (CollectionUtils.isNotEmpty(eleParam)){
+			List<Integer> ids = new ArrayList<>();
+			for (QueryParams queryParams : eleParam) {
+				ids.add(Integer.valueOf(queryParams.getId()));
+			}
+			//算出最大值
+			Integer max = Collections.max(ids);
+			max = max + 1;
+			if (level.equals(1)){
+				//一级
+				if (max<10){
+					id = "00" + max;
+				}else if (max<100 && max>= 10){
+					id = "0" + max;
+				}else if (max<1000 && max >= 100){
+					id = max+"";
+				}
+			}else {
+				if (level == 1){
+					id = String.format("%03d",max);
+				}else if (level == 2){
+					id = String.format("%06d",max);
+				}else if (level == 3){
+					id = String.format("%09d",max);
+				}else if (level == 4){
+					id = String.format("%012d",max);
+				}
+
+			}
+		}else {
+			id = parentId + "001";
+		}
+		return id;
 	}
 }

@@ -61,4 +61,9 @@ public class QueryParams implements Serializable {
 	 */
 	@TableField(exist = false)
 	private List<String> keys;
+	/**
+	 * 父id
+	 */
+	@TableField(exist = false)
+	private String parentId;
 }
