@@ -12,6 +12,7 @@ import com.bit.module.manager.vo.QueryParamsVO;
 import com.bit.module.miniapp.bean.QueryParams;
 import com.bit.utils.StringUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -162,7 +163,17 @@ public class QueryParamsServiceImpl extends BaseService implements QueryParamsSe
 	public BaseVo listPage(QueryParamsPageVO queryParamsPageVO) {
 		Page<QueryParamsVO> page = new Page<>(queryParamsPageVO.getPageNum(), queryParamsPageVO.getPageSize());
 		IPage<QueryParamsVO> installParamsList = queryParamsDao.listPage(page, queryParamsPageVO);
-
+		for (QueryParamsVO vo :installParamsList.getRecords() ) {
+			QueryParams po = new QueryParams();
+			po.setLevel(vo.getLevel()+1);
+			po.setId(vo.getId());
+			List<QueryParams> eleParam = queryParamsDao.getEleParam(po);
+			if (CollectionUtils.isNotEmpty(eleParam)){
+				vo.setHasChildren(1);
+			}else {
+				vo.setHasChildren(0);
+			}
+		}
 		BaseVo baseVo = new BaseVo();
 		baseVo.setData(installParamsList);
 		return baseVo;
@@ -177,6 +188,39 @@ public class QueryParamsServiceImpl extends BaseService implements QueryParamsSe
 		List<String> strings = queryParamsDao.distinctKey();
 		BaseVo baseVo = new BaseVo();
 		baseVo.setData(strings);
+		return baseVo;
+	}
+	/**
+	 * 多参数查询
+	 * @param queryParams
+	 * @return
+	 */
+	@Override
+	public BaseVo findNextLevel(QueryParams queryParams) {
+		List<QueryParamsVO> list = new ArrayList<>();
+		QueryParams temp = new QueryParams();
+		temp.setId(queryParams.getId());
+		temp.setLevel(queryParams.getLevel()+1);
+		List<QueryParams> eleParam = queryParamsDao.getEleParam(temp);
+		if (CollectionUtils.isNotEmpty(eleParam)){
+			for (QueryParams params : eleParam) {
+				QueryParamsVO queryParamsVO = new QueryParamsVO();
+				BeanUtils.copyProperties(params,queryParamsVO);
+
+				QueryParams po = new QueryParams();
+				po.setLevel(params.getLevel()+1);
+				po.setId(params.getId());
+				List<QueryParams> ele = queryParamsDao.getEleParam(po);
+				if (CollectionUtils.isNotEmpty(ele)){
+					queryParamsVO.setHasChildren(1);
+				}else {
+					queryParamsVO.setHasChildren(0);
+				}
+				list.add(queryParamsVO);
+			}
+		}
+		BaseVo baseVo = new BaseVo();
+		baseVo.setData(list);
 		return baseVo;
 	}
 

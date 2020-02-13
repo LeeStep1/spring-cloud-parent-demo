@@ -43,5 +43,9 @@ public class QueryParamsVO implements Serializable {
 	 * 等级
 	 */
 	private Integer level;
-
+	/**
+	 * 前端web页面使用 0- 否 1- 是
+	 */
+	@TableField(exist = false)
+	private Integer hasChildren;
 }

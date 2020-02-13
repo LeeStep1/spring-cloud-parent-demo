@@ -88,5 +88,12 @@ public interface QueryParamsService {
 	 * @return
 	 */
 	BaseVo distinctKey();
+
+	/**
+	 * 多参数查询
+	 * @param queryParams
+	 * @return
+	 */
+	BaseVo findNextLevel(QueryParams queryParams);
 }
 

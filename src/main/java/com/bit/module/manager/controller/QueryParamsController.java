@@ -85,4 +85,14 @@ public class QueryParamsController {
 	public BaseVo distinctKey(){
 		return queryParamsService.distinctKey();
 	}
+
+	/**
+	 * 查询下一级数据
+	 * @param queryParams
+	 * @return
+	 */
+	@PostMapping("/findNextLevel")
+	public BaseVo findNextLevel(@RequestBody QueryParams queryParams){
+		return queryParamsService.findNextLevel(queryParams);
+	}
 }
