@@ -41,4 +41,8 @@ public class BasePriceEquationRel implements Serializable {
      *
      */
     private String category;
+    /**
+     * 给后台配置筛选用0下拉1文本框
+     */
+    private Integer elementType;
 }
