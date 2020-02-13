@@ -1,5 +1,6 @@
 package com.bit.module.miniapp.vo;
 
+import com.bit.base.vo.BasePageVo;
 import lombok.Data;
 
 /**
@@ -8,7 +9,7 @@ import lombok.Data;
  * @Date: 2019-12-25
  **/
 @Data
-public class OptionsVO {
+public class OptionsPageVO extends BasePageVo{
 
     /**
      *

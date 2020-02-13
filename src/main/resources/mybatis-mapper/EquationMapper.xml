@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bit.module.manager.dao.EquationManagerDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.bit.module.equation.bean.Equation" id="equationMap">
+        <result property="id" column="id"/>
+        <result property="category" column="category"/>
+        <result property="type" column="type"/>
+        <result property="typeName" column="type_name"/>
+        <result property="relevanceType" column="relevance_type"/>
+        <result property="title1" column="title1"/>
+        <result property="equation" column="equation"/>
+        <result property="coefficient" column="coefficient"/>
+        <result property="equation3" column="equation3"/>
+        <result property="output" column="output"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        category,
+        type,
+        type_name,
+        relevance_type,
+        title1,
+        equation,
+        coefficient,
+        equation3,
+        output
+    </sql>
+
+    <!-- 根据主键查询数据 -->
+    <select id="getEquationById" parameterType="long" resultMap="equationMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_equation
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <!-- 多参数查询数据 -->
+    <select id="findByParam" parameterType="com.bit.module.equation.bean.Equation" resultMap="equationMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_equation
+        <where>
+            <if test="category!=null and category!=''">
+                and category = #{category,jdbcType=VARCHAR}
+            </if>
+            <if test="type!=null and type!=''">
+                and `type` = #{type,jdbcType=VARCHAR}
+            </if>
+            <if test="typeName!=null and typeName!=''">
+                and type_name = #{typeName,jdbcType=VARCHAR}
+            </if>
+            <if test="relevanceType!=null">
+                and relevance_type = #{relevanceType,jdbcType=INTEGER}
+            </if>
+            <if test="equation!=null and equation!=''">
+                and equation = #{equation,jdbcType=VARCHAR}
+            </if>
+            <if test="coefficient!=null and coefficient!=''">
+                and coefficient = #{coefficient,jdbcType=VARCHAR}
+            </if>
+            <if test="equation3!=null and equation3!=''">
+                and equation3 = #{equation3,jdbcType=VARCHAR}
+            </if>
+            <if test="output!=null and output!=''">
+                and `output` = #{output,jdbcType=VARCHAR}
+            </if>
+
+        </where>
+    </select>
+
+
+    <!-- 新增数据 -->
+    <insert id="addEquation" parameterType="com.bit.module.equation.bean.Equation" keyColumn="id"
+            useGeneratedKeys="true">
+        insert into t_equation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="category!=null and category!=''">
+                category,
+            </if>
+            <if test="type!=null and type!=''">
+                `type`,
+            </if>
+            <if test="typeName!=null and typeName!=''">
+                type_name,
+            </if>
+            <if test="relevanceType!=null">
+                relevance_type,
+            </if>
+            <if test="title1!=null">
+                title1,
+            </if>
+            <if test="equation!=null and equation!=''">
+                equation,
+            </if>
+            <if test="coefficient!=null and coefficient!=''">
+                coefficient,
+            </if>
+            <if test="equation3!=null and equation3!=''">
+                equation3,
+            </if>
+            <if test="output!=null and output!=''">
+                `output`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="category!=null and category!=''">
+                #{category,jdbcType=VARCHAR},
+            </if>
+            <if test="type!=null and type!=''">
+                #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="typeName!=null and typeName!=''">
+                #{typeName,jdbcType=VARCHAR},
+            </if>
+            <if test="relevanceType!=null">
+                #{relevanceType,jdbcType=INTEGER},
+            </if>
+            <if test="title1!=null">
+                #{title1,jdbcType=INTEGER},
+            </if>
+            <if test="equation!=null and equation!=''">
+                #{equation,jdbcType=VARCHAR},
+            </if>
+            <if test="coefficient!=null and coefficient!=''">
+                #{coefficient,jdbcType=VARCHAR},
+            </if>
+            <if test="equation3!=null and equation3!=''">
+                #{equation3,jdbcType=VARCHAR},
+            </if>
+            <if test="output!=null and output!=''">
+                #{output,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+
+    <!-- 编辑数据 -->
+    <update id="updateEquation" parameterType="com.bit.module.equation.bean.Equation">
+        update t_equation
+        <trim prefix="set" suffixOverrides=",">
+            <if test="category!=null and category!=''">
+                category = #{category,jdbcType=VARCHAR},
+            </if>
+            <if test="type!=null and type!=''">
+                `type` = #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="typeName!=null and typeName!=''">
+                type_name = #{typeName,jdbcType=VARCHAR},
+            </if>
+            <if test="relevanceType!=null">
+                relevance_type = #{relevanceType,jdbcType=INTEGER},
+            </if>
+            <if test="title1!=null">
+                title1 = #{title1,jdbcType=INTEGER},
+            </if>
+            <if test="equation!=null and equation!=''">
+                equation = #{equation,jdbcType=VARCHAR},
+            </if>
+            <if test="coefficient!=null and coefficient!=''">
+                coefficient = #{coefficient,jdbcType=VARCHAR},
+            </if>
+            <if test="equation3!=null and equation3!=''">
+                equation3 = #{equation3,jdbcType=VARCHAR},
+            </if>
+            <if test="output!=null and output!=''">
+                `output` = #{output,jdbcType=VARCHAR},
+            </if>
+        </trim>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+
+    <!-- 删除数据 -->
+    <delete id="delEquationById" parameterType="long">
+        delete from t_equation
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <!-- 分页查询数据 -->
+    <select id="listPage" parameterType="com.bit.module.manager.vo.EquationPageVO" resultType="com.bit.module.manager.vo.EquationVO">
+        select
+        <include refid="Base_Column_List"/>
+        from t_equation
+        <where>
+            <if test="equationPageVO.category!=null and equationPageVO.category!=''">
+                and category = #{equationPageVO.category,jdbcType=VARCHAR}
+            </if>
+            <if test="equationPageVO.type!=null and equationPageVO.type!=''">
+                and `type` = #{type,jdbcType=VARCHAR}
+            </if>
+            <if test="equationPageVO.typeName!=null and equationPageVO.typeName!=''">
+                and type_name = #{equationPageVO.typeName,jdbcType=VARCHAR}
+            </if>
+            <if test="equationPageVO.relevanceType!=null">
+                and relevance_type = #{equationPageVO.relevanceType,jdbcType=INTEGER}
+            </if>
+            <if test="equationPageVO.equation!=null and equationPageVO.equation!=''">
+                and equation = #{equationPageVO.equation,jdbcType=VARCHAR}
+            </if>
+            <if test="equationPageVO.coefficient!=null and equationPageVO.coefficient!=''">
+                and coefficient = #{equationPageVO.coefficient,jdbcType=VARCHAR}
+            </if>
+            <if test="equationPageVO.equation3!=null and equationPageVO.equation3!=''">
+                and equation3 = #{equationPageVO.equation3,jdbcType=VARCHAR}
+            </if>
+            <if test="equationPageVO.output!=null and equationPageVO.output!=''">
+                and `output` = #{equationPageVO.output,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+
+</mapper>

@@ -32,7 +32,25 @@ public class Equation implements Serializable {
     private String equation;
     private String coefficient;
     private String equation3;
+    /**
+     * 输出
+     */
     private String output;
+    /**
+     * 类别
+     */
     private String category;
+    /**
+     * 类型名称
+     */
+    private String typeName;
+    /**
+     * 0：无关联 1：电梯类型 2：可选项
+     */
+    private Integer relevanceType;
+    /**
+     * 标题
+     */
+    private String title1;
 
 }

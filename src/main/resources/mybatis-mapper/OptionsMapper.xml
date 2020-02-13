@@ -3,7 +3,37 @@
 
 <mapper namespace="com.bit.module.manager.dao.OptionsDao">
 
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.bit.module.miniapp.bean.Options" id="optionsMap">
+        <result property="id" column="id"/>
+        <result property="ocode" column="ocode"/>
+        <result property="optionsName" column="options_name"/>
+        <result property="description" column="description"/>
+        <result property="secOptionType" column="sec_option_type"/>
+        <result property="inputType" column="input_type"/>
+        <result property="optionType" column="option_type"/>
+        <result property="defaultValue" column="default_value"/>
+        <result property="unit" column="unit"/>
+        <result property="groupValue" column="group_value"/>
+        <result property="rule" column="rule"/>
+        <result property="itemType" column="item_type"/>
+    </resultMap>
 
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        ocode,
+        options_name,
+        description,
+        sec_option_type,
+        input_type,
+        option_type,
+        default_value,
+        unit,
+        group_value,
+        rule,
+        item_type
+    </sql>
 
     <!--&lt;!&ndash; 多参数查询数据 &ndash;&gt;-->
     <!--<select id="findOptionByElevatorType"  resultType="com.bit.module.miniapp.bean.Options">-->
@@ -39,5 +69,225 @@
 
         </where>
         order by tos.ocode, tos.id
+    </select>
+
+
+    <!-- 多参数查询数据 -->
+    <select id="findByParam" parameterType="com.bit.module.miniapp.bean.Options" resultMap="optionsMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_options
+        <where>
+            <if test="ocode!=null and ocode!=''">
+                and ocode = #{ocode,jdbcType=VARCHAR}
+            </if>
+            <if test="optionsName!=null and optionsName!=''">
+                and options_name = #{optionsName,jdbcType=VARCHAR}
+            </if>
+            <if test="description!=null and description!=''">
+                and description = #{description,jdbcType=VARCHAR}
+            </if>
+            <if test="secOptionType!=null">
+                and sec_option_type = #{secOptionType,jdbcType=INTEGER}
+            </if>
+            <if test="inputType!=null">
+                and input_type = #{inputType,jdbcType=INTEGER}
+            </if>
+            <if test="optionType!=null">
+                and option_type = #{optionType,jdbcType=INTEGER}
+            </if>
+            <if test="defaultValue!=null and defaultValue!=''">
+                and default_value = #{defaultValue,jdbcType=VARCHAR}
+            </if>
+            <if test="unit!=null and unit!=''">
+                and unit = #{unit,jdbcType=VARCHAR}
+            </if>
+            <if test="groupValue!=null and groupValue!=''">
+                and group_value = #{groupValue,jdbcType=VARCHAR}
+            </if>
+            <if test="rule!=null">
+                and rule = #{rule,jdbcType=INTEGER}
+            </if>
+            <if test="itemType!=null">
+                and item_type = #{itemType,jdbcType=INTEGER}
+            </if>
+
+        </where>
+    </select>
+
+    <!-- 根据主键查询数据 -->
+    <select id="getOptionsById" parameterType="long" resultMap="optionsMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_options
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <!-- 新增数据 -->
+    <insert id="addOptions" parameterType="com.bit.module.miniapp.bean.Options" keyColumn="id"
+            useGeneratedKeys="true">
+        insert into t_options
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ocode!=null and ocode!=''">
+                ocode,
+            </if>
+            <if test="optionsName!=null and optionsName!=''">
+                options_name,
+            </if>
+            <if test="description!=null and description!=''">
+                description,
+            </if>
+            <if test="secOptionType!=null">
+                sec_option_type,
+            </if>
+            <if test="inputType!=null">
+                input_type,
+            </if>
+            <if test="optionType!=null">
+                option_type,
+            </if>
+            <if test="defaultValue!=null and defaultValue!=''">
+                default_value,
+            </if>
+            <if test="unit!=null and unit!=''">
+                unit,
+            </if>
+            <if test="groupValue!=null and groupValue!=''">
+                group_value,
+            </if>
+            <if test="rule!=null">
+                rule,
+            </if>
+            <if test="itemType!=null">
+                item_type,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ocode!=null and ocode!=''">
+                #{ocode,jdbcType=VARCHAR},
+            </if>
+            <if test="optionsName!=null and optionsName!=''">
+                #{optionsName,jdbcType=VARCHAR},
+            </if>
+            <if test="description!=null and description!=''">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="secOptionType!=null">
+                #{secOptionType,jdbcType=INTEGER},
+            </if>
+            <if test="inputType!=null">
+                #{inputType,jdbcType=INTEGER},
+            </if>
+            <if test="optionType!=null">
+                #{optionType,jdbcType=INTEGER},
+            </if>
+            <if test="defaultValue!=null and defaultValue!=''">
+                #{defaultValue,jdbcType=VARCHAR},
+            </if>
+            <if test="unit!=null and unit!=''">
+                #{unit,jdbcType=VARCHAR},
+            </if>
+            <if test="groupValue!=null and groupValue!=''">
+                #{groupValue,jdbcType=VARCHAR},
+            </if>
+            <if test="rule!=null">
+                #{rule,jdbcType=INTEGER},
+            </if>
+            <if test="itemType!=null">
+                #{itemType,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+
+    <!-- 编辑数据 -->
+    <update id="updateOptions" parameterType="com.bit.module.miniapp.bean.Options">
+        update t_options
+        <trim prefix="set" suffixOverrides=",">
+            <if test="ocode!=null and ocode!=''">
+                ocode = #{ocode,jdbcType=VARCHAR},
+            </if>
+            <if test="optionsName!=null and optionsName!=''">
+                options_name = #{optionsName,jdbcType=VARCHAR},
+            </if>
+            <if test="description!=null and description!=''">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="secOptionType!=null">
+                sec_option_type = #{secOptionType,jdbcType=INTEGER},
+            </if>
+            <if test="inputType!=null">
+                input_type = #{inputType,jdbcType=INTEGER},
+            </if>
+            <if test="optionType!=null">
+                option_type = #{optionType,jdbcType=INTEGER},
+            </if>
+            <if test="defaultValue!=null and defaultValue!=''">
+                default_value = #{defaultValue,jdbcType=VARCHAR},
+            </if>
+            <if test="unit!=null and unit!=''">
+                unit = #{unit,jdbcType=VARCHAR},
+            </if>
+            <if test="groupValue!=null and groupValue!=''">
+                group_value = #{groupValue,jdbcType=VARCHAR},
+            </if>
+            <if test="rule!=null">
+                rule = #{rule,jdbcType=INTEGER},
+            </if>
+            <if test="itemType!=null">
+                item_type = #{itemType,jdbcType=INTEGER},
+            </if>
+        </trim>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+
+    <!-- 删除数据 -->
+    <delete id="delOptionsById" parameterType="long">
+        delete from t_options
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+
+    <!-- 分页查询数据 -->
+    <select id="listPage" parameterType="com.bit.module.miniapp.vo.OptionsPageVO" resultType="com.bit.module.miniapp.vo.OptionsVO">
+        select
+        <include refid="Base_Column_List"/>
+        from t_options
+        <where>
+            <if test="optionsPageVO.ocode!=null and optionsPageVO.ocode!=''">
+                and ocode = #{optionsPageVO.ocode,jdbcType=VARCHAR}
+            </if>
+            <if test="optionsPageVO.optionsName!=null and optionsPageVO.optionsName!=''">
+                and options_name like concat("%",#{optionsPageVO.optionsName,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="optionsPageVO.description!=null and optionsPageVO.description!=''">
+                and description = #{optionsPageVO.description,jdbcType=VARCHAR}
+            </if>
+            <if test="optionsPageVO.secOptionType!=null">
+                and sec_option_type = #{optionsPageVO.secOptionType,jdbcType=INTEGER}
+            </if>
+            <if test="optionsPageVO.inputType!=null">
+                and input_type = #{optionsPageVO.inputType,jdbcType=INTEGER}
+            </if>
+            <if test="optionsPageVO.optionType!=null">
+                and option_type = #{optionsPageVO.optionType,jdbcType=INTEGER}
+            </if>
+            <if test="optionsPageVO.defaultValue!=null and optionsPageVO.defaultValue!=''">
+                and default_value = #{optionsPageVO.defaultValue,jdbcType=VARCHAR}
+            </if>
+            <if test="optionsPageVO.unit!=null and optionsPageVO.unit!=''">
+                and unit = #{optionsPageVO.unit,jdbcType=VARCHAR}
+            </if>
+            <if test="optionsPageVO.groupValue!=null and optionsPageVO.groupValue!=''">
+                and group_value = #{optionsPageVO.groupValue,jdbcType=VARCHAR}
+            </if>
+            <if test="optionsPageVO.rule!=null">
+                and rule = #{optionsPageVO.rule,jdbcType=INTEGER}
+            </if>
+            <if test="optionsPageVO.itemType!=null">
+                and item_type = #{optionsPageVO.itemType,jdbcType=INTEGER}
+            </if>
+        </where>
     </select>
 </mapper>
