@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bit.module.manager.dao.DictDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.bit.module.manager.bean.Dict" id="dictMap">
+        <result property="id" column="id"/>
+        <result property="module" column="module"/>
+        <result property="dictCode" column="dict_code"/>
+        <result property="dictName" column="dict_name"/>
+        <result property="sort" column="sort"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        `module`,
+        dict_code,
+        dict_name,
+        sort,
+        remark
+    </sql>
+
+    <!-- 根据主键查询数据 -->
+    <select id="getDictById" parameterType="long" resultMap="dictMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_dict
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <!-- 多参数查询数据 -->
+    <select id="findByParam" parameterType="com.bit.module.manager.bean.Dict" resultMap="dictMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_dict
+        <where>
+            <if test="module!=null and module!=''">
+                and `module` = #{module,jdbcType=VARCHAR}
+            </if>
+            <if test="dictCode!=null and dictCode!=''">
+                and dict_code = #{dictCode,jdbcType=VARCHAR}
+            </if>
+            <if test="dictName!=null and dictName!=''">
+                and dict_name = #{dictName,jdbcType=VARCHAR}
+            </if>
+            <if test="sort!=null">
+                and sort = #{sort,jdbcType=INTEGER}
+            </if>
+            <if test="remark!=null and remark!=''">
+                and remark = #{remark,jdbcType=VARCHAR}
+            </if>
+
+        </where>
+    </select>
+
+
+    <!-- 新增数据 -->
+    <insert id="addDict" parameterType="com.bit.module.manager.bean.Dict" keyColumn="id"
+            useGeneratedKeys="true">
+        insert into t_dict
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="module!=null and module!=''">
+                `module`,
+            </if>
+            <if test="dictCode!=null and dictCode!=''">
+                dict_code,
+            </if>
+            <if test="dictName!=null and dictName!=''">
+                dict_name,
+            </if>
+            <if test="sort!=null">
+                sort,
+            </if>
+            <if test="remark!=null and remark!=''">
+                remark,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="module!=null and module!=''">
+                #{module,jdbcType=VARCHAR},
+            </if>
+            <if test="dictCode!=null and dictCode!=''">
+                #{dictCode,jdbcType=VARCHAR},
+            </if>
+            <if test="dictName!=null and dictName!=''">
+                #{dictName,jdbcType=VARCHAR},
+            </if>
+            <if test="sort!=null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="remark!=null and remark!=''">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+
+    <!-- 编辑数据 -->
+    <update id="updateDict" parameterType="com.bit.module.manager.bean.Dict">
+        update t_dict
+        <trim prefix="set" suffixOverrides=",">
+            <if test="module!=null and module!=''">
+                `module` = #{module,jdbcType=VARCHAR},
+            </if>
+            <if test="dictCode!=null and dictCode!=''">
+                dict_code = #{dictCode,jdbcType=VARCHAR},
+            </if>
+            <if test="dictName!=null and dictName!=''">
+                dict_name = #{dictName,jdbcType=VARCHAR},
+            </if>
+            <if test="sort!=null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="remark!=null and remark!=''">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+        </trim>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+
+    <!-- 删除数据 -->
+    <delete id="delDictById" parameterType="Integer">
+        delete from t_dict
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+
+</mapper>
