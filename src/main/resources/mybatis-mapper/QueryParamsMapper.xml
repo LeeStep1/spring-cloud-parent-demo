@@ -189,7 +189,7 @@
         from t_query_params
         <where>
             <if test="queryParamsPageVO.title!=null and queryParamsPageVO.title!=''">
-                and title = #{queryParamsPageVO.title,jdbcType=VARCHAR}
+                and title LIKE concat("%",#{queryParamsPageVO.title,jdbcType=VARCHAR},"%")
             </if>
             <if test="queryParamsPageVO.key!=null and queryParamsPageVO.key!=''">
                 and `key` = #{queryParamsPageVO.key,jdbcType=VARCHAR}
