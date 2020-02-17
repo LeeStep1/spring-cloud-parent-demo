@@ -1,13 +1,9 @@
 package com.bit.module.manager.vo;
 
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.bit.base.vo.BasePageVo;
 import lombok.Data;
 
-import java.io.Serializable;
-import java.util.List;
 
 /**
  * 电梯的基础数据的筛选关系

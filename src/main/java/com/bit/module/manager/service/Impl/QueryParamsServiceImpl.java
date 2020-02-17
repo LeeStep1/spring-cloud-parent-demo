@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bit.base.exception.BusinessException;
 import com.bit.base.service.BaseService;
 import com.bit.base.vo.BaseVo;
+import com.bit.module.manager.bean.Params;
+import com.bit.module.manager.dao.ParamsDao;
 import com.bit.module.manager.dao.QueryParamsDao;
 import com.bit.module.manager.service.QueryParamsService;
 import com.bit.module.manager.vo.QueryParamsPageVO;
@@ -26,6 +28,8 @@ public class QueryParamsServiceImpl extends BaseService implements QueryParamsSe
 
 	@Autowired
 	private QueryParamsDao queryParamsDao;
+	@Autowired
+	private ParamsDao paramsDao;
 
 
 
@@ -185,9 +189,9 @@ public class QueryParamsServiceImpl extends BaseService implements QueryParamsSe
 	 */
 	@Override
 	public BaseVo distinctKey() {
-		List<String> strings = queryParamsDao.distinctKey();
+		List<Params> byParam = paramsDao.findByParam(null);
 		BaseVo baseVo = new BaseVo();
-		baseVo.setData(strings);
+		baseVo.setData(byParam);
 		return baseVo;
 	}
 	/**
