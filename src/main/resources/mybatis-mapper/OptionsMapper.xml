@@ -17,6 +17,7 @@
         <result property="groupValue" column="group_value"/>
         <result property="rule" column="rule"/>
         <result property="itemType" column="item_type"/>
+        <result property="parentId" column="parent_id"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -32,7 +33,8 @@
         unit,
         group_value,
         rule,
-        item_type
+        item_type,
+        parent_id
     </sql>
 
     <!--&lt;!&ndash; 多参数查询数据 &ndash;&gt;-->
@@ -111,7 +113,9 @@
             <if test="itemType!=null">
                 and item_type = #{itemType,jdbcType=INTEGER}
             </if>
-
+            <if test="parentId!=null">
+                and parent_id = #{parentId,jdbcType=BIGINT},
+            </if>
         </where>
     </select>
 
@@ -161,6 +165,9 @@
             <if test="itemType!=null">
                 item_type,
             </if>
+            <if test="parentId!=null">
+                parent_id,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="ocode!=null and ocode!=''">
@@ -195,6 +202,9 @@
             </if>
             <if test="itemType!=null">
                 #{itemType,jdbcType=INTEGER},
+            </if>
+            <if test="parentId!=null">
+                #{parentId,jdbcType=BIGINT},
             </if>
         </trim>
     </insert>
@@ -236,6 +246,9 @@
             </if>
             <if test="itemType!=null">
                 item_type = #{itemType,jdbcType=INTEGER},
+            </if>
+            <if test="parentId!=null">
+                parent_id = #{parentId,jdbcType=BIGINT},
             </if>
         </trim>
         where id = #{id,jdbcType=BIGINT}
@@ -288,6 +301,34 @@
             <if test="optionsPageVO.itemType!=null">
                 and item_type = #{optionsPageVO.itemType,jdbcType=INTEGER}
             </if>
+            <if test="optionsPageVO.parentId!=null">
+                and parent_id = #{optionsPageVO.parentId,jdbcType=BIGINT}
+            </if>
         </where>
     </select>
+
+    <!--层级数据查询-->
+    <select id="getOptionParam" parameterType="com.bit.module.miniapp.bean.Options" resultMap="optionsMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM t_options
+        <where>
+            <if test="length!=null">
+                and LENGTH(ocode) = #{length,jdbcType=INTEGER}
+            </if>
+            <if test="id!=null">
+                and id like concat(#{id,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="parentId!=null">
+                and parent_id = #{parentId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteByIds" parameterType="long">
+        DELETE FROM t_options
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id,jdbcType=BIGINT}
+        </foreach>
+    </delete>
 </mapper>

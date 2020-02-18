@@ -51,4 +51,17 @@ public interface OptionsDao extends BaseMapper<Options> {
 	 * 分页查询
 	 */
 	IPage<OptionsVO> listPage(@Param("pg")Page<OptionsVO> page, @Param("optionsPageVO") OptionsPageVO optionsPageVO);
+
+	/**
+	 * 层级数据查询
+	 * @param options
+	 * @return
+	 */
+	List<Options> getOptionParam(Options options);
+
+	/**
+	 * 批量删除
+	 * @param ids
+	 */
+	void deleteByIds(@Param(value = "ids")List<Long> ids);
 }

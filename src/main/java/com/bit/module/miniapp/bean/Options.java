@@ -73,6 +73,10 @@ public class Options implements Serializable {
 	 */
 	private String ocode;
 	/**
+	 * 父id
+	 */
+	private Long parentId;
+	/**
 	 * 层级父级代码
 	 */
 	@TableField(exist = false)
@@ -83,4 +87,9 @@ public class Options implements Serializable {
 	 */
 	@TableField(exist = false)
 	private Double optionPrice;
+	/**
+	 * 长度
+	 */
+	@TableField(exist = false)
+	private Integer length;
 }

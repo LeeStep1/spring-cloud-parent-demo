@@ -58,7 +58,10 @@ public class OptionsVO {
      * 元素属性 0为分组名称1为实际选项
      */
     private Integer itemType;
-
+    /**
+     * 父id
+     */
+    private Long parentId;
 
 
 

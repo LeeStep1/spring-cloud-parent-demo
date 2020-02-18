@@ -2,10 +2,13 @@ package com.bit.module.manager.service.Impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.bit.base.exception.BusinessException;
 import com.bit.base.service.BaseService;
 import com.bit.module.miniapp.bean.Options;
 import com.bit.module.miniapp.vo.OptionsPageVO;
 import com.bit.module.miniapp.vo.OptionsVO;
+import com.bit.utils.StringUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import com.bit.module.manager.dao.OptionsDao;
 import com.bit.module.manager.service.OptionsService;
@@ -13,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import com.bit.base.vo.BaseVo;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service("optionsService")
@@ -32,8 +37,67 @@ public class OptionsServiceImpl extends BaseService implements OptionsService {
 	@Override
 	@Transactional
 	public BaseVo add(Options options) {
+		//计算id
+		String s = this.calculateCode(options.getParentId());
+		options.setOcode(s);
 		optionsDao.addOptions(options);
 		return successVo();
+	}
+
+	/**
+	 * 计算id
+	 * @param parentId
+	 * @return
+	 */
+	private String calculateCode(Long parentId){
+		Options opt = new Options();
+		Integer level = -1;
+		String parentCode = "";
+		if (parentId==null){
+			//第一层级数据
+			opt.setLength(3);
+			level = 1;
+		}else {
+			Options optionsById = optionsDao.getOptionsById(parentId);
+			if (optionsById!=null){
+				level = (optionsById.getOcode().length()+3)/3;
+			}
+			opt.setParentId(parentId);
+			parentCode = optionsById.getOcode();
+		}
+		List<Options> optionParam = optionsDao.getOptionParam(opt);
+		String code = getMaxCode(optionParam,level,parentCode);
+		return code;
+	}
+
+	/**
+	 * 根据层级算id
+	 * @param optionParam
+	 * @param level
+	 * @param parentCode
+	 * @return
+	 */
+	public String getMaxCode(List<Options> optionParam,Integer level,String parentCode){
+		String maxid = "";
+		if (CollectionUtils.isNotEmpty(optionParam)){
+			List<Integer> ids = new ArrayList<>();
+			for (Options options : optionParam) {
+				ids.add(Integer.valueOf(options.getOcode()));
+			}
+			Integer max = Collections.max(ids);
+			max = max + 1;
+			if (level.equals(1)) {
+				//一级
+				maxid = String.format("%03d",max);
+			}else {
+				maxid = String.format("%0"+(level * 3)+"d",max);
+			}
+		}else {
+			if (StringUtil.isNotEmpty(parentCode)){
+				maxid = parentCode + "001";
+			}
+		}
+		return maxid;
 	}
 
 	/**
@@ -60,7 +124,23 @@ public class OptionsServiceImpl extends BaseService implements OptionsService {
 	@Override
 	@Transactional
 	public BaseVo delete(Long id) {
-		optionsDao.delOptionsById(id);
+		Options optionsById = optionsDao.getOptionsById(id);
+		if (optionsById==null){
+			throw new BusinessException("数据不存在");
+		}
+		Options param = new Options();
+		param.setParentId(id);
+		List<Options> byParam = optionsDao.findByParam(param);
+		if (CollectionUtils.isNotEmpty(byParam)){
+			List<Long> ids = new ArrayList<>();
+			for (Options options : byParam) {
+				ids.add(options.getId());
+			}
+			//批量删除
+			optionsDao.deleteByIds(ids);
+		}else {
+			optionsDao.delOptionsById(id);
+		}
 		return successVo();
 	}
 
