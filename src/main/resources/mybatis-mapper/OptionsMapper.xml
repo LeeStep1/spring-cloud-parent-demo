@@ -331,4 +331,14 @@
             #{id,jdbcType=BIGINT}
         </foreach>
     </delete>
+
+
+    <select id="batchSelectByIds" resultMap="optionsMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM t_options
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id,jdbcType=BIGINT}
+        </foreach>
+    </select>
 </mapper>

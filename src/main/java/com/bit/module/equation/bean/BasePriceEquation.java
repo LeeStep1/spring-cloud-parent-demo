@@ -61,4 +61,8 @@ public class BasePriceEquation implements Serializable {
      *
      */
     private String output;
+    /**
+     * 成本价格
+     */
+    private String costPrice;
 }

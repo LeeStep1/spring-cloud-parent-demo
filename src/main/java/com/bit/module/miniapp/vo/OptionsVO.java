@@ -62,6 +62,10 @@ public class OptionsVO {
      * 父id
      */
     private Long parentId;
+    /**
+     * 父元素 名称
+     */
+    private String parentName;
 
 
 

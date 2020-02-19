@@ -14,19 +14,21 @@
         <result property="val4" column="val4"/>
         <result property="val5" column="val5"/>
         <result property="output" column="output"/>
+        <result property="costPrice" column="cost_price"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id,
         category,
-        type,
+        `type`,
         val1,
         val2,
         val3,
         val4,
         val5,
-        output
+        `output`,
+        cost_price
     </sql>
 
     <!-- 根据主键查询数据 -->
@@ -48,7 +50,7 @@
                 and category = #{category,jdbcType=VARCHAR}
             </if>
             <if test="type!=null and type!=''">
-                and type = #{type,jdbcType=VARCHAR}
+                and `type` = #{type,jdbcType=VARCHAR}
             </if>
             <if test="val1!=null and val1!=''">
                 and val1 = #{val1,jdbcType=VARCHAR}
@@ -66,9 +68,11 @@
                 and val5 = #{val5,jdbcType=VARCHAR}
             </if>
             <if test="output!=null and output!=''">
-                and output = #{output,jdbcType=VARCHAR}
+                and `output` = #{output,jdbcType=VARCHAR}
             </if>
-
+            <if test="costPrice!=null and costPrice!=''">
+                and cost_price = #{output,jdbcType=VARCHAR}
+            </if>
         </where>
     </select>
 
@@ -82,7 +86,7 @@
                 category,
             </if>
             <if test="type!=null and type!=''">
-                type,
+                `type`,
             </if>
             <if test="val1!=null and val1!=''">
                 val1,
@@ -100,7 +104,10 @@
                 val5,
             </if>
             <if test="output!=null and output!=''">
-                output,
+                `output`,
+            </if>
+            <if test="costPrice!=null and costPrice!=''">
+                 cost_price
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -128,6 +135,9 @@
             <if test="output!=null and output!=''">
                 #{output,jdbcType=VARCHAR},
             </if>
+            <if test="costPrice!=null and costPrice!=''">
+                #{output,jdbcType=VARCHAR}
+            </if>
         </trim>
     </insert>
 
@@ -140,7 +150,7 @@
                 category = #{category,jdbcType=VARCHAR},
             </if>
             <if test="type!=null and type!=''">
-                type = #{type,jdbcType=VARCHAR},
+                `type` = #{type,jdbcType=VARCHAR},
             </if>
             <if test="val1!=null and val1!=''">
                 val1 = #{val1,jdbcType=VARCHAR},
@@ -158,7 +168,10 @@
                 val5 = #{val5,jdbcType=VARCHAR},
             </if>
             <if test="output!=null and output!=''">
-                output = #{output,jdbcType=VARCHAR},
+                `output` = #{output,jdbcType=VARCHAR},
+            </if>
+            <if test="costPrice!=null and costPrice!=''">
+                cost_price = #{output,jdbcType=VARCHAR}
             </if>
         </trim>
         where id = #{id,jdbcType=BIGINT}
@@ -180,7 +193,7 @@
                 and category = #{basePriceEquationPageVO.category,jdbcType=VARCHAR}
             </if>
             <if test="basePriceEquationPageVO.type!=null and basePriceEquationPageVO.type!=''">
-                and type = #{basePriceEquationPageVO.type,jdbcType=VARCHAR}
+                and `type` = #{basePriceEquationPageVO.type,jdbcType=VARCHAR}
             </if>
             <if test="basePriceEquationPageVO.val1!=null and basePriceEquationPageVO.val1!=''">
                 and val1 = #{basePriceEquationPageVO.val1,jdbcType=VARCHAR}
@@ -198,7 +211,10 @@
                 and val5 = #{basePriceEquationPageVO.val5,jdbcType=VARCHAR}
             </if>
             <if test="basePriceEquationPageVO.output!=null and basePriceEquationPageVO.output!=''">
-                and output = #{basePriceEquationPageVO.output,jdbcType=VARCHAR}
+                and `output` = #{basePriceEquationPageVO.output,jdbcType=VARCHAR}
+            </if>
+            <if test="costPrice!=null and costPrice!=''">
+                and cost_price = #{output,jdbcType=VARCHAR}
             </if>
         </where>
     </select>

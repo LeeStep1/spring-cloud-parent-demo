@@ -186,7 +186,24 @@ public class OptionsServiceImpl extends BaseService implements OptionsService {
 	public BaseVo listPage(OptionsPageVO optionsPageVO) {
 		Page<OptionsVO> page = new Page<>(optionsPageVO.getPageNum(), optionsPageVO.getPageSize());
 		IPage<OptionsVO> equationList = optionsDao.listPage(page, optionsPageVO);
-
+		List<Long> ids = new ArrayList<>();
+		for (OptionsVO optionsVO : equationList.getRecords()) {
+			if (optionsVO.getParentId()!=null){
+				ids.add(optionsVO.getParentId());
+			}
+		}
+		if (CollectionUtils.isNotEmpty(ids)){
+			List<Options> options = optionsDao.batchSelectByIds(ids);
+			if (CollectionUtils.isNotEmpty(options)){
+				for (OptionsVO optionsVO : equationList.getRecords()) {
+					for (Options option : options) {
+						if (optionsVO.getParentId().equals(option.getId())){
+							optionsVO.setParentName(option.getOptionsName());
+						}
+					}
+				}
+			}
+		}
 		BaseVo baseVo = new BaseVo();
 		baseVo.setData(equationList);
 		return baseVo;

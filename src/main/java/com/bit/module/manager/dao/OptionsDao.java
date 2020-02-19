@@ -64,4 +64,11 @@ public interface OptionsDao extends BaseMapper<Options> {
 	 * @param ids
 	 */
 	void deleteByIds(@Param(value = "ids")List<Long> ids);
+
+	/**
+	 * 批量查询
+	 * @param ids
+	 * @return
+	 */
+	List<Options> batchSelectByIds(@Param(value = "ids")List<Long> ids);
 }
