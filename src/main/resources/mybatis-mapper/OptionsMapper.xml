@@ -114,7 +114,7 @@
                 and item_type = #{itemType,jdbcType=INTEGER}
             </if>
             <if test="parentId!=null">
-                and parent_id = #{parentId,jdbcType=BIGINT},
+                and parent_id = #{parentId,jdbcType=BIGINT}
             </if>
         </where>
     </select>
