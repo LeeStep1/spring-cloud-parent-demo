@@ -136,7 +136,7 @@
                 #{output,jdbcType=VARCHAR},
             </if>
             <if test="costPrice!=null and costPrice!=''">
-                #{output,jdbcType=VARCHAR}
+                #{costPrice,jdbcType=VARCHAR}
             </if>
         </trim>
     </insert>
