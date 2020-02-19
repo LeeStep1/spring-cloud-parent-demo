@@ -82,10 +82,10 @@
             <if test="category!=null and category!=''">
                 category,
             </if>
-            <if test="type!=null and type!=''">
+            <if test="type!=null">
                 `type`,
             </if>
-            <if test="typeName!=null and typeName!=''">
+            <if test="typeName!=null">
                 type_name,
             </if>
             <if test="relevanceType!=null">
@@ -111,10 +111,10 @@
             <if test="category!=null and category!=''">
                 #{category,jdbcType=VARCHAR},
             </if>
-            <if test="type!=null and type!=''">
+            <if test="type!=null">
                 #{type,jdbcType=VARCHAR},
             </if>
-            <if test="typeName!=null and typeName!=''">
+            <if test="typeName!=null">
                 #{typeName,jdbcType=VARCHAR},
             </if>
             <if test="relevanceType!=null">
