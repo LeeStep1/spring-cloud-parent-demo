@@ -213,7 +213,7 @@
             <if test="basePriceEquationPageVO.output!=null and basePriceEquationPageVO.output!=''">
                 and `output` = #{basePriceEquationPageVO.output,jdbcType=VARCHAR}
             </if>
-            <if test="costPrice!=null and costPrice!=''">
+            <if test="basePriceEquationPageVO.costPrice!=null and basePriceEquationPageVO.costPrice!=''">
                 and cost_price = #{output,jdbcType=VARCHAR}
             </if>
         </where>
