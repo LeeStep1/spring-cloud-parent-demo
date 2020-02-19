@@ -136,6 +136,7 @@ public class OptionsServiceImpl extends BaseService implements OptionsService {
 			for (Options options : byParam) {
 				ids.add(options.getId());
 			}
+			ids.add(id);
 			//批量删除
 			optionsDao.deleteByIds(ids);
 		}else {
