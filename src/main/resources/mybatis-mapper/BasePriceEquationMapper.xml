@@ -71,7 +71,7 @@
                 and `output` = #{output,jdbcType=VARCHAR}
             </if>
             <if test="costPrice!=null and costPrice!=''">
-                and cost_price = #{output,jdbcType=VARCHAR}
+                and cost_price = #{costPrice,jdbcType=VARCHAR}
             </if>
         </where>
     </select>
@@ -171,7 +171,7 @@
                 `output` = #{output,jdbcType=VARCHAR},
             </if>
             <if test="costPrice!=null and costPrice!=''">
-                cost_price = #{output,jdbcType=VARCHAR}
+                cost_price = #{costPrice,jdbcType=VARCHAR}
             </if>
         </trim>
         where id = #{id,jdbcType=BIGINT}
@@ -214,7 +214,7 @@
                 and `output` = #{basePriceEquationPageVO.output,jdbcType=VARCHAR}
             </if>
             <if test="basePriceEquationPageVO.costPrice!=null and basePriceEquationPageVO.costPrice!=''">
-                and cost_price = #{output,jdbcType=VARCHAR}
+                and cost_price = #{basePriceEquationPageVO.costPrice,jdbcType=VARCHAR}
             </if>
         </where>
     </select>
