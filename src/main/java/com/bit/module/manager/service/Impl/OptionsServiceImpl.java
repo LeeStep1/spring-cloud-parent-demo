@@ -171,6 +171,12 @@ public class OptionsServiceImpl extends BaseService implements OptionsService {
 	@Override
 	public BaseVo reflectById(Long id) {
 		Options options = optionsDao.getOptionsById(id);
+		if (options!=null){
+			Options optionsById = optionsDao.getOptionsById(options.getParentId());
+			if (optionsById!=null){
+				options.setParentName(optionsById.getOptionsName());
+			}
+		}
 		BaseVo baseVo = new BaseVo();
 		baseVo.setData(options);
 		return baseVo;

@@ -92,4 +92,9 @@ public class Options implements Serializable {
 	 */
 	@TableField(exist = false)
 	private Integer length;
+	/**
+	 * 父元素 名称
+	 */
+	@TableField(exist = false)
+	private String parentName;
 }
