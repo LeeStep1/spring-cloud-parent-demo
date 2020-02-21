@@ -30,4 +30,88 @@
 
     </select>
 
+    <!-- 根据主键查询数据 -->
+    <select id="getElevatorRelaOptionsById" parameterType="Integer" resultMap="elevatorRelaOptionsMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_elevator_rela_options
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <!-- 多参数查询数据 -->
+    <select id="findByParam" parameterType="com.bit.module.miniapp.bean.ElevatorRelaOptions" resultMap="elevatorRelaOptionsMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_elevator_rela_options
+        <where>
+            <if test="elevatorTypeId!=null">
+                and elevator_type_id = #{elevatorTypeId,jdbcType=BIGINT}
+            </if>
+            <if test="optionId!=null">
+                and option_id = #{optionId,jdbcType=BIGINT}
+            </if>
+
+        </where>
+    </select>
+
+
+    <!-- 新增数据 -->
+    <insert id="addElevatorRelaOptions" parameterType="com.bit.module.miniapp.bean.ElevatorRelaOptions" keyColumn="id"
+            useGeneratedKeys="true">
+        insert into t_elevator_rela_options
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="elevatorTypeId!=null">
+                elevator_type_id,
+            </if>
+            <if test="optionId!=null">
+                option_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="elevatorTypeId!=null">
+                #{elevatorTypeId,jdbcType=BIGINT},
+            </if>
+            <if test="optionId!=null">
+                #{optionId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+
+    <!-- 编辑数据 -->
+    <update id="updateElevatorRelaOptions" parameterType="com.bit.module.miniapp.bean.ElevatorRelaOptions">
+        update t_elevator_rela_options
+        <trim prefix="set" suffixOverrides=",">
+            <if test="elevatorTypeId!=null">
+                elevator_type_id =  #{elevatorTypeId,jdbcType=BIGINT},
+            </if>
+            <if test="optionId!=null">
+                option_id =  #{optionId,jdbcType=BIGINT},
+            </if>
+        </trim>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+
+    <!-- 删除数据 -->
+    <delete id="delElevatorRelaOptionsById" parameterType="Long">
+        delete from t_elevator_rela_options
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <!-- 分页查询数据 -->
+    <select id="listPage" parameterType="com.bit.module.manager.vo.ElevatorRelaOptionsPageVO" resultType="com.bit.module.manager.vo.ElevatorRelaOptionsVO">
+        select
+        <include refid="Base_Column_List"/>
+        from t_elevator_rela_options
+        <where>
+            <if test="elevatorTypeId!=null">
+                and elevator_type_id = #{elevatorRelaOptionsPageVO.elevatorTypeId,jdbcType=BIGINT},
+            </if>
+            <if test="optionId!=null">
+                and option_id = #{elevatorRelaOptionsPageVO.optionId,jdbcType=BIGINT},
+            </if>
+        </where>
+    </select>
+
 </mapper>

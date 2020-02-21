@@ -3,7 +3,17 @@
 
 <mapper namespace="com.bit.module.manager.dao.ElevatorBaseElementDao">
 
-
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.bit.module.manager.bean.ElevatorBaseElement" id="elevatorBaseElementMap">
+        <result property="id" column="id"/>
+        <result property="elevatorTypeId" column="elevator_type_id"/>
+        <result property="elevatorTypeKey" column="elevator_type_key"/>
+        <result property="elementName" column="element_name"/>
+        <result property="elementType" column="element_type"/>
+        <result property="categoryType" column="category_type"/>
+        <result property="paramsKey" column="params_key"/>
+        <result property="orderNum" column="order_num"/>
+    </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
@@ -18,7 +28,7 @@
     </sql>
 
     <!-- 根据主键查询数据 -->
-    <select id="findAll" resultType="com.bit.module.manager.vo.ElevatorBaseElementVo"  parameterType="com.bit.module.manager.vo.ElevatorBaseElementVo">
+    <select id="findAll" resultType="com.bit.module.manager.vo.ElevatorBaseElementVO" parameterType="com.bit.module.manager.vo.ElevatorBaseElementVO">
 
         SELECT
         tet.id,
@@ -73,6 +83,164 @@
     </select>
 -->
 
+    <!-- 根据主键查询数据 -->
+    <select id="getElevatorBaseElementById" parameterType="Integer" resultMap="elevatorBaseElementMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_elevator_base_element
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <!-- 多参数查询数据 -->
+    <select id="findByParam" parameterType="com.bit.module.manager.bean.ElevatorBaseElement" resultMap="elevatorBaseElementMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_elevator_base_element
+        <where>
+            <if test="elevatorTypeId!=null">
+                and elevator_type_id = #{elevatorTypeId,jdbcType=BIGINT}
+            </if>
+            <if test="elevatorTypeKey!=null and elevatorTypeKey!=''">
+                and elevator_type_key = #{elevatorTypeKey,jdbcType=VARCHAR}
+            </if>
+            <if test="elementName!=null and elementName!=''">
+                and element_name = #{elementName,jdbcType=VARCHAR}
+            </if>
+            <if test="elementType!=null">
+                and element_type = #{elementType,jdbcType=INTEGER}
+            </if>
+            <if test="categoryType!=null">
+                and category_type = #{categoryType,jdbcType=INTEGER}
+            </if>
+            <if test="paramsKey!=null and paramsKey!=''">
+                and params_key = #{paramsKey,jdbcType=VARCHAR}
+            </if>
+            <if test="orderNum!=null">
+                and order_num = #{orderNum,jdbcType=INTEGER}
+            </if>
+
+        </where>
+    </select>
+
+
+    <!-- 新增数据 -->
+    <insert id="addElevatorBaseElement" parameterType="com.bit.module.manager.bean.ElevatorBaseElement" keyColumn="id"
+            useGeneratedKeys="true">
+        insert into t_elevator_base_element
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="elevatorTypeId!=null">
+                elevator_type_id,
+            </if>
+            <if test="elevatorTypeKey!=null and elevatorTypeKey!=''">
+                elevator_type_key,
+            </if>
+            <if test="elementName!=null and elementName!=''">
+                element_name,
+            </if>
+            <if test="elementType!=null">
+                element_type,
+            </if>
+            <if test="categoryType!=null">
+                category_type,
+            </if>
+            <if test="paramsKey!=null and paramsKey!=''">
+                params_key,
+            </if>
+            <if test="orderNum!=null">
+                order_num,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="elevatorTypeId!=null">
+                #{elevatorTypeId,jdbcType=BIGINT},
+            </if>
+            <if test="elevatorTypeKey!=null and elevatorTypeKey!=''">
+                #{elevatorTypeKey,jdbcType=VARCHAR},
+            </if>
+            <if test="elementName!=null and elementName!=''">
+                #{elementName,jdbcType=VARCHAR},
+            </if>
+            <if test="elementType!=null">
+                #{elementType,jdbcType=INTEGER},
+            </if>
+            <if test="categoryType!=null">
+                #{categoryType,jdbcType=INTEGER},
+            </if>
+            <if test="paramsKey!=null and paramsKey!=''">
+                #{paramsKey,jdbcType=VARCHAR},
+            </if>
+            <if test="orderNum!=null">
+                #{orderNum,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+
+    <!-- 编辑数据 -->
+    <update id="updateElevatorBaseElement" parameterType="com.bit.module.manager.bean.ElevatorBaseElement">
+        update t_elevator_base_element
+        <trim prefix="set" suffixOverrides=",">
+            <if test="elevatorTypeId!=null">
+                elevator_type_id =  #{elevatorTypeId,jdbcType=BIGINT},
+            </if>
+            <if test="elevatorTypeKey!=null and elevatorTypeKey!=''">
+                elevator_type_key = #{elevatorTypeKey,jdbcType=VARCHAR},
+            </if>
+            <if test="elementName!=null and elementName!=''">
+                element_name = #{elementName,jdbcType=VARCHAR},
+            </if>
+            <if test="elementType!=null">
+                element_type = #{elementType,jdbcType=INTEGER},
+            </if>
+            <if test="categoryType!=null">
+                category_type = #{categoryType,jdbcType=INTEGER},
+            </if>
+            <if test="paramsKey!=null and paramsKey!=''">
+                params_key = #{paramsKey,jdbcType=VARCHAR},
+            </if>
+            <if test="orderNum!=null">
+                order_num = #{orderNum,jdbcType=INTEGER},
+            </if>
+        </trim>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+
+    <!-- 删除数据 -->
+    <delete id="delElevatorBaseElementById" parameterType="Long">
+        delete from t_elevator_base_element
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <!-- 分页查询数据 -->
+    <select id="listPage" parameterType="com.bit.module.manager.vo.ElevatorBaseElementPageVO" resultType="com.bit.module.manager.vo.ElevatorBaseElementVO">
+        select
+        <include refid="Base_Column_List"/>
+        from t_elevator_base_element
+        <where>
+            <if test="elevatorTypeId!=null">
+                and elevator_type_id = #{elevatorBaseElementPageVO.elevatorTypeId,jdbcType=BIGINT},
+            </if>
+            <if test="elevatorBaseElementPageVO.elevatorTypeKey!=null and elevatorBaseElementPageVO.elevatorTypeKey!=''">
+                and elevator_type_key = #{elevatorBaseElementPageVO.elevatorTypeKey,jdbcType=VARCHAR}
+            </if>
+            <if test="elevatorBaseElementPageVO.elementName!=null and elevatorBaseElementPageVO.elementName!=''">
+                and element_name = #{elevatorBaseElementPageVO.elementName,jdbcType=VARCHAR}
+            </if>
+            <if test="elevatorBaseElementPageVO.elementType!=null">
+                and element_type = #{elevatorBaseElementPageVO.elementType,jdbcType=INTEGER}
+            </if>
+            <if test="elevatorBaseElementPageVO.categoryType!=null">
+                and category_type = #{elevatorBaseElementPageVO.categoryType,jdbcType=INTEGER}
+            </if>
+            <if test="elevatorBaseElementPageVO.paramsKey!=null and elevatorBaseElementPageVO.paramsKey!=''">
+                and params_key = #{elevatorBaseElementPageVO.paramsKey,jdbcType=VARCHAR}
+            </if>
+            <if test="elevatorBaseElementPageVO.orderNum!=null">
+                and order_num = #{elevatorBaseElementPageVO.orderNum,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
 
 
 
