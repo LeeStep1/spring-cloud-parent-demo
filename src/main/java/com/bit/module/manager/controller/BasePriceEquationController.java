@@ -105,4 +105,16 @@ public class BasePriceEquationController {
 		return basePriceEquationService.reflectById(id);
 	}
 
+	/**
+	 * 确定表头 - 价格类别 电梯类型
+	 * @param basePriceEquationRel
+	 * @return
+	 */
+	@PostMapping("/determineHeader")
+	public BaseVo determineHeader(@RequestBody BasePriceEquationRel basePriceEquationRel){
+		return basePriceEquationService.determineHeader(basePriceEquationRel);
+	}
+
+
+
 }

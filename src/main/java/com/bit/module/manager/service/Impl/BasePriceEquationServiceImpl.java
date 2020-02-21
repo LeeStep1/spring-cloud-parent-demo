@@ -149,4 +149,16 @@ public class BasePriceEquationServiceImpl extends BaseService implements BasePri
 		baseVo.setData(basePriceEquationById);
 		return baseVo;
 	}
+	/**
+	 * 确定表头 - 价格类别 电梯类型
+	 * @param basePriceEquationRel
+	 * @return
+	 */
+	@Override
+	public BaseVo determineHeader(BasePriceEquationRel basePriceEquationRel) {
+		List<BasePriceEquationRel> byParam = basePriceEquationRelDao.findByParam(basePriceEquationRel);
+		BaseVo baseVo = new BaseVo();
+		baseVo.setData(byParam);
+		return baseVo;
+	}
 }

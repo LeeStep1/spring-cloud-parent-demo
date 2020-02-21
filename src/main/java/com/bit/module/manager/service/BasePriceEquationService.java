@@ -70,5 +70,12 @@ public interface BasePriceEquationService {
 	 * @return
 	 */
 	BaseVo reflectById(Long id);
+
+	/**
+	 * 确定表头 - 价格类别 电梯类型
+	 * @param basePriceEquationRel
+	 * @return
+	 */
+	BaseVo determineHeader(BasePriceEquationRel basePriceEquationRel);
 }
 
