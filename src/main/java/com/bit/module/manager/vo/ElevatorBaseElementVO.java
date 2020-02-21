@@ -9,7 +9,7 @@ import lombok.Data;
  * @Date: 2020-01-02
  **/
 @Data
-public class ElevatorBaseElementVo  extends ElevatorBaseElement {
+public class ElevatorBaseElementVO extends ElevatorBaseElement {
 
     private String paramsUnit;
 }
