@@ -96,4 +96,14 @@ public class OptionsController {
 	public BaseVo listPage(@RequestBody OptionsPageVO optionsPageVO){
 		return optionsService.listPage(optionsPageVO);
 	}
+
+
+	/**
+	 * 树形结构
+	 * @return
+	 */
+	@PostMapping("/treeAll")
+	public BaseVo treeAll(){
+		return optionsService.treeAll();
+	}
 }

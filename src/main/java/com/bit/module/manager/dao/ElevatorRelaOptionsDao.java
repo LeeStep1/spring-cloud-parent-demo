@@ -53,4 +53,16 @@ public interface ElevatorRelaOptionsDao {
 	 * 分页查询
 	 */
 	IPage<ElevatorRelaOptionsVO> listPage(@Param("pg")Page<ElevatorRelaOptionsVO> page, @Param("elevatorRelaOptionsPageVO") ElevatorRelaOptionsPageVO elevatorRelaOptionsPageVO);
+
+	/**
+	 * 批量新增
+	 * @param elevatorRelaOptionsList
+	 */
+	void batchAdd(@Param(value = "list")List<ElevatorRelaOptions> elevatorRelaOptionsList);
+
+	/**
+	 * 根据参数删除数据
+	 * @param elevatorRelaOptions
+	 */
+	void deleteByParam(ElevatorRelaOptions elevatorRelaOptions);
 }

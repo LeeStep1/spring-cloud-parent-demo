@@ -31,7 +31,7 @@
     </select>
 
     <!-- 根据主键查询数据 -->
-    <select id="getElevatorRelaOptionsById" parameterType="Integer" resultMap="elevatorRelaOptionsMap">
+    <select id="getElevatorRelaOptionsById" parameterType="Long" resultMap="elevatorRelaOptionsMap">
         select
         <include refid="Base_Column_List"/>
         from t_elevator_rela_options
@@ -113,5 +113,34 @@
             </if>
         </where>
     </select>
+
+
+    <insert id="batchAdd" parameterType="com.bit.module.miniapp.bean.ElevatorRelaOptions">
+        INSERT INTO t_elevator_rela_options(
+        elevator_type_id,
+        option_id
+        ) VALUES
+        <foreach collection="list" item="item" index="index"  separator=",">
+            (
+            #{item.elevatorTypeId,jdbcType=BIGINT},
+            #{item.optionId,jdbcType=BIGINT}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteByParam" parameterType="com.bit.module.miniapp.bean.ElevatorRelaOptions">
+        DELETE FROM t_elevator_rela_options
+        <where>
+            <if test="id!=null">
+                id = #{id,jdbcType=BIGINT}
+            </if>
+            <if test="elevatorTypeId!=null">
+                elevator_type_id = #{elevatorTypeId,jdbcType=BIGINT}
+            </if>
+            <if test="optionId!=null">
+                option_id = #{optionId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </delete>
 
 </mapper>

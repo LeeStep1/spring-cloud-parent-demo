@@ -84,7 +84,7 @@
 -->
 
     <!-- 根据主键查询数据 -->
-    <select id="getElevatorBaseElementById" parameterType="Integer" resultMap="elevatorBaseElementMap">
+    <select id="getElevatorBaseElementById" parameterType="Long" resultMap="elevatorBaseElementMap">
         select
         <include refid="Base_Column_List"/>
         from t_elevator_base_element
@@ -218,8 +218,8 @@
         <include refid="Base_Column_List"/>
         from t_elevator_base_element
         <where>
-            <if test="elevatorTypeId!=null">
-                and elevator_type_id = #{elevatorBaseElementPageVO.elevatorTypeId,jdbcType=BIGINT},
+            <if test="elevatorBaseElementPageVO.elevatorTypeId!=null">
+                and elevator_type_id = #{elevatorBaseElementPageVO.elevatorTypeId,jdbcType=BIGINT}
             </if>
             <if test="elevatorBaseElementPageVO.elevatorTypeKey!=null and elevatorBaseElementPageVO.elevatorTypeKey!=''">
                 and elevator_type_key = #{elevatorBaseElementPageVO.elevatorTypeKey,jdbcType=VARCHAR}

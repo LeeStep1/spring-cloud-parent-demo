@@ -120,6 +120,17 @@ public class ParamsServiceImpl extends BaseService implements ParamsService {
 		baseVo.setData(listPage);
 		return baseVo;
 	}
+	/**
+	 * 全查
+	 * @return
+	 */
+	@Override
+	public BaseVo findAll() {
+		List<Params> byParam = paramsDao.findByParam(null);
+		BaseVo baseVo = new BaseVo();
+		baseVo.setData(byParam);
+		return baseVo;
+	}
 
 
 }

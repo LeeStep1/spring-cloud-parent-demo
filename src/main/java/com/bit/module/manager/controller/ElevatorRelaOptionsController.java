@@ -11,6 +11,8 @@ import com.bit.module.manager.service.ElevatorRelaOptionsService;
 import org.springframework.web.bind.annotation.*;
 import com.bit.base.vo.BaseVo;
 
+import java.util.List;
+
 
 /**
  * 电梯类型与可选项关联表
@@ -20,7 +22,7 @@ import com.bit.base.vo.BaseVo;
  * @date 2020-02-21 10:34:30
  */
 @RestController
-@RequestMapping("module.manager/elevatorrelaoptions")
+@RequestMapping("manager/elevatorRelaOptions")
 public class ElevatorRelaOptionsController {
     @Autowired
     private ElevatorRelaOptionsService elevatorRelaOptionsService;
@@ -38,7 +40,16 @@ public class ElevatorRelaOptionsController {
         return elevatorRelaOptionsService.add(elevatorRelaOptions);
     }
 
-
+	/**
+	 * 批量新增数据
+	 * @param elevatorRelaOptionsList
+	 * @author chenduo
+	 * @since ${date}
+	 */
+	@PostMapping("/batchAdd")
+	public BaseVo batchAdd(@RequestBody List<ElevatorRelaOptions> elevatorRelaOptionsList){
+		return elevatorRelaOptionsService.batchAdd(elevatorRelaOptionsList);
+	}
 
 
 	/**
@@ -75,7 +86,7 @@ public class ElevatorRelaOptionsController {
 	 * @return List<ElevatorRelaOptions>
 	 */
 	@PostMapping("/findByParam")
-	public BaseVo findByParam(ElevatorRelaOptions elevatorRelaOptions){
+	public BaseVo findByParam(@RequestBody ElevatorRelaOptions elevatorRelaOptions){
 		return elevatorRelaOptionsService.findByParam(elevatorRelaOptions);
 	}
 
@@ -91,5 +102,14 @@ public class ElevatorRelaOptionsController {
 		return elevatorRelaOptionsService.reflectById(id);
     }
 
-
+	/**
+	 * 修改电梯的选项
+	 * @param elevatorTypeId
+	 * @param elevatorRelaOptionsList
+	 * @return
+	 */
+    @PostMapping("/modify/{elevatorTypeId}")
+    public BaseVo modify(@PathVariable(value = "elevatorTypeId") Long elevatorTypeId,@RequestBody  List<ElevatorRelaOptions> elevatorRelaOptionsList){
+		return elevatorRelaOptionsService.modify(elevatorTypeId, elevatorRelaOptionsList);
+	}
 }

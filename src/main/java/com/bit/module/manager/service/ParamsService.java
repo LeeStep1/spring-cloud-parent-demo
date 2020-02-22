@@ -64,5 +64,11 @@ public interface ParamsService {
 	 */
 	BaseVo paramsListPage(ParamsPageVO paramsPageVO);
 
+	/**
+	 * 全查
+	 * @return
+	 */
+	BaseVo findAll();
+
 }
 

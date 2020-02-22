@@ -1,6 +1,9 @@
 package com.bit.module.miniapp.vo;
 
+import com.bit.module.miniapp.bean.Options;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @Description:
@@ -67,6 +70,10 @@ public class OptionsVO {
      */
     private String parentName;
 
+    /**
+     * 子节点
+     */
+    private List<OptionsVO> childList;
 
 
 }

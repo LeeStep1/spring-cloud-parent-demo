@@ -61,5 +61,12 @@ public interface OptionsService {
 	 * @return
 	 */
 	BaseVo listPage(OptionsPageVO optionsPageVO);
+
+
+	/**
+	 * 树形结构
+	 * @return
+	 */
+	BaseVo treeAll();
 }
 

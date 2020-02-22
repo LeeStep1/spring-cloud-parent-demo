@@ -9,6 +9,7 @@ import com.bit.module.miniapp.vo.OptionsPageVO;
 import com.bit.module.miniapp.vo.OptionsVO;
 import com.bit.utils.StringUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.bit.module.manager.dao.OptionsDao;
 import com.bit.module.manager.service.OptionsService;
@@ -216,5 +217,60 @@ public class OptionsServiceImpl extends BaseService implements OptionsService {
 		return baseVo;
 	}
 
+	/**
+	 * 树形结构
+	 * @return
+	 */
+	@Override
+	public BaseVo treeAll() {
+		//全查
+		List<Options> byParam = optionsDao.findByParam(null);
+		List<OptionsVO> all = new ArrayList<>();
+		List<OptionsVO> rootList = new ArrayList<>();
+		if (CollectionUtils.isNotEmpty(byParam)){
+			for (Options options : byParam) {
+				OptionsVO optionsVO = new OptionsVO();
+				BeanUtils.copyProperties(options,optionsVO);
+				if (options.getParentId().equals(-1L)){
+					rootList.add(optionsVO);
+				}else {
+					all.add(optionsVO);
+				}
+			}
+			for (OptionsVO allvo : rootList) {
+				allvo.setChildList(getChildList(allvo,all,allvo.getId()));
+			}
+		}
+		BaseVo baseVo = new BaseVo();
+		baseVo.setData(rootList);
+		return baseVo;
+	}
+
+	/**
+	 * 递归查询子节点
+	 * @param optionsVO
+	 * @param all
+	 * @param parentId
+	 * @return
+	 */
+	private List<OptionsVO> getChildList(OptionsVO optionsVO,List<OptionsVO> all,Long parentId){
+		List<OptionsVO> list = new ArrayList<>();
+		for (OptionsVO vo : all) {
+			if (vo.getParentId()!=null && vo.getParentId().equals(parentId)){
+				list.add(vo);
+			}
+		}
+		//设置子集
+		optionsVO.setChildList(list);
+
+		for (OptionsVO opts : list) {
+			opts.setChildList(getChildList(opts,all,opts.getId()));
+		}
+
+		if (list.size() == 0) {
+			return null;
+		}
+		return list;
+	}
 
 }

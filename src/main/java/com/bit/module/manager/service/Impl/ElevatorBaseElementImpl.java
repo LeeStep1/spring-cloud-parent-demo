@@ -1,10 +1,14 @@
 package com.bit.module.manager.service.Impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.bit.base.service.BaseService;
 import com.bit.base.vo.BaseVo;
 
 import com.bit.module.manager.bean.ElevatorBaseElement;
 import com.bit.module.manager.dao.ElevatorBaseElementDao;
 import com.bit.module.manager.service.ElevatorBaseElementService;
+import com.bit.module.manager.vo.ElevatorBaseElementPageVO;
 import com.bit.module.manager.vo.ElevatorBaseElementVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +24,7 @@ import java.util.*;
 
 @Service
 @Transactional
-public class ElevatorBaseElementImpl implements ElevatorBaseElementService {
+public class ElevatorBaseElementImpl extends BaseService implements ElevatorBaseElementService {
 
 
     @Autowired
@@ -57,5 +61,88 @@ public class ElevatorBaseElementImpl implements ElevatorBaseElementService {
         BaseVo<List> vo= new BaseVo();
         vo.setData(rsList);
         return vo;
+    }
+
+
+    /**
+     * 新增数据
+     * @param elevatorBaseElement
+     * @author chenduo
+     * @since ${date}
+     */
+    @Override
+    @Transactional
+    public BaseVo add(ElevatorBaseElement elevatorBaseElement){
+        elevatorBaseElementDao.addElevatorBaseElement(elevatorBaseElement);
+        return successVo();
+    }
+
+    /**
+     * 编辑数据
+     * @param elevatorBaseElement
+     * @author chenduo
+     * @since ${date}
+     */
+    @Override
+    @Transactional
+    public BaseVo update(ElevatorBaseElement elevatorBaseElement) {
+        elevatorBaseElementDao.updateElevatorBaseElement(elevatorBaseElement);
+        return successVo();
+    }
+
+    /**
+     * 删除数据
+     * @param id
+     * @author chenduo
+     * @since ${date}
+     */
+    @Override
+    @Transactional
+    public BaseVo delete(Long id) {
+        elevatorBaseElementDao.delElevatorBaseElementById(id);
+        return successVo();
+    }
+
+    /**
+     * 多参数查询数据
+     * @param elevatorBaseElement
+     * @author chenduo
+     * @since ${date}
+     * @return List<ElevatorBaseElement>
+     */
+    @Override
+    public BaseVo findByParam(ElevatorBaseElement elevatorBaseElement) {
+        List<ElevatorBaseElement> elevatorBaseElementList = elevatorBaseElementDao.findByParam(elevatorBaseElement);
+        BaseVo baseVo = new BaseVo();
+        baseVo.setData(elevatorBaseElementList);
+        return baseVo;
+    }
+
+    /**
+     * 单查数据
+     * @param id
+     * @author chenduo
+     * @since ${date}
+     * @return ElevatorBaseElement
+     */
+    @Override
+    public BaseVo reflectById(Long id) {
+        ElevatorBaseElement elevatorBaseElement = elevatorBaseElementDao.getElevatorBaseElementById(id);
+        BaseVo baseVo = new BaseVo();
+        baseVo.setData(elevatorBaseElement);
+        return baseVo;
+    }
+    /**
+     * 分页查询
+     * @param elevatorBaseElementPageVO
+     * @return
+     */
+    @Override
+    public BaseVo listPage(ElevatorBaseElementPageVO elevatorBaseElementPageVO) {
+		Page<ElevatorBaseElementVO> page = new Page<>(elevatorBaseElementPageVO.getPageNum(), elevatorBaseElementPageVO.getPageSize());
+		IPage<ElevatorBaseElementVO> elementVOIPage = elevatorBaseElementDao.listPage(page, elevatorBaseElementPageVO);
+		BaseVo baseVo = new BaseVo();
+		baseVo.setData(elementVOIPage);
+        return baseVo;
     }
 }

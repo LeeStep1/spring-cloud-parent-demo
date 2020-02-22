@@ -103,4 +103,13 @@ public class ParamsController {
 	public BaseVo paramsListPage(@RequestBody ParamsPageVO paramsPageVO) {
 		return paramsService.paramsListPage(paramsPageVO);
 	}
+
+	/**
+	 * 全查
+	 * @return
+	 */
+	@PostMapping("/findAll")
+	public BaseVo findAll(){
+		return paramsService.findAll();
+	}
 }
