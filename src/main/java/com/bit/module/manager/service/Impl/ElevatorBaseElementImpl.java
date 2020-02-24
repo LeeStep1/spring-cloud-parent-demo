@@ -7,9 +7,12 @@ import com.bit.base.vo.BaseVo;
 
 import com.bit.module.manager.bean.ElevatorBaseElement;
 import com.bit.module.manager.dao.ElevatorBaseElementDao;
+import com.bit.module.manager.dao.ElevatorTypeDao;
 import com.bit.module.manager.service.ElevatorBaseElementService;
 import com.bit.module.manager.vo.ElevatorBaseElementPageVO;
 import com.bit.module.manager.vo.ElevatorBaseElementVO;
+import com.bit.module.miniapp.bean.ElevatorType;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +32,8 @@ public class ElevatorBaseElementImpl extends BaseService implements ElevatorBase
 
     @Autowired
     private ElevatorBaseElementDao elevatorBaseElementDao;
+    @Autowired
+    private ElevatorTypeDao elevatorTypeDao;
 
     /**
      * @description:  根据电梯类型得到基本信息填写模板
@@ -128,8 +133,14 @@ public class ElevatorBaseElementImpl extends BaseService implements ElevatorBase
     @Override
     public BaseVo reflectById(Long id) {
         ElevatorBaseElement elevatorBaseElement = elevatorBaseElementDao.getElevatorBaseElementById(id);
+        ElevatorBaseElementVO elevatorBaseElementVO = new ElevatorBaseElementVO();
+        BeanUtils.copyProperties(elevatorBaseElement,elevatorBaseElementVO);
+        ElevatorType elevatorTypeById = elevatorTypeDao.getElevatorTypeById(elevatorBaseElement.getElevatorTypeId());
+        if (elevatorTypeById!=null){
+            elevatorBaseElementVO.setElevatorTypeName(elevatorTypeById.getTypeName());
+        }
         BaseVo baseVo = new BaseVo();
-        baseVo.setData(elevatorBaseElement);
+        baseVo.setData(elevatorBaseElementVO);
         return baseVo;
     }
     /**
