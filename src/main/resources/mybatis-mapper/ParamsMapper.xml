@@ -135,7 +135,7 @@
         from t_params
         <where>
             <if test="paramsPageVO.paramsName!=null and paramsPageVO.paramsName!=''">
-                and params_name = #{paramsPageVO.paramsName,jdbcType=VARCHAR}
+                and params_name like concat("%",#{paramsPageVO.paramsName,jdbcType=VARCHAR},"%")
             </if>
             <if test="paramsPageVO.paramsKey!=null and paramsPageVO.paramsKey!=''">
                 and params_key = #{paramsPageVO.paramsKey,jdbcType=VARCHAR}
@@ -147,7 +147,7 @@
                 and params_unit = #{paramsPageVO.paramsUnit,jdbcType=VARCHAR}
             </if>
             <if test="paramsPageVO.paramsDescription!=null and paramsPageVO.paramsDescription!=''">
-                and params_description = #{paramsPageVO.paramsDescription,jdbcType=VARCHAR}
+                and params_description like concat("%",#{paramsPageVO.paramsDescription,jdbcType=VARCHAR},"%")
             </if>
 
         </where>
