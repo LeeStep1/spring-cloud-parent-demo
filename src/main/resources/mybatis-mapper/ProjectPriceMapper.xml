@@ -268,6 +268,9 @@
             <if test="projectPageVO.nonStandardApplyStatus!=null">
                 and t1.non_standard_apply_status = #{projectPageVO.nonStandardApplyStatus,jdbcType=INTEGER}
             </if>
+            <if test="projectPageVO.realName!=null and projectPageVO.realName!=''">
+                and t3.real_name like concat("%", #{projectPageVO.realName,jdbcType=VARCHAR} ,"%")
+            </if>
         </where>
         order by t1.create_time desc
     </select>
