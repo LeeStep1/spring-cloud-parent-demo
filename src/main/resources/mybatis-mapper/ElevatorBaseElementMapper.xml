@@ -215,29 +215,31 @@
     <!-- 分页查询数据 -->
     <select id="listPage" parameterType="com.bit.module.manager.vo.ElevatorBaseElementPageVO" resultType="com.bit.module.manager.vo.ElevatorBaseElementVO">
         select
-        <include refid="Base_Column_List"/>
-        from t_elevator_base_element
+        t1.*,t2.type_name as elevatorTypeName
+        from t_elevator_base_element t1
+        INNER JOIN t_elevator_type t2
+        on t1.elevator_type_id = t2.id
         <where>
             <if test="elevatorBaseElementPageVO.elevatorTypeId!=null">
-                and elevator_type_id = #{elevatorBaseElementPageVO.elevatorTypeId,jdbcType=BIGINT}
+                and t1.elevator_type_id = #{elevatorBaseElementPageVO.elevatorTypeId,jdbcType=BIGINT}
             </if>
             <if test="elevatorBaseElementPageVO.elevatorTypeKey!=null and elevatorBaseElementPageVO.elevatorTypeKey!=''">
-                and elevator_type_key = #{elevatorBaseElementPageVO.elevatorTypeKey,jdbcType=VARCHAR}
+                and t1.elevator_type_key = #{elevatorBaseElementPageVO.elevatorTypeKey,jdbcType=VARCHAR}
             </if>
             <if test="elevatorBaseElementPageVO.elementName!=null and elevatorBaseElementPageVO.elementName!=''">
-                and element_name = #{elevatorBaseElementPageVO.elementName,jdbcType=VARCHAR}
+                and t1.element_name = #{elevatorBaseElementPageVO.elementName,jdbcType=VARCHAR}
             </if>
             <if test="elevatorBaseElementPageVO.elementType!=null">
-                and element_type = #{elevatorBaseElementPageVO.elementType,jdbcType=INTEGER}
+                and t1.element_type = #{elevatorBaseElementPageVO.elementType,jdbcType=INTEGER}
             </if>
             <if test="elevatorBaseElementPageVO.categoryType!=null">
-                and category_type = #{elevatorBaseElementPageVO.categoryType,jdbcType=INTEGER}
+                and t1.category_type = #{elevatorBaseElementPageVO.categoryType,jdbcType=INTEGER}
             </if>
             <if test="elevatorBaseElementPageVO.paramsKey!=null and elevatorBaseElementPageVO.paramsKey!=''">
-                and params_key = #{elevatorBaseElementPageVO.paramsKey,jdbcType=VARCHAR}
+                and t1.params_key = #{elevatorBaseElementPageVO.paramsKey,jdbcType=VARCHAR}
             </if>
             <if test="elevatorBaseElementPageVO.orderNum!=null">
-                and order_num = #{elevatorBaseElementPageVO.orderNum,jdbcType=INTEGER}
+                and t1.order_num = #{elevatorBaseElementPageVO.orderNum,jdbcType=INTEGER}
             </if>
         </where>
     </select>

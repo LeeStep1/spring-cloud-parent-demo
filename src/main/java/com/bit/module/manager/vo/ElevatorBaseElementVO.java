@@ -12,4 +12,8 @@ import lombok.Data;
 public class ElevatorBaseElementVO extends ElevatorBaseElement {
 
     private String paramsUnit;
+    /**
+     * 电梯类型名称
+     */
+    private String elevatorTypeName;
 }
