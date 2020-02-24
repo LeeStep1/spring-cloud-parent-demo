@@ -109,6 +109,14 @@ public class CompanyServiceImpl extends BaseService implements CompanyService {
 		if (companyById==null){
 			throw new BusinessException("公司不存在");
 		}
+
+		Company company = new Company();
+		company.setParentId(id);
+		List<Company> subCompany = companyDao.findByParam(company);
+		if (CollectionUtils.isNotEmpty(subCompany)){
+			throw new BusinessException("公司下有子公司，不能删除");
+		}
+
 		//查询公司下有没有人
 		UserCompany userCompany = new UserCompany();
 		userCompany.setCompanyId(id);
