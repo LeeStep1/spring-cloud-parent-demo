@@ -16,6 +16,7 @@ import com.bit.module.manager.vo.BasePriceEquationVO;
 import com.bit.module.miniapp.bean.QueryParams;
 import com.bit.module.manager.vo.BasePriceEquationPageVO;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.bit.module.manager.service.BasePriceEquationService;
@@ -131,6 +132,14 @@ public class BasePriceEquationServiceImpl extends BaseService implements BasePri
 	@Override
 	@Transactional
 	public BaseVo add(BasePriceEquation basePriceEquation) {
+		BasePriceEquation param = new BasePriceEquation();
+		BeanUtils.copyProperties(basePriceEquation,param);
+		param.setOutput(null);
+		param.setCostPrice(null);
+		List<BasePriceEquation> byParam = basePriceEquationDao.findByParam(param);
+		if (CollectionUtils.isNotEmpty(byParam)){
+			throw new BusinessException("参数相同不能新增");
+		}
 
 		basePriceEquationDao.addBasePriceEquation(basePriceEquation);
 
