@@ -454,6 +454,7 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 				a.setAuditUserId(getCurrentUserInfo().getId());
 				a.setAuditUserName(getCurrentUserInfo().getRealName());
 				a.setProjectPriceId(c.getId());
+				a.setAuditTypeName(EnquiryAuditTypeEnum.SHENPICHEHUI.getInfo());
 				listAudits.add(a);
 			});
 			enquiryAuditDao.batchAdd(listAudits);

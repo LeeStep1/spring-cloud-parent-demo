@@ -33,6 +33,7 @@
         (
         project_price_id,
         audit_type,
+        audit_type_name,
         audit_user_id,
         audit_user_name,
         audit_time,
@@ -42,6 +43,7 @@
             (
             #{item.projectPriceId,jdbcType=BIGINT},
             #{item.auditType,jdbcType=INTEGER},
+            #{item.auditTypeName,jdbcType=STRING},
             #{item.auditUserId,jdbcType=BIGINT},
             #{item.auditUserName,jdbcType=VARCHAR},
             #{item.auditTime,jdbcType=TIMESTAMP},
