@@ -32,6 +32,10 @@ public class EnquiryAudit {
      */
     private Integer auditType;
     /**
+     * '操作类型 名称
+     */
+    private String auditTypeName;
+    /**
      * '操作人id'
      */
     private Long auditUserId;
