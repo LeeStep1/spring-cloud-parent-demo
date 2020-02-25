@@ -3,6 +3,29 @@
 
 <mapper namespace="com.bit.module.manager.dao.EnquiryAuditDao">
 
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.bit.module.manager.bean.EnquiryAudit" id="enquiryAuditMap">
+        <result property="id" column="id"/>
+        <result property="projectPriceId" column="project_price_id"/>
+        <result property="auditType" column="audit_type"/>
+        <result property="auditTypeName" column="audit_type_name"/>
+        <result property="auditUserId" column="audit_user_id"/>
+        <result property="auditUserName" column="audit_user_name"/>
+        <result property="auditTime" column="audit_time"/>
+        <result property="rateList" column="rate_list"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        project_price_id,
+        audit_type,
+        audit_type_name,
+        audit_user_id,
+        audit_user_name,
+        audit_time,
+        rate_list
+    </sql>
 
     <!--批量新增-->
     <insert id="batchAdd" parameterType="com.bit.module.manager.bean.EnquiryAudit" useGeneratedKeys="true" keyProperty="id">
@@ -29,5 +52,93 @@
 
     </insert>
 
+    <!-- 新增数据 -->
+    <insert id="addEnquiryAudit" parameterType="com.bit.module.manager.bean.EnquiryAudit" keyColumn="id"
+            useGeneratedKeys="true">
+        insert into t_enquiry_audit
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="projectPriceId!=null">
+                project_price_id,
+            </if>
+            <if test="auditType!=null">
+                audit_type,
+            </if>
+            <if test="auditTypeName!=null and auditTypeName!=''">
+                audit_type_name,
+            </if>
+            <if test="auditUserId!=null">
+                audit_user_id,
+            </if>
+            <if test="auditUserName!=null and auditUserName!=''">
+                audit_user_name,
+            </if>
+            <if test="auditTime!=null">
+                audit_time,
+            </if>
+            <if test="rateList!=null and rateList!=''">
+                rate_list,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="projectPriceId!=null">
+                #{projectPriceId,jdbcType=BIGINT},
+            </if>
+            <if test="auditType!=null">
+                #{auditType,jdbcType=INTEGER},
+            </if>
+            <if test="auditTypeName!=null and auditTypeName!=''">
+                #{auditTypeName,jdbcType=VARCHAR},
+            </if>
+            <if test="auditUserId!=null">
+                #{auditUserId,jdbcType=BIGINT},
+            </if>
+            <if test="auditUserName!=null and auditUserName!=''">
+                #{auditUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="auditTime!=null">
+                #{auditTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="rateList!=null and rateList!=''">
+                #{rateList,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
 
+
+    <!-- 编辑数据 -->
+    <update id="updateEnquiryAudit" parameterType="com.bit.module.manager.bean.EnquiryAudit">
+        update t_enquiry_audit
+        <trim prefix="set" suffixOverrides=",">
+            <if test="projectPriceId!=null">
+                project_price_id =  #{projectPriceId,jdbcType=BIGINT},
+            </if>
+            <if test="auditType!=null">
+                audit_type = #{auditType,jdbcType=INTEGER},
+            </if>
+            <if test="auditTypeName!=null and auditTypeName!=''">
+                audit_type_name = #{auditTypeName,jdbcType=VARCHAR},
+            </if>
+            <if test="auditUserId!=null">
+                audit_user_id =  #{auditUserId,jdbcType=BIGINT},
+            </if>
+            <if test="auditUserName!=null and auditUserName!=''">
+                audit_user_name = #{auditUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="auditTime!=null">
+                audit_time = #{auditTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="rateList!=null and rateList!=''">
+                rate_list = #{rateList,jdbcType=VARCHAR},
+            </if>
+        </trim>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <!-- 根据主键查询数据 -->
+    <select id="getEnquiryAuditById" parameterType="Long" resultMap="enquiryAuditMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_enquiry_audit
+        where id = #{id,jdbcType=BIGINT}
+    </select>
 </mapper>

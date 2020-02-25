@@ -32,6 +32,10 @@ public class EnquiryAudit {
      */
     private Integer auditType;
     /**
+     * 操作名称
+     */
+    private String auditTypeName;
+    /**
      * '操作人id'
      */
     private Long auditUserId;
@@ -46,7 +50,7 @@ public class EnquiryAudit {
     /**
      * '议价的时指定的下浮率使用json存储例如：[{"orderId":1,"rate":"0.1"}]'
      */
-    private String  rate_list;
+    private String rateList;
 
 
 
