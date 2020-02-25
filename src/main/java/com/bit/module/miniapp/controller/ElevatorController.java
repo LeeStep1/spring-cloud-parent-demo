@@ -189,7 +189,7 @@ public class ElevatorController {
 	 * @param projectPageVO
 	 * @return
 	 */
-	@PostMapping("/user/projecthistory")
+	@PostMapping("/user/projectHistory")
 	public BaseVo<Project> historyProject(@RequestBody ProjectPageVO projectPageVO){
 		return projectService.historyProject(projectPageVO);
 	}

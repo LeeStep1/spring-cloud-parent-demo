@@ -166,7 +166,6 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 	 */
 	@Override
 	public BaseVo historyProject(ProjectPageVO projectPageVO) {
-		projectPageVO.setOrderBy("closed_status,closed_time desc");
 		projectPageVO.setCreateUserId(getCurrentUserInfo().getId());
 		Page<Project> page = new Page<>(projectPageVO.getPageNum(),projectPageVO.getPageSize());  // 查询第1页，每页返回5条
 		IPage<Project> iPage = projectDao.listPage(page,projectPageVO);

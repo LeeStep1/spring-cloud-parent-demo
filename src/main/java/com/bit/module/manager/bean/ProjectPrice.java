@@ -44,7 +44,7 @@ public class ProjectPrice {
      */
     private Integer standard;
     /**
-     * 标准名称1：标准，0非标
+     * 标准名称 标准，非标
      */
     private String standardName;
     /**
