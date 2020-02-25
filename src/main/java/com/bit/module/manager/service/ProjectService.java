@@ -3,7 +3,9 @@ package com.bit.module.manager.service;
 import com.bit.base.vo.BasePageVo;
 import com.bit.base.vo.BaseVo;
 import com.bit.module.manager.bean.Project;
+import com.bit.module.manager.vo.ProjectPageVO;
 import com.bit.module.manager.vo.ProjectVo;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -31,6 +33,12 @@ public interface ProjectService {
 	 * @return
 	 */
 	BaseVo queryProject(BasePageVo vo);
+	/**
+	 * 历史项目
+	 * @param projectPageVO
+	 * @return
+	 */
+	BaseVo historyProject(ProjectPageVO projectPageVO);
 
 
 	ProjectVo queryProjectPri(Long projectId);

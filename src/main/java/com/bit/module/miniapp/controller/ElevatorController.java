@@ -5,6 +5,7 @@ import com.bit.base.vo.BaseVo;
 import com.bit.module.manager.bean.*;
 import com.bit.module.manager.service.*;
 import com.bit.module.manager.vo.ElevatorTypePageVO;
+import com.bit.module.manager.vo.ProjectPageVO;
 import com.bit.module.manager.vo.ProjectVo;
 import com.bit.module.miniapp.bean.Options;
 import com.bit.module.miniapp.bean.QueryParams;
@@ -173,7 +174,7 @@ public class ElevatorController {
 
 
 	/**
-	 * 我的项目一级页面
+	 * 我的项目 一级页面
 	 *
 	 * @param vo 分页组件 pageNum pageSize
 	 * @return
@@ -182,6 +183,17 @@ public class ElevatorController {
 	public BaseVo<Project> queryUserProject(@RequestBody BasePageVo vo) {
 		return projectService.queryProject(vo);
 	}
+
+	/**
+	 * 历史项目 和 我的项目
+	 * @param projectPageVO
+	 * @return
+	 */
+	@PostMapping("/user/projecthistory")
+	public BaseVo<Project> historyProject(@RequestBody ProjectPageVO projectPageVO){
+		return projectService.historyProject(projectPageVO);
+	}
+
 
 
 	/**
@@ -348,7 +360,7 @@ public class ElevatorController {
 	/**
 	 * 非标报价取消接口
 	 *
-	 * @param elevatorTypeId  电梯版本报价的id
+	 * @param elevatorPriceId  电梯版本报价的id
 	 * @return
 	 */
 	@DeleteMapping("/nonstandardApply/{elevatorPriceId}")

@@ -20,13 +20,13 @@ public enum  NonStandardApplyStatusEnum {
     /**
      *待审核
      */
-    DAISHENHE(2, "待报价"),
+    DAISHENHE(2, "待审核"),
 
 
     /**
      *通过
      */
-    TONGGUO(3,"已报价"),
+    TONGGUO(3,"通过"),
 
     /**
      *撤销

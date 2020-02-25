@@ -60,14 +60,44 @@ public class Project {
 	 * '项目状态1:正常，0 ：流失'
 	 **/
 	private Integer projectStatus;
-	/**
-	 * 公司id
-	 **/
-	private Long companyId;
+
 	/**
 	 * 公司名称
 	 **/
 	private String companyName;
+
+	/**
+	 * 分公司id,对应的company表中的id
+	 */
+	private Long companyId;
+	/**
+	 * 关闭状态分类：1：洽谈中，2：成交，3：流失
+	 */
+	private Integer closedStatus;
+	/**
+	 * 关闭的原因类型
+	 */
+	private Integer reasonCustomerChurnId;
+	/**
+	 * 关闭项目的原因的名称
+	 */
+	private String reasonCustomerChurnName;
+	/**
+	 * 流失原因备注
+	 */
+	private String reasonCustomerChurmRemarks;
+	/**
+	 * 关闭人Id
+	 */
+	private Long closedUserId;
+	/**
+	 * 关闭项目的用户姓名
+	 */
+	private String closedUserName;
+	/**
+	 * 关闭时间
+	 */
+	private Date closedTime;
 
 	//-----添加字段-----
 

@@ -15,6 +15,15 @@
         <result property="addressId" column="address_id"/>
         <result property="addressName" column="address_name"/>
         <result property="projectStatus" column="project_status"/>
+        <result property="companyName" column="company_name"/>
+        <result property="companyId" column="company_id"/>
+        <result property="closedStatus" column="closed_status"/>
+        <result property="reasonCustomerChurnId" column="reason_customer_churn_id"/>
+        <result property="reasonCustomerChurnName" column="reason_customer_churn_name"/>
+        <result property="reasonCustomerChurmRemarks" column="reason_customer_churm_remarks"/>
+        <result property="closedUserId" column="closed_user_id"/>
+        <result property="closedUserName" column="closed_user_name"/>
+        <result property="closedTime" column="closed_time"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -28,7 +37,16 @@
 		create_time,
 		address_id,
 		address_name,
-		project_status
+		project_status,
+		company_name,
+        company_id,
+        closed_status,
+        reason_customer_churn_id,
+        reason_customer_churn_name,
+        reason_customer_churm_remarks,
+        closed_user_id,
+        closed_user_name,
+        closed_time
 	</sql>
 
 
@@ -172,6 +190,33 @@
             <if test="projectStatus!=null">
                 and project_status = #{projectStatus,jdbcType=INTEGER}
             </if>
+            <if test="companyName!=null and companyName!=''">
+                and company_name = #{companyName,jdbcType=VARCHAR}
+            </if>
+            <if test="companyId!=null">
+                and company_id = #{companyId,jdbcType=BIGINT}
+            </if>
+            <if test="closedStatus!=null">
+                and closed_status = #{closedStatus,jdbcType=INTEGER}
+            </if>
+            <if test="reasonCustomerChurnId!=null">
+                and reason_customer_churn_id = #{reasonCustomerChurnId,jdbcType=INTEGER}
+            </if>
+            <if test="reasonCustomerChurnName!=null and reasonCustomerChurnName!=''">
+                and reason_customer_churn_name = #{reasonCustomerChurnName,jdbcType=VARCHAR}
+            </if>
+            <if test="reasonCustomerChurmRemarks!=null and reasonCustomerChurmRemarks!=''">
+                and reason_customer_churm_remarks = #{reasonCustomerChurmRemarks,jdbcType=VARCHAR}
+            </if>
+            <if test="closedUserId!=null">
+                and closed_user_id = #{closedUserId,jdbcType=BIGINT}
+            </if>
+            <if test="closedUserName!=null and closedUserName!=''">
+                and closed_user_name = #{closedUserName,jdbcType=VARCHAR}
+            </if>
+            <if test="closedTime!=null">
+                and closed_time = #{closedTime,jdbcType=TIMESTAMP}
+            </if>
 
         </where>
     </select>
@@ -218,5 +263,80 @@
                 </foreach>
             </if>
         </where>
+    </select>
+
+
+    <select id="listPage" parameterType="com.bit.module.manager.vo.ProjectPageVO" resultType="com.bit.module.manager.bean.Project">
+        SELECT <include refid="Base_Column_List"/>
+        FROM t_project
+        <where>
+            <if test="projectPageVO.projectName!=null and projectPageVO.projectName!=''">
+                and project_name = #{projectPageVO.projectName,jdbcType=VARCHAR}
+            </if>
+            <if test="projectPageVO.customerName!=null and projectPageVO.customerName!=''">
+                and customer_name = #{projectPageVO.customerName,jdbcType=VARCHAR}
+            </if>
+            <if test="projectPageVO.agentName!=null and projectPageVO.agentName!=''">
+                and agent_name = #{projectPageVO.agentName,jdbcType=VARCHAR}
+            </if>
+            <if test="projectPageVO.createUserId!=null">
+                and create_user_id = #{projectPageVO.createUserId,jdbcType=BIGINT}
+            </if>
+            <if test="projectPageVO.createUserName!=null and projectPageVO.createUserName!=''">
+                and create_user_name = #{projectPageVO.createUserName,jdbcType=VARCHAR}
+            </if>
+            <if test="projectPageVO.createTime!=null">
+                and create_time = #{projectPageVO.createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="projectPageVO.addressId!=null and projectPageVO.addressId!=''">
+                and address_id = #{projectPageVO.addressId,jdbcType=VARCHAR}
+            </if>
+            <if test="projectPageVO.addressName!=null and projectPageVO.addressName!=''">
+                and address_name = #{projectPageVO.addressName,jdbcType=VARCHAR}
+            </if>
+            <if test="projectPageVO.projectStatus!=null">
+                and project_status = #{projectPageVO.projectStatus,jdbcType=INTEGER}
+            </if>
+            <if test="projectPageVO.companyName!=null and projectPageVO.companyName!=''">
+                and company_name = #{projectPageVO.companyName,jdbcType=VARCHAR}
+            </if>
+            <if test="projectPageVO.companyId!=null">
+                and company_id = #{projectPageVO.companyId,jdbcType=BIGINT},
+            </if>
+            <if test="projectPageVO.closedStatus!=null">
+                and closed_status = #{projectPageVO.closedStatus,jdbcType=INTEGER}
+            </if>
+            <if test="projectPageVO.reasonCustomerChurnId!=null">
+                and reason_customer_churn_id = #{projectPageVO.reasonCustomerChurnId,jdbcType=INTEGER}
+            </if>
+            <if test="projectPageVO.reasonCustomerChurnName!=null and projectPageVO.reasonCustomerChurnName!=''">
+                and reason_customer_churn_name = #{projectPageVO.reasonCustomerChurnName,jdbcType=VARCHAR}
+            </if>
+            <if test="projectPageVO.reasonCustomerChurmRemarks!=null and projectPageVO.reasonCustomerChurmRemarks!=''">
+                and reason_customer_churm_remarks = #{projectPageVO.reasonCustomerChurmRemarks,jdbcType=VARCHAR}
+            </if>
+            <if test="projectPageVO.closedUserId!=null">
+                and closed_user_id = #{projectPageVO.closedUserId,jdbcType=BIGINT},
+            </if>
+            <if test="projectPageVO.closedUserName!=null and projectPageVO.closedUserName!=''">
+                and closed_user_name = #{projectPageVO.closedUserName,jdbcType=VARCHAR}
+            </if>
+            <if test="projectPageVO.closedTime!=null">
+                and closed_time = #{projectPageVO.closedTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="projectPageVO.search!=null and projectPageVO.search!=''">
+                and (project_name like concat("%",#{projectPageVO.search,jdbcType=VARCHAR},"%")
+                or customer_name like concat("%",#{projectPageVO.search,jdbcType=VARCHAR},"%")
+                or agent_name like concat("%",#{projectPageVO.search,jdbcType=VARCHAR},"%")
+                or address_name like concat("%",#{projectPageVO.search,jdbcType=VARCHAR},"%")
+                or create_user_name like concat("%",#{projectPageVO.search,jdbcType=VARCHAR},"%")
+                )
+            </if>
+            <if test="projectPageVO.orderBy!=null">
+                order by ${projectPageVO.orderBy}
+            </if>
+        </where>
+
+
     </select>
 </mapper>

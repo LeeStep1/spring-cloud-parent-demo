@@ -1,8 +1,11 @@
 package com.bit.module.manager.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bit.module.manager.bean.*;
 import com.bit.module.manager.vo.ProjectOrderDetailInfoVO;
+import com.bit.module.manager.vo.ProjectPageVO;
 import com.bit.module.manager.vo.ProjectPriceDetailVO;
 import com.bit.module.miniapp.bean.Options;
 import org.apache.ibatis.annotations.Param;
@@ -79,4 +82,12 @@ public interface ProjectDao extends BaseMapper<Project> {
 	 * @return
 	 */
 	List<ElementParam> getElementParamByOrderIdBatch(@Param(value = "orderIds")List<Long> orderIds);
+
+	/**
+	 * 分页查询
+	 * @param page
+	 * @param projectPageVO
+	 * @return
+	 */
+	IPage<Project> listPage(@Param("pg")Page<Project> page, @Param("projectPageVO") ProjectPageVO projectPageVO);
 }

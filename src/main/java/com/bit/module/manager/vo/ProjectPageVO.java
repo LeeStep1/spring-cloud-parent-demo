@@ -74,4 +74,40 @@ public class ProjectPageVO extends BasePageVo {
 	 * 销售人员姓名
 	 */
 	private String realName;
+	/**
+	 * 关闭状态分类：1：洽谈中，2：成交，3：流失
+	 */
+	private Integer closedStatus;
+	/**
+	 * 关闭的原因类型
+	 */
+	private Integer reasonCustomerChurnId;
+	/**
+	 * 关闭项目的原因的名称
+	 */
+	private String reasonCustomerChurnName;
+	/**
+	 * 流失原因备注
+	 */
+	private String reasonCustomerChurmRemarks;
+	/**
+	 * 关闭人Id
+	 */
+	private Long closedUserId;
+	/**
+	 * 关闭项目的用户姓名
+	 */
+	private String closedUserName;
+	/**
+	 * 关闭时间
+	 */
+	private Date closedTime;
+	/**
+	 * 小程序 历史项目 里的多参数混合查询
+	 */
+	private String search;
+	/**
+	 * 排序
+	 */
+	private String orderBy;
 }

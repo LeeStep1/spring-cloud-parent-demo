@@ -65,7 +65,7 @@ public class ProjectPrice {
     private Integer transportFlag;
 
     /**
-     * 非标审批状态:0：无需审批，1:待提交 2：待审核，3：通过,-1 :撤回
+     * 非标审批状态:0：无需审批，1:待提交 2：待审核，3：通过,-1 :撤销
      */
     private Integer nonStandardApplyStatus;
 	/**

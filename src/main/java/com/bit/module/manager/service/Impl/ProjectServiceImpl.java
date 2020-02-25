@@ -8,6 +8,7 @@ import com.bit.base.service.BaseService;
 import com.bit.base.vo.BasePageVo;
 import com.bit.base.vo.BaseVo;
 import com.bit.common.businessEnum.CalculateFlagEnum;
+import com.bit.common.businessEnum.NonStandardApplyStatusEnum;
 import com.bit.common.businessEnum.ProjectEnum;
 import com.bit.common.informationEnum.StandardEnum;
 import com.bit.module.manager.bean.*;
@@ -89,10 +90,10 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 			       	cods.put("version_id",latestProjectPrice.get(0).getId());
 			       	//cods.put("calculate_flag",0);
 			       	cods.put("calculate_flag",CalculateFlagEnum.NO.getCode());
-			       	if(latestProjectPrice.get(0).getNonStandardApplyStatus()==2){
+			       	if(latestProjectPrice.get(0).getNonStandardApplyStatus()== NonStandardApplyStatusEnum.DAISHENHE.getCode()){
 						//project.setCalculateFlag(0);
 						project.setCalculateFlag(CalculateFlagEnum.NO.getCode());
-					}else if(latestProjectPrice.get(0).getNonStandardApplyStatus()==3){
+					}else if(latestProjectPrice.get(0).getNonStandardApplyStatus()==NonStandardApplyStatusEnum.TONGGUO.getCode()){
 						List<ProjectEleOrder> odrList=  projectEleOrderDao.selectByMap(cods);
 						if(CollectionUtils.isNotEmpty(odrList)){
 							for(ProjectEleOrder or:odrList){
@@ -156,6 +157,62 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 		baseVo.setData(iPage);
 		return baseVo;
 
+	}
+
+	/**
+	 * 历史项目
+	 * @param projectPageVO
+	 * @return
+	 */
+	@Override
+	public BaseVo historyProject(ProjectPageVO projectPageVO) {
+		projectPageVO.setOrderBy("closed_status,closed_time desc");
+		projectPageVO.setCreateUserId(getCurrentUserInfo().getId());
+		Page<Project> page = new Page<>(projectPageVO.getPageNum(),projectPageVO.getPageSize());  // 查询第1页，每页返回5条
+		IPage<Project> iPage = projectDao.listPage(page,projectPageVO);
+		for(Project project:iPage.getRecords()){
+			List<ProjectPrice> latestProjectPrice = projectPriceDao.getLatestProjectPrice(project.getId());
+			if(latestProjectPrice.size()>0){
+				if(latestProjectPrice.get(0).getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
+					Map cods=new HashMap();
+					cods.put("version_id",latestProjectPrice.get(0).getId());
+					//cods.put("calculate_flag",0);
+					cods.put("calculate_flag",CalculateFlagEnum.NO.getCode());
+					if(latestProjectPrice.get(0).getNonStandardApplyStatus()==NonStandardApplyStatusEnum.DAISHENHE.getCode()){
+						//project.setCalculateFlag(0);
+						project.setCalculateFlag(CalculateFlagEnum.NO.getCode());
+					}else if(latestProjectPrice.get(0).getNonStandardApplyStatus()==NonStandardApplyStatusEnum.TONGGUO.getCode()){
+						List<ProjectEleOrder> odrList=  projectEleOrderDao.selectByMap(cods);
+						if(CollectionUtils.isNotEmpty(odrList)){
+							for(ProjectEleOrder or:odrList){
+								if(or.getCalculateFlag()==0){
+									//project.setCalculateFlag(0);
+									project.setCalculateFlag(CalculateFlagEnum.NO.getCode());
+									break;
+								}else{
+									continue;
+								}
+							}
+
+						}else{
+							//project.setCalculateFlag(1);
+							project.setCalculateFlag(CalculateFlagEnum.YES.getCode());
+						}
+					}
+
+				}else{
+					//project.setCalculateFlag(1);
+					project.setCalculateFlag(CalculateFlagEnum.YES.getCode());
+				}
+			}else{
+				//project.setCalculateFlag(1);
+				project.setCalculateFlag(CalculateFlagEnum.YES.getCode());
+			}
+			project.setProjectPriceList(latestProjectPrice);
+		}
+		BaseVo baseVo = new BaseVo();
+		baseVo.setData(iPage);
+		return baseVo;
 	}
 
 	/**
