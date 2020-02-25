@@ -7,15 +7,10 @@ import com.bit.base.exception.BusinessException;
 import com.bit.base.service.BaseService;
 import com.bit.base.vo.BasePageVo;
 import com.bit.base.vo.BaseVo;
-import com.bit.common.businessEnum.CalculateFlagEnum;
-import com.bit.common.businessEnum.NonStandardApplyStatusEnum;
-import com.bit.common.businessEnum.ProjectEnum;
+import com.bit.common.businessEnum.*;
 import com.bit.common.informationEnum.StandardEnum;
 import com.bit.module.manager.bean.*;
-import com.bit.module.manager.dao.ProjectDao;
-import com.bit.module.manager.dao.ProjectEleNonstandardDao;
-import com.bit.module.manager.dao.ProjectEleOrderDao;
-import com.bit.module.manager.dao.ProjectPriceDao;
+import com.bit.module.manager.dao.*;
 import com.bit.module.manager.service.ProjectService;
 import com.bit.module.manager.vo.*;
 import com.bit.module.miniapp.bean.Options;
@@ -52,6 +47,12 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 
 	@Autowired
 	private ProjectEleNonstandardDao projectEleNonstandardDao;
+
+	@Autowired
+	private AuditDao auditDao;
+
+	@Autowired
+	private EnquiryAuditDao enquiryAuditDao;
 
     @Override
 	@Transactional
@@ -214,21 +215,6 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 		return baseVo;
 	}
 
-	/**
-	 * 关闭项目
-	 * @param project
-	 * @return
-	 */
-	@Override
-	@Transactional
-	public BaseVo closeProject(Project project) {
-		//判断是不是历史报价
-
-		//更新项目
-		projectDao.updateProject(project);
-
-		return successVo();
-	}
 
 	/**
      * @description:  项目二级
@@ -409,5 +395,82 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 		BaseVo baseVo = new BaseVo();
 		baseVo.setData(projectOrderDetailInfoVO);
 		return baseVo;
+	}
+
+
+	/**
+	 * 关闭项目
+	 * @param project
+	 * @return
+	 */
+	@Override
+	@Transactional
+	public  BaseVo closeProject(Project  project){
+
+		//查询多个非标审批的
+		List  <ProjectPrice>nodStandardList =projectPriceDao.selectList(new QueryWrapper<ProjectPrice>().eq("project_id",project.getId())
+				.in("non_standard_apply_status", NonStandardApplyStatusEnum.DAISHENHE.getCode(),NonStandardApplyStatusEnum.DAITIJIAO.getCode()));
+
+		//更新审批变为撤回
+		if(!CollectionUtils.isNotEmpty(nodStandardList)){
+			ProjectPrice  projectPrice=new ProjectPrice();
+			projectPrice.setNonStandardApplyStatus(NonStandardApplyStatusEnum.CHEXIAO.getCode());
+			//更新非标审批
+			projectPriceDao.update(projectPrice,new QueryWrapper<ProjectPrice>().eq("project_id",project.getId())
+					.in("non_standard_apply_status", NonStandardApplyStatusEnum.DAISHENHE.getCode(),NonStandardApplyStatusEnum.DAITIJIAO.getCode()));
+			List <Audit>listAudits=new ArrayList<>();
+			nodStandardList.forEach(c->{
+				Audit a=new Audit();
+				a.setAuditTime(new
+						Date());
+				a.setAuditType(AuditTypeEnum.AUDITCANCEL.getCode());
+				a.setAuditUserId(getCurrentUserInfo().getId());
+				a.setAuditUserName(getCurrentUserInfo().getRealName());
+				a.setProjectId(project.getId());
+				a.setProjectPriceId(c.getId());
+				listAudits.add(a);
+			});
+			auditDao.batchAdd(listAudits);
+
+		}
+
+		//处理议价流程
+		List  <ProjectPrice>enquiryAuditList =projectPriceDao.selectList(new QueryWrapper<ProjectPrice>().eq("project_id",project.getId())
+				.in("enquiry_apply_status", EnquiryApplyStatusEnum.SHENNPIZHONG.getCode()));
+
+		if(!CollectionUtils.isNotEmpty(enquiryAuditList)){
+			ProjectPrice  projectPrice=new ProjectPrice();
+			projectPrice.setEnquiryApplyStatus(EnquiryApplyStatusEnum.CHEXIAO.getCode());
+			//更新非标审批
+			projectPriceDao.update(projectPrice,new QueryWrapper<ProjectPrice>().eq("project_id",project.getId())
+					.in("enquiry_apply_status", EnquiryApplyStatusEnum.SHENNPIZHONG.getCode()));
+
+
+			List <EnquiryAudit>listAudits=new ArrayList<>();
+			enquiryAuditList.forEach(c->{
+				EnquiryAudit a=new EnquiryAudit();
+				a.setAuditTime(new Date());
+				a.setAuditType(EnquiryAuditTypeEnum.SHENPICHEHUI.getCode());
+				a.setAuditUserId(getCurrentUserInfo().getId());
+				a.setAuditUserName(getCurrentUserInfo().getRealName());
+				a.setProjectPriceId(c.getId());
+				listAudits.add(a);
+			});
+			enquiryAuditDao.batchAdd(listAudits);
+		}
+		if(project.getClosedStatus().equals(2)){
+			ReasonCustomerChurnTypeEnum c=ReasonCustomerChurnTypeEnum.getReasonCustomerChurnTypeEnum(project.getReasonCustomerChurnId());
+			project.setReasonCustomerChurnName(c.getInfo());
+		}
+		project.setClosedTime(new Date());
+		project.setClosedUserId(getCurrentUserInfo().getId());
+		project.setCreateUserName(getCurrentUserInfo().getRealName());
+		project.setClosedStatus(ProjectEnum.PROJECT_FAIL.getCode());
+		projectDao.updateById(project);
+
+
+
+		return successVo();
+
 	}
 }

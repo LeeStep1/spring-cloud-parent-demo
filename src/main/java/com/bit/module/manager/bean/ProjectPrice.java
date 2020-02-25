@@ -44,7 +44,7 @@ public class ProjectPrice {
      */
     private Integer standard;
     /**
-     * 标准名称 标准，非标
+     * 标准名称1：标准，0非标
      */
     private String standardName;
     /**
@@ -65,12 +65,51 @@ public class ProjectPrice {
     private Integer transportFlag;
 
     /**
-     * 非标审批状态:0：无需审批，1:待提交 2：待审核，3：通过,-1 :撤销
+     * 非标审批状态:0：无需审批，1:待提交 2：待审核，3：通过,-1 :撤回
      */
     private Integer nonStandardApplyStatus;
 	/**
 	 * 乐观锁
 	 */
 	private Integer positiveLock;
+
+	/*新增字段*/
+    /**
+     * 议价审批状态：0：未提交审批，1：审批中，2：审批完结
+     */
+    private Integer enquiryApplyStatus;
+    /**
+     * 无优惠的总价
+     */
+    private String nonRateTotalPrice;
+    /**
+     * 平均下浮率
+     */
+    private Double averageRate;
+    /**
+     * 最大下浮率
+     */
+    private Double maxRate;
+    /**
+     * 议价流程节点的审批人
+     */
+    private Long enquiryAuditUserId;
+    /**
+     * 议价的环节点的审批人所属公司id
+     */
+    private Long enquiryAuditUserCompanyId;
+    /**
+     * 提交议价的时间
+     */
+    private Date enquiryApplyTime;
+    /**
+     * 提交议价的期望价格
+     */
+    private String inquiryPrice;
+    /**
+     * 成本总价
+     */
+    private String costTotalPrice;
+
 
 }

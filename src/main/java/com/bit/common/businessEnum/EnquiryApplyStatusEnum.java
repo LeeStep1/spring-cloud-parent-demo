@@ -5,23 +5,30 @@ package com.bit.common.businessEnum;
  * @Author: liyujun
  * @Date: 2020-01-06
  **/
-public enum AuditTypeEnum {
+public enum EnquiryApplyStatusEnum {
 
     /**
-     *提交
+     *未提交审批
      */
-    SUBMIT(1, "提交"),
+    WEITIJIAO(0, "未提交审批"),
 
     /**
-     *审批
+     *审批中
      */
-    AUDIT(2, "审批"),
-
+    SHENNPIZHONG(1, "审批中"),
 
     /**
-     *关闭项目撤回
+     *审批通过
      */
-    AUDITCANCEL(3, "关闭项目撤回");
+    SHENPITONGGUO(2, "审批通过"),
+    /**
+     *审批中
+     */
+    SHENNPIJUJUE(3, "审批拒绝"),
+    /**
+     *撤销
+     */
+    CHEXIAO(4, "撤销");
 
     /**
      * 操作码
@@ -34,10 +41,10 @@ public enum AuditTypeEnum {
     private String info;
 
     /**
-     * @param code  order 中的是佛计算状态
+     * @param code  对应报价的审批状态
      * @param info  描述
      */
-    AuditTypeEnum(int code, String info) {
+    EnquiryApplyStatusEnum(int code, String info) {
         this.code = code;
         this.info = info;
     }

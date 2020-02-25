@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bit.module.manager.dao.EnquiryAuditDao">
+
+
+    <!--批量新增-->
+    <insert id="batchAdd" parameterType="com.bit.module.manager.bean.EnquiryAudit" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_audit
+        (
+        project_price_id,
+        audit_type,
+        audit_user_id,
+        audit_user_name,
+        audit_time,
+        rate_list
+        )VALUES
+        <foreach collection="list" item="item" index="index"  separator=",">
+            (
+            #{item.projectPriceId,jdbcType=BIGINT},
+            #{item.auditType,jdbcType=INTEGER},
+            #{item.auditUserId,jdbcType=BIGINT},
+            #{item.auditUserName,jdbcType=VARCHAR},
+            #{item.auditTime,jdbcType=TIMESTAMP},
+            #{item.rateList,jdbcType=STRING}
+            )
+        </foreach>
+
+
+    </insert>
+
+
+</mapper>

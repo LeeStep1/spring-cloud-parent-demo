@@ -30,7 +30,7 @@ public class Audit {
 	/**
 	 * 订单id
 	 */
-	private Long orderId;
+	//private Long orderId;
 	/**
 	 * 审批类型
 	 */

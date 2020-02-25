@@ -10,7 +10,7 @@ public enum ProjectEnum {
     /**
      *流失
      */
-    PROJECT_FAIL(0, "流失"),
+    PROJECT_FAIL(0, "关闭"),
 
 
     /**
