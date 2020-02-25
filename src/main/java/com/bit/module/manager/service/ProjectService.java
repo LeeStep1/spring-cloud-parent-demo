@@ -39,6 +39,13 @@ public interface ProjectService {
 	 * @return
 	 */
 	BaseVo historyProject(ProjectPageVO projectPageVO);
+	/**
+	 * 关闭项目
+	 * @param project
+	 * @return
+	 */
+	BaseVo closeProject(Project project);
+
 
 
 	ProjectVo queryProjectPri(Long projectId);

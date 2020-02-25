@@ -90,4 +90,9 @@ public interface ProjectDao extends BaseMapper<Project> {
 	 * @return
 	 */
 	IPage<Project> listPage(@Param("pg")Page<Project> page, @Param("projectPageVO") ProjectPageVO projectPageVO);
+
+	/**
+	 * 编辑记录
+	 */
+	void updateProject(Project project);
 }

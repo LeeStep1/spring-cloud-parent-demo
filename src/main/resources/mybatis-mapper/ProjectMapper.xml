@@ -339,4 +339,67 @@
 
 
     </select>
+
+
+    <!-- 编辑数据 -->
+    <update id="updateProject" parameterType="com.bit.module.manager.bean.Project">
+        update t_project
+        <trim prefix="set" suffixOverrides=",">
+            <if test="projectName!=null and projectName!=''">
+                project_name = #{projectName,jdbcType=VARCHAR},
+            </if>
+            <if test="customerName!=null and customerName!=''">
+                customer_name = #{customerName,jdbcType=VARCHAR},
+            </if>
+            <if test="agentName!=null and agentName!=''">
+                agent_name = #{agentName,jdbcType=VARCHAR},
+            </if>
+            <if test="createUserId!=null">
+                create_user_id =  #{createUserId,jdbcType=BIGINT},
+            </if>
+            <if test="createUserName!=null and createUserName!=''">
+                create_user_name = #{createUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime!=null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="addressId!=null and addressId!=''">
+                address_id = #{addressId,jdbcType=VARCHAR},
+            </if>
+            <if test="addressName!=null and addressName!=''">
+                address_name = #{addressName,jdbcType=VARCHAR},
+            </if>
+            <if test="projectStatus!=null">
+                project_status = #{projectStatus,jdbcType=INTEGER},
+            </if>
+            <if test="companyName!=null and companyName!=''">
+                company_name = #{companyName,jdbcType=VARCHAR},
+            </if>
+            <if test="companyId!=null">
+                company_id =  #{companyId,jdbcType=BIGINT},
+            </if>
+            <if test="closedStatus!=null">
+                closed_status = #{closedStatus,jdbcType=INTEGER},
+            </if>
+            <if test="reasonCustomerChurnId!=null">
+                reason_customer_churn_id = #{reasonCustomerChurnId,jdbcType=INTEGER},
+            </if>
+            <if test="reasonCustomerChurnName!=null and reasonCustomerChurnName!=''">
+                reason_customer_churn_name = #{reasonCustomerChurnName,jdbcType=VARCHAR},
+            </if>
+            <if test="reasonCustomerChurmRemarks!=null and reasonCustomerChurmRemarks!=''">
+                reason_customer_churm_remarks = #{reasonCustomerChurmRemarks,jdbcType=VARCHAR},
+            </if>
+            <if test="closedUserId!=null">
+                closed_user_id =  #{closedUserId,jdbcType=BIGINT},
+            </if>
+            <if test="closedUserName!=null and closedUserName!=''">
+                closed_user_name = #{closedUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="closedTime!=null">
+                closed_time = #{closedTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
 </mapper>

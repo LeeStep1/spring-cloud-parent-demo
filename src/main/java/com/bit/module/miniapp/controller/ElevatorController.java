@@ -194,7 +194,15 @@ public class ElevatorController {
 		return projectService.historyProject(projectPageVO);
 	}
 
-
+	/**
+	 * 关闭项目
+	 * @param project
+	 * @return
+	 */
+	@PutMapping("/closeProject")
+	public BaseVo closeProject(@RequestBody Project project){
+		return projectService.closeProject(project);
+	}
 
 	/**
 	 * 我的项目二级级页面  一个项目对应多个历史版本，以及下的电梯订单数据

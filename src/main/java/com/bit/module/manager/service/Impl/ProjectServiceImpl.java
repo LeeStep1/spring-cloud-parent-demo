@@ -215,6 +215,22 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 	}
 
 	/**
+	 * 关闭项目
+	 * @param project
+	 * @return
+	 */
+	@Override
+	@Transactional
+	public BaseVo closeProject(Project project) {
+		//判断是不是历史报价
+
+		//更新项目
+		projectDao.updateProject(project);
+
+		return successVo();
+	}
+
+	/**
      * @description:  项目二级
      * @author liyujun
      * @date 2019-12-25
