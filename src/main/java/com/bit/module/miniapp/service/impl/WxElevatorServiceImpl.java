@@ -1113,8 +1113,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		//往t_enquiry_audit 插一条
 		EnquiryAudit enquiryAudit = new EnquiryAudit();
 		enquiryAudit.setProjectPriceId(projectPriceVo.getId());
-		enquiryAudit.setAuditType(AuditTypeEnum.SUBMIT.getCode());
-		enquiryAudit.setAuditTypeName(AuditTypeEnum.SUBMIT.getInfo());
+		enquiryAudit.setAuditType(AuditTypeEnum.REDIRECT.getCode());
+		enquiryAudit.setAuditTypeName(AuditTypeEnum.REDIRECT.getInfo());
 		enquiryAudit.setAuditUserId(auditor.getId());
 		enquiryAudit.setAuditUserName(auditor.getUserName());
 		enquiryAudit.setAuditTime(new Date());
@@ -1365,6 +1365,16 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	public BaseVo applyInquire(ProjectPrice projectPrice) {
 		projectPrice.setEnquiryApplyTime(new Date());
 		projectPriceDao.updateProjectPrice(projectPrice);
+
+		EnquiryAudit enquiryAudit = new EnquiryAudit();
+		enquiryAudit.setAuditUserId(getCurrentUserInfo().getId());
+		enquiryAudit.setAuditUserName(getCurrentUserInfo().getUserName());
+		enquiryAudit.setAuditTime(new Date());
+		enquiryAudit.setProjectPriceId(projectPrice.getId());
+		enquiryAudit.setAuditType(AuditTypeEnum.SUBMIT.getCode());
+		enquiryAudit.setAuditTypeName(AuditTypeEnum.SUBMIT.getInfo());
+		enquiryAuditDao.addEnquiryAudit(enquiryAudit);
+
 		// 计算接口
 		Map map = new HashMap();
 		map.put("projectId",projectPrice.getProjectId());
