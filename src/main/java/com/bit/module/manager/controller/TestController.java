@@ -43,6 +43,13 @@ public class TestController {
         return baseVo;
     }
 
+    @PostMapping(value = "/countAvgDiscountRate")
+    public BaseVo countAvgDiscountRate(@RequestBody Map map){
+        BaseVo baseVo = new BaseVo();
+        baseVo.setData(equationService.countAvgDiscountRate(map));
+        return baseVo;
+    }
+
     @PostMapping(value = "/cleanCache")
     public BaseVo cleanCache(@RequestBody Map map){
         equationCacheService.cleanCache();

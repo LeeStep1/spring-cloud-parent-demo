@@ -151,6 +151,56 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
     }
 
     /**
+     * 计算平均下浮率
+     * @param map
+     * @return
+     */
+    public double countAvgDiscountRate (Map map) {
+        logger.info("计算总价时入参:"+map.toString());
+        ProjectPrice projectPrice = projectPriceDao.selectOne(new QueryWrapper<ProjectPrice>()
+                .eq("project_id", map.get("projectId"))
+                .eq("version", map.get("version")));
+        List<ProjectEleOrder> projectEleOrder = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
+                .eq("project_id", projectPrice.getProjectId())
+                .eq("version_id", projectPrice.getId()));
+        //事前计算平摊费用
+        List<Map> eleInputs = new ArrayList(projectEleOrder.size());
+        for (ProjectEleOrder eleOrder : projectEleOrder) {
+            Map input = new HashMap(4);
+            input.put("orderId", eleOrder.getId());
+            input.put("包括运费", map.get("包括运费"));
+            input.put("包括安装", map.get("包括安装"));
+            input.put("isUpdate", map.get("isUpdate"));
+            eleInputs.add(input);
+        }
+        beforeExecuteEquations(eleInputs);
+        //开始计算项目总价
+        double total = 0;
+        double totalNoDiscount = 0;
+        for (Map vars : eleInputs) {
+            double sum = 0;
+            List<ProjectEleNonstandard> projectEleNonStandards = projectEleNonstandardDao.selectList(new QueryWrapper<ProjectEleNonstandard>()
+                    .eq("order_id", vars.get("orderId").toString()));
+            for (ProjectEleNonstandard projectEleNonstandard : projectEleNonStandards) {
+                if (CalculateFlagEnum.YES.getCode() != projectEleNonstandard.getProductionFlag()) {
+                    continue;
+                }
+                if (projectEleNonstandard.getSignalPrice() != null) {
+                    sum += Double.parseDouble(projectEleNonstandard.getSignalPrice());
+                }
+            }
+
+            vars.put("非标加价",sum );
+            vars.put("不计算下浮率",true );
+            executeCount(vars);
+            totalNoDiscount+= (Double)vars.get("小计_合价");
+            total += Double.parseDouble(vars.get("小计_设备总价无下浮").toString());
+        }
+        double targetPrice = Double.parseDouble(map.get("targetPrice").toString());
+        double avgDiscountRate = (totalNoDiscount - targetPrice)*100 / total;
+        return NumberUtil.round(avgDiscountRate, 2).doubleValue();
+    }
+    /**
      * 拼装需要的参数
      *
      * @param projectEleOrder
@@ -165,7 +215,12 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         if (baseInfos.size()==0) {
             throw new BusinessException("基础信息不能为空");
         }
-        vars.put("下浮", projectEleOrder.getRate());
+        if (Boolean.TRUE.equals(vars.get("不计算下浮率"))) {
+            vars.put("下浮", 0);
+        } else {
+            vars.put("下浮", projectEleOrder.getRate());
+        }
+
         vars.put("台量", projectEleOrder.getNum());
 
         ElevatorType elevatorType = elevatorTypeDao.selectById(projectEleOrder.getElevatorTypeId());
@@ -292,6 +347,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         if (vars.get("非标加价")==null){
             vars.put("非标加价", 0);
         }
+        vars.put("小计_设备总价无下浮", simpleEquation("小计_设备基价*台量", vars));//计算平均下浮率用的
         vars.put("小计_设备单价", simpleEquation("小计_设备基价*(1-下浮)+小计_设备可选项价格+平摊费用+非标加价", vars)); //单价
         if (vars.get("小计_安装费用") == null) {
             vars.put("小计_安装费用", 0);
