@@ -1387,8 +1387,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		enquiryAudit.setProjectPriceId(projectPrice.getProjectPriceId());
 		List<Map> rates=new ArrayList<>();
 		List<ProjectEleOrder> orders=new ArrayList<>();
-		if(CollectionUtils.isNotEmpty(projectPrice.getOrderList())){
-			projectPrice.getOrderList().forEach(c->{
+		if(CollectionUtils.isNotEmpty(projectPrice.getProjectEleOrderList())){
+			projectPrice.getProjectEleOrderList().forEach(c->{
 				Map a=new HashMap();
 				a.put("orderId",c.getId());
 				a.put("rate",c.getRate());
@@ -1404,6 +1404,10 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		enquiryAuditDao.addEnquiryAudit(enquiryAudit);
 
 		//todo  計算
+		Map<String, Object> cod = new HashMap<>();
+		cod.put("projectPriceId", projectPrice.getProjectPriceId());
+		cod.put("isUpdate", true);
+		equationServiceImpl.executeCountProjectPrice(cod,projectPrice.getProjectEleOrderList());
 
 		return successVo();
 

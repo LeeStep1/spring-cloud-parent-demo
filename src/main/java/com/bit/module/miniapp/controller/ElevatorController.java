@@ -410,10 +410,10 @@ public class ElevatorController {
 	 * @param projectPrice
 	 * @return
 	 */
-	@PutMapping("/passEnquireAudit")
+/*	@PutMapping("/passEnquireAudit")
 	public BaseVo passEnquireAudit(@RequestBody ProjectPrice projectPrice) {
 		return wxElevatorService.passEnquireAudit(projectPrice);
-	}
+	}*/
 
 	/**
 	 * 拒绝询价
@@ -461,13 +461,13 @@ public class ElevatorController {
 
 
 	/**
-	 * 通过 or 驳回 询价
+	 * 议价审批通过
 	 *
-	 * @param projectPrice
+	 * @param priceEnquireAuditVo
 	 * @return
 	 */
-	@PutMapping("/passEnquireAudit1")
-	public BaseVo passEnquireAudit1(@RequestBody PriceEnquireAuditVo priceEnquireAuditVo) {
+	@PostMapping("/passEnquireAudit")
+	public BaseVo passEnquireAudit(@RequestBody PriceEnquireAuditVo priceEnquireAuditVo) {
 		return wxElevatorService.passEnquireAudit1(priceEnquireAuditVo);
 	}
 }
