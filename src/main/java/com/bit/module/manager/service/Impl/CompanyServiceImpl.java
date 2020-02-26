@@ -120,6 +120,8 @@ public class CompanyServiceImpl extends BaseService implements CompanyService {
 		//查询公司下有没有人
 		UserCompany userCompany = new UserCompany();
 		userCompany.setCompanyId(id);
+		//正常用户
+		userCompany.setStatus(1);
 		List<UserCompany> byParam = userCompanyDao.findByParam(userCompany);
 		if (CollectionUtils.isNotEmpty(byParam)){
 			throw new BusinessException("公司下有用户，不能删除");

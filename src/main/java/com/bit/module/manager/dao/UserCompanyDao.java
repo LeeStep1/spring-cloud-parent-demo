@@ -53,5 +53,12 @@ public interface UserCompanyDao  extends BaseMapper<UserCompany> {
 	 * @return
 	 */
 	Company getUserCompanyByUserId(@Param(value = "userId") Long userId);
+
+	/**
+	 * 联查用户 与 用户公司关联 表
+	 * @param userCompany
+	 * @return
+	 */
+	List<UserCompany> findUserByParam(UserCompany userCompany);
 	
 }
