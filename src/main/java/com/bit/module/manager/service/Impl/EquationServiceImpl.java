@@ -8,20 +8,17 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bit.base.exception.BusinessException;
 import com.bit.common.businessEnum.CalculateFlagEnum;
-import com.bit.common.businessEnum.NodeOrderCalculateStatusEnum;
 import com.bit.common.informationEnum.StandardEnum;
 import com.bit.module.equation.bean.BasePriceEquation;
 import com.bit.module.equation.bean.BasePriceEquationRel;
 import com.bit.module.equation.bean.Equation;
 import com.bit.module.equation.dao.BasePriceEquationDao;
-import com.bit.module.equation.dao.BasePriceEquationRelDao;
 import com.bit.module.equation.dao.EquationDao;
 import com.bit.module.manager.bean.*;
 import com.bit.module.manager.dao.*;
 import com.bit.module.miniapp.bean.Area;
 import com.bit.module.miniapp.bean.ElevatorType;
 import com.bit.module.miniapp.bean.Options;
-import org.apache.commons.lang.StringUtils;
 import org.mvel2.MVEL;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +26,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
-
-import static com.bit.common.consts.Const.NONSTANDARD_TYPE_SYS;
 
 
 /**
@@ -256,7 +251,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
                 vars.put(baseInfo.getParamKey(), baseInfo.getInfoValue());
             }
         }
-        vars.put("开门宽度", getNoEquationOut(vars, "开门宽度"));
+        vars.put("开门宽度", getBasePriceEquationOut(vars, "开门宽度"));
         if (vars.get("平摊费用") == null) {
             vars.put("平摊费用", 0);
         }
@@ -293,7 +288,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
      * @return
      */
     public List<Options> executeEquationsForOption(Map vars, List<Options> list) {
-        vars.put("开门宽度", getNoEquationOut(vars, "开门宽度"));
+        vars.put("开门宽度", getBasePriceEquationOut(vars, "开门宽度"));
         List<Options> res = new ArrayList<>();
         for (Options options : list) {
             vars.put("数量", 10000);//
@@ -333,14 +328,14 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
 
     public Map executeEquations(Map vars) {
         checkMap(vars);
-        vars.put("高度单价", getNoEquationOut(vars, "高度单价"));
-        vars.put("标准顶层高度", getNoEquationOut(vars, "标准顶层高度"));
-        vars.put("标准底坑深度", getNoEquationOut(vars, "标准底坑深度"));
+        vars.put("高度单价", getBasePriceEquationOut(vars, "高度单价"));
+        vars.put("标准顶层高度", getBasePriceEquationOut(vars, "标准顶层高度"));
+        vars.put("标准底坑深度", getBasePriceEquationOut(vars, "标准底坑深度"));
 
         double heightPrice = checkNostandardAndPrice(vars);//判断是否为非标
 
-        vars.put("小计_设备基价", getNoEquationOut(vars, "基价"));
-        vars.put("小计_设备基价成本", getNoEquationCost(vars, "基价"));//成本
+        vars.put("小计_设备基价", getBasePriceEquationOut(vars, "基价"));
+        vars.put("小计_设备基价成本", getBasePriceEquationCost(vars, "基价"));//成本
         buildBasePriceJson(vars);
         double optionPrice = countOptionPrice(vars) + heightPrice;
         vars.put("小计_高度价格", heightPrice);
@@ -510,12 +505,12 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
     }
 
     // 返回基价表的成本
-    public int getNoEquationCost(Map vars, String category) {
-        return getNoEquationOut(vars, category, true);
+    public int getBasePriceEquationCost(Map vars, String category) {
+        return getBasePriceEquationOut(vars, category, true);
     }
     // 返回基价表的价格
-    public int getNoEquationOut(Map vars, String category) {
-        return getNoEquationOut(vars, category, false);
+    public int getBasePriceEquationOut(Map vars, String category) {
+        return getBasePriceEquationOut(vars, category, false);
     }
 
     /**
@@ -525,7 +520,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
      * @param isCost
      * @return
      */
-    public int getNoEquationOut(Map vars, String category,boolean isCost) {
+    public int getBasePriceEquationOut(Map vars, String category, boolean isCost) {
         String type = vars.get("系列").toString();
 
         List<BasePriceEquationRel> basePriceRel = equationCacheService.getBasePriceEquationRelList(type,category);
