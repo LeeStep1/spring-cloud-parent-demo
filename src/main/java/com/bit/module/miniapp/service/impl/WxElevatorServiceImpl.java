@@ -8,6 +8,8 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bit.base.dto.UserInfo;
 import com.bit.base.exception.BusinessException;
 import com.bit.base.service.BaseService;
@@ -22,8 +24,7 @@ import com.bit.common.wxenum.ResultCode;
 import com.bit.module.manager.bean.*;
 import com.bit.module.manager.dao.*;
 import com.bit.module.manager.service.Impl.EquationServiceImpl;
-import com.bit.module.manager.vo.ProjectEleNonstandardVO;
-import com.bit.module.manager.vo.ProjectPriceVo;
+import com.bit.module.manager.vo.*;
 import com.bit.module.miniapp.bean.ElevatorType;
 import com.bit.module.miniapp.bean.Options;
 import com.bit.module.miniapp.service.ExportService;
@@ -1148,6 +1149,28 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
 
 		return successVo();
+	}
+	/**
+	 * 定价辅助
+	 * @return
+	 */
+	@Override
+	public BaseVo priceSupport(List<ProjectEleOrder> projectEleOrderList) {
+		return null;
+	}
+
+	/**
+	 * 议价列表
+	 * @return
+	 */
+	@Override
+	public BaseVo inquireList(ProjectPageVO projectPageVO) {
+		projectPageVO.setEnquiryAuditUserId(getCurrentUserInfo().getId());
+		Page<ProjectShowVO> page = new Page<>(projectPageVO.getPageNum(),projectPageVO.getPageSize());
+		IPage<ProjectShowVO> projectPriceVoIPage = projectPriceDao.listPage(page, projectPageVO);
+		BaseVo baseVo = new BaseVo();
+		baseVo.setData(projectPriceVoIPage);
+		return baseVo;
 	}
 
 	/**

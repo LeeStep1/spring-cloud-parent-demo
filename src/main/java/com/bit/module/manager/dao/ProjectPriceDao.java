@@ -77,11 +77,7 @@ public interface ProjectPriceDao extends BaseMapper<ProjectPrice> {
 	void updatebatchProjectPrice(@Param(value = "projectPriceList") List<ProjectEleNonstandardVO> projectPrices);
 
 
-	/**
-	 * 分页查询
-	 * @param projectPricePageVO
-	 * @return
-	 */
+
 	/**
 	 * 参数列表查询
 	 * @return
@@ -93,4 +89,5 @@ public interface ProjectPriceDao extends BaseMapper<ProjectPrice> {
 	 * @param projectPrice
 	 */
 	void updateProjectPrice(ProjectPrice projectPrice);
+
 }

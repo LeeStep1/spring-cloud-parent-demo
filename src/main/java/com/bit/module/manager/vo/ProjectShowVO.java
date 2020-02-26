@@ -54,7 +54,28 @@ public class ProjectShowVO  {
 	 **/
 	private String addressName;
 	/**
+	 * 是否标准，1：标准，0非标
+	 */
+	private Integer standard;
+	/**
+	 * 标准名称1：标准，0非标
+	 */
+	private String standardName;
+	/**
 	 * 审批人姓名
 	 */
 	private String auditUserName;
+	/**
+	 * 议价流程节点的审批人
+	 */
+	private Long enquiryAuditUserId;
+	/**
+	 * 议价的环节点的审批人所属公司id
+	 */
+	private Long enquiryAuditUserCompanyId;
+
+	/**
+	 * 提交议价的时间
+	 */
+	private Date enquiryApplyTime;
 }

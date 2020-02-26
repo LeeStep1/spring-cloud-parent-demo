@@ -306,6 +306,11 @@
         t2.create_user_name,
         t1.non_standard_apply_status,
         t1.id as projectPriceId,
+        t1.enquiry_audit_user_id,
+        t1.enquiry_audit_user_company_id,
+        t1.enquiry_apply_time,
+        t1.standard,
+        t1.standard_name,
         t3.mobile,
         t3.real_name
         FROM t_project_price t1
@@ -337,8 +342,16 @@
             <if test="projectPageVO.realName!=null and projectPageVO.realName!=''">
                 and t3.real_name like concat("%", #{projectPageVO.realName,jdbcType=VARCHAR} ,"%")
             </if>
+            <if test="projectPageVO.enquiryAuditUserId!=null">
+                and t1.enquiry_audit_user_id = #{projectPageVO.enquiryAuditUserId,jdbcType=BIGINT}
+            </if>
+            <if test="projectPageVO.enquiryAuditUserCompanyId!=null">
+                and t1.enquiry_audit_user_company_id = #{projectPageVO.enquiryAuditUserCompanyId,jdbcType=BIGINT}
+            </if>
         </where>
         order by t1.create_time desc
     </select>
+
+
 
 </mapper>

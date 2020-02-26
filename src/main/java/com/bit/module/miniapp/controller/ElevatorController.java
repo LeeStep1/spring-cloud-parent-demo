@@ -4,10 +4,7 @@ import com.bit.base.vo.BasePageVo;
 import com.bit.base.vo.BaseVo;
 import com.bit.module.manager.bean.*;
 import com.bit.module.manager.service.*;
-import com.bit.module.manager.vo.ElevatorTypePageVO;
-import com.bit.module.manager.vo.ProjectPageVO;
-import com.bit.module.manager.vo.ProjectPriceVo;
-import com.bit.module.manager.vo.ProjectVo;
+import com.bit.module.manager.vo.*;
 import com.bit.module.miniapp.bean.Options;
 import com.bit.module.miniapp.bean.QueryParams;
 import com.bit.module.miniapp.service.WxElevatorService;
@@ -398,5 +395,23 @@ public class ElevatorController {
 	@PutMapping("/passEnquireAudit")
 	public BaseVo passEnquireAudit(@RequestBody ProjectPrice projectPrice){
 		return wxElevatorService.passEnquireAudit(projectPrice);
+	}
+
+	/**
+	 * 定价辅助
+	 * @return
+	 */
+	@PostMapping("/priceSupport")
+	public BaseVo priceSupport(@RequestBody List<ProjectEleOrder> projectEleOrderList){
+		return wxElevatorService.priceSupport(projectEleOrderList);
+	}
+
+	/**
+	 * 议价列表
+	 * @return
+	 */
+	@PostMapping("/inquireList")
+	public BaseVo inquireList(@RequestBody ProjectPageVO projectPageVO){
+		return wxElevatorService.inquireList(projectPageVO);
 	}
 }

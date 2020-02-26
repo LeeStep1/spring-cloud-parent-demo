@@ -102,6 +102,46 @@ public class ProjectPageVO extends BasePageVo {
 	 * 关闭时间
 	 */
 	private Date closedTime;
+
+	/**
+	 * 议价审批状态：0：未提交审批，1：审批中，2：审批通过，3：审批拒绝，4，撤销
+	 */
+	private Integer enquiryApplyStatus;
+	/**
+	 * 无优惠的总价
+	 */
+	private String nonRateTotalPrice;
+	/**
+	 * 平均下浮率
+	 */
+	private Double averageRate;
+	/**
+	 * 最大下浮率
+	 */
+	private Double maxRate;
+	/**
+	 * 议价流程节点的审批人
+	 */
+	private Long enquiryAuditUserId;
+	/**
+	 * 议价的环节点的审批人所属公司id
+	 */
+	private Long enquiryAuditUserCompanyId;
+	/**
+	 * 提交议价的时间
+	 */
+	private Date enquiryApplyTime;
+	/**
+	 * 提交议价的期望价格
+	 */
+	private String inquiryPrice;
+	/**
+	 * 成本总价
+	 */
+	private String costTotalPrice;
+
+
+//	搜索传参字段
 	/**
 	 * 小程序 历史项目 里的多参数混合查询
 	 */

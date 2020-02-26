@@ -1,10 +1,9 @@
 package com.bit.module.miniapp.service;
 
 import com.bit.base.vo.BaseVo;
-import com.bit.module.manager.bean.ElevatorRate;
-import com.bit.module.manager.bean.Project;
-import com.bit.module.manager.bean.ProjectEleOrderBaseInfo;
-import com.bit.module.manager.bean.ProjectPrice;
+import com.bit.module.manager.bean.*;
+import com.bit.module.manager.vo.ProjectPageVO;
+import com.bit.module.manager.vo.ProjectPricePageVO;
 import com.bit.module.manager.vo.ProjectPriceVo;
 import com.bit.module.miniapp.bean.Options;
 import com.bit.module.miniapp.vo.ReportInfoVO;
@@ -159,5 +158,17 @@ public interface WxElevatorService {
 	 * @return
 	 */
 	BaseVo passEnquireAudit(ProjectPrice projectPrice);
+
+	/**
+	 * 定价辅助
+	 * @return
+	 */
+	BaseVo priceSupport(List<ProjectEleOrder> projectEleOrderList);
+
+	/**
+	 * 议价列表
+	 * @return
+	 */
+	BaseVo inquireList(ProjectPageVO projectPageVO);
 
 }
