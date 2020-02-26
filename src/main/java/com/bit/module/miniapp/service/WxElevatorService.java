@@ -5,6 +5,7 @@ import com.bit.module.manager.bean.*;
 import com.bit.module.manager.vo.ProjectPageVO;
 import com.bit.module.manager.vo.ProjectPriceVo;
 import com.bit.module.miniapp.bean.Options;
+import com.bit.module.miniapp.vo.PriceEnquireAuditVo;
 import com.bit.module.miniapp.vo.ReportInfoVO;
 
 import java.util.List;
@@ -177,5 +178,14 @@ public interface WxElevatorService {
 	 * @return
 	 */
 	BaseVo getRates(List<Long> elevatorTypeIds);
+
+
+
+	/**
+	 * 通过议价审批
+	 * @param projectPrice
+	 * @return
+	 */
+	BaseVo passEnquireAudit1(PriceEnquireAuditVo projectPrice);
 
 }

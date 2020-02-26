@@ -30,6 +30,7 @@ import com.bit.module.miniapp.bean.Options;
 import com.bit.module.miniapp.service.ExportService;
 import com.bit.module.miniapp.service.WxElevatorService;
 import com.bit.module.miniapp.vo.ExcelVo;
+import com.bit.module.miniapp.vo.PriceEnquireAuditVo;
 import com.bit.module.miniapp.vo.ProjectEleOptionsVo;
 import com.bit.module.miniapp.vo.ReportInfoVO;
 import com.bit.utils.*;
@@ -1309,5 +1310,43 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		return  rs;
 		}
 
+	/**
+	 * 通过议价审批
+	 * @param projectPrice
+	 * @return
+	 */
+	@Transactional
+	@Override
+	public  BaseVo passEnquireAudit1(PriceEnquireAuditVo projectPrice){
+        //审批通过
+		EnquiryAudit enquiryAudit = new EnquiryAudit();
+		enquiryAudit.setAuditType(EnquiryAuditTypeEnum.SHENPITONGGUO.getCode());
+		enquiryAudit.setAuditTypeName(EnquiryAuditTypeEnum.SHENPITONGGUO.getInfo());
+		enquiryAudit.setAuditUserId(getCurrentUserInfo().getId());
+		enquiryAudit.setAuditUserName(getCurrentUserInfo().getUserName());
+		enquiryAudit.setAuditTime(new Date());
+		enquiryAudit.setProjectPriceId(projectPrice.getProjectPriceId());
+		List<Map> rates=new ArrayList<>();
+		List<ProjectEleOrder> orders=new ArrayList<>();
+		if(CollectionUtils.isNotEmpty(projectPrice.getOrderList())){
+			projectPrice.getOrderList().forEach(c->{
+				Map a=new HashMap();
+				a.put("orderId",c.getId());
+				a.put("rate",c.getRate());
+				rates.add(a);
+				ProjectEleOrder b=new ProjectEleOrder();
+				b.setId(c.getId());
+				b.setRate(c.getRate());
+				orders.add(b);
+			});
+			projectEleOrderDao.updateBatch(orders);
+			enquiryAudit.setRateList(JSON.toJSONString(rates));
+		}
+		enquiryAuditDao.addEnquiryAudit(enquiryAudit);
 
+		//todo  計算
+
+		return successVo();
+
+	}
 }

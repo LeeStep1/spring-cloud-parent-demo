@@ -8,6 +8,7 @@ import com.bit.module.manager.vo.*;
 import com.bit.module.miniapp.bean.Options;
 import com.bit.module.miniapp.bean.QueryParams;
 import com.bit.module.miniapp.service.WxElevatorService;
+import com.bit.module.miniapp.vo.PriceEnquireAuditVo;
 import com.bit.module.miniapp.vo.ReportInfoVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -434,5 +435,18 @@ public class ElevatorController {
 
 		return wxElevatorService.getRates(elevatorTypeIds);
 
+	}
+
+
+
+	/**
+	 * 通过 or 驳回 询价
+	 *
+	 * @param projectPrice
+	 * @return
+	 */
+	@PutMapping("/passEnquireAudit1")
+	public BaseVo passEnquireAudit1(@RequestBody PriceEnquireAuditVo priceEnquireAuditVo) {
+		return wxElevatorService.passEnquireAudit1(priceEnquireAuditVo);
 	}
 }
