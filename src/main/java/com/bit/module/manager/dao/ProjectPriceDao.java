@@ -90,4 +90,10 @@ public interface ProjectPriceDao extends BaseMapper<ProjectPrice> {
 	 */
 	void updateProjectPrice(ProjectPrice projectPrice);
 
+	/**
+	 * 更新议价流程节点的审批人和审批人所属公司id null
+	 * @param projectPrice
+	 */
+	void updateProjectPriceEnquireAuditWithNull(ProjectPrice projectPrice);
+
 }

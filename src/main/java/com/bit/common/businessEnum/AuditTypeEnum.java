@@ -62,4 +62,18 @@ public enum AuditTypeEnum {
     public String getInfo() {
         return info;
     }
+
+	/**
+	 * 根据code得到info
+	 * @param code
+	 * @return
+	 */
+	public static String getValueByCode(int code){
+		for(AuditTypeEnum typeEnum : AuditTypeEnum.values()){
+			if(code==typeEnum.getCode()){
+				return typeEnum.getInfo();
+			}
+		}
+		return  null;
+	}
 }

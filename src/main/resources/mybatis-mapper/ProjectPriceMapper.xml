@@ -268,6 +268,34 @@
         </where>
     </update>
 
+
+    <update id="updateProjectPriceEnquireAuditWithNull" parameterType="com.bit.module.manager.bean.ProjectPrice">
+        update t_project_price
+        <trim prefix="set" suffixOverrides=",">
+            <if test="enquiryApplyStatus!=null">
+                enquiry_apply_status = #{enquiryApplyStatus,jdbcType=INTEGER},
+            </if>
+
+            <if test="enquiryAuditUserId!=null">
+                enquiry_audit_user_id = #{enquiryAuditUserId,jdbcType=BIGINT},
+            </if>
+            <if test="enquiryAuditUserId==null">
+                enquiry_audit_user_id = null,
+            </if>
+            <if test="enquiryAuditUserCompanyId!=null">
+                enquiry_audit_user_company_id = #{enquiryAuditUserCompanyId,jdbcType=BIGINT},
+            </if>
+            <if test="enquiryAuditUserCompanyId==null">
+                enquiry_audit_user_company_id = null,
+            </if>
+        </trim>
+        <where>
+            <if test="id!=null">
+                and id = #{id,jdbcType=BIGINT}
+            </if>
+        </where>
+    </update>
+
     <!--批量编辑数据-->
     <update id="updatebatchProjectPrice" parameterType="com.bit.module.manager.vo.ProjectEleNonstandardVO">
         UPDATE t_project_price

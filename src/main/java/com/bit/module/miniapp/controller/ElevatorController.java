@@ -382,14 +382,25 @@ public class ElevatorController {
 	}
 
 	/**
-	 * 议价审核上报
+	 * 提交议价金额
+	 * @param projectPrice
+	 * @return
+	 */
+	@PostMapping("/apply")
+	public BaseVo apply(@RequestBody ProjectPrice projectPrice){
+		return wxElevatorService.apply(projectPrice);
+	}
+
+
+	/**
+	 * 转发询价
 	 *
 	 * @param projectPriceVo
 	 * @return
 	 */
-	@PostMapping("/submit")
-	public BaseVo submit(@RequestBody ProjectPriceVo projectPriceVo) {
-		return wxElevatorService.submit(projectPriceVo);
+	@PostMapping("/redirectEnquireAudit")
+	public BaseVo redirectEnquireAudit(@RequestBody ProjectPriceVo projectPriceVo) {
+		return wxElevatorService.redirectEnquireAudit(projectPriceVo);
 	}
 
 	/**
@@ -402,6 +413,16 @@ public class ElevatorController {
 	public BaseVo passEnquireAudit(@RequestBody ProjectPrice projectPrice) {
 		return wxElevatorService.passEnquireAudit(projectPrice);
 	}
+
+	/**
+	 * 拒绝询价
+	 * @return
+	 */
+	@GetMapping("/rejectEnquireAudit/{projectPriceId}")
+	public BaseVo rejectEnquireAudit(@PathVariable(value = "projectPriceId")Long projectPriceId){
+		return wxElevatorService.rejectEnquireAudit(projectPriceId);
+	}
+
 
 	/**
 	 * 定价辅助

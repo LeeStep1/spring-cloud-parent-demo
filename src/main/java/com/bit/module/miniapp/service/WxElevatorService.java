@@ -145,11 +145,11 @@ public interface WxElevatorService {
 	BaseVo cancelApply(Long elevatorPriceId);
 
 	/**
-	 * 议价审核上报
+	 * 转发询价
 	 * @param projectPriceVo
 	 * @return
 	 */
-	BaseVo submit(ProjectPriceVo projectPriceVo);
+	BaseVo redirectEnquireAudit(ProjectPriceVo projectPriceVo);
 
 	/**
 	 * 通过 or 驳回 询价
@@ -165,6 +165,12 @@ public interface WxElevatorService {
 	BaseVo priceSupport(List<ProjectEleOrder> projectEleOrderList);
 
 	/**
+	 * 拒绝询价
+	 * @return
+	 */
+	BaseVo rejectEnquireAudit(Long projectPriceId);
+
+	/**
 	 * 议价列表
 	 * @return
 	 */
@@ -177,5 +183,12 @@ public interface WxElevatorService {
 	 * @return
 	 */
 	BaseVo getRates(List<Long> elevatorTypeIds);
+
+	/**
+	 * 提交议价金额
+	 * @param projectPrice
+	 * @return
+	 */
+	BaseVo apply(ProjectPrice projectPrice);
 
 }
