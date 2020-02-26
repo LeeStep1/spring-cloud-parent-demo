@@ -212,6 +212,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
 			a.setInstallFlag(InstallFlagEnum.NO.getCode());
 			a.setTransportFlag(TransportFlagEnum.NO.getCode());
+			a.setEnquiryApplyStatus(EnquiryApplyStatusEnum.WEITIJIAO.getCode());
 			projectPriceDao.insert(a);
 		} else {
 			a = list1.get(0);
