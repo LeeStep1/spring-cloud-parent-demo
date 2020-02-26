@@ -339,7 +339,8 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
 
         double heightPrice = checkNostandardAndPrice(vars);//判断是否为非标
 
-        vars.put("小计_设备基价", getNoEquationOut(vars, "基价"));//设备基价
+        vars.put("小计_设备基价", getNoEquationOut(vars, "基价"));
+        vars.put("小计_设备基价成本", getNoEquationCost(vars, "基价"));//成本
         buildBasePriceJson(vars);
         double optionPrice = countOptionPrice(vars) + heightPrice;
         vars.put("小计_高度价格", heightPrice);
@@ -449,6 +450,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         projectEleOrder.setInstallPrice(NumberUtil.roundStr(vars.get("小计_安装费用").toString(), 2));
         projectEleOrder.setTotalPrice(NumberUtil.roundStr(vars.get("小计_合价").toString(), 2));
         projectEleOrder.setTransportPrice(NumberUtil.roundStr(vars.get("小计_运费").toString(), 2));
+        projectEleOrder.setCostBasePrice(NumberUtil.roundStr(vars.get("小计_设备基价成本").toString(), 2));
         if (vars.get("高度加价") != null) {
             projectEleOrder.setAdditionPrice(JSON.toJSONString(vars.get("高度加价")));
         }
@@ -507,7 +509,23 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         return Integer.parseInt(basePriceEquation.getVal4());
     }
 
+    // 返回基价表的成本
+    public int getNoEquationCost(Map vars, String category) {
+        return getNoEquationOut(vars, category, true);
+    }
+    // 返回基价表的价格
     public int getNoEquationOut(Map vars, String category) {
+        return getNoEquationOut(vars, category, false);
+    }
+
+    /**
+     * 返回基价表的输出（价格或成本）
+     * @param vars
+     * @param category
+     * @param isCost
+     * @return
+     */
+    public int getNoEquationOut(Map vars, String category,boolean isCost) {
         String type = vars.get("系列").toString();
 
         List<BasePriceEquationRel> basePriceRel = equationCacheService.getBasePriceEquationRelList(type,category);
@@ -521,8 +539,11 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         if (basePriceEquation == null) {
             return 0;
         }
-
-        return Integer.parseInt(basePriceEquation.getOutput());
+        if (isCost) {
+            return Integer.parseInt(basePriceEquation.getCostPrice());
+        } else {
+            return Integer.parseInt(basePriceEquation.getOutput());
+        }
     }
 
     private Object simpleEquation(String equation, Map vars) {
