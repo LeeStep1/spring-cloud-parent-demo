@@ -23,6 +23,7 @@ import com.bit.module.manager.bean.*;
 import com.bit.module.manager.dao.*;
 import com.bit.module.manager.service.Impl.EquationServiceImpl;
 import com.bit.module.manager.vo.ProjectEleNonstandardVO;
+import com.bit.module.manager.vo.ProjectPriceVo;
 import com.bit.module.miniapp.bean.ElevatorType;
 import com.bit.module.miniapp.bean.Options;
 import com.bit.module.miniapp.service.ExportService;
@@ -1046,21 +1047,21 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	}
 
 	/**
-	 * 上报
-	 * @param projectPrice
+	 * 议价审核上报
+	 * @param projectPriceVo
 	 * @return
 	 */
 	@Override
 	@Transactional
-	public BaseVo submit(ProjectPrice projectPrice) {
-		ProjectPrice projectPriceById = projectPriceDao.getProjectPriceById(projectPrice.getId());
+	public BaseVo submit(ProjectPriceVo projectPriceVo) {
+		ProjectPrice projectPriceById = projectPriceDao.getProjectPriceById(projectPriceVo.getId());
 		if (projectPriceById==null){
 			throw new BusinessException("数据不存在");
 		}
 		//验证能不能询价 一个项目只能有一个审批中的询价
 		ProjectPrice param = new ProjectPrice();
 		param.setEnquiryApplyStatus(EnquiryApplyStatusEnum.SHENNPIZHONG.getCode());
-		param.setProjectId(projectPrice.getProjectId());
+		param.setProjectId(projectPriceVo.getProjectId());
 		List<ProjectPrice> byParam = projectPriceDao.findByParam(param);
 		if (CollectionUtils.isNotEmpty(byParam)){
 			throw new BusinessException("一个项目只能有一个审批中的询价");
@@ -1076,15 +1077,15 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		projectPriceById.setEnquiryAuditUserCompanyId(userCompanyByUserId.getId());
 		projectPriceById.setEnquiryApplyTime(new Date());
 
-		projectPriceById.setInquiryPrice(projectPrice.getInquiryPrice());
-		projectPriceById.setCostTotalPrice(projectPrice.getCostTotalPrice());
+		projectPriceById.setInquiryPrice(projectPriceVo.getInquiryPrice());
+		projectPriceById.setCostTotalPrice(projectPriceVo.getCostTotalPrice());
 		projectPriceDao.updateById(projectPriceById);
 
 		//往t_enquiry_audit 插一条
 		EnquiryAudit enquiryAudit = new EnquiryAudit();
-		enquiryAudit.setProjectPriceId(projectPrice.getId());
-		enquiryAudit.setAuditType(AuditTypeEnum.SUBMIT.getCode());
-		enquiryAudit.setAuditTypeName(AuditTypeEnum.SUBMIT.getInfo());
+		enquiryAudit.setProjectPriceId(projectPriceVo.getId());
+		enquiryAudit.setAuditType(projectPriceVo.getAuditType());
+		enquiryAudit.setAuditTypeName(projectPriceVo.getAuditTypeName());
 		enquiryAudit.setAuditUserId(auditor.getId());
 		enquiryAudit.setAuditUserName(auditor.getUserName());
 		enquiryAudit.setAuditTime(new Date());
@@ -1113,10 +1114,15 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			//审批拒绝
 			enquiryAudit.setAuditType(AuditTypeEnum.REJECT.getCode());
 			enquiryAudit.setAuditTypeName(AuditTypeEnum.REJECT.getInfo());
+		}else if (enquiryApplyStatus.equals(EnquiryApplyStatusEnum.CHEXIAO.getCode())){
+			//审批撤销
+			enquiryAudit.setAuditType(AuditTypeEnum.CLOSED.getCode());
+			enquiryAudit.setAuditTypeName(AuditTypeEnum.CLOSED.getInfo());
 		}
 		enquiryAudit.setAuditUserId(getCurrentUserInfo().getId());
 		enquiryAudit.setAuditUserName(getCurrentUserInfo().getUserName());
 		enquiryAudit.setAuditTime(new Date());
+		enquiryAudit.setProjectPriceId(projectPrice.getId());
 		enquiryAuditDao.addEnquiryAudit(enquiryAudit);
 
 

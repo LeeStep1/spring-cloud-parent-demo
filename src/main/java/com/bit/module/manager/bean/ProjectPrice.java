@@ -75,7 +75,7 @@ public class ProjectPrice {
 
 	/*新增字段*/
     /**
-     * 议价审批状态：0：未提交审批，1：审批中，2：审批完结
+     * 议价审批状态：0：未提交审批，1：审批中，2：审批通过，3：审批拒绝，4，撤销
      */
     private Integer enquiryApplyStatus;
     /**

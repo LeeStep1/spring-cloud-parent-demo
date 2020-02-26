@@ -28,7 +28,7 @@ public class EnquiryAudit {
      */
     private Long projectPriceId;
     /**
-     * '操作类型 1-提交 2-转交审批 3-审批'
+     * '操作类型 1-提交 2-审批通过 3-审批拒绝，4，转交，5，关闭项目撤回
      */
     private Integer auditType;
     /**

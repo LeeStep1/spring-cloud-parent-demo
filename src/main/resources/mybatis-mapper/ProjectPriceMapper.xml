@@ -234,7 +234,7 @@
                 non_standard_apply_status = #{nonStandardApplyStatus,jdbcType=INTEGER},
             </if>
             <if test="positiveLock!=null">
-                positive_lock = #{positiveLock,jdbcType=INTEGER},
+                positive_lock = #{positiveLock,jdbcType=INTEGER} + 1,
             </if>
             <if test="enquiryApplyStatus!=null">
                 enquiry_apply_status = #{enquiryApplyStatus,jdbcType=INTEGER},

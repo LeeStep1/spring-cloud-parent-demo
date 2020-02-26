@@ -14,4 +14,13 @@ import java.util.List;
 public class ProjectPriceVo  extends ProjectPrice{
 
    private List<ElevatorOrderVo>elevatorOrderVo;
+
+   /**
+    * '操作类型 1-提交 2-审批通过 3-审批拒绝，4，转交，5，关闭项目撤回
+    */
+   private Integer auditType;
+   /**
+    * '操作类型 名称
+    */
+   private String auditTypeName;
 }

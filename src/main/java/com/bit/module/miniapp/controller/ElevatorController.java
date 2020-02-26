@@ -6,6 +6,7 @@ import com.bit.module.manager.bean.*;
 import com.bit.module.manager.service.*;
 import com.bit.module.manager.vo.ElevatorTypePageVO;
 import com.bit.module.manager.vo.ProjectPageVO;
+import com.bit.module.manager.vo.ProjectPriceVo;
 import com.bit.module.manager.vo.ProjectVo;
 import com.bit.module.miniapp.bean.Options;
 import com.bit.module.miniapp.bean.QueryParams;
@@ -380,13 +381,13 @@ public class ElevatorController {
 	}
 
 	/**
-	 * 上报
-	 * @param projectPrice
+	 * 议价审核上报
+	 * @param projectPriceVo
 	 * @return
 	 */
 	@PostMapping("/submit")
-	public BaseVo submit(@RequestBody ProjectPrice projectPrice){
-		return wxElevatorService.submit(projectPrice);
+	public BaseVo submit(@RequestBody ProjectPriceVo projectPriceVo){
+		return wxElevatorService.submit(projectPriceVo);
 	}
 
 	/**

@@ -5,6 +5,7 @@ import com.bit.module.manager.bean.ElevatorRate;
 import com.bit.module.manager.bean.Project;
 import com.bit.module.manager.bean.ProjectEleOrderBaseInfo;
 import com.bit.module.manager.bean.ProjectPrice;
+import com.bit.module.manager.vo.ProjectPriceVo;
 import com.bit.module.miniapp.bean.Options;
 import com.bit.module.miniapp.vo.ReportInfoVO;
 
@@ -146,11 +147,11 @@ public interface WxElevatorService {
 	BaseVo cancelApply(Long elevatorPriceId);
 
 	/**
-	 * 上报
-	 * @param projectPrice
+	 * 议价审核上报
+	 * @param projectPriceVo
 	 * @return
 	 */
-	BaseVo submit(ProjectPrice projectPrice);
+	BaseVo submit(ProjectPriceVo projectPriceVo);
 
 	/**
 	 * 通过 or 驳回 询价
