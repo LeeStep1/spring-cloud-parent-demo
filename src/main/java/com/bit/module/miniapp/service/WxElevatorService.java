@@ -3,7 +3,6 @@ package com.bit.module.miniapp.service;
 import com.bit.base.vo.BaseVo;
 import com.bit.module.manager.bean.*;
 import com.bit.module.manager.vo.ProjectPageVO;
-import com.bit.module.manager.vo.ProjectPricePageVO;
 import com.bit.module.manager.vo.ProjectPriceVo;
 import com.bit.module.miniapp.bean.Options;
 import com.bit.module.miniapp.vo.ReportInfoVO;
@@ -170,5 +169,13 @@ public interface WxElevatorService {
 	 * @return
 	 */
 	BaseVo inquireList(ProjectPageVO projectPageVO);
+
+
+	/**
+	 * 根據人員數據和電梯類型，获得下浮率率
+	 * @param elevatorTypeIds
+	 * @return
+	 */
+	BaseVo getRates(List<Long> elevatorTypeIds);
 
 }

@@ -10,6 +10,7 @@ import com.bit.module.miniapp.bean.QueryParams;
 import com.bit.module.miniapp.service.WxElevatorService;
 import com.bit.module.miniapp.vo.ReportInfoVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -142,7 +143,7 @@ public class ElevatorController {
 		rs.setData(wxElevatorService.getOptions(optionType, elevatorTypeId, baseInfo));
 		return rs;
 	}
-	
+
 	/**
 	 * 新建项目
 	 *
@@ -160,6 +161,7 @@ public class ElevatorController {
 	/**
 	 * 新建项目下的电梯 算钱
 	 * 包括基础参数、选项、以及手动输入的非标项
+	 *
 	 * @param vo 返回项目
 	 * @return
 	 */
@@ -184,11 +186,12 @@ public class ElevatorController {
 
 	/**
 	 * 历史项目 和 我的项目
+	 *
 	 * @param projectPageVO
 	 * @return
 	 */
 	@PostMapping("/user/projectHistory")
-	public BaseVo<Project> historyProject(@RequestBody ProjectPageVO projectPageVO){
+	public BaseVo<Project> historyProject(@RequestBody ProjectPageVO projectPageVO) {
 		return projectService.historyProject(projectPageVO);
 	}
 
@@ -268,6 +271,7 @@ public class ElevatorController {
 		return wxElevatorService.proPriceToVersion(projectId);
 
 	}*/
+
 	/**
 	 * 修改项目报价
 	 *
@@ -321,8 +325,8 @@ public class ElevatorController {
 	 * @return
 	 */
 	@PostMapping("/sendMail/{projectPriceId}")
-	public BaseVo sendPriceMail(@PathVariable(value = "projectPriceId") Long projectPriceId,@RequestBody(required = false) List<String>ccAdress) {
-		return	wxElevatorService.sendPriceMail(projectPriceId,ccAdress);
+	public BaseVo sendPriceMail(@PathVariable(value = "projectPriceId") Long projectPriceId, @RequestBody(required = false) List<String> ccAdress) {
+		return wxElevatorService.sendPriceMail(projectPriceId, ccAdress);
 
 
 	}
@@ -342,13 +346,13 @@ public class ElevatorController {
 	/**
 	 * 根据用户获取电梯类型下的下浮率
 	 *
-	 * @param elevatorTypeId  電梯的類型ID
+	 * @param elevatorTypeId 電梯的類型ID
 	 * @return
 	 */
 	@GetMapping("/rate/{elevatorTypeId}")
-	public BaseVo getRate(@PathVariable(value = "elevatorTypeId")Long elevatorTypeId) {
+	public BaseVo getRate(@PathVariable(value = "elevatorTypeId") Long elevatorTypeId) {
 
-		BaseVo vo=new BaseVo();
+		BaseVo vo = new BaseVo();
 		vo.setData(wxElevatorService.getRate(elevatorTypeId));
 		return vo;
 	}
@@ -357,11 +361,11 @@ public class ElevatorController {
 	/**
 	 * 非标报价取消接口
 	 *
-	 * @param elevatorPriceId  电梯版本报价的id
+	 * @param elevatorPriceId 电梯版本报价的id
 	 * @return
 	 */
 	@DeleteMapping("/nonstandardApply/{elevatorPriceId}")
-	public BaseVo cancelApply(@PathVariable(value = "elevatorPriceId")Long elevatorPriceId) {
+	public BaseVo cancelApply(@PathVariable(value = "elevatorPriceId") Long elevatorPriceId) {
 		return wxElevatorService.cancelApply(elevatorPriceId);
 	}
 
@@ -369,49 +373,66 @@ public class ElevatorController {
 	/**
 	 * 关闭项目
 	 *
-	 * @param project  关闭项目的主要字段  原因 备注以及 关闭类型
+	 * @param project 关闭项目的主要字段  原因 备注以及 关闭类型
 	 * @return
 	 */
-    @PostMapping("/project/status")
-	public BaseVo closeProject(@RequestBody Project project){
-    	return projectService.closeProject(project);
+	@PostMapping("/project/status")
+	public BaseVo closeProject(@RequestBody Project project) {
+		return projectService.closeProject(project);
 	}
 
 	/**
 	 * 议价审核上报
+	 *
 	 * @param projectPriceVo
 	 * @return
 	 */
 	@PostMapping("/submit")
-	public BaseVo submit(@RequestBody ProjectPriceVo projectPriceVo){
+	public BaseVo submit(@RequestBody ProjectPriceVo projectPriceVo) {
 		return wxElevatorService.submit(projectPriceVo);
 	}
 
 	/**
 	 * 通过 or 驳回 询价
+	 *
 	 * @param projectPrice
 	 * @return
 	 */
 	@PutMapping("/passEnquireAudit")
-	public BaseVo passEnquireAudit(@RequestBody ProjectPrice projectPrice){
+	public BaseVo passEnquireAudit(@RequestBody ProjectPrice projectPrice) {
 		return wxElevatorService.passEnquireAudit(projectPrice);
 	}
 
 	/**
 	 * 定价辅助
+	 *
 	 * @return
 	 */
 	@PostMapping("/priceSupport")
-	public BaseVo priceSupport(@RequestBody List<ProjectEleOrder> projectEleOrderList){
+	public BaseVo priceSupport(@RequestBody List<ProjectEleOrder> projectEleOrderList) {
 		return wxElevatorService.priceSupport(projectEleOrderList);
 	}
 
 	/**
 	 * 议价列表
+	 *
 	 * @return
 	 */
 	@PostMapping("/inquireList")
-	public BaseVo inquireList(@RequestBody ProjectPageVO projectPageVO){
+	public BaseVo inquireList(@RequestBody ProjectPageVO projectPageVO) {
 		return wxElevatorService.inquireList(projectPageVO);
+	}
+
+	/**
+	 * 根据用户获取电梯类型下的下浮率，支持批量查询
+	 *
+	 * @param elevatorTypeIds 电梯类型ids
+	 * @return
+	 */
+	@PostMapping("/rate")
+	public BaseVo getRates(@RequestBody List<Long> elevatorTypeIds) {
+
+		return wxElevatorService.getRates(elevatorTypeIds);
+
 	}
 }
