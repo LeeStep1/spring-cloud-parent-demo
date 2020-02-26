@@ -301,7 +301,7 @@
                 and company_name = #{projectPageVO.companyName,jdbcType=VARCHAR}
             </if>
             <if test="projectPageVO.companyId!=null">
-                and company_id = #{projectPageVO.companyId,jdbcType=BIGINT},
+                and company_id = #{projectPageVO.companyId,jdbcType=BIGINT}
             </if>
             <if test="projectPageVO.closedStatus!=null">
                 and closed_status = #{projectPageVO.closedStatus,jdbcType=INTEGER}

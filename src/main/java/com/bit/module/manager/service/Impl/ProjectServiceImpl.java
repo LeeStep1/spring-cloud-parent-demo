@@ -167,6 +167,11 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 	 */
 	@Override
 	public BaseVo historyProject(ProjectPageVO projectPageVO) {
+		if (projectPageVO.getOrderByType().equals(0)){
+			projectPageVO.setOrderBy("closed_status,closed_time desc");
+		}else if (projectPageVO.getOrderByType().equals(1)){
+			projectPageVO.setOrderBy("create_time desc");
+		}
 		projectPageVO.setCreateUserId(getCurrentUserInfo().getId());
 		Page<Project> page = new Page<>(projectPageVO.getPageNum(),projectPageVO.getPageSize());  // 查询第1页，每页返回5条
 		IPage<Project> iPage = projectDao.listPage(page,projectPageVO);
@@ -423,7 +428,7 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 				Audit a=new Audit();
 				a.setAuditTime(new
 						Date());
-				a.setAuditType(AuditTypeEnum.AUDITCANCEL.getCode());
+				a.setAuditType(AuditTypeEnum.REJECT.getCode());
 				a.setAuditUserId(getCurrentUserInfo().getId());
 				a.setAuditUserName(getCurrentUserInfo().getRealName());
 				a.setProjectId(project.getId());

@@ -110,4 +110,8 @@ public class ProjectPageVO extends BasePageVo {
 	 * 排序
 	 */
 	private String orderBy;
+	/**
+	 * 排序 接口类型 0-个人 1-洽谈
+	 */
+	private Integer orderByType;
 }

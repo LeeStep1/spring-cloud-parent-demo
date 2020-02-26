@@ -19,9 +19,21 @@ public enum AuditTypeEnum {
 
 
     /**
+     *审批拒绝
+     */
+    REJECT(3, "审批拒绝"),
+
+    /**
+     *转交
+     */
+    REDIRECT(4, "转交"),
+
+
+    /**
      *关闭项目撤回
      */
-    AUDITCANCEL(3, "关闭项目撤回");
+    CLOSED(5, "关闭项目撤回");
+
 
     /**
      * 操作码

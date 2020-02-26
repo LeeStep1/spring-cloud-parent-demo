@@ -19,6 +19,15 @@
         <result property="transportFlag" column="transport_flag"/>
         <result property="nonStandardApplyStatus" column="non_standard_apply_status"/>
         <result property="positiveLock" column="positive_lock"/>
+        <result property="enquiryApplyStatus" column="enquiry_apply_status"/>
+        <result property="nonRateTotalPrice" column="non_rate_total_price"/>
+        <result property="averageRate" column="average_rate"/>
+        <result property="maxRate" column="max_rate"/>
+        <result property="enquiryAuditUserId" column="enquiry_audit_user_id"/>
+        <result property="enquiryAuditUserCompanyId" column="enquiry_audit_user_company_id"/>
+        <result property="enquiryApplyTime" column="enquiry_apply_time"/>
+        <result property="inquiryPrice" column="inquiry_price"/>
+        <result property="costTotalPrice" column="cost_total_price"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -36,7 +45,16 @@
         install_flag,
         transport_flag,
         non_standard_apply_status,
-        positive_lock
+        positive_lock,
+        enquiry_apply_status,
+        non_rate_total_price,
+        average_rate,
+        max_rate,
+        enquiry_audit_user_id,
+        enquiry_audit_user_company_id,
+        enquiry_apply_time,
+        inquiry_price,
+        cost_total_price
     </sql>
 
     <!--根据项目id集合批量查询报价记录-->
@@ -143,7 +161,27 @@
             <if test="nonStandardApplyStatus!=null">
                 and non_standard_apply_status = #{nonStandardApplyStatus,jdbcType=INTEGER}
             </if>
-
+            <if test="enquiryApplyStatus!=null">
+                and enquiry_apply_status = #{enquiryApplyStatus,jdbcType=INTEGER}
+            </if>
+            <if test="nonRateTotalPrice!=null and nonRateTotalPrice!=''">
+                and non_rate_total_price = #{nonRateTotalPrice,jdbcType=VARCHAR}
+            </if>
+            <if test="enquiryAuditUserId!=null">
+                and enquiry_audit_user_id = #{enquiryAuditUserId,jdbcType=BIGINT}
+            </if>
+            <if test="enquiryAuditUserCompanyId!=null">
+                and enquiry_audit_user_company_id = #{enquiryAuditUserCompanyId,jdbcType=BIGINT}
+            </if>
+            <if test="enquiryApplyTime!=null">
+                and enquiry_apply_time = #{enquiryApplyTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="inquiryPrice!=null and inquiryPrice!=''">
+                and inquiry_price = #{inquiryPrice,jdbcType=VARCHAR}
+            </if>
+            <if test="costTotalPrice!=null and costTotalPrice!=''">
+                and cost_total_price = #{costTotalPrice,jdbcType=VARCHAR}
+            </if>
         </where>
     </select>
 
@@ -198,8 +236,36 @@
             <if test="positiveLock!=null">
                 positive_lock = #{positiveLock,jdbcType=INTEGER},
             </if>
+            <if test="enquiryApplyStatus!=null">
+                enquiry_apply_status = #{enquiryApplyStatus,jdbcType=INTEGER},
+            </if>
+            <if test="nonRateTotalPrice!=null and nonRateTotalPrice!=''">
+                non_rate_total_price = #{nonRateTotalPrice,jdbcType=VARCHAR},
+            </if>
+            <if test="enquiryAuditUserId!=null">
+                enquiry_audit_user_id =  #{enquiryAuditUserId,jdbcType=BIGINT},
+            </if>
+            <if test="enquiryAuditUserCompanyId!=null">
+                enquiry_audit_user_company_id =  #{enquiryAuditUserCompanyId,jdbcType=BIGINT},
+            </if>
+            <if test="enquiryApplyTime!=null">
+                enquiry_apply_time = #{enquiryApplyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="inquiryPrice!=null and inquiryPrice!=''">
+                inquiry_price = #{inquiryPrice,jdbcType=VARCHAR},
+            </if>
+            <if test="costTotalPrice!=null and costTotalPrice!=''">
+                cost_total_price = #{costTotalPrice,jdbcType=VARCHAR},
+            </if>
         </trim>
-        where id = #{id,jdbcType=BIGINT}
+        <where>
+            <if test="id!=null">
+                and id = #{id,jdbcType=BIGINT}
+            </if>
+            <if test="positiveLock!=null">
+                and positive_lock = #{positiveLock,jdbcType=INTEGER}
+            </if>
+        </where>
     </update>
 
     <!--批量编辑数据-->

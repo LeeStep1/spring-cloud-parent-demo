@@ -114,5 +114,13 @@ public interface UserDao extends BaseMapper<User> {
 	 */
 	void batchAdd(@Param(value = "list")List<User> users);
 
+	/**
+	 * 根据公司id和角色id查询用户
+	 * @param companyId
+	 * @param roleId
+	 * @return
+	 */
+	List<User> getUserByCompanyIdAndRoleId(@Param(value = "companyId")Long companyId,@Param(value = "roleId")Long roleId);
+
 
 }

@@ -145,4 +145,18 @@ public interface WxElevatorService {
 	 */
 	BaseVo cancelApply(Long elevatorPriceId);
 
+	/**
+	 * 上报
+	 * @param projectPrice
+	 * @return
+	 */
+	BaseVo submit(ProjectPrice projectPrice);
+
+	/**
+	 * 通过 or 驳回 询价
+	 * @param projectPrice
+	 * @return
+	 */
+	BaseVo passEnquireAudit(ProjectPrice projectPrice);
+
 }

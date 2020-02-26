@@ -87,4 +87,10 @@ public interface ProjectPriceDao extends BaseMapper<ProjectPrice> {
 	 * @return
 	 */
 	IPage<ProjectShowVO> listPage(@Param("pg")Page<ProjectShowVO> page, @Param("projectPageVO")ProjectPageVO projectPageVO);
+
+	/**
+	 * 编辑数据
+	 * @param projectPrice
+	 */
+	void updateProjectPrice(ProjectPrice projectPrice);
 }

@@ -320,4 +320,22 @@
            SELECT  * from t_role
     </select>
 
+
+	<select id="getUserByCompanyIdAndRoleId" parameterType="long" resultType="com.bit.module.manager.bean.User">
+		SELECT t1.*
+		FROM t_user t1
+		left JOIN t_user_company t2
+		on t1.id = t2.user_id
+		left JOIN t_user_role t3
+		on t1.id = t3.user_id
+		<where>
+			<if test="companyId!=null">
+				and t2.company_id = #{companyId,jdbcType=BIGINT}
+			</if>
+			<if test="roleId!=null">
+				and t3.role_id = #{roleId,jdbcType=BIGINT}
+			</if>
+		</where>
+	</select>
+
 </mapper>

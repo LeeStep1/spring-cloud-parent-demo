@@ -379,4 +379,23 @@ public class ElevatorController {
     	return projectService.closeProject(project);
 	}
 
+	/**
+	 * 上报
+	 * @param projectPrice
+	 * @return
+	 */
+	@PostMapping("/submit")
+	public BaseVo submit(@RequestBody ProjectPrice projectPrice){
+		return wxElevatorService.submit(projectPrice);
+	}
+
+	/**
+	 * 通过 or 驳回 询价
+	 * @param projectPrice
+	 * @return
+	 */
+	@PutMapping("/passEnquireAudit")
+	public BaseVo passEnquireAudit(@RequestBody ProjectPrice projectPrice){
+		return wxElevatorService.passEnquireAudit(projectPrice);
+	}
 }

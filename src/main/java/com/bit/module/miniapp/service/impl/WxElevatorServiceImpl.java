@@ -1,5 +1,7 @@
 package com.bit.module.miniapp.service.impl;
 
+import cn.afterturn.easypoi.cache.manager.IFileLoader;
+import com.alibaba.druid.sql.visitor.functions.If;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
@@ -15,6 +17,7 @@ import com.bit.common.businessEnum.*;
 import com.bit.common.consts.Const;
 import com.bit.common.informationEnum.StageEnum;
 import com.bit.common.informationEnum.StandardEnum;
+import com.bit.common.informationEnum.UserRoleEnum;
 import com.bit.common.wxenum.ResultCode;
 import com.bit.module.manager.bean.*;
 import com.bit.module.manager.dao.*;
@@ -85,13 +88,22 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	private ProjectEleNonstandardDao projectEleNonstandardDao;
 
 	@Autowired
-	private ProjectDao  projectDao;
+	private EnquiryAuditDao enquiryAuditDao;
 
 	@Autowired
 	private AuditDao auditDao;
 
 	@Autowired
 	private ExportService exportService;
+
+	@Autowired
+	private CompanyDao companyDao;
+
+	@Autowired
+	private UserCompanyDao userCompanyDao;
+
+	@Autowired
+	private UserDao userDao;
 
 
 	@Value("${upload.imagesPath}")
@@ -1030,6 +1042,202 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			}
 		}
 		return new BaseVo();
+	}
+
+	/**
+	 * 上报
+	 * @param projectPrice
+	 * @return
+	 */
+	@Override
+	@Transactional
+	public BaseVo submit(ProjectPrice projectPrice) {
+		ProjectPrice projectPriceById = projectPriceDao.getProjectPriceById(projectPrice.getId());
+		if (projectPriceById==null){
+			throw new BusinessException("数据不存在");
+		}
+		//验证能不能询价 一个项目只能有一个审批中的询价
+		ProjectPrice param = new ProjectPrice();
+		param.setEnquiryApplyStatus(EnquiryApplyStatusEnum.SHENNPIZHONG.getCode());
+		param.setProjectId(projectPrice.getProjectId());
+		List<ProjectPrice> byParam = projectPriceDao.findByParam(param);
+		if (CollectionUtils.isNotEmpty(byParam)){
+			throw new BusinessException("一个项目只能有一个审批中的询价");
+		}
+
+		//上级审批人
+		User auditor = this.auditor();
+		if (auditor==null){
+			throw new BusinessException("无上级审批人");
+		}
+		projectPriceById.setEnquiryAuditUserId(auditor.getId());
+		Company userCompanyByUserId = userCompanyDao.getUserCompanyByUserId(auditor.getId());
+		projectPriceById.setEnquiryAuditUserCompanyId(userCompanyByUserId.getId());
+		projectPriceById.setEnquiryApplyTime(new Date());
+
+		projectPriceById.setInquiryPrice(projectPrice.getInquiryPrice());
+		projectPriceById.setCostTotalPrice(projectPrice.getCostTotalPrice());
+		projectPriceDao.updateById(projectPriceById);
+
+		//往t_enquiry_audit 插一条
+		EnquiryAudit enquiryAudit = new EnquiryAudit();
+		enquiryAudit.setProjectPriceId(projectPrice.getId());
+		enquiryAudit.setAuditType(AuditTypeEnum.SUBMIT.getCode());
+		enquiryAudit.setAuditTypeName(AuditTypeEnum.SUBMIT.getInfo());
+		enquiryAudit.setAuditUserId(auditor.getId());
+		enquiryAudit.setAuditUserName(auditor.getUserName());
+		enquiryAudit.setAuditTime(new Date());
+
+		enquiryAuditDao.addEnquiryAudit(enquiryAudit);
+
+		return successVo();
+	}
+	/**
+	 * 通过 or 驳回 询价
+	 * @param projectPrice
+	 * @return
+	 */
+	@Override
+	@Transactional
+	public BaseVo passEnquireAudit(ProjectPrice projectPrice) {
+		Integer enquiryApplyStatus = projectPrice.getEnquiryApplyStatus();
+		projectPriceDao.updateProjectPrice(projectPrice);
+
+		EnquiryAudit enquiryAudit = new EnquiryAudit();
+		if (enquiryApplyStatus.equals(EnquiryApplyStatusEnum.SHENPITONGGUO.getCode())){
+			//审批通过
+			enquiryAudit.setAuditType(AuditTypeEnum.AUDIT.getCode());
+			enquiryAudit.setAuditTypeName(AuditTypeEnum.AUDIT.getInfo());
+		}else if (enquiryApplyStatus.equals(EnquiryApplyStatusEnum.SHENNPIJUJUE.getCode())){
+			//审批拒绝
+			enquiryAudit.setAuditType(AuditTypeEnum.REJECT.getCode());
+			enquiryAudit.setAuditTypeName(AuditTypeEnum.REJECT.getInfo());
+		}
+		enquiryAudit.setAuditUserId(getCurrentUserInfo().getId());
+		enquiryAudit.setAuditUserName(getCurrentUserInfo().getUserName());
+		enquiryAudit.setAuditTime(new Date());
+		enquiryAuditDao.addEnquiryAudit(enquiryAudit);
+
+
+		return successVo();
+	}
+
+	/**
+	 * 上级审批人
+	 * @return
+	 */
+	private User auditor(){
+		//公司id
+		Long companyId = getCurrentUserInfo().getCompanyId();
+		//角色id
+		Long roleId = Long.valueOf(getCurrentUserInfo().getRole());
+
+		Company companyById = companyDao.getCompanyById(companyId);
+		//上级审批人
+		User user = this.acquireUserByCompanyIdAndRoleId(companyId, roleId, companyById.getLevel());
+		return user;
+	}
+
+	/**
+	 * 根据公司 角色 和 公司结构层级 找到审批人
+	 * @param companyId
+	 * @param roleId
+	 * @param level
+	 * @return
+	 */
+	private User acquireUserByCompanyIdAndRoleId(Long companyId,Long roleId,Integer level){
+		Long role = null;
+		Company cm = new Company();
+		cm.setLevel(1);
+		cm.setParentId(-1L);
+		List<Company> byParam = companyDao.findByParam(cm);
+		//集团
+		Company root = byParam.get(0);
+
+		//西部区域
+		cm.setLevel(2);
+		cm.setParentId(root.getId());
+		List<Company> westParam = companyDao.findByParam(cm);
+		//西部区域集团
+		Company west = westParam.get(0);
+		//3级 西部区域
+		//2级 分公司
+		//1级
+		if (level.equals(3)){
+			//判断角色
+			if (roleId.equals(Long.valueOf(UserRoleEnum.SALES.getRoleId()))){
+				//找分公司的总经理
+				role = Long.valueOf(UserRoleEnum.MANAGER.getRoleId());
+			}else if (roleId.equals(Long.valueOf(UserRoleEnum.MANAGER.getRoleId()))){
+				//找区域总经理
+				role = Long.valueOf(UserRoleEnum.REGIONAL_MANAGER.getRoleId());
+				//companyId变为西部区域id
+				companyId = west.getId();
+			}else if (roleId.equals(Long.valueOf(UserRoleEnum.REGIONAL_MANAGER.getRoleId()))){
+				//找集团总经理
+				role = Long.valueOf(UserRoleEnum.BOSS.getRoleId());
+				//companyId变为集团id
+				companyId = root.getId();
+			}else {
+				throw new BusinessException("身份错误");
+			}
+
+		}else if (level.equals(2)){
+			//判断角色
+			if (roleId.equals(Long.valueOf(UserRoleEnum.SALES.getRoleId()))){
+				//找分公司的总经理
+				role = Long.valueOf(UserRoleEnum.MANAGER.getRoleId());
+			}else if (roleId.equals(Long.valueOf(UserRoleEnum.MANAGER.getRoleId()))){
+				//找集团总经理
+				role = Long.valueOf(UserRoleEnum.BOSS.getRoleId());
+				//companyId变为集团id
+				companyId = root.getId();
+			}else {
+				throw new BusinessException("身份错误");
+			}
+		}else if (level.equals(1)){
+			//判断角色
+			if (roleId.equals(1L)){
+				//找分公司的总经理
+				role = Long.valueOf(UserRoleEnum.MANAGER.getRoleId());
+			}else if (roleId.equals(Long.valueOf(UserRoleEnum.MANAGER.getRoleId()))){
+				//找集团总经理
+				role = Long.valueOf(UserRoleEnum.BOSS.getRoleId());
+				//companyId变为集团id
+				companyId = root.getId();
+			}else {
+				throw new BusinessException("身份错误");
+			}
+		}
+
+		List<User> userByCompanyIdAndRoleId = userDao.getUserByCompanyIdAndRoleId(companyId, role);
+		if (CollectionUtils.isEmpty(userByCompanyIdAndRoleId)){
+			Long nextrole = null;
+			if (level - 1 > 0){
+				Company companyById = companyDao.getCompanyById(companyId);
+				if (role.equals(5L)){
+					//找集团总经理
+					//companyId变为集团id
+					nextrole = Long.valueOf(UserRoleEnum.BOSS.getRoleId());
+				}else if (role.equals(Long.valueOf(UserRoleEnum.MANAGER.getRoleId()))){
+					if (level.equals(3)){
+						//3层架构
+						//找区域总经理
+						nextrole = Long.valueOf(UserRoleEnum.REGIONAL_MANAGER.getRoleId());
+					}else if (level.equals(2)){
+						//2层架构
+						//找集团总经理
+						nextrole = Long.valueOf(UserRoleEnum.BOSS.getRoleId());
+					}
+				}else if (role.equals(Long.valueOf(UserRoleEnum.BOSS.getRoleId()))){
+					return null;
+				}
+				return acquireUserByCompanyIdAndRoleId(companyById.getParentId(),nextrole,level-1);
+			}else {
+				return null;
+			}
+		}
+		return userByCompanyIdAndRoleId.get(0);
 	}
 
 }
