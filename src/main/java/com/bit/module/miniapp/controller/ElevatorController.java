@@ -13,6 +13,7 @@ import com.bit.module.miniapp.bean.QueryParams;
 import com.bit.module.miniapp.service.WxElevatorService;
 import com.bit.module.miniapp.vo.ReportInfoVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -398,5 +399,20 @@ public class ElevatorController {
 	@PutMapping("/passEnquireAudit")
 	public BaseVo passEnquireAudit(@RequestBody ProjectPrice projectPrice){
 		return wxElevatorService.passEnquireAudit(projectPrice);
+	}
+
+
+	/**
+	 * 根据用户获取电梯类型下的下浮率，支持批量查询
+	 *
+	 * @param elevatorTypeIds  电梯类型ids
+	 * @return
+	 */
+	@PostMapping("/rate")
+	public BaseVo getRates(@RequestBody  List<Long> elevatorTypeIds) {
+
+
+		return wxElevatorService.getRates(elevatorTypeIds);
+
 	}
 }

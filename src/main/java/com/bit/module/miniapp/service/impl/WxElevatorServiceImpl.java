@@ -1268,4 +1268,23 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		return userByCompanyIdAndRoleId.get(0);
 	}
 
+	/**
+	 * 根據人員數據和電梯類型，获得下浮率率
+	 * @param elevatorTypeIds
+	 * @return
+	 */
+	@Override
+	public  BaseVo getRates(List<Long> elevatorTypeIds){
+
+		BaseVo<List<CompanyRate>> rs =new BaseVo<>();
+	  List<CompanyRate>	list=companyRateDao.selectList(new QueryWrapper<CompanyRate>().in("elevator_type_id",elevatorTypeIds)
+		.eq("company_id", getCurrentUserInfo().getCompanyId())
+		.eq("role_id",getCurrentUserInfo().getRole())
+		);
+
+		rs.setData(list);
+		return  rs;
+		}
+
+
 }

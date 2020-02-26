@@ -160,4 +160,13 @@ public interface WxElevatorService {
 	 */
 	BaseVo passEnquireAudit(ProjectPrice projectPrice);
 
+
+
+	/**
+	 * 根據人員數據和電梯類型，获得下浮率率
+	 * @param elevatorTypeIds
+	 * @return
+	 */
+	BaseVo getRates(List<Long> elevatorTypeIds);
+
 }
