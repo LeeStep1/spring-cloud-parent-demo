@@ -98,5 +98,20 @@
         </where>
     </select>
 
-
+    <select id="findUserByParam" parameterType="com.bit.module.manager.bean.UserCompany" resultMap="userCompanyMap">
+        select t2.* t_user t1
+        INNER JOIN t_user_company t2
+        on t1.id = t2.user_id
+        <where>
+            <if test="userId!=null">
+                and t2.user_id = #{userId,jdbcType=BIGINT}
+            </if>
+            <if test="companyId!=null">
+                and t2.company_id = #{companyId,jdbcType=BIGINT}
+            </if>
+            <if test="status!=null">
+                and t1.status = #{status,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
 </mapper>

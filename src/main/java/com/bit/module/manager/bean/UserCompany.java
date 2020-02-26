@@ -1,6 +1,7 @@
 package com.bit.module.manager.bean;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -35,5 +36,9 @@ public class UserCompany implements Serializable {
 	 * 公司id
 	 */
 	private Long companyId;
-
+	/**
+	 * 用户状态 0表示停用  1表示正常
+	 */
+	@TableField(exist = false)
+	private Integer status;
 }
