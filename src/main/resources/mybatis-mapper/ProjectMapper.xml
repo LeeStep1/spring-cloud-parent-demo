@@ -66,7 +66,16 @@
         t2.transport_flag,
         t2.standard,
         t2.standard_name,
-        t2.non_standard_apply_status
+        t2.non_standard_apply_status,
+        t2.enquiry_apply_status,
+        t2.non_rate_total_price,
+        t2.average_rate,
+        t2.max_rate,
+        t2.enquiry_audit_user_id,
+        t2.enquiry_audit_user_company_id,
+        t2.enquiry_apply_time,
+        t2.inquiry_price,
+        t2.cost_total_price
         FROM t_project t1
         LEFT JOIN t_project_price t2
         on t1.id = t2.project_id
