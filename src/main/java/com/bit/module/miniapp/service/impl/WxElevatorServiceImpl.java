@@ -497,8 +497,20 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 				if(projectPrice.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
 					projectPrice.setNonStandardApplyStatus(NonStandardApplyStatusEnum.DAITIJIAO.getCode());
 				}
+				//1.2版本新增逻辑，将如果是议价则所属字段为空
+				if(!projectPrice.getEnquiryApplyStatus().equals(EnquiryApplyStatusEnum.WEITIJIAO.getCode())){
+					projectPrice.setEnquiryApplyStatus(EnquiryApplyStatusEnum.WEITIJIAO.getCode());
+					projectPrice.setInquiryPrice(null);
+					projectPrice.setAverageRate(null);
+					projectPrice.setMaxRate(null);
+					projectPrice.setCostTotalPrice(null);
+					projectPrice.setEnquiryApplyTime(null);
+					projectPrice.setEnquiryAuditUserCompanyId(null);
+					projectPrice.setEnquiryAuditUserId(null);
+				}
 				//新增一个草稿报价
 				projectPriceDao.insert(projectPrice);
+
 				//todo 优化查询算法
 				for (ProjectEleOrder pro : list1) {//遍历订单数据，查询关联的option
 					//准备order 数据
@@ -518,7 +530,16 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 					}else{
 						pro.setCalculateFlag(CalculateFlagEnum.YES.getCode());
 					}
-
+					//start 1.2 版本新加逻辑，置空之前算的价格
+					   pro.setRate(0.0);
+					   pro.setCostBasePrice(null);
+					   pro.setBasePrice(null);
+					   pro.setTotalPrice(null);
+					   pro.setSingleTotalPrice(null);
+					   pro.setUnitPrice(null);
+					   pro.setTransportPrice(null);
+					   pro.setInstallPrice(null);
+					//end
 					projectEleOrderDao.insert(pro);
 
 					//新增非标项的复制功能
