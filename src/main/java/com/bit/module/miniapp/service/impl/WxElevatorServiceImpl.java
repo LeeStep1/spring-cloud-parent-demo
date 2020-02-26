@@ -1225,7 +1225,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			}
 		}else if (level.equals(1)){
 			//判断角色
-			if (roleId.equals(1L)){
+			if (roleId.equals(Long.valueOf(UserRoleEnum.SALES.getRoleId()))){
 				//找分公司的总经理
 				role = Long.valueOf(UserRoleEnum.MANAGER.getRoleId());
 			}else if (roleId.equals(Long.valueOf(UserRoleEnum.MANAGER.getRoleId()))){
@@ -1243,7 +1243,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			Long nextrole = null;
 			if (level - 1 > 0){
 				Company companyById = companyDao.getCompanyById(companyId);
-				if (role.equals(5L)){
+				if (role.equals(Long.valueOf(UserRoleEnum.REGIONAL_MANAGER.getRoleId()))){
 					//找集团总经理
 					//companyId变为集团id
 					nextrole = Long.valueOf(UserRoleEnum.BOSS.getRoleId());
