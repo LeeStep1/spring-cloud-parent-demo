@@ -186,11 +186,11 @@ public interface WxElevatorService {
 	BaseVo getRates(List<Long> elevatorTypeIds);
 
 	/**
-	 * 提交议价金额
+	 * 提交议价申请
 	 * @param projectPrice
 	 * @return
 	 */
-	BaseVo apply(ProjectPrice projectPrice);
+	BaseVo applyInquire(ProjectPrice projectPrice);
 
 
 	/**

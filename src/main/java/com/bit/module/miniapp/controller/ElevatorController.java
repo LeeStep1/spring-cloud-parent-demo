@@ -383,13 +383,13 @@ public class ElevatorController {
 	}
 
 	/**
-	 * 提交议价金额
+	 * 提交议价申请
 	 * @param projectPrice
 	 * @return
 	 */
-	@PostMapping("/apply")
-	public BaseVo apply(@RequestBody ProjectPrice projectPrice){
-		return wxElevatorService.apply(projectPrice);
+	@PostMapping("/applyInquire")
+	public BaseVo applyInquire(@RequestBody ProjectPrice projectPrice){
+		return wxElevatorService.applyInquire(projectPrice);
 	}
 
 

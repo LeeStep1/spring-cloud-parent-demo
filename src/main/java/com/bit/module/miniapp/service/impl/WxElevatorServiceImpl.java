@@ -1355,17 +1355,25 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	}
 
 	/**
-	 * 提交议价金额
+	 * 提交议价申请
 	 *
 	 * @param projectPrice
 	 * @return
 	 */
 	@Override
 	@Transactional
-	public BaseVo apply(ProjectPrice projectPrice) {
-
+	public BaseVo applyInquire(ProjectPrice projectPrice) {
 		projectPrice.setEnquiryApplyTime(new Date());
 		projectPriceDao.updateProjectPrice(projectPrice);
+		// 计算接口
+		Map map = new HashMap();
+		map.put("projectId",projectPrice.getProjectId());
+		map.put("version",projectPrice.getVersion());
+		map.put("targetPrice",projectPrice.getInquiryPrice());
+		map.put("isUpdate",true);
+
+		equationServiceImpl.countAvgDiscountRate(map);
+
 		return successVo();
 	}
 

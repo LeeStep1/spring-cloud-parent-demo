@@ -48,7 +48,8 @@
 
     </sql>
     <!--批量添加-->
-    <insert id="batchInsert" parameterType="com.bit.module.manager.bean.ProjectEleOrder" keyProperty="id" useGeneratedKeys="true">
+    <insert id="batchInsert" parameterType="com.bit.module.manager.bean.ProjectEleOrder" keyProperty="id"
+            useGeneratedKeys="true">
         INSERT INTO t_project_ele_order(
         project_id,
         elevator_type_id,
@@ -66,23 +67,23 @@
         calculate_flag,
         cost_base_price
         ) VALUES
-        <foreach collection="list" item="item" index="index"  separator=",">
+        <foreach collection="list" item="item" index="index" separator=",">
             (
-                #{projectId,jdbcType=BIGINT},
-                #{elevatorTypeId,jdbcType=BIGINT},
-                #{elevatorTypeName,jdbcType=VARCHAR},
-                #{num,jdbcType=INTEGER},
-                #{unitPrice,jdbcType=VARCHAR},
-                #{installPrice,jdbcType=VARCHAR},
-                #{transportPrice,jdbcType=VARCHAR},
-                #{singleTotalPrice,jdbcType=VARCHAR},
-                #{totalPrice,jdbcType=VARCHAR},
-                #{versionId,jdbcType=BIGINT},
-                #{rate,jdbcType=DOUBLE},
-                #{standard,jdbcType=INTEGER},
-                #{standardName,jdbcType=VARCHAR},
-                #{calculateFlag,jdbcType=VARCHAR},
-                #{costBasePrice,jdbcType=VARCHAR}
+            #{projectId,jdbcType=BIGINT},
+            #{elevatorTypeId,jdbcType=BIGINT},
+            #{elevatorTypeName,jdbcType=VARCHAR},
+            #{num,jdbcType=INTEGER},
+            #{unitPrice,jdbcType=VARCHAR},
+            #{installPrice,jdbcType=VARCHAR},
+            #{transportPrice,jdbcType=VARCHAR},
+            #{singleTotalPrice,jdbcType=VARCHAR},
+            #{totalPrice,jdbcType=VARCHAR},
+            #{versionId,jdbcType=BIGINT},
+            #{rate,jdbcType=DOUBLE},
+            #{standard,jdbcType=INTEGER},
+            #{standardName,jdbcType=VARCHAR},
+            #{calculateFlag,jdbcType=VARCHAR},
+            #{costBasePrice,jdbcType=VARCHAR}
 
             )
         </foreach>
@@ -132,9 +133,6 @@
     </select>
 
 
-
-
-
     <select id="getPriceVersionByOrderId" parameterType="long" resultType="integer">
         SELECT t2.version FROM t_project_ele_order t1
         INNER JOIN t_project_price t2
@@ -154,21 +152,21 @@
         <trim prefix="set" suffixOverrides=",">
 
             <trim prefix="install_price = case" suffix="end,">
-                <foreach collection="list" item="order" index="index" >
+                <foreach collection="list" item="order" index="index">
                     <if test="order.installPrice!=null">
                         WHEN id = #{order.id,jdbcType=BIGINT} then #{order.installPrice,jdbcType=VARCHAR}
                     </if>
                 </foreach>
             </trim>
             <trim prefix="transport_price = case" suffix="end,">
-                <foreach collection="list" item="order" index="index" >
+                <foreach collection="list" item="order" index="index">
                     <if test="order.transportPrice!=null">
                         WHEN id = #{order.id,jdbcType=BIGINT} then #{order.transportPrice,jdbcType=VARCHAR}
                     </if>
                 </foreach>
             </trim>
             <trim prefix="calculate_flag = case" suffix="end,">
-                <foreach collection="list" item="order" index="index" >
+                <foreach collection="list" item="order" index="index">
                     <if test="order.calculateFlag!=null">
                         WHEN id = #{order.id,jdbcType=BIGINT} then #{order.calculateFlag,jdbcType=INTEGER}
                     </if>
@@ -182,7 +180,8 @@
 
         </where>
     </update>
-    <update id="updateBatch"  parameterType="java.util.List">
+
+    <update id="updateBatch" parameterType="java.util.List">
 
         <foreach collection="list" item="item" index="index" open="" close="" separator=";">
             update t_project_ele_order
