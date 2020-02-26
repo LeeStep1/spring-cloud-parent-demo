@@ -16,6 +16,7 @@ import com.bit.module.equation.dao.BasePriceEquationDao;
 import com.bit.module.equation.dao.EquationDao;
 import com.bit.module.manager.bean.*;
 import com.bit.module.manager.dao.*;
+import com.bit.module.manager.vo.ProjectPriceAndOrderVO;
 import com.bit.module.miniapp.bean.Area;
 import com.bit.module.miniapp.bean.ElevatorType;
 import com.bit.module.miniapp.bean.Options;
@@ -86,6 +87,11 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
      */
 
     public List<Map> executeCountProjectPrice(Map map) {
+        ProjectPriceAndOrderVO vo = executeCountProjectPrice(map, null);
+        return vo.getEleInputs();
+    }
+
+    public ProjectPriceAndOrderVO executeCountProject(Map map) {
         return executeCountProjectPrice(map, null);
     }
 
@@ -95,7 +101,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
      * @param projectEleOrderInputs 应对手动调节下浮率的情况，如果用户手动调节就输入此参数
      * @return
      */
-    public List<Map> executeCountProjectPrice(Map map,List<ProjectEleOrder> projectEleOrderInputs) {
+    public ProjectPriceAndOrderVO executeCountProjectPrice(Map map,List<ProjectEleOrder> projectEleOrderInputs) {
         logger.info("计算总价时入参:"+map.toString());
         ProjectPrice projectPrice = null;
         if (map.get("projectPriceId") != null) {
@@ -121,8 +127,16 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
                 }
             }
             input.put("orderId", eleOrder.getId());
-            input.put("包括运费", map.get("包括运费"));
-            input.put("包括安装", map.get("包括安装"));
+            if (map.get("包括运费") != null) {
+                input.put("包括运费", map.get("包括运费"));
+            } else {
+                input.put("包括运费",getBooleanForInteger(projectPrice.getTransportFlag()));
+            }
+            if (map.get("包括安装") != null) {
+                input.put("包括安装", map.get("包括安装"));
+            } else {
+                input.put("包括安装", getBooleanForInteger(projectPrice.getInstallFlag()));
+            }
             input.put("isUpdate", map.get("isUpdate"));
             eleInputs.add(input);
         }
@@ -171,7 +185,17 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             }
             projectPriceDao.updateById(projectPrice);
         }
-        return eleInputs;
+        ProjectPriceAndOrderVO vo = new ProjectPriceAndOrderVO();
+        vo.setEleInputs(eleInputs);
+        vo.setProjectPrice(projectPrice);
+        return vo;
+    }
+
+    private boolean getBooleanForInteger(Integer installFlag) {
+        if (installFlag == 1) {
+            return true;
+        }
+        return false;
     }
 
     /**
