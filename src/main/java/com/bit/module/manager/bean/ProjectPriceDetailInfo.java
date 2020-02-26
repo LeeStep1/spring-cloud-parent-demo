@@ -109,4 +109,10 @@ public class ProjectPriceDetailInfo {
 	 * 乐观锁
 	 */
 	private Integer positiveLock;
+
+	/**1.2版本增加字段**/
+	/**
+	 * 电梯类型字段
+	 */
+	private Long  elevatorTypeId;
 }
