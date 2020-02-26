@@ -38,4 +38,11 @@ public interface ProjectEleOrderDao extends BaseMapper<ProjectEleOrder> {
 	 * @param list
 	 */
 	void updateBatchEleOrder(@Param(value = "list") List<ProjectEleOrder> list);
+
+
+	/**
+	 * 批量更新
+	 * @param list
+	 */
+	void updateBatch(@Param(value = "list") List<ProjectEleOrder> list);
 }

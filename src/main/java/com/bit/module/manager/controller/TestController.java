@@ -1,17 +1,20 @@
 package com.bit.module.manager.controller;
 
 import com.bit.base.vo.BaseVo;
+import com.bit.module.manager.bean.ProjectEleOrder;
 import com.bit.module.manager.bean.User;
 import com.bit.module.manager.bean.UserLogin;
 import com.bit.module.manager.service.Impl.EquationCacheServiceImpl;
 import com.bit.module.manager.service.Impl.EquationServiceImpl;
 import com.bit.module.manager.service.UserService;
 import com.bit.module.manager.vo.PortalUserVo;
+import com.bit.module.manager.vo.TestPoljectEleOrderAndMapVO;
 import com.bit.module.manager.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,9 +40,16 @@ public class TestController {
     }
 
     @PostMapping(value = "/executeCountProjectPrice")
-    public BaseVo executeCountProjectPrice(@RequestBody Map map){
+    public BaseVo executeCountProjectPrice2(@RequestBody Map map){
         BaseVo baseVo = new BaseVo();
         baseVo.setData(equationService.executeCountProjectPrice(map));
+        return baseVo;
+    }
+
+    @PostMapping(value = "/executeCountProjectPriceAndRate")
+    public BaseVo executeCountProjectPrice(@RequestBody TestPoljectEleOrderAndMapVO testPoljectEleOrderAndMapVO){
+        BaseVo baseVo = new BaseVo();
+        baseVo.setData(equationService.executeCountProjectPrice(testPoljectEleOrderAndMapVO.getMap(),testPoljectEleOrderAndMapVO.getRate()));
         return baseVo;
     }
 
