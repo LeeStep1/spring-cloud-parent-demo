@@ -6,15 +6,19 @@ import com.bit.base.vo.BaseVo;
 import com.bit.module.manager.dao.AreaDao;
 import com.bit.module.manager.service.AreaService;
 import com.bit.module.manager.vo.AreaTreeVO;
+import com.bit.module.manager.vo.AreaVO;
 import com.bit.module.miniapp.bean.Area;
 import com.bit.utils.StringUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service("areaService")
@@ -66,7 +70,7 @@ public class AreaServiceImpl extends BaseService implements AreaService {
 			}
 		}
 		for (AreaTreeVO areaTreeVO : rootList) {
-			areaTreeVO.setChildList(getChildList(areaTreeVO,all, areaTreeVO.getArCode()));
+			areaTreeVO.setChildList(getChildListTree(areaTreeVO,all, areaTreeVO.getArCode()));
 		}
 
 		BaseVo baseVo = new BaseVo();
@@ -81,16 +85,34 @@ public class AreaServiceImpl extends BaseService implements AreaService {
 	 */
 	@Override
 	public BaseVo<Area> listPage(Area area) {
+		BaseVo baseVo = new BaseVo();
 		List<Area> byParam = areaDao.findByParam(area);
 		for (Area ar : byParam) {
 			if (ar.getArLeavel()<3){
 				ar.setHasChildren(1);
 			}
 		}
-		BaseVo baseVo = new BaseVo();
-		baseVo.setData(byParam);
+
+		//根
+		List<AreaVO> root = new ArrayList<>();
+		List<AreaVO> areaVOS = new ArrayList<>();
+		for (Area area1 : byParam) {
+			AreaVO areaVO = new AreaVO();
+			BeanUtils.copyProperties(area1,areaVO);
+			if (area1.getArLeavel()==2){
+				root.add(areaVO);
+			}else {
+				areaVOS.add(areaVO);
+			}
+		}
+
+		for (AreaVO areaVO : root) {
+			areaVO.setChildList(getChildList(areaVO,areaVOS,areaVO.getArCode()));
+		}
+		baseVo.setData(root);
 		return baseVo;
 	}
+
 
 	/**
 	 * 更新地域信息
@@ -136,7 +158,7 @@ public class AreaServiceImpl extends BaseService implements AreaService {
 	 * @param arCode
 	 * @return
 	 */
-	private List<AreaTreeVO> getChildList(AreaTreeVO areaTreeVO, List<AreaTreeVO> all, String arCode){
+	private List<AreaTreeVO> getChildListTree(AreaTreeVO areaTreeVO, List<AreaTreeVO> all, String arCode){
 		List<AreaTreeVO> list = new ArrayList<>();
 		for (AreaTreeVO vo : all) {
 			if (StringUtil.isNotEmpty(vo.getParentCode()) && vo.getParentCode().equals(arCode)){
@@ -147,6 +169,34 @@ public class AreaServiceImpl extends BaseService implements AreaService {
 		areaTreeVO.setChildList(list);
 
 		for (AreaTreeVO aa : list) {
+			aa.setChildList(getChildListTree(aa,all,aa.getArCode()));
+		}
+
+		if (list.size() == 0) {
+			return null;
+		}
+		return list;
+	}
+
+
+	/**
+	 * 递归查询子节点
+	 * @param areaVO
+	 * @param all
+	 * @param arCode
+	 * @return
+	 */
+	private List<AreaVO> getChildList(AreaVO areaVO, List<AreaVO> all, String arCode){
+		List<AreaVO> list = new ArrayList<>();
+		for (AreaVO vo : all) {
+			if (StringUtil.isNotEmpty(vo.getParentCode()) && vo.getParentCode().equals(arCode)){
+				list.add(vo);
+			}
+		}
+		//设置子集
+		areaVO.setChildList(list);
+
+		for (AreaVO aa : list) {
 			aa.setChildList(getChildList(aa,all,aa.getArCode()));
 		}
 
