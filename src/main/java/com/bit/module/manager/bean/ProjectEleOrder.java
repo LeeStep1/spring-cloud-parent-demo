@@ -97,6 +97,12 @@ public class ProjectEleOrder {
      */
     private String additionPrice;
 
+    /**
+     * 单台基础价格的成本价
+     */
+    private String costBasePrice;
+
+
 
 
 }

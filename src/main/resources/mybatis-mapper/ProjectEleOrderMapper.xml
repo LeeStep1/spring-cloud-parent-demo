@@ -22,6 +22,7 @@
         <result property="standard" column="standard"/>
         <result property="standardName" column="standard_name"/>
         <result property="calculateFlag" column="calculate_flag"/>
+        <result property="costBasePrice" column="cost_base_price"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -42,7 +43,8 @@
           rate,
           standard,
           standard_name,
-          calculate_flag
+          calculate_flag,
+          cost_base_price
 
     </sql>
     <!--批量添加-->
@@ -61,7 +63,8 @@
         rate,
         standard,
         standard_name,
-        calculate_flag
+        calculate_flag,
+        cost_base_price
         ) VALUES
         <foreach collection="list" item="item" index="index"  separator=",">
             (
@@ -78,7 +81,9 @@
                 #{rate,jdbcType=DOUBLE},
                 #{standard,jdbcType=INTEGER},
                 #{standardName,jdbcType=VARCHAR},
-                #{calculateFlag,jdbcType=VARCHAR}
+                #{calculateFlag,jdbcType=VARCHAR},
+                #{costBasePrice,jdbcType=VARCHAR}
+
             )
         </foreach>
     </insert>

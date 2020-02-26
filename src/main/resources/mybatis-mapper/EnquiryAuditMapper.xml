@@ -47,7 +47,7 @@
             #{item.auditUserId,jdbcType=BIGINT},
             #{item.auditUserName,jdbcType=VARCHAR},
             #{item.auditTime,jdbcType=TIMESTAMP},
-            #{item.rateList,jdbcType=STRING}
+            #{item.rateList,jdbcType=VARCHAR}
             )
         </foreach>
 
