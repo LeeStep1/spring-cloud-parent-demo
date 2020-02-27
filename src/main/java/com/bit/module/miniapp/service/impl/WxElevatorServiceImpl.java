@@ -1114,8 +1114,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		//往t_enquiry_audit 插一条
 		EnquiryAudit enquiryAudit = new EnquiryAudit();
 		enquiryAudit.setProjectPriceId(projectPriceVo.getId());
-		enquiryAudit.setAuditType(AuditTypeEnum.REDIRECT.getCode());
-		enquiryAudit.setAuditTypeName(AuditTypeEnum.REDIRECT.getInfo());
+		enquiryAudit.setAuditType(EnquiryAuditTypeEnum.SHENPIJIANJIAO.getCode());
+		enquiryAudit.setAuditTypeName(EnquiryAuditTypeEnum.SHENPIJIANJIAO.getInfo());
 		enquiryAudit.setAuditUserId(auditor.getId());
 		enquiryAudit.setAuditUserName(auditor.getUserName());
 		enquiryAudit.setAuditTime(new Date());
@@ -1140,16 +1140,16 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		EnquiryAudit enquiryAudit = new EnquiryAudit();
 		if (enquiryApplyStatus.equals(EnquiryApplyStatusEnum.SHENPITONGGUO.getCode())) {
 			//审批通过
-			enquiryAudit.setAuditType(AuditTypeEnum.AUDIT.getCode());
-			enquiryAudit.setAuditTypeName(AuditTypeEnum.AUDIT.getInfo());
+			enquiryAudit.setAuditType(EnquiryAuditTypeEnum.SHENPITONGGUO.getCode());
+			enquiryAudit.setAuditTypeName(EnquiryAuditTypeEnum.SHENPITONGGUO.getInfo());
 		} else if (enquiryApplyStatus.equals(EnquiryApplyStatusEnum.SHENNPIJUJUE.getCode())) {
 			//审批拒绝
-			enquiryAudit.setAuditType(AuditTypeEnum.REJECT.getCode());
-			enquiryAudit.setAuditTypeName(AuditTypeEnum.REJECT.getInfo());
+			enquiryAudit.setAuditType(EnquiryAuditTypeEnum.SHENPIJUJUE.getCode());
+			enquiryAudit.setAuditTypeName(EnquiryAuditTypeEnum.SHENPIJUJUE.getInfo());
 		} else if (enquiryApplyStatus.equals(EnquiryApplyStatusEnum.CHEXIAO.getCode())) {
 			//审批撤销
-			enquiryAudit.setAuditType(AuditTypeEnum.CLOSED.getCode());
-			enquiryAudit.setAuditTypeName(AuditTypeEnum.CLOSED.getInfo());
+			enquiryAudit.setAuditType(EnquiryAuditTypeEnum.SHENPICHEHUI.getCode());
+			enquiryAudit.setAuditTypeName(EnquiryAuditTypeEnum.SHENPICHEHUI.getInfo());
 		}
 		enquiryAudit.setAuditUserId(getCurrentUserInfo().getId());
 		enquiryAudit.setAuditUserName(getCurrentUserInfo().getUserName());
@@ -1211,8 +1211,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		enquiryAudit.setAuditUserName(getCurrentUserInfo().getUserName());
 		enquiryAudit.setAuditTime(new Date());
 		enquiryAudit.setProjectPriceId(projectPriceId);
-		enquiryAudit.setAuditType(AuditTypeEnum.REJECT.getCode());
-		enquiryAudit.setAuditTypeName(AuditTypeEnum.REJECT.getInfo());
+		enquiryAudit.setAuditType(EnquiryAuditTypeEnum.SHENPIJUJUE.getCode());
+		enquiryAudit.setAuditTypeName(EnquiryAuditTypeEnum.SHENPIJUJUE.getInfo());
 		enquiryAuditDao.addEnquiryAudit(enquiryAudit);
 
 		return successVo();
