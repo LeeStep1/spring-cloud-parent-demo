@@ -339,4 +339,25 @@
 		</where>
 	</select>
 
+	<select id="getUserByCompanyIdAndRoleIds" parameterType="java.util.Map" resultType="com.bit.module.manager.bean.UserCompany">
+		SELECT t1.id,t2.company_id
+		FROM t_user t1
+		left JOIN t_user_company t2
+		on t1.id = t2.user_id
+		left JOIN t_user_role t3
+		on t1.id = t3.user_id
+		<where>
+			t1.status = 1
+			<if test="companyId!=null">
+				AND t2.company_id = #{companyId,jdbcType=BIGINT}
+			</if>
+			<if test="null != roleIds and roleIds.size > 0">
+				AND t3.role_id IN
+				<foreach item="item" index="index" collection="roleIds" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+
+			</if>
+		</where>
+	</select>
 </mapper>

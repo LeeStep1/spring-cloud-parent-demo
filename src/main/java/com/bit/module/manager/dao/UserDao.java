@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bit.module.equation.bean.Equation;
 import com.bit.module.manager.bean.Role;
 import com.bit.module.manager.bean.User;
+import com.bit.module.manager.bean.UserCompany;
 import com.bit.module.manager.bean.UserRelRole;
 import com.bit.module.manager.vo.PortalUserVo;
 import com.bit.module.manager.vo.UserVo;
@@ -12,6 +13,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * User管理的Dao
@@ -122,5 +124,12 @@ public interface UserDao extends BaseMapper<User> {
 	 */
 	List<User> getUserByCompanyIdAndRoleId(@Param(value = "companyId")Long companyId,@Param(value = "roleId")Long roleId);
 
+	/**
+	 * 根据公司id和角色id查询用户
+	 * @param companyId
+	 * @param list<Long> roleIds
+	 * @return
+	 */
+	List<UserCompany> getUserByCompanyIdAndRoleIds(Map map);
 
 }

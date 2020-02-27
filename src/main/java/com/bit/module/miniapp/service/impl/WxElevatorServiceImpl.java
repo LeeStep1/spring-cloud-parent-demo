@@ -1529,4 +1529,53 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		return successVo();
 
 	}
+
+	private void  getEnquiryAuditUser(  Long companyId, long roleId,UserCompany userCompany){
+
+          Company localc=companyDao.selectById(companyId);
+          if(localc.getParentId().equals(-1)){//到头了
+			  if(roleId==UserRoleEnum.BOSS.getRoleId()){
+				  userCompany= null;
+			  }else{
+				  List roleIds=new ArrayList<>();
+				  roleIds.add(UserRoleEnum.BOSS.getRoleId());
+				  Map cod=new HashMap();
+				  cod.put("roleIds",roleIds);
+				  cod.put("companyId",companyId);
+				  List<UserCompany>list= userDao.getUserByCompanyIdAndRoleIds(cod);
+				  if(CollectionUtils.isNotEmpty(list)){
+					  userCompany=list.get(0);
+				  }else{
+					  userCompany=null;
+				  }
+			  }
+
+		  }else{
+			  List roleIds=new ArrayList<>();
+          	if(roleId!=0){
+				if(roleId!=UserRoleEnum.BOSS.getRoleId()){
+					roleIds.add(UserRoleEnum.BOSS.getRoleId());
+				}
+				if(roleId!=UserRoleEnum.MANAGER.getRoleId()){
+					roleIds.add(UserRoleEnum.MANAGER.getRoleId());
+				}
+				if(roleId!=UserRoleEnum.REGIONAL_MANAGER.getRoleId()){
+					roleIds.add(UserRoleEnum.REGIONAL_MANAGER.getRoleId());
+				}
+			}else{
+				roleIds.add(UserRoleEnum.BOSS.getRoleId());
+				roleIds.add(UserRoleEnum.MANAGER.getRoleId());
+				roleIds.add(UserRoleEnum.REGIONAL_MANAGER.getRoleId());
+			}
+			  Map cod=new HashMap();
+			  cod.put("roleIds",roleIds);
+			  cod.put("companyId",localc.getParentId());
+			  List<UserCompany>list= userDao.getUserByCompanyIdAndRoleIds(cod);
+			  if(CollectionUtils.isNotEmpty(list)){
+				  userCompany= list.get(0);
+			  }else{
+				  getEnquiryAuditUser(companyDao.selectById(localc.getParentId()).getId(),0,userCompany);
+			  }
+		  }
+	}
 }
