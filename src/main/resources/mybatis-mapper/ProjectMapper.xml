@@ -411,4 +411,92 @@
         </trim>
         where id = #{id,jdbcType=BIGINT}
     </update>
+    <!--洽谈项目分页查询-->
+    <select id="negotiationlistPage" parameterType="com.bit.module.manager.vo.ProjectPageVO" resultType="com.bit.module.manager.vo.ProjectShowVO">
+        SELECT
+        id as projectId,
+        project_name,
+        customer_name,
+        agent_name,
+        create_user_id,
+        create_user_name as realName,
+        create_time,
+        address_id,
+        address_name,
+        project_status,
+        company_name,
+        company_id,
+        closed_status,
+        reason_customer_churn_id,
+        reason_customer_churn_name,
+        reason_customer_churm_remarks,
+        closed_user_id,
+        closed_user_name,
+        closed_time
+        FROM t_project
+        <where>
+            <if test="projectPageVO.projectName!=null and projectPageVO.projectName!=''">
+                and project_name LIKE concat("%",#{projectPageVO.projectName,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="projectPageVO.customerName!=null and projectPageVO.customerName!=''">
+                and customer_name LIKE concat("%",#{projectPageVO.customerName,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="projectPageVO.agentName!=null and projectPageVO.agentName!=''">
+                and agent_name LIKE concat("%", #{projectPageVO.agentName,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="projectPageVO.createUserId!=null">
+                and create_user_id = #{projectPageVO.createUserId,jdbcType=BIGINT}
+            </if>
+            <if test="projectPageVO.createUserName!=null and projectPageVO.createUserName!=''">
+                and create_user_name = #{projectPageVO.createUserName,jdbcType=VARCHAR}
+            </if>
+            <if test="projectPageVO.createTime!=null">
+                and create_time = #{projectPageVO.createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="projectPageVO.addressId!=null and projectPageVO.addressId!=''">
+                and address_id = #{projectPageVO.addressId,jdbcType=VARCHAR}
+            </if>
+            <if test="projectPageVO.addressName!=null and projectPageVO.addressName!=''">
+                and address_name = #{projectPageVO.addressName,jdbcType=VARCHAR}
+            </if>
+            <if test="projectPageVO.projectStatus!=null">
+                and project_status = #{projectPageVO.projectStatus,jdbcType=INTEGER}
+            </if>
+            <if test="projectPageVO.companyName!=null and projectPageVO.companyName!=''">
+                and company_name = #{projectPageVO.companyName,jdbcType=VARCHAR}
+            </if>
+            <if test="projectPageVO.companyId!=null">
+                and company_id = #{projectPageVO.companyId,jdbcType=BIGINT}
+            </if>
+            <if test="projectPageVO.closedStatus!=null">
+                and closed_status = #{projectPageVO.closedStatus,jdbcType=INTEGER}
+            </if>
+            <if test="projectPageVO.reasonCustomerChurnId!=null">
+                and reason_customer_churn_id = #{projectPageVO.reasonCustomerChurnId,jdbcType=INTEGER}
+            </if>
+            <if test="projectPageVO.reasonCustomerChurnName!=null and projectPageVO.reasonCustomerChurnName!=''">
+                and reason_customer_churn_name = #{projectPageVO.reasonCustomerChurnName,jdbcType=VARCHAR}
+            </if>
+            <if test="projectPageVO.reasonCustomerChurmRemarks!=null and projectPageVO.reasonCustomerChurmRemarks!=''">
+                and reason_customer_churm_remarks = #{projectPageVO.reasonCustomerChurmRemarks,jdbcType=VARCHAR}
+            </if>
+            <if test="projectPageVO.closedUserId!=null">
+                and closed_user_id = #{projectPageVO.closedUserId,jdbcType=BIGINT},
+            </if>
+            <if test="projectPageVO.closedUserName!=null and projectPageVO.closedUserName!=''">
+                and closed_user_name = #{projectPageVO.closedUserName,jdbcType=VARCHAR}
+            </if>
+            <if test="projectPageVO.closedTime!=null">
+                and closed_time = #{projectPageVO.closedTime,jdbcType=TIMESTAMP}
+            </if>
+
+        </where>
+    </select>
+
+
+    <select id="getProjectById" parameterType="long" resultType="com.bit.module.manager.bean.Project">
+        SELECT <include refid="Base_Column_List"/>
+        FROM t_project
+        WHERE id = #{id,jdbcType=BIGINT}
+    </select>
 </mapper>

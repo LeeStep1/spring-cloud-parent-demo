@@ -4,9 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bit.module.manager.bean.*;
-import com.bit.module.manager.vo.ProjectOrderDetailInfoVO;
-import com.bit.module.manager.vo.ProjectPageVO;
-import com.bit.module.manager.vo.ProjectPriceDetailVO;
+import com.bit.module.manager.vo.*;
 import com.bit.module.miniapp.bean.Options;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -95,4 +93,19 @@ public interface ProjectDao extends BaseMapper<Project> {
 	 * 编辑记录
 	 */
 	void updateProject(Project project);
+
+
+	/**
+	 * 洽谈项目分页查询
+	 * @param projectPageVO
+	 * @return
+	 */
+	IPage<ProjectShowVO> negotiationlistPage(@Param("pg")Page<ProjectShowVO> page, @Param("projectPageVO") ProjectPageVO projectPageVO);
+
+	/**
+	 * 单查项目
+	 * @param id
+	 * @return
+	 */
+	Project getProjectById(Long id);
 }

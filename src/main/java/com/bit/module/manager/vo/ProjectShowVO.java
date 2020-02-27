@@ -78,4 +78,12 @@ public class ProjectShowVO  {
 	 * 提交议价的时间
 	 */
 	private Date enquiryApplyTime;
+	/**
+	 * 报价次数
+	 */
+	private Integer enquireTimes;
+	/**
+	 * 最近报价日期
+	 */
+	private Date latestEnquireDate;
 }

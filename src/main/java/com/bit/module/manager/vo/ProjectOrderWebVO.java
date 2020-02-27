@@ -106,4 +106,26 @@ public class ProjectOrderWebVO {
 	 * 报价id
 	 */
 	private Long priceId;
+
+	//1.2新增字段
+	/**
+	 * 议价审批状态：0：未提交审批，1：审批中，2：审批通过，3：审批拒绝，4，撤销
+	 */
+	private Integer enquiryApplyStatus;
+	/**
+	 * 关闭状态分类 关闭状态分类：1：成交，2：流失
+	 **/
+	private Integer closedStatus;
+	/**
+	 * 关闭的原因类型
+	 **/
+	private Integer reasonCustomerChurnId;
+	/**
+	 * 关闭项目的原因的名称
+	 */
+	private String reasonCustomerChurnName;
+	/**
+	 * 流失原因备注
+	 */
+	private String reasonCustomerChurmRemarks;
 }
