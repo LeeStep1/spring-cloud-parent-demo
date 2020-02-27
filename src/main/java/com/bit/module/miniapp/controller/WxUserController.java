@@ -1,7 +1,9 @@
 package com.bit.module.miniapp.controller;
 
 import com.bit.base.vo.BaseVo;
+import com.bit.module.manager.bean.UserFeedback;
 import com.bit.module.manager.bean.UserLogin;
+import com.bit.module.manager.service.UserFeedbackService;
 import com.bit.module.manager.service.UserService;
 import com.bit.module.manager.vo.PortalUserVo;
 import com.bit.module.miniapp.bean.WxUser;
@@ -20,6 +22,9 @@ public class WxUserController {
 
 	@Autowired
 	private WxUserService wxUserService;
+
+	@Autowired
+	private UserFeedbackService  userFeedbackService;
 
 	/**
 	 * admin登陆
@@ -74,4 +79,19 @@ public class WxUserController {
 	public BaseVo wxUserReflect() {
 		return wxUserService.wxUserReflect();
 	}
+
+	/***
+	 * @description:
+	 * @author liyujun
+	 * @date 2020-02-27
+	 * @param userFeedback :意见添加
+	 * @return : com.bit.base.vo.BaseVo
+	 */
+	@PostMapping(value = "/feedback")
+	public BaseVo addFeeback(@RequestBody UserFeedback userFeedback ){
+
+		return userFeedbackService.addFeedBack(userFeedback);
+
+	}
+
 }
