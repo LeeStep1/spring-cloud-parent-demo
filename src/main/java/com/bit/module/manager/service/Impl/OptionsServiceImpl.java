@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bit.base.exception.BusinessException;
 import com.bit.base.service.BaseService;
+import com.bit.module.manager.dao.ElevatorRelaOptionsDao;
 import com.bit.module.miniapp.bean.Options;
 import com.bit.module.miniapp.vo.OptionsPageVO;
 import com.bit.module.miniapp.vo.OptionsVO;
@@ -26,7 +27,8 @@ public class OptionsServiceImpl extends BaseService implements OptionsService {
 
 	@Autowired
 	private OptionsDao optionsDao;
-
+	@Autowired
+	private ElevatorRelaOptionsDao elevatorRelaOptionsDao;
 
 	/**
 	 * 新增数据
@@ -222,28 +224,32 @@ public class OptionsServiceImpl extends BaseService implements OptionsService {
 	 * @return
 	 */
 	@Override
-	public BaseVo treeAll() {
-		//全查
-		List<Options> byParam = optionsDao.findByParam(null);
-		List<OptionsVO> all = new ArrayList<>();
-		List<OptionsVO> rootList = new ArrayList<>();
-		if (CollectionUtils.isNotEmpty(byParam)){
-			for (Options options : byParam) {
-				OptionsVO optionsVO = new OptionsVO();
-				BeanUtils.copyProperties(options,optionsVO);
-				if (options.getParentId().equals(-1L)){
-					rootList.add(optionsVO);
-				}else {
-					all.add(optionsVO);
-				}
-			}
-			for (OptionsVO allvo : rootList) {
-				allvo.setChildList(getChildList(allvo,all,allvo.getId()));
-			}
-		}
+	public BaseVo treeAll(Long typeId) {
+
+		List<Options> optionsByElevatorTypeId = elevatorRelaOptionsDao.getOptionsByElevatorTypeId(typeId);
 		BaseVo baseVo = new BaseVo();
-		baseVo.setData(rootList);
+		baseVo.setData(optionsByElevatorTypeId);
 		return baseVo;
+		//全查
+//		List<Options> byParam = optionsDao.findByParam(null);
+//		List<OptionsVO> all = new ArrayList<>();
+//		List<OptionsVO> rootList = new ArrayList<>();
+//		if (CollectionUtils.isNotEmpty(byParam)){
+//			for (Options options : byParam) {
+//				OptionsVO optionsVO = new OptionsVO();
+//				BeanUtils.copyProperties(options,optionsVO);
+//				if (options.getParentId().equals(-1L)){
+//					rootList.add(optionsVO);
+//				}else {
+//					all.add(optionsVO);
+//				}
+//			}
+//			for (OptionsVO allvo : rootList) {
+//				allvo.setChildList(getChildList(allvo,all,allvo.getId()));
+//			}
+//		}
+//		BaseVo baseVo = new BaseVo();
+//		baseVo.setData(rootList);
 	}
 
 	/**

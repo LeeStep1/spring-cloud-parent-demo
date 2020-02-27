@@ -67,6 +67,6 @@ public interface OptionsService {
 	 * 树形结构
 	 * @return
 	 */
-	BaseVo treeAll();
+	BaseVo treeAll(Long typeId);
 }
 
