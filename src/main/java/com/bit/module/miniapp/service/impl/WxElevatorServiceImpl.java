@@ -1383,6 +1383,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	@Transactional
 	public BaseVo applyInquire(ProjectPrice projectPrice) {
 		projectPrice.setEnquiryApplyTime(new Date());
+		projectPrice.setEnquiryApplyStatus(EnquiryApplyStatusEnum.SHENNPIZHONG.getCode());
+		projectPrice.setEnquiryApplyTime(new Date());
 		projectPriceDao.updateProjectPrice(projectPrice);
 
 		EnquiryAudit enquiryAudit = new EnquiryAudit();
@@ -1396,8 +1398,9 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
 		// 计算接口
 		Map map = new HashMap();
-		map.put("projectId",projectPrice.getProjectId());
-		map.put("version",projectPrice.getVersion());
+		map.put("projectPriceId",projectPrice.getId());
+		//map.put("projectId",projectPrice.getProjectId());
+		//map.put("version",projectPrice.getVersion());
 		map.put("targetPrice",projectPrice.getInquiryPrice());
 		map.put("isUpdate",true);
 

@@ -206,11 +206,13 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
     public double countAvgDiscountRate (Map map) {
         logger.info("计算总价时入参:"+map.toString());
         ProjectPrice projectPrice = projectPriceDao.selectOne(new QueryWrapper<ProjectPrice>()
-                .eq("project_id", map.get("projectId"))
-                .eq("version", map.get("version")));
+                .eq("id", map.get("projectPriceId")));
+               /* .eq("project_id", map.get("projectId"))
+                .eq("version", map.get("version")));*/
         List<ProjectEleOrder> projectEleOrder = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
-                .eq("project_id", projectPrice.getProjectId())
                 .eq("version_id", projectPrice.getId()));
+               /* .eq("project_id", projectPrice.getProjectId())
+                .eq("version_id", projectPrice.getId()));*/
         //事前计算平摊费用
         List<Map> eleInputs = new ArrayList(projectEleOrder.size());
         for (ProjectEleOrder eleOrder : projectEleOrder) {
