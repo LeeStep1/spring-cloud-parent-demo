@@ -27,7 +27,7 @@ public class UserFeedbackController {
      * @param userFeedbackPageVO :
      * @return : com.bit.base.vo.BaseVo
      */
-    @PostMapping("/listPag")
+    @PostMapping("/listPage")
     public BaseVo findAll(@RequestBody UserFeedbackPageVO userFeedbackPageVO) {
         return userFeedbackService.listPage(userFeedbackPageVO);
     }
