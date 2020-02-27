@@ -93,6 +93,10 @@ public class AreaServiceImpl extends BaseService implements AreaService {
 			}
 		}
 
+		if (StringUtil.isEmpty(area.getArName()) && area.getTonsPrice()==null && area.getInstallCoefficient()==null){
+			baseVo.setData(byParam);
+			return baseVo;
+		}
 		//根
 		List<AreaVO> root = new ArrayList<>();
 		List<AreaVO> areaVOS = new ArrayList<>();
