@@ -1247,7 +1247,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
 		Company companyById = companyDao.getCompanyById(companyId);
 		//上级审批人
-		User user = this.acquireUserByCompanyIdAndRoleId(companyId, roleId, companyById.getLevel());
+//		User user = this.acquireUserByCompanyIdAndRoleId(companyId, roleId, companyById.getLevel());
+		User user = this.test(companyId, roleId, companyById.getLevel(),true);
 		return user;
 	}
 
@@ -1352,6 +1353,75 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			}
 		}
 		return userByCompanyIdAndRoleId.get(0);
+	}
+
+	/**
+	 * 查找审批人
+	 * @param companyId 公司id
+	 * @param roleId 角色id
+	 * @param level 公司等级
+	 * @param flag 是否是第一次递归 是-true 否-false
+	 * @return
+	 */
+	private User test(Long companyId, Long roleId,Integer level,Boolean flag){
+		Company companyById = companyDao.getCompanyById(companyId);
+		Long parentId = companyById.getParentId();
+		//销售经理
+		if (roleId.equals(Long.valueOf(UserRoleEnum.SALES.getRoleId()))){
+			List<User> userByCompanyIdAndRoleId = userDao.getUserByCompanyIdAndRoleId(companyId, Long.valueOf(UserRoleEnum.MANAGER.getRoleId()));
+			if (CollectionUtils.isNotEmpty(userByCompanyIdAndRoleId)){
+				User user = userByCompanyIdAndRoleId.get(0);
+				return user;
+			}else {
+				if (level.equals(2)){
+					return test(parentId,Long.valueOf(UserRoleEnum.BOSS.getRoleId()),level,false);
+				}else if (level.equals(3)){
+					return test(parentId,Long.valueOf(UserRoleEnum.MANAGER.getRoleId()),level,false);
+				}
+			}
+		}else if (roleId.equals(Long.valueOf(UserRoleEnum.MANAGER.getRoleId()))){
+			//分公司总经理
+			if (level.equals(2)){
+				List<User> userByCompanyIdAndRoleId = userDao.getUserByCompanyIdAndRoleId(parentId, Long.valueOf(UserRoleEnum.BOSS.getRoleId()));
+				if (CollectionUtils.isNotEmpty(userByCompanyIdAndRoleId)){
+					User user = userByCompanyIdAndRoleId.get(0);
+					return user;
+				}else {
+					return null;
+				}
+			}else if (level.equals(3)){
+				//第一次执行 传自己的companyId
+				if (!flag){
+					List<User> userByCompanyIdAndRoleId = userDao.getUserByCompanyIdAndRoleId(companyId, Long.valueOf(UserRoleEnum.REGIONAL_MANAGER.getRoleId()));
+					if (CollectionUtils.isNotEmpty(userByCompanyIdAndRoleId)){
+						User user = userByCompanyIdAndRoleId.get(0);
+						return user;
+					}else {
+						return test(parentId,Long.valueOf(UserRoleEnum.REGIONAL_MANAGER.getRoleId()),level,false);
+					}
+				}else {
+					//第二次执行 传上级的companyId
+					List<User> userByCompanyIdAndRoleId = userDao.getUserByCompanyIdAndRoleId(parentId, Long.valueOf(UserRoleEnum.REGIONAL_MANAGER.getRoleId()));
+					if (CollectionUtils.isNotEmpty(userByCompanyIdAndRoleId)){
+						User user = userByCompanyIdAndRoleId.get(0);
+						return user;
+					}else {
+						return test(parentId,Long.valueOf(UserRoleEnum.BOSS.getRoleId()),level,false);
+					}
+				}
+
+			}
+		}else if (roleId.equals(Long.valueOf(UserRoleEnum.REGIONAL_MANAGER.getRoleId()))){
+			//区域总经理
+			List<User> userByCompanyIdAndRoleId = userDao.getUserByCompanyIdAndRoleId(parentId, Long.valueOf(UserRoleEnum.BOSS.getRoleId()));
+			if (CollectionUtils.isNotEmpty(userByCompanyIdAndRoleId)){
+				User user = userByCompanyIdAndRoleId.get(0);
+				return user;
+			}else {
+				return null;
+			}
+		}
+		return null;
 	}
 
 	/**

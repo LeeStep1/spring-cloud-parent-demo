@@ -329,6 +329,7 @@
 		left JOIN t_user_role t3
 		on t1.id = t3.user_id
 		<where>
+			t1.status = 1
 			<if test="companyId!=null">
 				and t2.company_id = #{companyId,jdbcType=BIGINT}
 			</if>
