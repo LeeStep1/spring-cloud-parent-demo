@@ -1385,6 +1385,14 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		projectPrice.setEnquiryApplyTime(new Date());
 		projectPrice.setEnquiryApplyStatus(EnquiryApplyStatusEnum.SHENNPIZHONG.getCode());
 		projectPrice.setEnquiryApplyTime(new Date());
+		//审批人
+		User auditor = this.auditor();
+		if (auditor==null){
+			throw new BusinessException("无上级审批人");
+		}
+		Company userCompanyByUserId = userCompanyDao.getUserCompanyByUserId(auditor.getId());
+		projectPrice.setEnquiryAuditUserId(auditor.getId());
+		projectPrice.setEnquiryAuditUserCompanyId(userCompanyByUserId.getId());
 		projectPriceDao.updateProjectPrice(projectPrice);
 
 		EnquiryAudit enquiryAudit = new EnquiryAudit();
