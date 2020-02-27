@@ -163,7 +163,7 @@ public interface WxElevatorService {
 	 * 定价辅助
 	 * @return
 	 */
-	BaseVo priceSupport(List<ProjectEleOrder> projectEleOrderList);
+	BaseVo priceSupport(PriceEnquireAuditVo priceEnquireAuditVo);
 
 	/**
 	 * 拒绝询价

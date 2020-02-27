@@ -1165,8 +1165,27 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	 * @return
 	 */
 	@Override
-	public BaseVo priceSupport(List<ProjectEleOrder> projectEleOrderList) {
-		return null;
+	public BaseVo priceSupport(PriceEnquireAuditVo priceEnquireAuditVo) {
+
+		Map<String, Object> cod = new HashMap<>();
+		cod.put("projectPriceId", priceEnquireAuditVo.getProjectPriceId());
+		cod.put("isUpdate", false);
+		equationServiceImpl.executeCountProjectPrice(cod,priceEnquireAuditVo.getProjectEleOrderList());
+		ProjectPrice projectPrice=projectPriceDao.selectById(priceEnquireAuditVo.getProjectPriceId());
+		if(projectPrice.getInstallFlag().equals(InstallFlagEnum.YES.getCode())){
+			cod.put("包括安装", true);
+		}else{
+			cod.put("包括安装", false);
+		}
+		if (projectPrice.getTransportFlag().equals(TransportFlagEnum.YES.getCode())) {
+			cod.put("包括运费", true);
+		}else{
+			cod.put("包括运费", false);
+		}
+		ProjectPriceAndOrderVO rs=equationServiceImpl.executeCountProjectPrice(cod,priceEnquireAuditVo.getProjectEleOrderList());
+       BaseVo vo=new BaseVo();
+       vo.setData(rs.getProjectPrice());
+		return vo;
 	}
 
 	/**
@@ -1420,7 +1439,6 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			enquiryAudit.setRateList(JSON.toJSONString(rates));
 		}
 		enquiryAuditDao.addEnquiryAudit(enquiryAudit);
-
 		//todo  計算
 		Map<String, Object> cod = new HashMap<>();
 		cod.put("projectPriceId", projectPrice.getProjectPriceId());

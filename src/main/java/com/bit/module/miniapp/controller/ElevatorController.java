@@ -404,16 +404,6 @@ public class ElevatorController {
 		return wxElevatorService.redirectEnquireAudit(projectPriceVo);
 	}
 
-	/**
-	 * 通过 or 驳回 询价
-	 *
-	 * @param projectPrice
-	 * @return
-	 */
-/*	@PutMapping("/passEnquireAudit")
-	public BaseVo passEnquireAudit(@RequestBody ProjectPrice projectPrice) {
-		return wxElevatorService.passEnquireAudit(projectPrice);
-	}*/
 
 	/**
 	 * 拒绝询价
@@ -431,8 +421,8 @@ public class ElevatorController {
 	 * @return
 	 */
 	@PostMapping("/priceSupport")
-	public BaseVo priceSupport(@RequestBody List<ProjectEleOrder> projectEleOrderList) {
-		return wxElevatorService.priceSupport(projectEleOrderList);
+	public BaseVo priceSupport(@RequestBody PriceEnquireAuditVo priceEnquireAuditVo) {
+		return wxElevatorService.priceSupport(priceEnquireAuditVo);
 	}
 
 	/**
@@ -457,8 +447,6 @@ public class ElevatorController {
 		return wxElevatorService.getRates(elevatorTypeIds);
 
 	}
-
-
 
 	/**
 	 * 议价审批通过
