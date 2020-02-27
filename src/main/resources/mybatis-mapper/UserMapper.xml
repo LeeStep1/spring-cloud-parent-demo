@@ -340,7 +340,7 @@
 	</select>
 
 	<select id="getUserByCompanyIdAndRoleIds" parameterType="java.util.Map" resultType="com.bit.module.manager.bean.UserCompany">
-		SELECT t1.id,t2.company_id
+		SELECT t1.id userId,t2.company_id
 		FROM t_user t1
 		left JOIN t_user_company t2
 		on t1.id = t2.user_id

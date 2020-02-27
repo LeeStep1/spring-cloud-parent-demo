@@ -1252,7 +1252,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 //		User user = this.test(companyId, roleId, companyById.getLevel(),true);
 		UserCompany userCompany = new UserCompany();
 		getEnquiryAuditUser(companyId, roleId, userCompany);
-		User user = userDao.findByUserId(userCompany.getId());
+		User user = userDao.findByUserId(userCompany.getUserId());
 		return user;
 	}
 
@@ -1556,10 +1556,9 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 				cod.put("companyId", companyId);
 				List<UserCompany> list = userDao.getUserByCompanyIdAndRoleIds(cod);
 				if (CollectionUtils.isNotEmpty(list)) {
-					userCompany= list.get(0);
+					BeanUtils.copyProperties(list.get(0),userCompany);
 				} else {
-
-					//userCompany = null;
+					userCompany = null;
 				}
 			}
 
@@ -1585,8 +1584,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			cod.put("companyId", companyId);
 			List<UserCompany> list = userDao.getUserByCompanyIdAndRoleIds(cod);
 			if (CollectionUtils.isNotEmpty(list)) {
-				userCompany = list.get(0);
-
+				BeanUtils.copyProperties(list.get(0),userCompany);
 			} else {
 				getEnquiryAuditUser(companyDao.selectById(localc.getParentId()).getId(), 0, userCompany);
 			}
