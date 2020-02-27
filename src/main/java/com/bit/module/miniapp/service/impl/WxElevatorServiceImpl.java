@@ -38,6 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.mail.EmailAttachment;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
@@ -1170,21 +1171,21 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		Map<String, Object> cod = new HashMap<>();
 		cod.put("projectPriceId", priceEnquireAuditVo.getProjectPriceId());
 		cod.put("isUpdate", false);
-		equationServiceImpl.executeCountProjectPrice(cod,priceEnquireAuditVo.getProjectEleOrderList());
-		ProjectPrice projectPrice=projectPriceDao.selectById(priceEnquireAuditVo.getProjectPriceId());
-		if(projectPrice.getInstallFlag().equals(InstallFlagEnum.YES.getCode())){
+		equationServiceImpl.executeCountProjectPrice(cod, priceEnquireAuditVo.getProjectEleOrderList());
+		ProjectPrice projectPrice = projectPriceDao.selectById(priceEnquireAuditVo.getProjectPriceId());
+		if (projectPrice.getInstallFlag().equals(InstallFlagEnum.YES.getCode())) {
 			cod.put("包括安装", true);
-		}else{
+		} else {
 			cod.put("包括安装", false);
 		}
 		if (projectPrice.getTransportFlag().equals(TransportFlagEnum.YES.getCode())) {
 			cod.put("包括运费", true);
-		}else{
+		} else {
 			cod.put("包括运费", false);
 		}
-		ProjectPriceAndOrderVO rs=equationServiceImpl.executeCountProjectPrice(cod,priceEnquireAuditVo.getProjectEleOrderList());
-       BaseVo vo=new BaseVo();
-       vo.setData(rs.getProjectPrice());
+		ProjectPriceAndOrderVO rs = equationServiceImpl.executeCountProjectPrice(cod, priceEnquireAuditVo.getProjectEleOrderList());
+		BaseVo vo = new BaseVo();
+		vo.setData(rs.getProjectPrice());
 		return vo;
 	}
 
@@ -1248,7 +1249,10 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		Company companyById = companyDao.getCompanyById(companyId);
 		//上级审批人
 //		User user = this.acquireUserByCompanyIdAndRoleId(companyId, roleId, companyById.getLevel());
-		User user = this.test(companyId, roleId, companyById.getLevel(),true);
+//		User user = this.test(companyId, roleId, companyById.getLevel(),true);
+		UserCompany userCompany = new UserCompany();
+		getEnquiryAuditUser(companyId, roleId, userCompany);
+		User user = userDao.findByUserId(userCompany.getId());
 		return user;
 	}
 
@@ -1357,67 +1361,68 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
 	/**
 	 * 查找审批人
+	 *
 	 * @param companyId 公司id
-	 * @param roleId 角色id
-	 * @param level 公司等级
-	 * @param flag 是否是第一次递归 是-true 否-false
+	 * @param roleId    角色id
+	 * @param level     公司等级
+	 * @param flag      是否是第一次递归 是-true 否-false
 	 * @return
 	 */
-	private User test(Long companyId, Long roleId,Integer level,Boolean flag){
+	private User test(Long companyId, Long roleId, Integer level, Boolean flag) {
 		Company companyById = companyDao.getCompanyById(companyId);
 		Long parentId = companyById.getParentId();
 		//销售经理
-		if (roleId.equals(Long.valueOf(UserRoleEnum.SALES.getRoleId()))){
+		if (roleId.equals(Long.valueOf(UserRoleEnum.SALES.getRoleId()))) {
 			List<User> userByCompanyIdAndRoleId = userDao.getUserByCompanyIdAndRoleId(companyId, Long.valueOf(UserRoleEnum.MANAGER.getRoleId()));
-			if (CollectionUtils.isNotEmpty(userByCompanyIdAndRoleId)){
+			if (CollectionUtils.isNotEmpty(userByCompanyIdAndRoleId)) {
 				User user = userByCompanyIdAndRoleId.get(0);
 				return user;
-			}else {
-				if (level.equals(2)){
-					return test(parentId,Long.valueOf(UserRoleEnum.BOSS.getRoleId()),level,false);
-				}else if (level.equals(3)){
-					return test(parentId,Long.valueOf(UserRoleEnum.MANAGER.getRoleId()),level,false);
+			} else {
+				if (level.equals(2)) {
+					return test(parentId, Long.valueOf(UserRoleEnum.BOSS.getRoleId()), level, false);
+				} else if (level.equals(3)) {
+					return test(parentId, Long.valueOf(UserRoleEnum.MANAGER.getRoleId()), level, false);
 				}
 			}
-		}else if (roleId.equals(Long.valueOf(UserRoleEnum.MANAGER.getRoleId()))){
+		} else if (roleId.equals(Long.valueOf(UserRoleEnum.MANAGER.getRoleId()))) {
 			//分公司总经理
-			if (level.equals(2)){
+			if (level.equals(2)) {
 				List<User> userByCompanyIdAndRoleId = userDao.getUserByCompanyIdAndRoleId(parentId, Long.valueOf(UserRoleEnum.BOSS.getRoleId()));
-				if (CollectionUtils.isNotEmpty(userByCompanyIdAndRoleId)){
+				if (CollectionUtils.isNotEmpty(userByCompanyIdAndRoleId)) {
 					User user = userByCompanyIdAndRoleId.get(0);
 					return user;
-				}else {
+				} else {
 					return null;
 				}
-			}else if (level.equals(3)){
+			} else if (level.equals(3)) {
 				//第一次执行 传自己的companyId
-				if (!flag){
+				if (!flag) {
 					List<User> userByCompanyIdAndRoleId = userDao.getUserByCompanyIdAndRoleId(companyId, Long.valueOf(UserRoleEnum.REGIONAL_MANAGER.getRoleId()));
-					if (CollectionUtils.isNotEmpty(userByCompanyIdAndRoleId)){
+					if (CollectionUtils.isNotEmpty(userByCompanyIdAndRoleId)) {
 						User user = userByCompanyIdAndRoleId.get(0);
 						return user;
-					}else {
-						return test(parentId,Long.valueOf(UserRoleEnum.REGIONAL_MANAGER.getRoleId()),level,false);
+					} else {
+						return test(parentId, Long.valueOf(UserRoleEnum.REGIONAL_MANAGER.getRoleId()), level, false);
 					}
-				}else {
+				} else {
 					//第二次执行 传上级的companyId
 					List<User> userByCompanyIdAndRoleId = userDao.getUserByCompanyIdAndRoleId(parentId, Long.valueOf(UserRoleEnum.REGIONAL_MANAGER.getRoleId()));
-					if (CollectionUtils.isNotEmpty(userByCompanyIdAndRoleId)){
+					if (CollectionUtils.isNotEmpty(userByCompanyIdAndRoleId)) {
 						User user = userByCompanyIdAndRoleId.get(0);
 						return user;
-					}else {
-						return test(parentId,Long.valueOf(UserRoleEnum.BOSS.getRoleId()),level,false);
+					} else {
+						return test(parentId, Long.valueOf(UserRoleEnum.BOSS.getRoleId()), level, false);
 					}
 				}
 
 			}
-		}else if (roleId.equals(Long.valueOf(UserRoleEnum.REGIONAL_MANAGER.getRoleId()))){
+		} else if (roleId.equals(Long.valueOf(UserRoleEnum.REGIONAL_MANAGER.getRoleId()))) {
 			//区域总经理
 			List<User> userByCompanyIdAndRoleId = userDao.getUserByCompanyIdAndRoleId(parentId, Long.valueOf(UserRoleEnum.BOSS.getRoleId()));
-			if (CollectionUtils.isNotEmpty(userByCompanyIdAndRoleId)){
+			if (CollectionUtils.isNotEmpty(userByCompanyIdAndRoleId)) {
 				User user = userByCompanyIdAndRoleId.get(0);
 				return user;
-			}else {
+			} else {
 				return null;
 			}
 		}
@@ -1452,18 +1457,24 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	@Override
 	@Transactional
 	public BaseVo applyInquire(ProjectPrice projectPrice) {
+		//判断有没有议价中状态
+//		ProjectPrice projectPriceById = projectPriceDao.getProjectPriceById(projectPrice.getId());
+//		if (projectPriceById.getEnquiryApplyStatus().equals(EnquiryApplyStatusEnum.SHENNPIZHONG.getCode())){
+//			throw new BusinessException("项目正在议价中，暂时无法提交新的议价申请");
+//		}
+
 		projectPrice.setEnquiryApplyTime(new Date());
 		projectPrice.setEnquiryApplyStatus(EnquiryApplyStatusEnum.SHENNPIZHONG.getCode());
 		projectPrice.setEnquiryApplyTime(new Date());
 		//审批人
 		User auditor = this.auditor();
-		if (auditor==null){
+		if (auditor == null) {
 			throw new BusinessException("无上级审批人");
 		}
 		Company userCompanyByUserId = userCompanyDao.getUserCompanyByUserId(auditor.getId());
 		projectPrice.setEnquiryAuditUserId(auditor.getId());
 		projectPrice.setEnquiryAuditUserCompanyId(userCompanyByUserId.getId());
-		projectPriceDao.updateProjectPrice(projectPrice);
+//		projectPriceDao.updateProjectPrice(projectPrice);
 
 		EnquiryAudit enquiryAudit = new EnquiryAudit();
 		enquiryAudit.setAuditUserId(getCurrentUserInfo().getId());
@@ -1472,30 +1483,31 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		enquiryAudit.setProjectPriceId(projectPrice.getId());
 		enquiryAudit.setAuditType(AuditTypeEnum.SUBMIT.getCode());
 		enquiryAudit.setAuditTypeName(AuditTypeEnum.SUBMIT.getInfo());
-		enquiryAuditDao.addEnquiryAudit(enquiryAudit);
+//		enquiryAuditDao.addEnquiryAudit(enquiryAudit);
 
 		// 计算接口
 		Map map = new HashMap();
-		map.put("projectPriceId",projectPrice.getId());
+		map.put("projectPriceId", projectPrice.getId());
 		//map.put("projectId",projectPrice.getProjectId());
 		//map.put("version",projectPrice.getVersion());
-		map.put("targetPrice",projectPrice.getInquiryPrice());
-		map.put("isUpdate",true);
+		map.put("targetPrice", projectPrice.getInquiryPrice());
+		map.put("isUpdate", true);
 
-		equationServiceImpl.countAvgDiscountRate(map);
+//		equationServiceImpl.countAvgDiscountRate(map);
 
 		return successVo();
 	}
 
 	/**
 	 * 通过议价审批
+	 *
 	 * @param projectPrice
 	 * @return
 	 */
 	@Transactional
 	@Override
-	public  BaseVo passEnquireAudit1(PriceEnquireAuditVo projectPrice){
-        //审批通过
+	public BaseVo passEnquireAudit1(PriceEnquireAuditVo projectPrice) {
+		//审批通过
 		EnquiryAudit enquiryAudit = new EnquiryAudit();
 		enquiryAudit.setAuditType(EnquiryAuditTypeEnum.SHENPITONGGUO.getCode());
 		enquiryAudit.setAuditTypeName(EnquiryAuditTypeEnum.SHENPITONGGUO.getInfo());
@@ -1503,15 +1515,15 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		enquiryAudit.setAuditUserName(getCurrentUserInfo().getUserName());
 		enquiryAudit.setAuditTime(new Date());
 		enquiryAudit.setProjectPriceId(projectPrice.getProjectPriceId());
-		List<Map> rates=new ArrayList<>();
-		List<ProjectEleOrder> orders=new ArrayList<>();
-		if(CollectionUtils.isNotEmpty(projectPrice.getProjectEleOrderList())){
-			projectPrice.getProjectEleOrderList().forEach(c->{
-				Map a=new HashMap();
-				a.put("orderId",c.getId());
-				a.put("rate",c.getRate());
+		List<Map> rates = new ArrayList<>();
+		List<ProjectEleOrder> orders = new ArrayList<>();
+		if (CollectionUtils.isNotEmpty(projectPrice.getProjectEleOrderList())) {
+			projectPrice.getProjectEleOrderList().forEach(c -> {
+				Map a = new HashMap();
+				a.put("orderId", c.getId());
+				a.put("rate", c.getRate());
 				rates.add(a);
-				ProjectEleOrder b=new ProjectEleOrder();
+				ProjectEleOrder b = new ProjectEleOrder();
 				b.setId(c.getId());
 				b.setRate(c.getRate());
 				orders.add(b);
@@ -1524,58 +1536,60 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		Map<String, Object> cod = new HashMap<>();
 		cod.put("projectPriceId", projectPrice.getProjectPriceId());
 		cod.put("isUpdate", true);
-		equationServiceImpl.executeCountProjectPrice(cod,projectPrice.getProjectEleOrderList());
+		equationServiceImpl.executeCountProjectPrice(cod, projectPrice.getProjectEleOrderList());
 
 		return successVo();
 
 	}
 
-	private void  getEnquiryAuditUser(  Long companyId, long roleId,UserCompany userCompany){
+	private void getEnquiryAuditUser(Long companyId, long roleId, UserCompany userCompany) {
 
-          Company localc=companyDao.selectById(companyId);
-          if(localc.getParentId().equals(-1)){//到头了
-			  if(roleId==UserRoleEnum.BOSS.getRoleId()){
-				  userCompany= null;
-			  }else{
-				  List roleIds=new ArrayList<>();
-				  roleIds.add(UserRoleEnum.BOSS.getRoleId());
-				  Map cod=new HashMap();
-				  cod.put("roleIds",roleIds);
-				  cod.put("companyId",companyId);
-				  List<UserCompany>list= userDao.getUserByCompanyIdAndRoleIds(cod);
-				  if(CollectionUtils.isNotEmpty(list)){
-					  userCompany=list.get(0);
-				  }else{
-					  userCompany=null;
-				  }
-			  }
+		Company localc = companyDao.selectById(companyId);
+		if (localc.getParentId().equals(-1)) {//到头了
+			if (roleId == UserRoleEnum.BOSS.getRoleId()) {
+				userCompany = null;
+			} else {
+				List roleIds = new ArrayList<>();
+				roleIds.add(UserRoleEnum.BOSS.getRoleId());
+				Map cod = new HashMap();
+				cod.put("roleIds", roleIds);
+				cod.put("companyId", companyId);
+				List<UserCompany> list = userDao.getUserByCompanyIdAndRoleIds(cod);
+				if (CollectionUtils.isNotEmpty(list)) {
+					userCompany= list.get(0);
+				} else {
 
-		  }else{
-			  List roleIds=new ArrayList<>();
-          	if(roleId!=0){
-				if(roleId!=UserRoleEnum.BOSS.getRoleId()){
+					//userCompany = null;
+				}
+			}
+
+		} else {
+			List roleIds = new ArrayList<>();
+			if (roleId != 0) {
+				if (roleId != UserRoleEnum.BOSS.getRoleId()) {
 					roleIds.add(UserRoleEnum.BOSS.getRoleId());
 				}
-				if(roleId!=UserRoleEnum.MANAGER.getRoleId()){
+				if (roleId != UserRoleEnum.MANAGER.getRoleId()) {
 					roleIds.add(UserRoleEnum.MANAGER.getRoleId());
 				}
-				if(roleId!=UserRoleEnum.REGIONAL_MANAGER.getRoleId()){
+				if (roleId != UserRoleEnum.REGIONAL_MANAGER.getRoleId()) {
 					roleIds.add(UserRoleEnum.REGIONAL_MANAGER.getRoleId());
 				}
-			}else{
+			} else {
 				roleIds.add(UserRoleEnum.BOSS.getRoleId());
 				roleIds.add(UserRoleEnum.MANAGER.getRoleId());
 				roleIds.add(UserRoleEnum.REGIONAL_MANAGER.getRoleId());
 			}
-			  Map cod=new HashMap();
-			  cod.put("roleIds",roleIds);
-			  cod.put("companyId",localc.getParentId());
-			  List<UserCompany>list= userDao.getUserByCompanyIdAndRoleIds(cod);
-			  if(CollectionUtils.isNotEmpty(list)){
-				  userCompany= list.get(0);
-			  }else{
-				  getEnquiryAuditUser(companyDao.selectById(localc.getParentId()).getId(),0,userCompany);
-			  }
-		  }
+			Map cod = new HashMap();
+			cod.put("roleIds", roleIds);
+			cod.put("companyId", companyId);
+			List<UserCompany> list = userDao.getUserByCompanyIdAndRoleIds(cod);
+			if (CollectionUtils.isNotEmpty(list)) {
+				userCompany = list.get(0);
+
+			} else {
+				getEnquiryAuditUser(companyDao.selectById(localc.getParentId()).getId(), 0, userCompany);
+			}
+		}
 	}
 }
