@@ -51,7 +51,7 @@ public class UserFeedbackController {
      * @param id : 
      * @return : com.bit.base.vo.BaseVo
      */
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/info/{id}")
     public BaseVo delete(@PathVariable Long id){
         return userFeedbackService.delete(id);
     }
