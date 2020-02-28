@@ -277,9 +277,6 @@ public class OptionsServiceImpl extends BaseService implements OptionsService {
 			optionsVO.setChildList(list);
 
 			for (OptionsVO opts : list) {
-				if (opts.getOcode().equals("004002001")){
-					System.out.println();
-				}
 				opts.setChildList(getChildList(opts,all,opts.getOcode()));
 			}
 
