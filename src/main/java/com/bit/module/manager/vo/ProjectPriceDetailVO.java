@@ -142,6 +142,11 @@ public class ProjectPriceDetailVO {
 	private String costTotalPrice;
 
 
+	/**
+	 * 有无议价中的
+	 */
+	private Integer enquiryAuditFlag;
+
 
 
 }
