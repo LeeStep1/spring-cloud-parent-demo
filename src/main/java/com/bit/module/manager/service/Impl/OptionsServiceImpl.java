@@ -224,58 +224,72 @@ public class OptionsServiceImpl extends BaseService implements OptionsService {
 	 * @return
 	 */
 	@Override
-	public BaseVo treeAll(Long typeId) {
+	public BaseVo treeAll() throws Exception {
 
-		List<Options> optionsByElevatorTypeId = elevatorRelaOptionsDao.getOptionsByElevatorTypeId(typeId);
-		BaseVo baseVo = new BaseVo();
-		baseVo.setData(optionsByElevatorTypeId);
-		return baseVo;
 		//全查
-//		List<Options> byParam = optionsDao.findByParam(null);
-//		List<OptionsVO> all = new ArrayList<>();
-//		List<OptionsVO> rootList = new ArrayList<>();
-//		if (CollectionUtils.isNotEmpty(byParam)){
-//			for (Options options : byParam) {
-//				OptionsVO optionsVO = new OptionsVO();
-//				BeanUtils.copyProperties(options,optionsVO);
-//				if (options.getParentId().equals(-1L)){
-//					rootList.add(optionsVO);
-//				}else {
-//					all.add(optionsVO);
-//				}
-//			}
-//			for (OptionsVO allvo : rootList) {
-//				allvo.setChildList(getChildList(allvo,all,allvo.getId()));
-//			}
-//		}
-//		BaseVo baseVo = new BaseVo();
-//		baseVo.setData(rootList);
+		List<Options> byParam = optionsDao.findByParam(null);
+		List<OptionsVO> all = new ArrayList<>();
+		List<OptionsVO> rootList = new ArrayList<>();
+		if (CollectionUtils.isNotEmpty(byParam)){
+			for (Options options : byParam) {
+				OptionsVO optionsVO = new OptionsVO();
+				BeanUtils.copyProperties(options,optionsVO);
+				//长度是3就是一级
+				if (options.getOcode().length()==3){
+					rootList.add(optionsVO);
+				}else {
+					all.add(optionsVO);
+				}
+			}
+			for (OptionsVO allvo : rootList) {
+				allvo.setChildList(getChildList(allvo,all,allvo.getOcode()));
+			}
+		}
+		BaseVo baseVo = new BaseVo();
+		baseVo.setData(rootList);
+		return baseVo;
 	}
 
 	/**
 	 * 递归查询子节点
 	 * @param optionsVO
 	 * @param all
-	 * @param parentId
+	 * @param ocode
 	 * @return
 	 */
-	private List<OptionsVO> getChildList(OptionsVO optionsVO,List<OptionsVO> all,Long parentId){
+	private List<OptionsVO> getChildList(OptionsVO optionsVO,List<OptionsVO> all,String ocode) throws Exception {
 		List<OptionsVO> list = new ArrayList<>();
-		for (OptionsVO vo : all) {
-			if (vo.getParentId()!=null && vo.getParentId().equals(parentId)){
-				list.add(vo);
+		try {
+			for (OptionsVO vo : all) {
+				if (vo.getOcode().length() < ocode.length()){
+					continue;
+				}
+				String a = vo.getOcode().substring(0,ocode.length());
+				String b = vo.getOcode().substring(ocode.length(),vo.getOcode().length());
+				if (a.equals(ocode) && b.length()==3){
+					list.add(vo);
+				}
+				a = null;
+				b = null;
+
 			}
-		}
-		//设置子集
-		optionsVO.setChildList(list);
+			//设置子集
+			optionsVO.setChildList(list);
 
-		for (OptionsVO opts : list) {
-			opts.setChildList(getChildList(opts,all,opts.getId()));
+			for (OptionsVO opts : list) {
+				if (opts.getOcode().equals("004002001")){
+					System.out.println();
+				}
+				opts.setChildList(getChildList(opts,all,opts.getOcode()));
+			}
+
+			if (list.size() == 0) {
+				return null;
+			}
+		}catch (Exception e){
+			throw new Exception(ocode);
 		}
 
-		if (list.size() == 0) {
-			return null;
-		}
 		return list;
 	}
 

@@ -102,8 +102,8 @@ public class OptionsController {
 	 * 树形结构
 	 * @return
 	 */
-	@GetMapping("/treeAll/{typeId}")
-	public BaseVo treeAll(@PathVariable(value = "typeId") Long typeId){
-		return optionsService.treeAll(typeId);
+	@PostMapping("/treeAll")
+	public BaseVo treeAll() throws Exception {
+		return optionsService.treeAll();
 	}
 }
