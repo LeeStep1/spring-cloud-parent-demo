@@ -47,5 +47,5 @@ public class AreaVO {
 	/**
 	 * 子节点
 	 */
-	private List<AreaVO> childList;
+	private List<AreaVO> children;
 }

@@ -122,7 +122,7 @@ public class AreaServiceImpl extends BaseService implements AreaService {
 		}
 
 		for (AreaVO areaVO : root) {
-			areaVO.setChildList(getChildList(areaVO,areaVOS,areaVO.getArCode()));
+			areaVO.setChildren(getChildList(areaVO,areaVOS,areaVO.getArCode()));
 		}
 		baseVo.setData(root);
 		return baseVo;
@@ -209,10 +209,10 @@ public class AreaServiceImpl extends BaseService implements AreaService {
 			}
 		}
 		//设置子集
-		areaVO.setChildList(list);
+		areaVO.setChildren(list);
 
 		for (AreaVO aa : list) {
-			aa.setChildList(getChildList(aa,all,aa.getArCode()));
+			aa.setChildren(getChildList(aa,all,aa.getArCode()));
 		}
 
 		if (list.size() == 0) {
