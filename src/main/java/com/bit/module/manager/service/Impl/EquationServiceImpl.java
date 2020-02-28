@@ -145,6 +145,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         //开始计算项目总价
         double difference = 0;//设备基价与成本差
         double totalNoDiscount = 0;//设备总价无下浮
+        Double costTotalPrice = 0d;//设备总价无下浮
         for (Map vars : eleInputs) {
             double sum = 0;
             List<ProjectEleNonstandard> projectEleNonStandards = projectEleNonstandardDao.selectList(new QueryWrapper<ProjectEleNonstandard>()
@@ -161,12 +162,14 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             executeCount(vars);
             difference += (int)vars.get("小计_设备基价与成本差");
             totalNoDiscount += (int)vars.get("小计_设备总价无下浮");
+            costTotalPrice += Double.parseDouble(vars.get("小计_成本总价").toString());
             if (Boolean.TRUE.equals(vars.get("是否为非标"))){
                 isStandard = false;
             }
         }
         //最大下浮率 = 设备基价与成本差之和 / 设备总价无下浮之和
         projectPrice.setMaxRate(NumberUtil.round(difference/totalNoDiscount, 2).doubleValue());
+        projectPrice.setCostTotalPrice(costTotalPrice.toString());// 总成本
         BigDecimal bd = new BigDecimal("0");
         List<ProjectEleOrder> projectEleOrderNew = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
                 .eq("project_id", projectPrice.getProjectId())
@@ -397,7 +400,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         int basePrice = getBasePriceEquationOut(vars, "基价");
         vars.put("小计_设备基价", basePrice);
         int baseCost = getBasePriceEquationCost(vars, "基价");
-        vars.put("小计_设备基价成本", baseCost);//成本
+        vars.put("小计_设备基价成本", baseCost);  //成本
         vars.put("小计_设备基价与成本差", basePrice-baseCost);//求最大下浮率的分母
 
         buildBasePriceJson(vars);
@@ -407,16 +410,17 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         if (vars.get("非标加价")==null){
             vars.put("非标加价", 0);
         }
-        vars.put("小计_设备总价无下浮", simpleEquation("小计_设备基价*台量", vars));//计算平均下浮率用的
-        vars.put("小计_设备单价", simpleEquation("小计_设备基价*(1-下浮)+小计_设备可选项价格+平摊费用+非标加价", vars)); //单价
+        vars.put("小计_设备总价无下浮", simpleEquation("小计_设备基价*台量", vars));//计算平均下浮率用的 //单价
         if (vars.get("小计_安装费用") == null) {
             vars.put("小计_安装费用", 0);
         }
         if (vars.get("小计_运费") == null) {
             vars.put("小计_运费", 0);
         }
+        vars.put("小计_设备单价", simpleEquation("小计_设备基价*(1-下浮)+小计_设备可选项价格+平摊费用+非标加价", vars));
         vars.put("小计_单台总价", simpleEquation("小计_设备单价+小计_安装费用+小计_运费", vars)); //单价
         vars.put("小计_合价", simpleEquation("小计_单台总价*台量", vars)); //单价
+        vars.put("小计_成本总价", simpleEquation("(小计_设备基价成本+小计_设备可选项价格+平摊费用+非标加价+小计_安装费用+小计_运费)*台量", vars)); //单价
         String service = "价格*系数*维保价格";//维保
         return vars;
     }
