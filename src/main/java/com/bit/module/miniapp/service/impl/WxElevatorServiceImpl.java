@@ -1486,6 +1486,16 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	@Transactional
 	@Override
 	public BaseVo passEnquireAudit1(PriceEnquireAuditVo projectPrice) {
+
+		ProjectPrice  projectPriceInfo=projectPriceDao.selectById(projectPrice.getProjectPriceId());
+		ProjectPriceDetailVO vo=projectDao.getProjectDetailById(null,projectPrice.getProjectPriceId());
+		if(vo==null||vo.getProjectStatus().equals(ProjectEnum.PROJECT_FAIL.getCode())){
+			throw new BusinessException("此项目已关闭或无此项目");
+		}
+		ProjectPrice price=projectPriceDao.selectById(projectPrice.getProjectPriceId());
+		if(!getCurrentUserInfo().getId().equals(price.getEnquiryAuditUserId())){
+			throw new BusinessException("此人无法审批");
+		}
 		//审批通过
 		EnquiryAudit enquiryAudit = new EnquiryAudit();
 		enquiryAudit.setAuditType(EnquiryAuditTypeEnum.SHENPITONGGUO.getCode());
@@ -1511,6 +1521,12 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			enquiryAudit.setRateList(JSON.toJSONString(rates));
 		}
 		enquiryAuditDao.addEnquiryAudit(enquiryAudit);
+
+		ProjectPrice  pr=new ProjectPrice();
+		pr.setEnquiryApplyStatus(EnquiryApplyStatusEnum.SHENPITONGGUO.getCode());
+		pr.setEnquiryAuditUserId(null);
+		pr.setEnquiryAuditUserCompanyId(null);
+		projectPriceDao.updateProjectPriceEnquireAuditWithNull(pr);
 		//todo  計算
 		Map<String, Object> cod = new HashMap<>();
 		cod.put("projectPriceId", projectPrice.getProjectPriceId());
