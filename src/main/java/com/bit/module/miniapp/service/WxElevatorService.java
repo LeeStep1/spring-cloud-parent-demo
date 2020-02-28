@@ -152,12 +152,7 @@ public interface WxElevatorService {
 	 */
 	BaseVo redirectEnquireAudit(ProjectPriceVo projectPriceVo);
 
-	/**
-	 * 通过 or 驳回 询价
-	 * @param projectPrice
-	 * @return
-	 */
-	BaseVo passEnquireAudit(ProjectPrice projectPrice);
+
 
 	/**
 	 * 定价辅助

@@ -1090,22 +1090,23 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		if (projectPriceById == null) {
 			throw new BusinessException("数据不存在");
 		}
-		//验证项目状态
+
 		Project projectById = projectDao.getProjectById(projectPriceById.getProjectId());
 		if (projectById == null) {
 			throw new BusinessException("项目数据不存在");
 		}
-		if (projectById.getClosedStatus().equals(0)){
+		//验证项目状态
+		if (projectById.getClosedStatus().equals(ProjectEnum.PROJECT_FAIL.getCode())){
 			throw new BusinessException("项目已关闭");
 		}
 
 		//验证能不能询价 一个项目只能有一个审批中的询价
-		ProjectPrice param = new ProjectPrice();
-		param.setEnquiryApplyStatus(EnquiryApplyStatusEnum.SHENNPIZHONG.getCode());
-		param.setProjectId(projectPriceVo.getProjectId());
-		List<ProjectPrice> byParam = projectPriceDao.findByParam(param);
-		if (CollectionUtils.isNotEmpty(byParam)) {
-			throw new BusinessException("一个项目只能有一个审批中的询价");
+		if (projectPriceById.getEnquiryApplyStatus().equals(EnquiryApplyStatusEnum.CHEXIAO.getCode())){
+			throw new BusinessException("项目已撤销");
+		}
+		//验证当前用户是不是审批人
+		if(!getCurrentUserInfo().getId().equals(projectPriceById.getEnquiryAuditUserId())){
+			throw new BusinessException("此人无法审批");
 		}
 
 		//上级审批人
@@ -1116,10 +1117,10 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		projectPriceById.setEnquiryAuditUserId(auditor.getId());
 		Company userCompanyByUserId = userCompanyDao.getUserCompanyByUserId(auditor.getId());
 		projectPriceById.setEnquiryAuditUserCompanyId(userCompanyByUserId.getId());
-		projectPriceById.setEnquiryApplyTime(new Date());
+//		projectPriceById.setEnquiryApplyTime(new Date());
 
-		projectPriceById.setInquiryPrice(projectPriceVo.getInquiryPrice());
-		projectPriceById.setCostTotalPrice(projectPriceVo.getCostTotalPrice());
+//		projectPriceById.setInquiryPrice(projectPriceVo.getInquiryPrice());
+//		projectPriceById.setCostTotalPrice(projectPriceVo.getCostTotalPrice());
 		projectPriceDao.updateById(projectPriceById);
 
 		//往t_enquiry_audit 插一条
@@ -1136,40 +1137,6 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		return successVo();
 	}
 
-	/**
-	 * 通过 or 驳回 询价
-	 *
-	 * @param projectPrice
-	 * @return
-	 */
-	@Override
-	@Transactional
-	public BaseVo passEnquireAudit(ProjectPrice projectPrice) {
-		Integer enquiryApplyStatus = projectPrice.getEnquiryApplyStatus();
-		projectPriceDao.updateProjectPrice(projectPrice);
-
-		EnquiryAudit enquiryAudit = new EnquiryAudit();
-		if (enquiryApplyStatus.equals(EnquiryApplyStatusEnum.SHENPITONGGUO.getCode())) {
-			//审批通过
-			enquiryAudit.setAuditType(EnquiryAuditTypeEnum.SHENPITONGGUO.getCode());
-			enquiryAudit.setAuditTypeName(EnquiryAuditTypeEnum.SHENPITONGGUO.getInfo());
-		} else if (enquiryApplyStatus.equals(EnquiryApplyStatusEnum.SHENNPIJUJUE.getCode())) {
-			//审批拒绝
-			enquiryAudit.setAuditType(EnquiryAuditTypeEnum.SHENPIJUJUE.getCode());
-			enquiryAudit.setAuditTypeName(EnquiryAuditTypeEnum.SHENPIJUJUE.getInfo());
-		} else if (enquiryApplyStatus.equals(EnquiryApplyStatusEnum.CHEXIAO.getCode())) {
-			//审批撤销
-			enquiryAudit.setAuditType(EnquiryAuditTypeEnum.SHENPICHEHUI.getCode());
-			enquiryAudit.setAuditTypeName(EnquiryAuditTypeEnum.SHENPICHEHUI.getInfo());
-		}
-		enquiryAudit.setAuditUserId(getCurrentUserInfo().getId());
-		enquiryAudit.setAuditRealName(getCurrentUserInfo().getRealName());
-		enquiryAudit.setAuditTime(new Date());
-		enquiryAudit.setProjectPriceId(projectPrice.getId());
-		enquiryAuditDao.addEnquiryAudit(enquiryAudit);
-
-		return successVo();
-	}
 
 	/**
 	 * 定价辅助
@@ -1217,8 +1184,16 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		if (projectById == null) {
 			throw new BusinessException("项目数据不存在");
 		}
-		if (projectById.getClosedStatus().equals(0)){
+		if (projectById.getClosedStatus().equals(ProjectEnum.PROJECT_FAIL.getCode())){
 			throw new BusinessException("项目已关闭");
+		}
+		//验证能不能询价 一个项目只能有一个审批中的询价
+		if (projectPriceById.getEnquiryApplyStatus().equals(EnquiryApplyStatusEnum.CHEXIAO.getCode())){
+			throw new BusinessException("项目已撤销");
+		}
+		//验证当前用户是不是审批人
+		if(!getCurrentUserInfo().getId().equals(projectPriceById.getEnquiryAuditUserId())){
+			throw new BusinessException("此人无法审批");
 		}
 		projectPriceById.setEnquiryApplyStatus(EnquiryApplyStatusEnum.SHENNPIJUJUE.getCode());
 //		projectPriceById.setEnquiryAuditUserId(null);
@@ -1438,7 +1413,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		if (projectById == null) {
 			throw new BusinessException("项目数据不存在");
 		}
-		if (projectById.getClosedStatus().equals(0)){
+		if (projectById.getClosedStatus().equals(ProjectEnum.PROJECT_FAIL.getCode())){
 			throw new BusinessException("项目已关闭");
 		}
 
@@ -1487,7 +1462,6 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	@Override
 	public BaseVo passEnquireAudit1(PriceEnquireAuditVo projectPrice) {
 
-		ProjectPrice  projectPriceInfo=projectPriceDao.selectById(projectPrice.getProjectPriceId());
 		ProjectPriceDetailVO vo=projectDao.getProjectDetailById(null,projectPrice.getProjectPriceId());
 		if(vo==null||vo.getProjectStatus().equals(ProjectEnum.PROJECT_FAIL.getCode())){
 			throw new BusinessException("此项目已关闭或无此项目");

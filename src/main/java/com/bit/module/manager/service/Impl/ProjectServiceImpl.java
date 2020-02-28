@@ -63,6 +63,8 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
         project.setCreateUserName(getCurrentUserInfo().getRealName());
 		project.setCompanyId(getCurrentUserInfo().getCompanyId());
 		project.setCompanyName(getCurrentUserInfo().getCompanyName());
+		//关闭状态分类 关闭状态分类：1：成交，2：流失
+		project.setClosedStatus(ProjectEnum.PROJECT_SUC.getCode());
         projectDao.insert(project);
     }
 
