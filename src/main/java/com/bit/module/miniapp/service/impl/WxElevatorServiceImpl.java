@@ -66,6 +66,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	@Autowired
 	private OptionsDao optionsDao;
 
+	@Autowired
+	private ProjectDao projectDao;
 
 	@Autowired
 	private ProjectEleOptionsDao projectEleOptionsDao;
@@ -1088,6 +1090,15 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		if (projectPriceById == null) {
 			throw new BusinessException("数据不存在");
 		}
+		//验证项目状态
+		Project projectById = projectDao.getProjectById(projectPriceById.getProjectId());
+		if (projectById == null) {
+			throw new BusinessException("项目数据不存在");
+		}
+		if (projectById.getClosedStatus().equals(0)){
+			throw new BusinessException("项目已关闭");
+		}
+
 		//验证能不能询价 一个项目只能有一个审批中的询价
 		ProjectPrice param = new ProjectPrice();
 		param.setEnquiryApplyStatus(EnquiryApplyStatusEnum.SHENNPIZHONG.getCode());
@@ -1200,6 +1211,14 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		ProjectPrice projectPriceById = projectPriceDao.getProjectPriceById(projectPriceId);
 		if (projectPriceById == null) {
 			throw new BusinessException("记录不存在");
+		}
+		//验证项目状态
+		Project projectById = projectDao.getProjectById(projectPriceById.getProjectId());
+		if (projectById == null) {
+			throw new BusinessException("项目数据不存在");
+		}
+		if (projectById.getClosedStatus().equals(0)){
+			throw new BusinessException("项目已关闭");
 		}
 		projectPriceById.setEnquiryApplyStatus(EnquiryApplyStatusEnum.SHENNPIJUJUE.getCode());
 //		projectPriceById.setEnquiryAuditUserId(null);
@@ -1413,6 +1432,14 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		ProjectPrice projectPriceById = projectPriceDao.getProjectPriceById(projectPrice.getId());
 		if (projectPriceById.getEnquiryApplyStatus().equals(EnquiryApplyStatusEnum.SHENNPIZHONG.getCode())){
 			throw new BusinessException("项目正在议价中，暂时无法提交新的议价申请");
+		}
+		//验证项目状态
+		Project projectById = projectDao.getProjectById(projectPriceById.getProjectId());
+		if (projectById == null) {
+			throw new BusinessException("项目数据不存在");
+		}
+		if (projectById.getClosedStatus().equals(0)){
+			throw new BusinessException("项目已关闭");
 		}
 
 		projectPrice.setEnquiryApplyTime(new Date());

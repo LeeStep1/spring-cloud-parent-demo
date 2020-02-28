@@ -10,7 +10,7 @@
         <result property="auditType" column="audit_type"/>
         <result property="auditTypeName" column="audit_type_name"/>
         <result property="auditUserId" column="audit_user_id"/>
-        <result property="auditUserName" column="audit_user_name"/>
+        <result property="auditRealName" column="audit_real_name"/>
         <result property="auditTime" column="audit_time"/>
         <result property="rateList" column="rate_list"/>
     </resultMap>
@@ -22,7 +22,7 @@
         audit_type,
         audit_type_name,
         audit_user_id,
-        audit_user_name,
+        audit_real_name,
         audit_time,
         rate_list
     </sql>
@@ -35,7 +35,7 @@
         audit_type,
         audit_type_name,
         audit_user_id,
-        audit_user_name,
+        audit_real_name,
         audit_time,
         rate_list
         )VALUES
@@ -45,7 +45,7 @@
             #{item.auditType,jdbcType=INTEGER},
             #{item.auditTypeName,jdbcType=STRING},
             #{item.auditUserId,jdbcType=BIGINT},
-            #{item.auditUserName,jdbcType=VARCHAR},
+            #{item.auditRealName,jdbcType=VARCHAR},
             #{item.auditTime,jdbcType=TIMESTAMP},
             #{item.rateList,jdbcType=VARCHAR}
             )
@@ -71,8 +71,8 @@
             <if test="auditUserId!=null">
                 audit_user_id,
             </if>
-            <if test="auditUserName!=null and auditUserName!=''">
-                audit_user_name,
+            <if test="auditRealName!=null and auditRealName!=''">
+                audit_real_name,
             </if>
             <if test="auditTime!=null">
                 audit_time,
@@ -94,8 +94,8 @@
             <if test="auditUserId!=null">
                 #{auditUserId,jdbcType=BIGINT},
             </if>
-            <if test="auditUserName!=null and auditUserName!=''">
-                #{auditUserName,jdbcType=VARCHAR},
+            <if test="auditRealName!=null and auditRealName!=''">
+                #{auditRealName,jdbcType=VARCHAR},
             </if>
             <if test="auditTime!=null">
                 #{auditTime,jdbcType=TIMESTAMP},
@@ -123,8 +123,8 @@
             <if test="auditUserId!=null">
                 audit_user_id =  #{auditUserId,jdbcType=BIGINT},
             </if>
-            <if test="auditUserName!=null and auditUserName!=''">
-                audit_user_name = #{auditUserName,jdbcType=VARCHAR},
+            <if test="auditRealName!=null and auditRealName!=''">
+                audit_real_name = #{auditRealName,jdbcType=VARCHAR},
             </if>
             <if test="auditTime!=null">
                 audit_time = #{auditTime,jdbcType=TIMESTAMP},
