@@ -16,10 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Service("areaService")
 public class AreaServiceImpl extends BaseService implements AreaService {
@@ -97,13 +94,27 @@ public class AreaServiceImpl extends BaseService implements AreaService {
 			baseVo.setData(byParam);
 			return baseVo;
 		}
+		//找出来最小的等级
+		Set<Integer> set = new HashSet<>();
+		for (Area area1 : byParam) {
+			if (!set.contains(area1.getArLeavel())){
+				set.add(area1.getArLeavel());
+			}
+		}
+
+		Integer min = 0;
+		if (CollectionUtils.isNotEmpty(set)){
+			min = Collections.min(set);
+		}
+
+
 		//根
 		List<AreaVO> root = new ArrayList<>();
 		List<AreaVO> areaVOS = new ArrayList<>();
 		for (Area area1 : byParam) {
 			AreaVO areaVO = new AreaVO();
 			BeanUtils.copyProperties(area1,areaVO);
-			if (area1.getArLeavel()==2){
+			if (area1.getArLeavel().equals(min)){
 				root.add(areaVO);
 			}else {
 				areaVOS.add(areaVO);
