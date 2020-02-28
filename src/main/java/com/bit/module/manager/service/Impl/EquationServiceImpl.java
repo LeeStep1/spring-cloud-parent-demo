@@ -95,6 +95,33 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         return executeCountProjectPrice(map, null);
     }
 
+
+    /**
+     * 调整每个下浮率时重新计算总价
+     * @param priceId
+     * @param projectEleOrderInputs
+     * @return
+     */
+    public ProjectPrice countProjectTotalPrice(Long priceId,List<ProjectEleOrder> projectEleOrderInputs) {
+        ProjectPrice projectPrice = projectPriceDao.selectById(priceId);
+        List<ProjectEleOrder> projectEleOrder = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
+                .eq("project_id", projectPrice.getProjectId())
+                .eq("version_id", projectPrice.getId()));
+        double total = 0;
+        for (ProjectEleOrder eleOrder : projectEleOrder) {
+            if (projectEleOrderInputs != null) {
+                Optional<ProjectEleOrder> projectEleOrderInput = projectEleOrderInputs.stream().filter(item -> item.getId().equals(eleOrder.getId())).findFirst();
+                if (projectEleOrderInput.isPresent()) {
+                    ProjectEleOrder temp = projectEleOrderInput.get();
+                    String basePrice = JSON.parseObject(eleOrder.getBasePrice()).get("price").toString();
+                    // (原总价+ (基价*（原下浮-现下浮)))*数量 =  原总价 - 基价 *（1-原下浮)+ 基价*(1-现下浮)*数量
+                    total += (Double.parseDouble(eleOrder.getSingleTotalPrice()) + Double.parseDouble(basePrice) * (eleOrder.getRate()- temp.getRate()))*Double.parseDouble(eleOrder.getNum());
+                }
+            }
+        }
+        projectPrice.setTotalPrice(NumberUtil.round(total, 2).toString());
+        return projectPrice;
+    }
     /**
      * 计算整个项目
      * @param map

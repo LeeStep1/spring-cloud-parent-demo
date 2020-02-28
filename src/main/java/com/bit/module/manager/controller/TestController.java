@@ -53,6 +53,13 @@ public class TestController {
         return baseVo;
     }
 
+    @PostMapping(value = "/countProjectTotalPrice")
+    public BaseVo countProjectTotalPrice(@RequestBody TestPoljectEleOrderAndMapVO testPoljectEleOrderAndMapVO){
+        BaseVo baseVo = new BaseVo();
+        baseVo.setData(equationService.countProjectTotalPrice(testPoljectEleOrderAndMapVO.getPriceId(),testPoljectEleOrderAndMapVO.getRate()));
+        return baseVo;
+    }
+
     @PostMapping(value = "/countAvgDiscountRate")
     public BaseVo countAvgDiscountRate(@RequestBody Map map){
         BaseVo baseVo = new BaseVo();

@@ -15,4 +15,5 @@ import java.util.Map;
 public class TestPoljectEleOrderAndMapVO {
 	private List<ProjectEleOrder> rate;
 	private Map map;
+	private Long priceId;
 }
