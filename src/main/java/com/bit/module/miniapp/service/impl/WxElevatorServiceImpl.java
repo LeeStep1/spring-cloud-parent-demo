@@ -1413,7 +1413,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		if (projectById == null) {
 			throw new BusinessException("项目数据不存在");
 		}
-		if (projectById.getClosedStatus().equals(ProjectEnum.PROJECT_FAIL.getCode())){
+		if (projectById.getProjectStatus().equals(ProjectEnum.PROJECT_FAIL.getCode())){
 			throw new BusinessException("项目已关闭");
 		}
 
