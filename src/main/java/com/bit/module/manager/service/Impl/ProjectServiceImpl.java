@@ -422,7 +422,7 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 				.in("non_standard_apply_status", NonStandardApplyStatusEnum.DAISHENHE.getCode(),NonStandardApplyStatusEnum.DAITIJIAO.getCode()));
 
 		//更新审批变为撤回
-		if(!CollectionUtils.isNotEmpty(nodStandardList)){
+		if(CollectionUtils.isNotEmpty(nodStandardList)){
 			ProjectPrice  projectPrice=new ProjectPrice();
 			projectPrice.setNonStandardApplyStatus(NonStandardApplyStatusEnum.CHEXIAO.getCode());
 			//更新非标审批
@@ -448,7 +448,7 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 		List  <ProjectPrice>enquiryAuditList =projectPriceDao.selectList(new QueryWrapper<ProjectPrice>().eq("project_id",project.getId())
 				.in("enquiry_apply_status", EnquiryApplyStatusEnum.SHENNPIZHONG.getCode()));
 
-		if(!CollectionUtils.isNotEmpty(enquiryAuditList)){
+		if(CollectionUtils.isNotEmpty(enquiryAuditList)){
 			ProjectPrice  projectPrice=new ProjectPrice();
 			projectPrice.setEnquiryApplyStatus(EnquiryApplyStatusEnum.CHEXIAO.getCode());
 			//更新非标审批
@@ -476,7 +476,7 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 		project.setClosedTime(new Date());
 		project.setClosedUserId(getCurrentUserInfo().getId());
 		project.setCreateUserName(getCurrentUserInfo().getRealName());
-		project.setClosedStatus(ProjectEnum.PROJECT_FAIL.getCode());
+		project.setProjectStatus(ProjectEnum.PROJECT_FAIL.getCode());
 		projectDao.updateById(project);
 
 
