@@ -448,7 +448,7 @@
                 and create_user_id = #{projectPageVO.createUserId,jdbcType=BIGINT}
             </if>
             <if test="projectPageVO.createUserName!=null and projectPageVO.createUserName!=''">
-                and create_user_name = #{projectPageVO.createUserName,jdbcType=VARCHAR}
+                and create_user_name LIKE concat("%", #{projectPageVO.createUserName,jdbcType=VARCHAR},"%")
             </if>
             <if test="projectPageVO.createTime!=null">
                 and create_time = #{projectPageVO.createTime,jdbcType=TIMESTAMP}

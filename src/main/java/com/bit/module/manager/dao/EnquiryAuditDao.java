@@ -1,6 +1,7 @@
 package com.bit.module.manager.dao;
 
 import com.bit.module.manager.bean.EnquiryAudit;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 @Repository
 public interface EnquiryAuditDao {
 
-    void batchAdd(List<EnquiryAudit> list );
+    void batchAdd(@Param(value = "list") List<EnquiryAudit> list );
 
 	/**
 	 * 新增记录
