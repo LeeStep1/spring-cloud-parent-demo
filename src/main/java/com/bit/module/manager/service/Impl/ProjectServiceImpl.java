@@ -337,9 +337,9 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 		List<ProjectPrice>list1=projectPriceDao.selectList(new QueryWrapper<ProjectPrice>().eq("project_id",projectId)
 		.in("enquiry_apply_status",EnquiryApplyStatusEnum.SHENNPIZHONG.getCode()));
 		if(list1!=null&&list1.size()>0){
-			projectPriceDetailVO.setEnquiryPriceFlag(1);
+			projectPriceDetailVO.setEnquiryAuditFlag(1);
 		}else{
-			projectPriceDetailVO.setEnquiryPriceFlag(0);
+			projectPriceDetailVO.setEnquiryAuditFlag(0);
 		}
 		projectPriceDetailVO.setProjectPriceDetailInfos(projectPriceDetailInfos);
 
