@@ -1117,7 +1117,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		enquiryAudit.setAuditType(EnquiryAuditTypeEnum.SHENPIJIANJIAO.getCode());
 		enquiryAudit.setAuditTypeName(EnquiryAuditTypeEnum.SHENPIJIANJIAO.getInfo());
 		enquiryAudit.setAuditUserId(auditor.getId());
-		enquiryAudit.setAuditUserName(auditor.getUserName());
+		enquiryAudit.setAuditRealName(auditor.getRealName());
 		enquiryAudit.setAuditTime(new Date());
 
 		enquiryAuditDao.addEnquiryAudit(enquiryAudit);
@@ -1152,7 +1152,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 			enquiryAudit.setAuditTypeName(EnquiryAuditTypeEnum.SHENPICHEHUI.getInfo());
 		}
 		enquiryAudit.setAuditUserId(getCurrentUserInfo().getId());
-		enquiryAudit.setAuditUserName(getCurrentUserInfo().getUserName());
+		enquiryAudit.setAuditRealName(getCurrentUserInfo().getRealName());
 		enquiryAudit.setAuditTime(new Date());
 		enquiryAudit.setProjectPriceId(projectPrice.getId());
 		enquiryAuditDao.addEnquiryAudit(enquiryAudit);
@@ -1208,7 +1208,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
 		EnquiryAudit enquiryAudit = new EnquiryAudit();
 		enquiryAudit.setAuditUserId(getCurrentUserInfo().getId());
-		enquiryAudit.setAuditUserName(getCurrentUserInfo().getUserName());
+		enquiryAudit.setAuditRealName(getCurrentUserInfo().getRealName());
 		enquiryAudit.setAuditTime(new Date());
 		enquiryAudit.setProjectPriceId(projectPriceId);
 		enquiryAudit.setAuditType(EnquiryAuditTypeEnum.SHENPIJUJUE.getCode());
@@ -1430,7 +1430,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
 		EnquiryAudit enquiryAudit = new EnquiryAudit();
 		enquiryAudit.setAuditUserId(getCurrentUserInfo().getId());
-		enquiryAudit.setAuditUserName(getCurrentUserInfo().getUserName());
+		enquiryAudit.setAuditRealName(getCurrentUserInfo().getRealName());
 		enquiryAudit.setAuditTime(new Date());
 		enquiryAudit.setProjectPriceId(projectPrice.getId());
 		enquiryAudit.setAuditType(AuditTypeEnum.SUBMIT.getCode());
@@ -1464,7 +1464,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		enquiryAudit.setAuditType(EnquiryAuditTypeEnum.SHENPITONGGUO.getCode());
 		enquiryAudit.setAuditTypeName(EnquiryAuditTypeEnum.SHENPITONGGUO.getInfo());
 		enquiryAudit.setAuditUserId(getCurrentUserInfo().getId());
-		enquiryAudit.setAuditUserName(getCurrentUserInfo().getUserName());
+		enquiryAudit.setAuditRealName(getCurrentUserInfo().getRealName());
 		enquiryAudit.setAuditTime(new Date());
 		enquiryAudit.setProjectPriceId(projectPrice.getProjectPriceId());
 		List<Map> rates = new ArrayList<>();
