@@ -147,6 +147,11 @@ public class ProjectPriceDetailVO {
 	 */
 	private Integer enquiryAuditFlag;
 
+	/**
+	 * 关闭状态分类：1：成交，2：流失
+	 */
+	private Integer  closedStatus;
+
 
 
 }

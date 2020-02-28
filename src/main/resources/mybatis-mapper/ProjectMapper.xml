@@ -60,6 +60,7 @@
         t1.create_time,
         t1.address_name,
         t1.project_status,
+        t1.closed_status,
         t2.total_price,
         t2.version,
         t2.install_flag,
