@@ -115,4 +115,9 @@ public class ProjectPriceDetailInfo {
 	 * 电梯类型字段
 	 */
 	private Long  elevatorTypeId;
+
+	/**
+	 * 单台基础价格成本
+	 */
+	private String  costBasePrice;
 }

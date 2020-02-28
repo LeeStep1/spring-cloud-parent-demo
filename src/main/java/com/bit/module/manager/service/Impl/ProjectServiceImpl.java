@@ -306,6 +306,7 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 				//增加返回参数
 				projectPriceDetailInfo.setElevatorTypeId(projectEleOrder.getElevatorTypeId());
 				projectPriceDetailInfo.setOrderId(projectEleOrder.getId());
+				projectPriceDetailInfo.setCostBasePrice(projectEleOrder.getCostBasePrice());
 				//设置规格参数 和 井道参数
 				List<ElementParam> elementParamByOrderId = projectDao.getElementParamByOrderId(projectEleOrder.getId());
 				projectPriceDetailInfo.setElementParams(elementParamByOrderId);
