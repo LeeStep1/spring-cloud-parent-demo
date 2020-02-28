@@ -146,6 +146,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         double difference = 0;//设备基价与成本差
         double totalNoDiscount = 0;//设备总价无下浮
         Double costTotalPrice = 0d;//设备总价无下浮
+        double totalPrice = 0;//总价
         for (Map vars : eleInputs) {
             double sum = 0;
             List<ProjectEleNonstandard> projectEleNonStandards = projectEleNonstandardDao.selectList(new QueryWrapper<ProjectEleNonstandard>()
@@ -163,6 +164,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             difference += (int)vars.get("小计_设备基价与成本差");
             totalNoDiscount += (int)vars.get("小计_设备总价无下浮");
             costTotalPrice += Double.parseDouble(vars.get("小计_成本总价").toString());
+            totalPrice += Double.parseDouble(vars.get("小计_合价").toString());
             if (Boolean.TRUE.equals(vars.get("是否为非标"))){
                 isStandard = false;
             }
@@ -170,14 +172,15 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         //最大下浮率 = 设备基价与成本差之和 / 设备总价无下浮之和
         projectPrice.setMaxRate(NumberUtil.round(difference/totalNoDiscount, 2).doubleValue());
         projectPrice.setCostTotalPrice(costTotalPrice.toString());// 总成本
-        BigDecimal bd = new BigDecimal("0");
-        List<ProjectEleOrder> projectEleOrderNew = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
-                .eq("project_id", projectPrice.getProjectId())
-                .eq("version_id", projectPrice.getId()));
-        for (ProjectEleOrder eleOrder : projectEleOrderNew) {
-            bd = NumberUtil.add(bd.toString(), eleOrder.getTotalPrice());
-        }
-        projectPrice.setTotalPrice(bd.toString());
+        projectPrice.setTotalPrice(totalPrice+"");
+//        BigDecimal bd = new BigDecimal("0");
+//        List<ProjectEleOrder> projectEleOrderNew = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
+//                .eq("project_id", projectPrice.getProjectId())
+//                .eq("version_id", projectPrice.getId()));
+//        for (ProjectEleOrder eleOrder : projectEleOrderNew) {
+//            bd = NumberUtil.add(bd.toString(), eleOrder.getTotalPrice());
+//        }
+//        projectPrice.setTotalPrice(bd.toString());
         if (map.get("stage") != null) {
             projectPrice.setStage(Integer.parseInt(map.get("stage").toString()));
         }
