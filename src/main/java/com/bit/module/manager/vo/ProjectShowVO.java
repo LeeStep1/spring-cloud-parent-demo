@@ -86,4 +86,20 @@ public class ProjectShowVO  {
 	 * 最近报价日期
 	 */
 	private Date latestEnquireDate;
+	/**
+	 * 关闭的原因类型
+	 */
+	private Integer reasonCustomerChurnId;
+	/**
+	 * 关闭项目的原因的名称
+	 */
+	private String reasonCustomerChurnName;
+	/**
+	 * 流失原因备注
+	 */
+	private String reasonCustomerChurmRemarks;
+	/**
+	 * 关闭时间
+	 */
+	private Date closedTime;
 }
