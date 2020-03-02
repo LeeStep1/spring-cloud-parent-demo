@@ -67,6 +67,16 @@
         limit 1
     </select>
 
+    <select id="getLatestProjectPriceNonDraft" resultType="com.bit.module.manager.bean.ProjectPrice" parameterType="map">
+
+        SELECT * FROM t_project_price
+        WHERE project_id = #{projectId,jdbcType=BIGINT}
+        and version > 0
+        ORDER BY
+        version DESC
+        limit 1
+    </select>
+
     <!--根据项目id查询订单-->
     <select id="queryOrderByProjectId" resultType="com.bit.module.manager.vo.ElevatorOrderVo"
             parameterType="com.bit.module.manager.bean.ProjectEleOrder">

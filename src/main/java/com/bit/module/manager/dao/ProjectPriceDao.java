@@ -26,6 +26,13 @@ public interface ProjectPriceDao extends BaseMapper<ProjectPrice> {
      */
     List<ProjectPrice> getLatestProjectPrice(@Param(value = "projectId") Long projectId);
 
+	/**
+	 * 根据项目id集合批量查询报价记录 不包括草稿
+	 * @param projectId
+	 * @return
+	 */
+    List<ProjectPrice> getLatestProjectPriceNonDraft(@Param(value = "projectId") Long projectId);
+
 
 	/**
 	 * 根据项目id查询订单

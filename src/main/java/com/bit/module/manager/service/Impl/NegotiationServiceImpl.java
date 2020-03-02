@@ -55,7 +55,7 @@ public class NegotiationServiceImpl extends BaseService implements NegotiationSe
 		Page<ProjectShowVO> page = new Page<>(projectPageVO.getPageNum(),projectPageVO.getPageSize());
 		IPage<ProjectShowVO> projectShowVOIPage = projectDao.negotiationlistPage(page, projectPageVO);
 		for (ProjectShowVO projectShowVO : projectShowVOIPage.getRecords()) {
-			List<ProjectPrice> latestProjectPrice = projectPriceDao.getLatestProjectPrice(projectShowVO.getProjectId());
+			List<ProjectPrice> latestProjectPrice = projectPriceDao.getLatestProjectPriceNonDraft(projectShowVO.getProjectId());
 			if (CollectionUtils.isNotEmpty(latestProjectPrice)){
 				projectShowVO.setEnquireTimes(latestProjectPrice.get(0).getVersion());
 				projectShowVO.setLatestEnquireDate(latestProjectPrice.get(0).getCreateTime());
@@ -75,6 +75,7 @@ public class NegotiationServiceImpl extends BaseService implements NegotiationSe
 	 */
 	@Override
 	public BaseVo reflectById(Long projectId,Integer enquireTimes) {
+		BaseVo baseVo = new BaseVo();
 		Project projectById = projectDao.getProjectById(projectId);
 		ProjectOrderWebVO projectOrderWebVO = new ProjectOrderWebVO();
 		BeanUtils.copyProperties(projectById,projectOrderWebVO);
@@ -84,7 +85,8 @@ public class NegotiationServiceImpl extends BaseService implements NegotiationSe
 		p1.setVersion(enquireTimes);
 		List<ProjectPrice> params = projectPriceDao.findByParam(p1);
 		if (CollectionUtils.isEmpty(params)){
-			throw new BusinessException("结果不存在");
+			baseVo.setData(projectOrderWebVO);
+			return baseVo;
 		}
 		//得出当前版本的报价
 		ProjectPrice p2 = params.get(0);
@@ -150,7 +152,7 @@ public class NegotiationServiceImpl extends BaseService implements NegotiationSe
 			projectOrderWebVO.setTotalPrice(projectPrice.getTotalPrice());
 			projectOrderWebVO.setProjectPriceDetailInfos(projectPriceDetailInfos);
 		}
-		BaseVo baseVo = new BaseVo();
+
 		baseVo.setData(projectOrderWebVO);
 		return baseVo;
 	}

@@ -448,19 +448,19 @@
         FROM t_project
         <where>
             <if test="projectPageVO.projectName!=null and projectPageVO.projectName!=''">
-                and project_name LIKE concat("%",#{projectPageVO.projectName,jdbcType=VARCHAR},"%")
+                and project_name LIKE concat(#{projectPageVO.projectName,jdbcType=VARCHAR},"%")
             </if>
             <if test="projectPageVO.customerName!=null and projectPageVO.customerName!=''">
-                and customer_name LIKE concat("%",#{projectPageVO.customerName,jdbcType=VARCHAR},"%")
+                and customer_name LIKE concat(#{projectPageVO.customerName,jdbcType=VARCHAR},"%")
             </if>
             <if test="projectPageVO.agentName!=null and projectPageVO.agentName!=''">
-                and agent_name LIKE concat("%", #{projectPageVO.agentName,jdbcType=VARCHAR},"%")
+                and agent_name LIKE concat(#{projectPageVO.agentName,jdbcType=VARCHAR},"%")
             </if>
             <if test="projectPageVO.createUserId!=null">
                 and create_user_id = #{projectPageVO.createUserId,jdbcType=BIGINT}
             </if>
             <if test="projectPageVO.createUserName!=null and projectPageVO.createUserName!=''">
-                and create_user_name LIKE concat("%", #{projectPageVO.createUserName,jdbcType=VARCHAR},"%")
+                and create_user_name LIKE concat(#{projectPageVO.createUserName,jdbcType=VARCHAR},"%")
             </if>
             <if test="projectPageVO.createTime!=null">
                 and create_time = #{projectPageVO.createTime,jdbcType=TIMESTAMP}

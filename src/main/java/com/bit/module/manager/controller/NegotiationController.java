@@ -33,8 +33,8 @@ public class NegotiationController {
 	 * @param projectId
 	 * @return
 	 */
-	@GetMapping("/reflectById/{projectId}/{enquireTimes}")
-	public BaseVo reflectById(@PathVariable(value = "projectId")Long projectId,@PathVariable(value = "enquireTimes")Integer enquireTimes){
+	@GetMapping("/reflectById")
+	public BaseVo reflectById(@RequestParam(value = "projectId",required = true)Long projectId,@RequestParam(value = "enquireTimes",required = false)Integer enquireTimes){
 		return negotiationService.reflectById(projectId, enquireTimes);
 	}
 }
