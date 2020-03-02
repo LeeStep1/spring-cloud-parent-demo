@@ -10,10 +10,7 @@
         <result property="type" column="type"/>
         <result property="typeName" column="type_name"/>
         <result property="relevanceType" column="relevance_type"/>
-        <result property="title1" column="title1"/>
         <result property="equation" column="equation"/>
-        <result property="coefficient" column="coefficient"/>
-        <result property="equation3" column="equation3"/>
         <result property="output" column="output"/>
     </resultMap>
 
@@ -24,10 +21,7 @@
         type,
         type_name,
         relevance_type,
-        title1,
         equation,
-        coefficient,
-        equation3,
         output
     </sql>
 
@@ -60,12 +54,6 @@
             <if test="equation!=null and equation!=''">
                 and equation = #{equation,jdbcType=VARCHAR}
             </if>
-            <if test="coefficient!=null and coefficient!=''">
-                and coefficient = #{coefficient,jdbcType=VARCHAR}
-            </if>
-            <if test="equation3!=null and equation3!=''">
-                and equation3 = #{equation3,jdbcType=VARCHAR}
-            </if>
             <if test="output!=null and output!=''">
                 and `output` = #{output,jdbcType=VARCHAR}
             </if>
@@ -91,18 +79,11 @@
             <if test="relevanceType!=null">
                 relevance_type,
             </if>
-            <if test="title1!=null">
-                title1,
-            </if>
+
             <if test="equation!=null and equation!=''">
                 equation,
             </if>
-            <if test="coefficient!=null and coefficient!=''">
-                coefficient,
-            </if>
-            <if test="equation3!=null and equation3!=''">
-                equation3,
-            </if>
+
             <if test="output!=null and output!=''">
                 `output`,
             </if>
@@ -120,18 +101,11 @@
             <if test="relevanceType!=null">
                 #{relevanceType,jdbcType=INTEGER},
             </if>
-            <if test="title1!=null">
-                #{title1,jdbcType=INTEGER},
-            </if>
+
             <if test="equation!=null and equation!=''">
                 #{equation,jdbcType=VARCHAR},
             </if>
-            <if test="coefficient!=null and coefficient!=''">
-                #{coefficient,jdbcType=VARCHAR},
-            </if>
-            <if test="equation3!=null and equation3!=''">
-                #{equation3,jdbcType=VARCHAR},
-            </if>
+
             <if test="output!=null and output!=''">
                 #{output,jdbcType=VARCHAR},
             </if>
@@ -155,18 +129,11 @@
             <if test="relevanceType!=null">
                 relevance_type = #{relevanceType,jdbcType=INTEGER},
             </if>
-            <if test="title1!=null">
-                title1 = #{title1,jdbcType=INTEGER},
-            </if>
+
             <if test="equation!=null and equation!=''">
                 equation = #{equation,jdbcType=VARCHAR},
             </if>
-            <if test="coefficient!=null and coefficient!=''">
-                coefficient = #{coefficient,jdbcType=VARCHAR},
-            </if>
-            <if test="equation3!=null and equation3!=''">
-                equation3 = #{equation3,jdbcType=VARCHAR},
-            </if>
+
             <if test="output!=null and output!=''">
                 `output` = #{output,jdbcType=VARCHAR},
             </if>
@@ -202,12 +169,7 @@
             <if test="equationPageVO.equation!=null and equationPageVO.equation!=''">
                 and equation = #{equationPageVO.equation,jdbcType=VARCHAR}
             </if>
-            <if test="equationPageVO.coefficient!=null and equationPageVO.coefficient!=''">
-                and coefficient = #{equationPageVO.coefficient,jdbcType=VARCHAR}
-            </if>
-            <if test="equationPageVO.equation3!=null and equationPageVO.equation3!=''">
-                and equation3 = #{equationPageVO.equation3,jdbcType=VARCHAR}
-            </if>
+
             <if test="equationPageVO.output!=null and equationPageVO.output!=''">
                 and `output` = #{equationPageVO.output,jdbcType=VARCHAR}
             </if>

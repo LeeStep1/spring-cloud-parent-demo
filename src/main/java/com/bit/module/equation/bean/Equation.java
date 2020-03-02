@@ -30,8 +30,6 @@ public class Equation implements Serializable {
      * 第一个公式
      */
     private String equation;
-    private String coefficient;
-    private String equation3;
     /**
      * 输出
      */
@@ -48,9 +46,6 @@ public class Equation implements Serializable {
      * 0：无关联 1：电梯类型 2：可选项
      */
     private Integer relevanceType;
-    /**
-     * 标题
-     */
-    private String title1;
+
 
 }

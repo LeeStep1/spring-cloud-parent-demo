@@ -35,22 +35,12 @@ public class EquationPageVO extends BasePageVo{
 	 * 0：无关联 1：电梯类型 2：可选项
 	 */
 	private Integer relevanceType;
-	/**
-	 * 
-	 */
-	private String title1;
+
 	/**
 	 * 
 	 */
 	private String equation;
-	/**
-	 * 
-	 */
-	private String coefficient;
-	/**
-	 * 
-	 */
-	private String equation3;
+
 	/**
 	 * 输出
 	 */
