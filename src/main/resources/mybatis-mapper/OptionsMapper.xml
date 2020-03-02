@@ -321,6 +321,9 @@
             <if test="parentId!=null">
                 and parent_id = #{parentId,jdbcType=BIGINT}
             </if>
+            <if test="ocode!=null and ocode!=''">
+                and ocode like concat(#{ocode,jdbcType=BIGINT},"%")
+            </if>
         </where>
     </select>
 

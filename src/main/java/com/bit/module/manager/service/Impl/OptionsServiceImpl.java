@@ -65,8 +65,9 @@ public class OptionsServiceImpl extends BaseService implements OptionsService {
 			if (optionsById!=null){
 				level = (optionsById.getOcode().length()+3)/3;
 			}
-			opt.setParentId(parentId);
+			opt.setLength(level * 3);
 			parentCode = optionsById.getOcode();
+			opt.setOcode(parentCode);
 		}
 		List<Options> optionParam = optionsDao.getOptionParam(opt);
 		String code = getMaxCode(optionParam,level,parentCode);
