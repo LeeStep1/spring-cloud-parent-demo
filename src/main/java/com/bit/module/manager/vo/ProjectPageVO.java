@@ -102,6 +102,10 @@ public class ProjectPageVO extends BasePageVo {
 	 * 关闭时间
 	 */
 	private Date closedTime;
+	/**
+	 * 关闭项目时所关联的保价ID
+	 */
+	private Long closedProjectPriceId;
 
 	/**
 	 * 议价审批状态：0：未提交审批，1：审批中，2：审批通过，3：审批拒绝，4，撤销

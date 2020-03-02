@@ -381,5 +381,14 @@
     </select>
 
 
+    <select id="batchSelectByIds" parameterType="long" resultType="com.bit.module.manager.bean.ProjectPrice">
+        SELECT <include refid="Base_Column_List"/>
+        FROM t_project_price
+        WHERE id in
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item,jdbcType=BIGINT}
+        </foreach>
+    </select>
+
 
 </mapper>

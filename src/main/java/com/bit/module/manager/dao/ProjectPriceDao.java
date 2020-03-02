@@ -96,4 +96,10 @@ public interface ProjectPriceDao extends BaseMapper<ProjectPrice> {
 	 */
 	void updateProjectPriceEnquireAuditWithNull(ProjectPrice projectPrice);
 
+	/**
+	 * 批量查询
+	 * @param list
+	 * @return
+	 */
+	List<ProjectPrice> batchSelectByIds(@Param(value = "list")List<Long> list);
 }

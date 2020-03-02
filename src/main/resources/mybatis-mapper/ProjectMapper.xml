@@ -24,6 +24,7 @@
         <result property="closedUserId" column="closed_user_id"/>
         <result property="closedUserName" column="closed_user_name"/>
         <result property="closedTime" column="closed_time"/>
+        <result property="closedProjectPriceId" column="closed_project_price_id"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -46,7 +47,8 @@
         reason_customer_churm_remarks,
         closed_user_id,
         closed_user_name,
-        closed_time
+        closed_time,
+        closed_project_price_id
 	</sql>
 
 
@@ -227,7 +229,9 @@
             <if test="closedTime!=null">
                 and closed_time = #{closedTime,jdbcType=TIMESTAMP}
             </if>
-
+            <if test="closedProjectPriceId!=null">
+                and closed_project_price_id = #{closedProjectPriceId,jdbcType=BIGINT}
+            </if>
         </where>
     </select>
 
@@ -334,6 +338,9 @@
             <if test="projectPageVO.closedTime!=null">
                 and closed_time = #{projectPageVO.closedTime,jdbcType=TIMESTAMP}
             </if>
+            <if test="projectPageVO.closedProjectPriceId!=null">
+                and closed_project_price_id = #{projectPageVO.closedProjectPriceId,jdbcType=BIGINT}
+            </if>
             <if test="projectPageVO.search!=null and projectPageVO.search!=''">
                 and (project_name like concat("%",#{projectPageVO.search,jdbcType=VARCHAR},"%")
                 or customer_name like concat("%",#{projectPageVO.search,jdbcType=VARCHAR},"%")
@@ -409,6 +416,9 @@
             <if test="closedTime!=null">
                 closed_time = #{closedTime,jdbcType=TIMESTAMP},
             </if>
+            <if test="closedProjectPriceId!=null">
+                closed_project_price_id = #{closedProjectPriceId,jdbcType=BIGINT},
+            </if>
         </trim>
         where id = #{id,jdbcType=BIGINT}
     </update>
@@ -433,7 +443,8 @@
         reason_customer_churm_remarks,
         closed_user_id,
         closed_user_name,
-        closed_time
+        closed_time,
+        closed_project_price_id
         FROM t_project
         <where>
             <if test="projectPageVO.projectName!=null and projectPageVO.projectName!=''">

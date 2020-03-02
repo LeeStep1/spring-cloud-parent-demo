@@ -177,45 +177,61 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 		projectPageVO.setCreateUserId(getCurrentUserInfo().getId());
 		Page<Project> page = new Page<>(projectPageVO.getPageNum(),projectPageVO.getPageSize());  // 查询第1页，每页返回5条
 		IPage<Project> iPage = projectDao.listPage(page,projectPageVO);
+
+		List<Long> ids = new ArrayList<>();
 		for(Project project:iPage.getRecords()){
-			List<ProjectPrice> latestProjectPrice = projectPriceDao.getLatestProjectPrice(project.getId());
-			if(latestProjectPrice.size()>0){
-				if(latestProjectPrice.get(0).getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
-					Map cods=new HashMap();
-					cods.put("version_id",latestProjectPrice.get(0).getId());
-					//cods.put("calculate_flag",0);
-					cods.put("calculate_flag",CalculateFlagEnum.NO.getCode());
-					if(latestProjectPrice.get(0).getNonStandardApplyStatus()==NonStandardApplyStatusEnum.DAISHENHE.getCode()){
-						//project.setCalculateFlag(0);
-						project.setCalculateFlag(CalculateFlagEnum.NO.getCode());
-					}else if(latestProjectPrice.get(0).getNonStandardApplyStatus()==NonStandardApplyStatusEnum.TONGGUO.getCode()){
-						List<ProjectEleOrder> odrList=  projectEleOrderDao.selectByMap(cods);
-						if(CollectionUtils.isNotEmpty(odrList)){
-							for(ProjectEleOrder or:odrList){
-								if(or.getCalculateFlag()==0){
-									//project.setCalculateFlag(0);
-									project.setCalculateFlag(CalculateFlagEnum.NO.getCode());
-									break;
-								}else{
-									continue;
-								}
-							}
+			ids.add(project.getClosedProjectPriceId());
+//			List<ProjectPrice> latestProjectPrice = projectPriceDao.getLatestProjectPrice(project.getId());
+//			if(latestProjectPrice.size()>0){
+//				if(latestProjectPrice.get(0).getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
+//					Map cods=new HashMap();
+//					cods.put("version_id",latestProjectPrice.get(0).getId());
+//					//cods.put("calculate_flag",0);
+//					cods.put("calculate_flag",CalculateFlagEnum.NO.getCode());
+//					if(latestProjectPrice.get(0).getNonStandardApplyStatus()==NonStandardApplyStatusEnum.DAISHENHE.getCode()){
+//						//project.setCalculateFlag(0);
+//						project.setCalculateFlag(CalculateFlagEnum.NO.getCode());
+//					}else if(latestProjectPrice.get(0).getNonStandardApplyStatus()==NonStandardApplyStatusEnum.TONGGUO.getCode()){
+//						List<ProjectEleOrder> odrList=  projectEleOrderDao.selectByMap(cods);
+//						if(CollectionUtils.isNotEmpty(odrList)){
+//							for(ProjectEleOrder or:odrList){
+//								if(or.getCalculateFlag()==0){
+//									//project.setCalculateFlag(0);
+//									project.setCalculateFlag(CalculateFlagEnum.NO.getCode());
+//									break;
+//								}else{
+//									continue;
+//								}
+//							}
+//
+//						}else{
+//							//project.setCalculateFlag(1);
+//							project.setCalculateFlag(CalculateFlagEnum.YES.getCode());
+//						}
+//					}
+//
+//				}else{
+//					//project.setCalculateFlag(1);
+//					project.setCalculateFlag(CalculateFlagEnum.YES.getCode());
+//				}
+//			}else{
+//				//project.setCalculateFlag(1);
+//				project.setCalculateFlag(CalculateFlagEnum.YES.getCode());
+//			}
+//			project.setProjectPriceList(latestProjectPrice);
+		}
 
-						}else{
-							//project.setCalculateFlag(1);
-							project.setCalculateFlag(CalculateFlagEnum.YES.getCode());
-						}
+		List<ProjectPrice> projectPrices = projectPriceDao.batchSelectByIds(ids);
+		if (CollectionUtils.isNotEmpty(projectPrices)){
+			for(Project project:iPage.getRecords()){
+				for (ProjectPrice projectPrice : projectPrices) {
+					if (projectPrice.getId().equals(project.getClosedProjectPriceId())){
+						List<ProjectPrice> projectPriceList = new ArrayList<>();
+						projectPriceList.add(projectPrice);
+						project.setProjectPriceList(projectPriceList);
 					}
-
-				}else{
-					//project.setCalculateFlag(1);
-					project.setCalculateFlag(CalculateFlagEnum.YES.getCode());
 				}
-			}else{
-				//project.setCalculateFlag(1);
-				project.setCalculateFlag(CalculateFlagEnum.YES.getCode());
 			}
-			project.setProjectPriceList(latestProjectPrice);
 		}
 		BaseVo baseVo = new BaseVo();
 		baseVo.setData(iPage);
