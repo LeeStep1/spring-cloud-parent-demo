@@ -2,6 +2,7 @@ package com.bit.module.manager.controller;
 
 import com.bit.base.vo.BaseVo;
 import com.bit.module.manager.service.NegotiationService;
+import com.bit.module.manager.vo.NegotiationVO;
 import com.bit.module.manager.vo.ProjectPageVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,11 +31,11 @@ public class NegotiationController {
 
 	/**
 	 * 返显项目
-	 * @param projectId
+	 * @param negotiationVO
 	 * @return
 	 */
-	@GetMapping("/reflectById")
-	public BaseVo reflectById(@RequestParam(value = "projectId",required = true)Long projectId,@RequestParam(value = "enquireTimes",required = false)Integer enquireTimes){
-		return negotiationService.reflectById(projectId, enquireTimes);
+	@PostMapping("/reflectById")
+	public BaseVo reflectById(@RequestBody NegotiationVO negotiationVO){
+		return negotiationService.reflectById(negotiationVO);
 	}
 }

@@ -12,10 +12,7 @@ import com.bit.module.manager.dao.ProjectEleNonstandardDao;
 import com.bit.module.manager.dao.ProjectEleOrderDao;
 import com.bit.module.manager.dao.ProjectPriceDao;
 import com.bit.module.manager.service.NegotiationService;
-import com.bit.module.manager.vo.ProjectOrderWebVO;
-import com.bit.module.manager.vo.ProjectPageVO;
-import com.bit.module.manager.vo.ProjectPriceDetailVO;
-import com.bit.module.manager.vo.ProjectShowVO;
+import com.bit.module.manager.vo.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,32 +67,30 @@ public class NegotiationServiceImpl extends BaseService implements NegotiationSe
 
 	/**
 	 * 返显项目
-	 * @param projectId
+	 * @param negotiationVO
 	 * @return
 	 */
 	@Override
-	public BaseVo reflectById(Long projectId,Integer enquireTimes) {
+	public BaseVo reflectById(NegotiationVO negotiationVO) {
 		BaseVo baseVo = new BaseVo();
-		Project projectById = projectDao.getProjectById(projectId);
+		Project projectById = projectDao.getProjectById(negotiationVO.getProjectId());
 		ProjectOrderWebVO projectOrderWebVO = new ProjectOrderWebVO();
 		BeanUtils.copyProperties(projectById,projectOrderWebVO);
-		//根据projectId 和 version查询报价记录
-		ProjectPrice p1 = new ProjectPrice();
-		p1.setProjectId(projectId);
-		p1.setVersion(enquireTimes);
-		List<ProjectPrice> params = projectPriceDao.findByParam(p1);
-		if (CollectionUtils.isEmpty(params)){
+		ProjectPrice projectPriceById = projectPriceDao.getProjectPriceById(negotiationVO.getProjectPriceId());
+		if (projectPriceById==null){
 			baseVo.setData(projectOrderWebVO);
 			return baseVo;
 		}
-		//得出当前版本的报价
-		ProjectPrice p2 = params.get(0);
 
+		ProjectPrice pp = new ProjectPrice();
+		pp.setProjectId(negotiationVO.getProjectId());
+		pp.setVersion(negotiationVO.getEnquireTimes());
+		List<ProjectPrice> p2 = projectPriceDao.findByParam(pp);
 
 		//根据projectid查询 所有的订单
 		ProjectEleOrder order = new ProjectEleOrder();
-		order.setProjectId(projectId);
-		order.setVersionId(p2.getId());
+		order.setProjectId(negotiationVO.getProjectId());
+		order.setVersionId(p2.get(0).getId());
 		List<ProjectEleOrder> byParam = projectEleOrderDao.findByParam(order);
 
 		if (CollectionUtils.isNotEmpty(byParam)) {
@@ -145,7 +140,7 @@ public class NegotiationServiceImpl extends BaseService implements NegotiationSe
 
 			}
 			//查询项目报价版本
-			ProjectPrice projectPrice = projectPriceDao.selectById(p2.getId());
+			ProjectPrice projectPrice = projectPriceDao.selectById(p2.get(0).getId());
 			projectOrderWebVO.setVersion(projectPrice.getVersion());
 			projectOrderWebVO.setStandard(projectPrice.getStandard());
 			projectOrderWebVO.setStandardName(projectPrice.getStandardName());

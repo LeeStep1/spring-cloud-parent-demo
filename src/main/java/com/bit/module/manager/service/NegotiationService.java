@@ -1,6 +1,7 @@
 package com.bit.module.manager.service;
 
 import com.bit.base.vo.BaseVo;
+import com.bit.module.manager.vo.NegotiationVO;
 import com.bit.module.manager.vo.ProjectPageVO;
 
 /**
@@ -21,5 +22,5 @@ public interface NegotiationService {
 	 * @param projectId
 	 * @return
 	 */
-	BaseVo reflectById(Long projectId,Integer enquireTimes);
+	BaseVo reflectById(NegotiationVO negotiationVO);
 }
