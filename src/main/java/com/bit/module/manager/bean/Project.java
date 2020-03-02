@@ -99,6 +99,12 @@ public class Project {
 	 */
 	private Date closedTime;
 
+
+	/**
+	 * 关闭项目时的关联的报价ID
+	 */
+	private Long closedProjectPriceId;
+
 	//-----添加字段-----
 
 	//忽略此字段的映射
@@ -113,6 +119,9 @@ public class Project {
 	 */
 	@TableField(exist = false)
 	private Integer  calculateFlag;
+
+
+
 
 
 }

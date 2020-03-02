@@ -426,6 +426,11 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 	@Transactional
 	public  BaseVo closeProject(Project  project){
 
+		if(project.getClosedProjectPriceId()==null||project.getId()==null){
+
+			throw new BusinessException("参数不全，操作失败");
+		}
+
 		//查询多个非标审批的
 		List  <ProjectPrice>nodStandardList =projectPriceDao.selectList(new QueryWrapper<ProjectPrice>().eq("project_id",project.getId())
 				.in("non_standard_apply_status", NonStandardApplyStatusEnum.DAISHENHE.getCode(),NonStandardApplyStatusEnum.DAITIJIAO.getCode()));
@@ -486,6 +491,7 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 		project.setClosedUserId(getCurrentUserInfo().getId());
 		project.setCreateUserName(getCurrentUserInfo().getRealName());
 		project.setProjectStatus(ProjectEnum.PROJECT_FAIL.getCode());
+		project.setClosedProjectPriceId(project.getClosedProjectPriceId());
 		projectDao.updateById(project);
 
 
