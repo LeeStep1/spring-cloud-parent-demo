@@ -43,6 +43,12 @@ public class OptionsServiceImpl extends BaseService implements OptionsService {
 		//计算id
 		String s = this.calculateCode(options.getParentId());
 		options.setOcode(s);
+		//实际选项
+		if (options.getItemType()==null){
+			throw new BusinessException("元素属性不能为空");
+		}else if (options.getItemType().equals(1)){
+			options.setRule(0);
+		}
 		optionsDao.addOptions(options);
 		return successVo();
 	}
@@ -114,6 +120,70 @@ public class OptionsServiceImpl extends BaseService implements OptionsService {
 	@Override
 	@Transactional
 	public BaseVo update(Options options) {
+		//判断有没有子集
+		Long id = options.getId();
+		Options optionsById = optionsDao.getOptionsById(id);
+		Options pp = new Options();
+		List<Options> updateList = new ArrayList<>();
+		//不相等
+		if (!optionsById.getItemType().equals(options.getItemType())){
+			//从0->1 判断有没有子集  0为分组名称1为实际选项
+			if (optionsById.getItemType().equals(0) &&
+					options.getItemType().equals(1)){
+
+				pp.setParentId(id);
+				List<Options> byParam = optionsDao.findByParam(pp);
+				if (CollectionUtils.isNotEmpty(byParam)){
+					throw new BusinessException("存在子集不能修改");
+				}else {
+					//修改rule
+					//设置为多选框 可多选
+					options.setRule(2);
+				}
+
+			}else if (optionsById.getItemType().equals(1) &&
+					options.getItemType().equals(0)){
+				//从1->0
+				pp.setParentId(id);
+				List<Options> byParam = optionsDao.findByParam(pp);
+				if (CollectionUtils.isNotEmpty(byParam)){
+
+					for (Options options1 : byParam) {
+						Options op = new Options();
+						op.setId(options1.getId());
+						//设置为多选框 可多选
+						op.setRule(2);
+						updateList.add(op);
+					}
+					//将子集的数据属性设置为2
+					if (CollectionUtils.isNotEmpty(updateList)){
+						optionsDao.batchUpdateList(updateList);
+					}
+				}else {
+					//设置为单选框 有且唯一
+					options.setRule(1);
+				}
+			}
+		}else {
+			//没改元素属性 改了rule
+			pp.setParentId(id);
+			List<Options> byParam = optionsDao.findByParam(pp);
+			if (CollectionUtils.isNotEmpty(byParam)){
+				for (Options options1 : byParam) {
+					Options op = new Options();
+					op.setId(options1.getId());
+					//设置为多选框 可多选
+					op.setRule(1);
+					updateList.add(op);
+				}
+				if (CollectionUtils.isNotEmpty(updateList)){
+					optionsDao.batchUpdateList(updateList);
+				}
+			}
+		}
+
+
+
 		optionsDao.updateOptions(options);
 		return successVo();
 	}
@@ -136,13 +206,14 @@ public class OptionsServiceImpl extends BaseService implements OptionsService {
 		param.setParentId(id);
 		List<Options> byParam = optionsDao.findByParam(param);
 		if (CollectionUtils.isNotEmpty(byParam)){
-			List<Long> ids = new ArrayList<>();
-			for (Options options : byParam) {
-				ids.add(options.getId());
-			}
-			ids.add(id);
-			//批量删除
-			optionsDao.deleteByIds(ids);
+			throw new BusinessException("存在子节点不能删除");
+//			List<Long> ids = new ArrayList<>();
+//			for (Options options : byParam) {
+//				ids.add(options.getId());
+//			}
+//			ids.add(id);
+//			//批量删除
+//			optionsDao.deleteByIds(ids);
 		}else {
 			optionsDao.delOptionsById(id);
 		}

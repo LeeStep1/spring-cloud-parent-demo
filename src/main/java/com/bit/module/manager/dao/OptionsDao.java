@@ -71,4 +71,10 @@ public interface OptionsDao extends BaseMapper<Options> {
 	 * @return
 	 */
 	List<Options> batchSelectByIds(@Param(value = "ids")List<Long> ids);
+
+	/**
+	 * 批量 更新
+	 * @param list
+	 */
+	void batchUpdateList(@Param(value = "list")List<Options> list);
 }

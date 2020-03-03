@@ -50,10 +50,6 @@ public class OptionsVO {
      */
     private String unit;
     /**
-     * 后期扩展大类的计算key值
-     */
-    private String groupValue;
-    /**
      * 数据属性1:有且唯一，2：可多选
      */
     private Integer rule;

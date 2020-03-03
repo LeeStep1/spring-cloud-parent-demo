@@ -14,7 +14,6 @@
         <result property="optionType" column="option_type"/>
         <result property="defaultValue" column="default_value"/>
         <result property="unit" column="unit"/>
-        <result property="groupValue" column="group_value"/>
         <result property="rule" column="rule"/>
         <result property="itemType" column="item_type"/>
         <result property="parentId" column="parent_id"/>
@@ -31,7 +30,6 @@
         option_type,
         default_value,
         unit,
-        group_value,
         rule,
         item_type,
         parent_id
@@ -104,9 +102,7 @@
             <if test="unit!=null and unit!=''">
                 and unit = #{unit,jdbcType=VARCHAR}
             </if>
-            <if test="groupValue!=null and groupValue!=''">
-                and group_value = #{groupValue,jdbcType=VARCHAR}
-            </if>
+
             <if test="rule!=null">
                 and rule = #{rule,jdbcType=INTEGER}
             </if>
@@ -156,9 +152,7 @@
             <if test="unit!=null and unit!=''">
                 unit,
             </if>
-            <if test="groupValue!=null and groupValue!=''">
-                group_value,
-            </if>
+
             <if test="rule!=null">
                 rule,
             </if>
@@ -194,9 +188,7 @@
             <if test="unit!=null and unit!=''">
                 #{unit,jdbcType=VARCHAR},
             </if>
-            <if test="groupValue!=null and groupValue!=''">
-                #{groupValue,jdbcType=VARCHAR},
-            </if>
+
             <if test="rule!=null">
                 #{rule,jdbcType=INTEGER},
             </if>
@@ -238,9 +230,7 @@
             <if test="unit!=null and unit!=''">
                 unit = #{unit,jdbcType=VARCHAR},
             </if>
-            <if test="groupValue!=null and groupValue!=''">
-                group_value = #{groupValue,jdbcType=VARCHAR},
-            </if>
+
             <if test="rule!=null">
                 rule = #{rule,jdbcType=INTEGER},
             </if>
@@ -292,9 +282,7 @@
             <if test="optionsPageVO.unit!=null and optionsPageVO.unit!=''">
                 and unit = #{optionsPageVO.unit,jdbcType=VARCHAR}
             </if>
-            <if test="optionsPageVO.groupValue!=null and optionsPageVO.groupValue!=''">
-                and group_value = #{optionsPageVO.groupValue,jdbcType=VARCHAR}
-            </if>
+
             <if test="optionsPageVO.rule!=null">
                 and rule = #{optionsPageVO.rule,jdbcType=INTEGER}
             </if>
@@ -344,4 +332,24 @@
             #{id,jdbcType=BIGINT}
         </foreach>
     </select>
+
+
+    <update id="batchUpdateList" parameterType="com.bit.module.miniapp.bean.Options">
+        UPDATE t_options
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="rule = case" suffix="end,">
+                <foreach collection="list" item="item" index="index" >
+                    <if test="item.rule!=null">
+                        WHEN id = #{item.id,jdbcType=BIGINT} then #{item.rule,jdbcType=INTEGER}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        <where>
+            <foreach collection="list" item="item" index="index" separator=") or (" close=")" open="(">
+                id = #{item.id,jdbcType=BIGINT}
+            </foreach>
+
+        </where>
+    </update>
 </mapper>
