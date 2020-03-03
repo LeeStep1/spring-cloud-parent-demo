@@ -1,6 +1,7 @@
 package com.bit.module.manager.vo;
 
 import com.bit.base.vo.BasePageVo;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -10,6 +11,7 @@ import java.util.Date;
  * @Author: liyujun
  * @Date: 2020-02-27
  **/
+@Data
 public class UserFeedbackPageVO  extends BasePageVo implements Serializable {
 
 
