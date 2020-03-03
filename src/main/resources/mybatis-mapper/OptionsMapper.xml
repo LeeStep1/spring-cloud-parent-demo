@@ -24,7 +24,6 @@
         ocode,
         options_name,
         description,
-        sec_option_type,
         input_type,
         option_type,
         default_value,
