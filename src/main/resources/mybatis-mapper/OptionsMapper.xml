@@ -9,7 +9,6 @@
         <result property="ocode" column="ocode"/>
         <result property="optionsName" column="options_name"/>
         <result property="description" column="description"/>
-        <result property="secOptionType" column="sec_option_type"/>
         <result property="inputType" column="input_type"/>
         <result property="optionType" column="option_type"/>
         <result property="defaultValue" column="default_value"/>
@@ -87,9 +86,6 @@
             <if test="description!=null and description!=''">
                 and description = #{description,jdbcType=VARCHAR}
             </if>
-            <if test="secOptionType!=null">
-                and sec_option_type = #{secOptionType,jdbcType=INTEGER}
-            </if>
             <if test="inputType!=null">
                 and input_type = #{inputType,jdbcType=INTEGER}
             </if>
@@ -137,9 +133,6 @@
             <if test="description!=null and description!=''">
                 description,
             </if>
-            <if test="secOptionType!=null">
-                sec_option_type,
-            </if>
             <if test="inputType!=null">
                 input_type,
             </if>
@@ -172,9 +165,6 @@
             </if>
             <if test="description!=null and description!=''">
                 #{description,jdbcType=VARCHAR},
-            </if>
-            <if test="secOptionType!=null">
-                #{secOptionType,jdbcType=INTEGER},
             </if>
             <if test="inputType!=null">
                 #{inputType,jdbcType=INTEGER},
@@ -214,9 +204,6 @@
             </if>
             <if test="description!=null and description!=''">
                 description = #{description,jdbcType=VARCHAR},
-            </if>
-            <if test="secOptionType!=null">
-                sec_option_type = #{secOptionType,jdbcType=INTEGER},
             </if>
             <if test="inputType!=null">
                 input_type = #{inputType,jdbcType=INTEGER},
@@ -266,9 +253,6 @@
             </if>
             <if test="optionsPageVO.description!=null and optionsPageVO.description!=''">
                 and description = #{optionsPageVO.description,jdbcType=VARCHAR}
-            </if>
-            <if test="optionsPageVO.secOptionType!=null">
-                and sec_option_type = #{optionsPageVO.secOptionType,jdbcType=INTEGER}
             </if>
             <if test="optionsPageVO.inputType!=null">
                 and input_type = #{optionsPageVO.inputType,jdbcType=INTEGER}

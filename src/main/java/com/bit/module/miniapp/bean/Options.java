@@ -34,7 +34,7 @@ public class Options implements Serializable {
 	/**
 	 * 1：电梯装潢可选项 2：客梯功能配置可选项 3.客梯常用非标可选项，4：货梯非标，5：自动扶梯、人行道非标
 	 */
-	private Integer secOptionType;
+	//private Integer secOptionType;
 	/**
 	 * 输入方式：1，选择，2手输入
 	 */
