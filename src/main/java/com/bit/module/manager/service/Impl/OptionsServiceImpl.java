@@ -47,7 +47,7 @@ public class OptionsServiceImpl extends BaseService implements OptionsService {
 		if (options.getItemType()==null){
 			throw new BusinessException("元素属性不能为空");
 		}else if (options.getItemType().equals(1)){
-			options.setRule(0);
+			options.setRule(1);
 		}
 		optionsDao.addOptions(options);
 		return successVo();
