@@ -515,4 +515,22 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 		return successVo();
 
 	}
+
+	/**
+	 * 计算个人项目数
+	 * @return
+	 */
+	@Override
+	public BaseVo countProject() {
+
+		Project pp = new Project();
+		pp.setProjectStatus(ProjectEnum.PROJECT_FAIL.getCode());
+		pp.setClosedStatus(1);
+		pp.setCreateUserId(getCurrentUserInfo().getId());
+		List<Project> byParam = projectDao.findByParam(pp);
+		BaseVo baseVo = new BaseVo();
+		baseVo.setData(byParam.size());
+
+		return baseVo;
+	}
 }

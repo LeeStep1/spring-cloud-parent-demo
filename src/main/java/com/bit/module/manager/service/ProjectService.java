@@ -46,6 +46,11 @@ public interface ProjectService {
 	 */
 	BaseVo closeProject(Project project);
 
+	/**
+	 * 计算个人项目数
+	 * @return
+	 */
+	BaseVo countProject();
 
 
 	ProjectVo queryProjectPri(Long projectId);

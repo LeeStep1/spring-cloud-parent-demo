@@ -196,6 +196,15 @@ public class ElevatorController {
 		return projectService.historyProject(projectPageVO);
 	}
 
+	/**
+	 * 计算个人项目数
+	 * @return
+	 */
+	@PostMapping("/countProject")
+	public BaseVo countProject(){
+		return projectService.countProject();
+	}
+
 
 	/**
 	 * 我的项目二级级页面  一个项目对应多个历史版本，以及下的电梯订单数据
