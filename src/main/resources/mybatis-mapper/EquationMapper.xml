@@ -161,7 +161,7 @@
                 and `type` = #{type,jdbcType=VARCHAR}
             </if>
             <if test="equationPageVO.typeName!=null and equationPageVO.typeName!=''">
-                and type_name = #{equationPageVO.typeName,jdbcType=VARCHAR}
+                and type_name like  concat(#{equationPageVO.typeName,jdbcType=VARCHAR} ,"%")
             </if>
             <if test="equationPageVO.relevanceType!=null">
                 and relevance_type = #{equationPageVO.relevanceType,jdbcType=INTEGER}
