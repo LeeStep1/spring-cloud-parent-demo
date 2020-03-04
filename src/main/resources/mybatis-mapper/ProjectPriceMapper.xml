@@ -389,7 +389,7 @@
             <if test="projectPageVO.nonStandardApplyStatusList!=null">
 
                 and  t1.non_standard_apply_status in
-                <foreach collection="list" item="item" index="index"
+                <foreach collection="nonStandardApplyStatusList" item="item" index="index"
                          open="(" close=")" separator=",">
                     #{item}
                 </foreach>
