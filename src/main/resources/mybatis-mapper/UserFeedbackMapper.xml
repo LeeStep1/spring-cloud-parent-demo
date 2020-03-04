@@ -23,7 +23,13 @@
             <if test="userFeedbackPageVO.createRealName!=null and userFeedbackPageVO.createRealName!=''">
                 and create_real_name like  concat(#{userFeedbackPageVO.createRealName,jdbcType=VARCHAR} ,"%")
             </if>
-
+            <if test="userFeedbackPageVO.beginTime!=null  ">
+               <!-- <![CDATA[  and create_time  > = #{userFeedbackPageVO.beginTime,jdbcType=TIMESTAMP} ]]>-->
+                <![CDATA[  and create_time >= DATE_FORMAT( #{userFeedbackPageVO.beginTime}, '%Y-%m-%d %T') ]]>
+            </if>
+           <if test="userFeedbackPageVO.endTime!=null ">
+                  <![CDATA[   and create_time  <=  DATE_FORMAT( #{userFeedbackPageVO.endTime} , '%Y-%m-%d %T')  ]]>
+           </if>
         </where>
         order by create_time desc
     </select>
