@@ -2,6 +2,7 @@ package com.bit.module.manager.service.Impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.bit.base.exception.BusinessException;
 import com.bit.base.service.BaseService;
 import com.bit.base.vo.BaseVo;
 import com.bit.module.equation.bean.Equation;
@@ -27,6 +28,12 @@ public class EquationManagerServiceImpl extends BaseService implements EquationM
 	@Override
 	@Transactional
 	public BaseVo add(Equation equation) {
+		//如果有关联属性，要加强制判断
+		if(!equation.getRelevanceType().equals(0)){
+			if(equation.getType()==null){
+				throw new BusinessException("参数不全，无法新增");
+			}
+		}
 		equationManagerDao.addEquation(equation);
 		return successVo();
 	}
@@ -39,6 +46,12 @@ public class EquationManagerServiceImpl extends BaseService implements EquationM
 	@Override
 	@Transactional
 	public BaseVo update(Equation equation) {
+		//如果有关联属性，要加强制判断
+		if(!equation.getRelevanceType().equals(0)){
+			if(equation.getType()==null){
+				throw new BusinessException("参数不全，无法修改");
+			}
+		}
 		equationManagerDao.updateEquation(equation);
 		return successVo();
 	}
