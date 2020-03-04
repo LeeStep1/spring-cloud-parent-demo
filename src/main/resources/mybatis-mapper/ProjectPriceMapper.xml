@@ -357,8 +357,8 @@
         INNER JOIN t_user t3
         on t2.create_user_id = t3.id
         <where>
-            <![CDATA[
-            and t1.non_standard_apply_status > 1 ]]>
+          <!--  <![CDATA[
+            and t1.non_standard_apply_status > 1 ]]>-->
             <if test="projectPageVO.customerName!=null and projectPageVO.customerName!=''">
                 and t2.customer_name LIKE concat("%",#{projectPageVO.customerName,jdbcType=VARCHAR},"%")
             </if>
@@ -374,8 +374,8 @@
             <if test="projectPageVO.createTime!=null">
                 and t2.create_time = #{projectPageVO.createTime,jdbcType=TIMESTAMP}
             </if>
-            <if test="projectPageVO.nonStandardApplyStatus!=null">
-                and t1.non_standard_apply_status = #{projectPageVO.nonStandardApplyStatus,jdbcType=INTEGER}
+            <if test="projectPageVO.enquiryApplyStatus!=null">
+                and t1.enquiry_apply_status = #{projectPageVO.enquiryApplyStatus,jdbcType=INTEGER}
             </if>
             <if test="projectPageVO.realName!=null and projectPageVO.realName!=''">
                 and t3.real_name like concat("%", #{projectPageVO.realName,jdbcType=VARCHAR} ,"%")
