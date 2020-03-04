@@ -1181,10 +1181,14 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		if(!getCurrentUserInfo().getId().equals(projectPriceById.getEnquiryAuditUserId())){
 			throw new BusinessException("此人无法审批");
 		}
-		projectPriceById.setEnquiryApplyStatus(EnquiryApplyStatusEnum.SHENNPIJUJUE.getCode());
-//		projectPriceById.setEnquiryAuditUserId(null);
-//		projectPriceById.setEnquiryAuditUserCompanyId(null);
-		projectPriceDao.updateProjectPrice(projectPriceById);
+		//projectPriceById.setEnquiryApplyStatus(EnquiryApplyStatusEnum.SHENNPIJUJUE.getCode());
+		ProjectPrice a=new ProjectPrice();
+		a.setId(projectPriceId);
+		a.setEnquiryAuditUserId(null);
+		a.setEnquiryAuditUserCompanyId(null);
+		a.setEnquiryApplyStatus(EnquiryApplyStatusEnum.SHENNPIJUJUE.getCode());
+		//projectPriceDao.updateProjectPrice(projectPriceById);
+		projectPriceDao.updateProjectPriceEnquireAuditWithNull(projectPriceById);
 
 		EnquiryAudit enquiryAudit = new EnquiryAudit();
 		enquiryAudit.setAuditUserId(getCurrentUserInfo().getId());
