@@ -391,8 +391,7 @@
                 and  t1.non_standard_apply_status in
                 <foreach collection="projectPageVO.nonStandardApplyStatusList" item="item" index="index"
                          open="(" close=")" separator=",">
-                  /*  #{item}*/
-                    #{projectPageVO.nonStandardApplyStatusList[${index}],jdbcType=INTEGER }
+                    #{item,jdbcType=INTEGER }
                 </foreach>
             </if>
             <if test="projectPageVO.nonStandardApplyStatus!=null">
