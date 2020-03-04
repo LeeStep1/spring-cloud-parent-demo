@@ -87,7 +87,14 @@ public class BasePriceEquationServiceImpl extends BaseService implements BasePri
 	@Override
 	@Transactional
 	public BaseVo update(BasePriceEquation basePriceEquation) {
-
+		BasePriceEquation param = new BasePriceEquation();
+		BeanUtils.copyProperties(basePriceEquation,param);
+		param.setOutput(null);
+		param.setCostPrice(null);
+		List<BasePriceEquation> byParam = basePriceEquationDao.findByParam(param);
+		if (CollectionUtils.isNotEmpty(byParam)){
+			throw new BusinessException("参数相同不能新增");
+		}
 		basePriceEquationDao.updateBasePriceEquation(basePriceEquation);
 		return successVo();
 	}
