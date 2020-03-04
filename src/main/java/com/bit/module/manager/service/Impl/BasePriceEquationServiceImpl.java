@@ -10,6 +10,8 @@ import com.bit.module.equation.bean.BasePriceEquation;
 import com.bit.module.equation.bean.BasePriceEquationRel;
 import com.bit.module.equation.dao.BasePriceEquationDao;
 import com.bit.module.equation.dao.BasePriceEquationRelDao;
+import com.bit.module.manager.bean.CategoryHead;
+import com.bit.module.manager.dao.CategoryHeadDao;
 import com.bit.module.manager.dao.QueryParamsDao;
 import com.bit.module.manager.service.QueryParamsService;
 import com.bit.module.manager.vo.BasePriceEquationVO;
@@ -23,7 +25,9 @@ import com.bit.module.manager.service.BasePriceEquationService;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service("basePriceEquationService")
 public class BasePriceEquationServiceImpl extends BaseService implements BasePriceEquationService {
@@ -39,6 +43,10 @@ public class BasePriceEquationServiceImpl extends BaseService implements BasePri
 
 	@Autowired
 	private QueryParamsService queryParamsService;
+
+	@Autowired
+	private CategoryHeadDao categoryHeadDao;
+
 
 	/**
 	 * 查询电梯的属性 载重 速度 层站 提升高度
@@ -173,6 +181,18 @@ public class BasePriceEquationServiceImpl extends BaseService implements BasePri
 	@Override
 	public BaseVo determineHeader(BasePriceEquationRel basePriceEquationRel) {
 		List<BasePriceEquationRel> byParam = basePriceEquationRelDao.findByParam(basePriceEquationRel);
+		Map cod=new HashMap<>();
+		cod.put("category",basePriceEquationRel.getCategory());
+		List<CategoryHead>  hd=categoryHeadDao.selectByMap(cod);
+		if(CollectionUtils.isNotEmpty(hd)){
+			hd.forEach(c->{
+				BasePriceEquationRel a=new BasePriceEquationRel();
+				a.setParams(c.getColName());
+				a.setVal(c.getColCode());
+				byParam.add(a);
+			});
+
+		}
 		BaseVo baseVo = new BaseVo();
 		baseVo.setData(byParam);
 		return baseVo;
