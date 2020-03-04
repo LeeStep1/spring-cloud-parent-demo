@@ -256,6 +256,13 @@ public class ProjectPriceServiceImpl extends BaseService implements ProjectPrice
 	@Override
 	public BaseVo listPage(ProjectPageVO projectPageVO) {
 		Page<ProjectShowVO> page = new Page<>(projectPageVO.getPageNum(), projectPageVO.getPageSize());
+
+		if(projectPageVO.getNonStandardApplyStatus()==null){
+			List<Integer> statusList=new ArrayList<>();
+			statusList.add(NonStandardApplyStatusEnum.DAISHENHE.getCode());
+			statusList.add(NonStandardApplyStatusEnum.TONGGUO.getCode());
+			projectPageVO.setNonStandardApplyStatusList(statusList);
+		}
 		IPage<ProjectShowVO> listPage = projectPriceDao.listPage(page, projectPageVO);
 		List<Long> projectIds = new ArrayList<>();
 		List<Long> projectPriceIds = new ArrayList<>();

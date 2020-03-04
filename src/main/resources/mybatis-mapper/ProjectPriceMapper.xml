@@ -386,6 +386,17 @@
             <if test="projectPageVO.enquiryAuditUserCompanyId!=null">
                 and t1.enquiry_audit_user_company_id = #{projectPageVO.enquiryAuditUserCompanyId,jdbcType=BIGINT}
             </if>
+            <if test="projectPageVO.nonStandardApplyStatusList!=null">
+
+                and  t1.non_standard_apply_status in
+                <foreach collection="array" item="item" index="index"
+                         open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="projectPageVO.nonStandardApplyStatus!=null">
+                and  t1.non_standard_apply_status = #{projectPageVO.nonStandardApplyStatus}
+            </if>
         </where>
         order by t1.create_time desc
     </select>

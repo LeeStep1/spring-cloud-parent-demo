@@ -7,6 +7,7 @@ import com.bit.base.vo.BasePageVo;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Description:
@@ -158,4 +159,9 @@ public class ProjectPageVO extends BasePageVo {
 	 * 排序 接口类型 0-个人 1-洽谈
 	 */
 	private Integer orderByType;
+
+	/**
+	 * 非标审批状态:-1：撤销 0：无需审批，1：非标的待提交，2：待审核，3：通过
+	 */
+	private List<Integer> nonStandardApplyStatusList;
 }
