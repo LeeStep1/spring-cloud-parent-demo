@@ -1481,7 +1481,10 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 				b.setRate(c.getRate());
 				orders.add(b);
 			});
-			projectEleOrderDao.updateBatch(orders);
+			for(ProjectEleOrder cc:orders){
+				projectEleOrderDao.updateById(cc);
+			}
+			//projectEleOrderDao.updateBatch(orders);
 			enquiryAudit.setRateList(JSON.toJSONString(rates));
 		}
 		enquiryAuditDao.addEnquiryAudit(enquiryAudit);

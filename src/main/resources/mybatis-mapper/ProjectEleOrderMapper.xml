@@ -186,9 +186,30 @@
         <foreach collection="list" item="item" index="index" open="" close="" separator=";">
             update t_project_ele_order
             <set>
-                rate =${item.rate}
+                <if test="item.rate != null" >
+                  rate = #{item.rate,jdbcType=DOUBLE },
+                </if>
             </set>
-            where id = ${item.id}
+            where id = #{item.id,jdbcType=BIGINT}
         </foreach>
     </update>
+
+
+  <!--  <update id="updateBatch" parameterType="java.util.List" >
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update standard_relation
+            <set >
+                <if test="item.standardFromUuid != null" >
+                    standard_from_uuid = #{item.standardFromUuid,jdbcType=VARCHAR},
+                </if>
+                <if test="item.standardToUuid != null" >
+                    standard_to_uuid = #{item.standardToUuid,jdbcType=VARCHAR},
+                </if>
+                <if test="item.gmtModified != null" >
+                    gmt_modified = #{item.gmtModified,jdbcType=TIMESTAMP},
+                </if>
+            </set>
+            where id = #{item.id,jdbcType=BIGINT}
+        </foreach>
+    </update>-->
 </mapper>
