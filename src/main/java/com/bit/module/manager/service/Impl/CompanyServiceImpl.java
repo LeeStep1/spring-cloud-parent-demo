@@ -54,20 +54,36 @@ public class CompanyServiceImpl extends BaseService implements CompanyService {
 	 * @return
 	 */
 	@Override
-	public BaseVo companyTree() {
+	public BaseVo companyTree(Company company) {
 		List<Company> all = companyDao.selectList(null);
+		List<Company> byParam = companyDao.companyTreeSearch(company);
+
 		//根节点
 		List<Company> rootList = new ArrayList<>();
 		//递归调用
-		if (CollectionUtils.isNotEmpty(all)){
-			for (Company company : all) {
-				if (company.getLevel().equals(1)){
-					rootList.add(company);
+		if (CollectionUtils.isNotEmpty(byParam)){
+			for (Company cp : byParam) {
+				if (cp.getLevel().equals(1)){
+					rootList.add(cp);
+				}
+			}
+			if (CollectionUtils.isEmpty(rootList)){
+				for (Company cp : byParam) {
+					if (cp.getLevel().equals(2)){
+						rootList.add(cp);
+					}
+				}
+				if (CollectionUtils.isEmpty(rootList)){
+					for (Company cp : byParam) {
+						if (cp.getLevel().equals(3)){
+							rootList.add(cp);
+						}
+					}
 				}
 			}
 		}
-		for (Company company : rootList) {
-			company.setChildList(getChildList(company,all,company.getId()));
+		for (Company cp : rootList) {
+			cp.setChildList(getChildList(cp,all,cp.getId()));
 		}
 		BaseVo baseVo = new BaseVo();
 		baseVo.setData(rootList);

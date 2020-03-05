@@ -31,6 +31,13 @@ public interface CompanyDao extends BaseMapper<Company> {
 	List<Company> findByParam(Company company);
 
 	/**
+	 * 公司树搜索
+	 * @param company
+	 * @return
+	 */
+	List<Company> companyTreeSearch(Company company);
+
+	/**
 	* 新增记录
     */
 	void addCompany(Company company);

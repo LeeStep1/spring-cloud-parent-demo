@@ -23,7 +23,7 @@ public interface CompanyService {
 	 * 公司树
 	 * @return
 	 */
-	BaseVo companyTree();
+	BaseVo companyTree(Company company);
 
 	/**
 	 * 新增公司
