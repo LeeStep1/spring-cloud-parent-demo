@@ -1453,13 +1453,13 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	public BaseVo passEnquireAudit1(PriceEnquireAuditVo projectPrice) {
 
 		ProjectPriceDetailVO vo=projectDao.getProjectDetailById(null,projectPrice.getProjectPriceId());
-		if(vo==null||vo.getProjectStatus().equals(ProjectEnum.PROJECT_FAIL.getCode())){
+		/*if(vo==null||vo.getProjectStatus().equals(ProjectEnum.PROJECT_FAIL.getCode())){
 			throw new BusinessException("此项目已关闭或无此项目");
-		}
+		}*/
 		ProjectPrice price=projectPriceDao.selectById(projectPrice.getProjectPriceId());
-		if(!getCurrentUserInfo().getId().equals(price.getEnquiryAuditUserId())){
+		/*if(!getCurrentUserInfo().getId().equals(price.getEnquiryAuditUserId())){
 			throw new BusinessException("此人无法审批");
-		}
+		}*/
 		//审批通过
 		EnquiryAudit enquiryAudit = new EnquiryAudit();
 		enquiryAudit.setAuditType(EnquiryAuditTypeEnum.SHENPITONGGUO.getCode());
@@ -1481,10 +1481,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 				b.setRate(c.getRate());
 				orders.add(b);
 			});
-			for(ProjectEleOrder cc:orders){
-				projectEleOrderDao.updateById(cc);
-			}
-			//projectEleOrderDao.updateBatch(orders);
+			projectEleOrderDao.updateBatch(orders);
 			enquiryAudit.setRateList(JSON.toJSONString(rates));
 		}
 		enquiryAuditDao.addEnquiryAudit(enquiryAudit);
