@@ -1188,7 +1188,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		a.setEnquiryAuditUserCompanyId(null);
 		a.setEnquiryApplyStatus(EnquiryApplyStatusEnum.SHENNPIJUJUE.getCode());
 		//projectPriceDao.updateProjectPrice(projectPriceById);
-		projectPriceDao.updateProjectPriceEnquireAuditWithNull(projectPriceById);
+		projectPriceDao.updateProjectPriceEnquireAuditWithNull(a);
 
 		EnquiryAudit enquiryAudit = new EnquiryAudit();
 		enquiryAudit.setAuditUserId(getCurrentUserInfo().getId());
