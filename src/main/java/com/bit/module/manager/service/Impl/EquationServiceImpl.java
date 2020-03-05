@@ -115,7 +115,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
                     ProjectEleOrder temp = projectEleOrderInput.get();
                     String basePrice = JSON.parseObject(eleOrder.getBasePrice()).get("price").toString();
                     // (原总价+ (基价*（原下浮-现下浮)))*数量 =  原总价 - 基价 *（1-原下浮)+ 基价*(1-现下浮)*数量
-                    total += (Double.parseDouble(eleOrder.getSingleTotalPrice()) + Double.parseDouble(basePrice) * (eleOrder.getRate()- temp.getRate()))*Double.parseDouble(eleOrder.getNum());
+                    total += (Double.parseDouble(eleOrder.getTotalPrice()) + Double.parseDouble(basePrice) * (eleOrder.getRate()- temp.getRate()))*Double.parseDouble(eleOrder.getNum());
                 }
             }
         }
