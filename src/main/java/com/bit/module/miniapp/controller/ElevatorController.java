@@ -465,6 +465,6 @@ public class ElevatorController {
 	 */
 	@PostMapping("/passEnquireAudit")
 	public BaseVo passEnquireAudit(@RequestBody PriceEnquireAuditVo priceEnquireAuditVo) {
-		return wxElevatorService.passEnquireAudit1(priceEnquireAuditVo);
+		return wxElevatorService.passEnquireAudit(priceEnquireAuditVo);
 	}
 }

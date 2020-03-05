@@ -193,6 +193,6 @@ public interface WxElevatorService {
 	 * @param projectPrice
 	 * @return
 	 */
-	BaseVo passEnquireAudit1(PriceEnquireAuditVo projectPrice);
+	BaseVo passEnquireAudit(PriceEnquireAuditVo projectPrice);
 
 }

@@ -68,6 +68,9 @@ public class ElevatorTypeServiceImpl extends BaseService implements ElevatorType
 	@Override
 	@Transactional
 	public BaseVo update(ElevatorType elevatorType) {
+		if (elevatorType.getPicture().contains("/quotation/images/")){
+			elevatorType.setPicture(elevatorType.getPicture().replace("/quotation/images/",""));
+		}
 		elevatorTypeDao.updateElevatorType(elevatorType);
 		return successVo();
 	}

@@ -1450,13 +1450,13 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 	 */
 	@Transactional
 	@Override
-	public BaseVo passEnquireAudit1(PriceEnquireAuditVo projectPrice) {
+	public BaseVo passEnquireAudit(PriceEnquireAuditVo projectPrice) {
 
-		ProjectPriceDetailVO vo=projectDao.getProjectDetailById(null,projectPrice.getProjectPriceId());
+//		ProjectPriceDetailVO vo=projectDao.getProjectDetailById(null,projectPrice.getProjectPriceId());
 		/*if(vo==null||vo.getProjectStatus().equals(ProjectEnum.PROJECT_FAIL.getCode())){
 			throw new BusinessException("此项目已关闭或无此项目");
 		}*/
-		ProjectPrice price=projectPriceDao.selectById(projectPrice.getProjectPriceId());
+//		ProjectPrice price=projectPriceDao.selectById(projectPrice.getProjectPriceId());
 		/*if(!getCurrentUserInfo().getId().equals(price.getEnquiryAuditUserId())){
 			throw new BusinessException("此人无法审批");
 		}*/
@@ -1491,7 +1491,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		pr.setEnquiryAuditUserId(null);
 		pr.setEnquiryAuditUserCompanyId(null);
 		projectPriceDao.updateProjectPriceEnquireAuditWithNull(pr);
-		//todo  計算
+		//  計算
 		Map<String, Object> cod = new HashMap<>();
 		cod.put("projectPriceId", projectPrice.getProjectPriceId());
 		cod.put("isUpdate", true);
