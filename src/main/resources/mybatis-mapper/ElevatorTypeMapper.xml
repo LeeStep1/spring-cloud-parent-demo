@@ -144,13 +144,13 @@
         FROM t_elevator_type
         <where>
             <if test="elevatorTypePageVO.typeName!=null and elevatorTypePageVO.typeName!=''">
-                and type_name = #{elevatorTypePageVO.typeName,jdbcType=VARCHAR}
+                and type_name LIKE concat("%",#{elevatorTypePageVO.typeName,jdbcType=VARCHAR},"%")
             </if>
             <if test="elevatorTypePageVO.type!=null">
                 and `type` = #{elevatorTypePageVO.type,jdbcType=INTEGER}
             </if>
             <if test="elevatorTypePageVO.series!=null and elevatorTypePageVO.series!=''">
-                and series = #{elevatorTypePageVO.series,jdbcType=VARCHAR}
+                and series LIKE concat("%",#{elevatorTypePageVO.series,jdbcType=VARCHAR},"%")
             </if>
             <if test="elevatorTypePageVO.paramsKey!=null and elevatorTypePageVO.paramsKey!=''">
                 and params_key = #{elevatorTypePageVO.paramsKey,jdbcType=VARCHAR}
