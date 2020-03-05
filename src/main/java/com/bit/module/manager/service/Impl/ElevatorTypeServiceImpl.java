@@ -90,7 +90,7 @@ public class ElevatorTypeServiceImpl extends BaseService implements ElevatorType
 			throw new BusinessException("记录不存在");
 		}
 		ProjectEleOrder order = new ProjectEleOrder();
-		order.setElevatorTypeName(elevatorTypeById.getTypeName());
+		order.setElevatorTypeId(elevatorTypeById.getId());
 		List<ProjectEleOrder> byParam = projectEleOrderDao.findByParam(order);
 		if (CollectionUtils.isNotEmpty(byParam)){
 			throw new BusinessException("存在关联数据不能删除");
