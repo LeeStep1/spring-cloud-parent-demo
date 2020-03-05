@@ -1,6 +1,8 @@
 package com.bit.module.manager.bean;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
@@ -8,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 import lombok.Data;
+import org.springframework.data.annotation.Id;
 
 /**
  * 分公司表
@@ -23,6 +26,7 @@ public class Company implements Serializable {
 	/**
 	 *
 	 */
+	@TableId(value = "id",type = IdType.AUTO)
 	private Long id;
 	/**
 	 * 公司名称

@@ -81,7 +81,7 @@ public class CompanyServiceImpl extends BaseService implements CompanyService {
 	@Override
 	@Transactional
 	public BaseVo addCompany(Company company) {
-		companyDao.addCompany(company);
+		companyDao.insert(company);
 		BaseVo rs=new BaseVo();
 		rs.setData(company);
 		return rs;
