@@ -58,7 +58,7 @@
 
 
     <!-- 新增数据 -->
-    <insert id="addDict" parameterType="com.bit.module.manager.bean.Dict" keyColumn="id"
+    <insert id="addDict" parameterType="com.bit.module.manager.bean.Dict" keyProperty="id"
             useGeneratedKeys="true">
         insert into t_dict
         <trim prefix="(" suffix=")" suffixOverrides=",">

@@ -136,7 +136,7 @@
 	</select>
 
 	<!-- 添加一条记录 -->
-	<insert id="addUser" parameterType="com.bit.module.manager.bean.User" keyProperty="id" useGeneratedKeys="true" keyColumn="id">
+	<insert id="addUser" parameterType="com.bit.module.manager.bean.User"  useGeneratedKeys="true" keyProperty="id">
         insert into t_user
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="userName!=null and userName!=''">
@@ -204,7 +204,7 @@
         </trim>
 	</insert>
 
-    <insert id="batchAdd" parameterType="com.bit.module.manager.bean.User" keyProperty="id" useGeneratedKeys="true" keyColumn="id">
+    <insert id="batchAdd" parameterType="com.bit.module.manager.bean.User"  useGeneratedKeys="true" keyProperty="id">
         insert into t_user(
         user_name,
         real_name,
@@ -235,7 +235,7 @@
 
 
 	<!-- 添加一条记录 -->
-	<insert id="addUserRelRole" parameterType="com.bit.module.manager.bean.UserRelRole" keyProperty="id" useGeneratedKeys="true" keyColumn="id">
+	<insert id="addUserRelRole" parameterType="com.bit.module.manager.bean.UserRelRole"  useGeneratedKeys="true" keyProperty="id">
 		insert INTO t_user_role (
 		role_id ,
 		user_id

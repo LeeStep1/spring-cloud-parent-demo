@@ -61,7 +61,7 @@
 
 
     <!-- 新增数据 -->
-    <insert id="addElevatorType" parameterType="com.bit.module.miniapp.bean.ElevatorType" keyColumn="id" useGeneratedKeys="true">
+    <insert id="addElevatorType" parameterType="com.bit.module.miniapp.bean.ElevatorType" keyProperty="id" useGeneratedKeys="true">
         insert into t_elevator_type
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="typeName!=null and typeName!=''">

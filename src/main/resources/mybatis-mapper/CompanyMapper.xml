@@ -48,7 +48,7 @@
 
 
     <!-- 新增数据 -->
-    <insert id="addCompany" parameterType="com.bit.module.manager.bean.Company" keyColumn="id"
+    <insert id="addCompany" parameterType="com.bit.module.manager.bean.Company" keyProperty="id"
             useGeneratedKeys="true">
         insert into t_company
         <trim prefix="(" suffix=")" suffixOverrides=",">

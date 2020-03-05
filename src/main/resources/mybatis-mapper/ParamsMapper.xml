@@ -58,7 +58,7 @@
 
 
     <!-- 新增数据 -->
-    <insert id="addParams" parameterType="com.bit.module.manager.bean.Params" keyColumn="id"
+    <insert id="addParams" parameterType="com.bit.module.manager.bean.Params" keyProperty="id"
             useGeneratedKeys="true">
         insert into t_params
         <trim prefix="(" suffix=")" suffixOverrides=",">

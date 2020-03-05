@@ -58,7 +58,7 @@
 
 
     <!-- 新增数据 -->
-    <insert id="addBasePriceEquationRel" parameterType="com.bit.module.equation.bean.BasePriceEquationRel" keyColumn="id"
+    <insert id="addBasePriceEquationRel" parameterType="com.bit.module.equation.bean.BasePriceEquationRel" keyProperty="id"
             useGeneratedKeys="true">
         insert into t_base_price_equation_rel
         <trim prefix="(" suffix=")" suffixOverrides=",">

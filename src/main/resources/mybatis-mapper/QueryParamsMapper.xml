@@ -105,7 +105,7 @@
     </select>
 
     <!-- 新增数据 -->
-    <insert id="addQueryParams" parameterType="com.bit.module.miniapp.bean.QueryParams" keyColumn="id"
+    <insert id="addQueryParams" parameterType="com.bit.module.miniapp.bean.QueryParams" keyProperty="id"
             useGeneratedKeys="true">
         insert into t_query_params
         <trim prefix="(" suffix=")" suffixOverrides=",">

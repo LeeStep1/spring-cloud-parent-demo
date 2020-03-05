@@ -58,7 +58,7 @@
 
 
     <!-- 新增数据 -->
-    <insert id="addInstallParams" parameterType="com.bit.module.manager.bean.InstallParams" keyColumn="id"
+    <insert id="addInstallParams" parameterType="com.bit.module.manager.bean.InstallParams" keyProperty="id"
             useGeneratedKeys="true">
         insert into t_install_params
         <trim prefix="(" suffix=")" suffixOverrides=",">

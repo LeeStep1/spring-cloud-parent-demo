@@ -124,7 +124,7 @@
 
 
     <!-- 新增数据 -->
-    <insert id="addElevatorBaseElement" parameterType="com.bit.module.manager.bean.ElevatorBaseElement" keyColumn="id"
+    <insert id="addElevatorBaseElement" parameterType="com.bit.module.manager.bean.ElevatorBaseElement" keyProperty="id"
             useGeneratedKeys="true">
         insert into t_elevator_base_element
         <trim prefix="(" suffix=")" suffixOverrides=",">

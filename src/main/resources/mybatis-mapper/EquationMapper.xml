@@ -63,7 +63,7 @@
 
 
     <!-- 新增数据 -->
-    <insert id="addEquation" parameterType="com.bit.module.equation.bean.Equation" keyColumn="id"
+    <insert id="addEquation" parameterType="com.bit.module.equation.bean.Equation" keyProperty="id"
             useGeneratedKeys="true">
         insert into t_equation
         <trim prefix="(" suffix=")" suffixOverrides=",">
