@@ -46,9 +46,28 @@
         </where>
     </select>
 
+    <!--公司树搜索-->
+    <select id="companyTreeSearch" parameterType="com.bit.module.manager.bean.Company" resultMap="companyMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_company
+        <where>
+            <if test="companyName!=null and companyName!=''">
+                and company_name LIKE concat(#{companyName,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="level!=null">
+                and level = #{level,jdbcType=INTEGER}
+            </if>
+            <if test="parentId!=null">
+                and parent_id = #{parentId,jdbcType=BIGINT}
+            </if>
+
+        </where>
+    </select>
+
 
     <!-- 新增数据 -->
-    <insert id="addCompany" parameterType="com.bit.module.manager.bean.Company" keyColumn="id"
+    <insert id="addCompany" parameterType="com.bit.module.manager.bean.Company" keyProperty="id"
             useGeneratedKeys="true">
         insert into t_company
         <trim prefix="(" suffix=")" suffixOverrides=",">

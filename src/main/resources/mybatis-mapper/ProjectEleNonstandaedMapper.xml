@@ -4,7 +4,7 @@
 <mapper namespace="com.bit.module.manager.dao.ProjectEleNonstandardDao">
 
     <!--批量新增-->
-    <insert id="batchAdd" parameterType="java.util.List" keyColumn="id" useGeneratedKeys="true">
+    <insert id="batchAdd" parameterType="java.util.List" keyProperty="id" useGeneratedKeys="true">
         INSERT INTO t_project_ele_nonstandard(
         order_id,
         content,

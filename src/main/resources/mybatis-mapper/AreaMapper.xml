@@ -62,7 +62,7 @@
 
 
     <!-- 新增数据 -->
-    <insert id="addArea" parameterType="com.bit.module.miniapp.bean.Area" keyColumn="id"
+    <insert id="addArea" parameterType="com.bit.module.miniapp.bean.Area" keyProperty="id"
             useGeneratedKeys="true">
         insert into t_area
         <trim prefix="(" suffix=")" suffixOverrides=",">

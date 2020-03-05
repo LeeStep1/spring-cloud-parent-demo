@@ -50,7 +50,7 @@
 
 
     <!-- 新增数据 -->
-    <insert id="addCompanyRate" parameterType="com.bit.module.manager.bean.CompanyRate" keyColumn="id"
+    <insert id="addCompanyRate" parameterType="com.bit.module.manager.bean.CompanyRate" keyProperty="id"
             useGeneratedKeys="true">
         insert into t_company_rate
         <trim prefix="(" suffix=")" suffixOverrides=",">

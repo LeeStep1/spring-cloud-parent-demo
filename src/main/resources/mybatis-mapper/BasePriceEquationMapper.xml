@@ -78,7 +78,7 @@
 
 
     <!-- 新增数据 -->
-    <insert id="addBasePriceEquation" parameterType="com.bit.module.equation.bean.BasePriceEquation" keyColumn="id"
+    <insert id="addBasePriceEquation" parameterType="com.bit.module.equation.bean.BasePriceEquation" keyProperty="id"
             useGeneratedKeys="true">
         insert into t_base_price_equation
         <trim prefix="(" suffix=")" suffixOverrides=",">

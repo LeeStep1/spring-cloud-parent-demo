@@ -36,8 +36,8 @@ public class CompanyController {
 	 * @return
 	 */
     @PostMapping("/companyTree")
-    public BaseVo companyTree(){
-		return companyService.companyTree();
+    public BaseVo companyTree(@RequestBody Company company){
+		return companyService.companyTree(company);
     }
 
 	/**

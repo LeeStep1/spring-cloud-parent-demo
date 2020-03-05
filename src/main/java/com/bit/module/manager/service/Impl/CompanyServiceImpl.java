@@ -16,8 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Description:
@@ -54,20 +53,36 @@ public class CompanyServiceImpl extends BaseService implements CompanyService {
 	 * @return
 	 */
 	@Override
-	public BaseVo companyTree() {
+	public BaseVo companyTree(Company company) {
 		List<Company> all = companyDao.selectList(null);
+		List<Company> byParam = companyDao.companyTreeSearch(company);
+
 		//根节点
 		List<Company> rootList = new ArrayList<>();
 		//递归调用
-		if (CollectionUtils.isNotEmpty(all)){
-			for (Company company : all) {
-				if (company.getLevel().equals(1)){
-					rootList.add(company);
+		if (CollectionUtils.isNotEmpty(byParam)){
+
+			//找出来最小的等级
+			Set<Integer> set = new HashSet<>();
+			for (Company cp : byParam) {
+				if (!set.contains(cp.getLevel())){
+					set.add(cp.getLevel());
+				}
+			}
+
+			Integer min = 0;
+			if (CollectionUtils.isNotEmpty(set)){
+				min = Collections.min(set);
+			}
+
+			for (Company cp : byParam){
+				if (min.equals(cp.getLevel())){
+					rootList.add(cp);
 				}
 			}
 		}
-		for (Company company : rootList) {
-			company.setChildList(getChildList(company,all,company.getId()));
+		for (Company cp : rootList) {
+			cp.setChildList(getChildList(cp,all,cp.getId()));
 		}
 		BaseVo baseVo = new BaseVo();
 		baseVo.setData(rootList);

@@ -21,7 +21,7 @@
         element_id
     </sql>
     <!--批量新增-->
-    <insert id="batchAdd" parameterType="com.bit.module.manager.bean.ProjectEleOrderBaseInfo" keyColumn="id" useGeneratedKeys="true">
+    <insert id="batchAdd" parameterType="com.bit.module.manager.bean.ProjectEleOrderBaseInfo" keyProperty="id" useGeneratedKeys="true">
         INSERT INTO t_project_ele_order_base_info(
         param_key,
         info_value,

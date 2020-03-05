@@ -56,7 +56,7 @@
 
 
     <!-- 新增数据 -->
-    <insert id="addElevatorRelaOptions" parameterType="com.bit.module.miniapp.bean.ElevatorRelaOptions" keyColumn="id"
+    <insert id="addElevatorRelaOptions" parameterType="com.bit.module.miniapp.bean.ElevatorRelaOptions" keyProperty="id"
             useGeneratedKeys="true">
         insert into t_elevator_rela_options
         <trim prefix="(" suffix=")" suffixOverrides=",">

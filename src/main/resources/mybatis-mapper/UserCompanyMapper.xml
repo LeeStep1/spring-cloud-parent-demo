@@ -43,7 +43,7 @@
 
 
     <!-- 新增数据 -->
-    <insert id="addUserCompany" parameterType="com.bit.module.manager.bean.UserCompany" keyColumn="id"
+    <insert id="addUserCompany" parameterType="com.bit.module.manager.bean.UserCompany" keyProperty="id"
             useGeneratedKeys="true">
         insert into t_user_company
         <trim prefix="(" suffix=")" suffixOverrides=",">

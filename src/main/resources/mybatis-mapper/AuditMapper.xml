@@ -64,7 +64,7 @@
 
 
     <!-- 新增数据 -->
-    <insert id="addAudit" parameterType="com.bit.module.manager.bean.Audit" keyColumn="id"
+    <insert id="addAudit" parameterType="com.bit.module.manager.bean.Audit" keyProperty="id"
             useGeneratedKeys="true">
         insert into t_audit
         <trim prefix="(" suffix=")" suffixOverrides=",">
