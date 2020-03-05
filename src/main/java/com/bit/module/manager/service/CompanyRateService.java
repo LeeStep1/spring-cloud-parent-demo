@@ -54,5 +54,12 @@ public interface CompanyRateService {
 	 */
 	BaseVo listPage(CompanyRatePageVO ratePageVO);
 
+	/**
+	 * 多参数查询
+	 * @param companyRate
+	 * @return
+	 */
+	BaseVo findByParam(CompanyRate companyRate);
+
 }
 

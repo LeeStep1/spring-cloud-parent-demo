@@ -85,5 +85,14 @@ public class CompanyRateController {
 		return companyRateService.listPage(ratePageVO);
 	}
 
+	/**
+	 * 多参数查询
+	 * @param companyRate
+	 * @return
+	 */
+	@PostMapping("/findByParam")
+	public BaseVo findByParam(@RequestBody CompanyRate companyRate){
+    	return companyRateService.findByParam(companyRate);
+	}
 
 }
