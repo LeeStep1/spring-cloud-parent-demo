@@ -16,8 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Description:
@@ -62,23 +61,23 @@ public class CompanyServiceImpl extends BaseService implements CompanyService {
 		List<Company> rootList = new ArrayList<>();
 		//递归调用
 		if (CollectionUtils.isNotEmpty(byParam)){
+
+			//找出来最小的等级
+			Set<Integer> set = new HashSet<>();
 			for (Company cp : byParam) {
-				if (cp.getLevel().equals(1)){
-					rootList.add(cp);
+				if (!set.contains(cp.getLevel())){
+					set.add(cp.getLevel());
 				}
 			}
-			if (CollectionUtils.isEmpty(rootList)){
-				for (Company cp : byParam) {
-					if (cp.getLevel().equals(2)){
-						rootList.add(cp);
-					}
-				}
-				if (CollectionUtils.isEmpty(rootList)){
-					for (Company cp : byParam) {
-						if (cp.getLevel().equals(3)){
-							rootList.add(cp);
-						}
-					}
+
+			Integer min = 0;
+			if (CollectionUtils.isNotEmpty(set)){
+				min = Collections.min(set);
+			}
+
+			for (Company cp : byParam){
+				if (min.equals(cp.getLevel())){
+					rootList.add(cp);
 				}
 			}
 		}
