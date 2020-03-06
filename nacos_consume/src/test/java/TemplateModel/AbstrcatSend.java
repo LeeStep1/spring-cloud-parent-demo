@@ -27,6 +27,6 @@ public abstract class AbstrcatSend {
 
     abstract void initUserList();
 
-
+    abstract int type();
 
 }

@@ -1,28 +1,39 @@
 package TemplateModel;
 
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 public class Test {
 
-    public void test(Object object){
-        SelfAnn annotation = object.getClass().getAnnotation(SelfAnn.class);
-        int type = annotation.value();
+    @org.junit.Test
+    public void getAbstractTestList(){
+        Map<Integer,AbstrcatSend> map = new HashMap<>();
+        ServiceLoader<AbstrcatSend> loader = ServiceLoader.load(AbstrcatSend.class);
+        Iterator<AbstrcatSend> iterator = loader.iterator();
+        while (iterator.hasNext()){
+            AbstrcatSend temp = iterator.next();
+            map.put(temp.type(),temp);
+        }
+        System.out.println(map);
+    }
 
-        if(type == 5){
-            AbstrcatSend normalStudent = new NormalStudent(true);
-            normalStudent.send();
-        }else {
-            AbstrcatSend vipStudent = new VIPStudent(false);
-            vipStudent.send();
+    public void test(Object object){
+        if(object instanceof AbstrcatSend){
+
+            AbstrcatSend abstrcatSend = (AbstrcatSend)object;
+            abstrcatSend.send();
         }
 
     }
 
-    @SelfAnn(5)
-    public void normalSend(){
+    @org.junit.Test
+    public void send(){
+        NormalStudent student = new NormalStudent(false);
+        this.test(student);
+
+        VIPStudent vipStudent = new VIPStudent(true);
+        this.test(vipStudent);
     }
 
-    @SelfAnn(6)
-    public void vipSend(){
-
-    }
 }
