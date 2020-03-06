@@ -1490,6 +1490,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		pr.setEnquiryApplyStatus(EnquiryApplyStatusEnum.SHENPITONGGUO.getCode());
 		pr.setEnquiryAuditUserId(null);
 		pr.setEnquiryAuditUserCompanyId(null);
+		pr.setId(projectPrice.getProjectPriceId());
 		projectPriceDao.updateProjectPriceEnquireAuditWithNull(pr);
 		//  計算
 		Map<String, Object> cod = new HashMap<>();
