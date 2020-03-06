@@ -209,7 +209,8 @@ public class ElevatorTypeServiceImpl extends BaseService implements ElevatorType
 		try {
 
 			byte[] buffer = multipartFile.getBytes();
-			File file = new File(imagePath+"ele\\"+fileName);
+			//File file = new File(imagePath+"ele/"+fileName);
+			File file = new File(imagePath+filePath);
 			if (file.exists()){
 				deleteFile(file);
 			}else {
