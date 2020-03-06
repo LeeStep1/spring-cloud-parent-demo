@@ -122,6 +122,16 @@ public class QueryParamsServiceImpl extends BaseService implements QueryParamsSe
 	@Override
 	@Transactional
 	public BaseVo update(QueryParams queryParams) {
+		//校验重复
+		QueryParams pp = new QueryParams();
+		pp.setKey(queryParams.getKey());
+		pp.setValue(queryParams.getValue());
+		pp.setLevel(queryParams.getLevel());
+		pp.setParentId(queryParams.getParentId());
+		List<QueryParams> byParam = queryParamsDao.checkValue(pp);
+		if (CollectionUtils.isNotEmpty(byParam)){
+			throw new BusinessException("业务数据值重复");
+		}
 		queryParamsDao.updateQueryParams(queryParams);
 		return successVo();
 	}
