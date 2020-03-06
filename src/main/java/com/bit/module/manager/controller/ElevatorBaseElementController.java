@@ -81,6 +81,19 @@ public class ElevatorBaseElementController {
 	}
 
 	/**
+	 * 参数验重
+	 * @param elevatorBaseElement
+	 * @author chenduo
+	 * @since ${date}
+	 * @return List<ElevatorBaseElement>
+	 */
+	@PostMapping("/distinctParam")
+	public BaseVo distinctParam(ElevatorBaseElement elevatorBaseElement){
+		return elevatorBaseElementService.distinctParam(elevatorBaseElement);
+	}
+
+
+	/**
 	 * 单查数据
 	 * @param id
 	 * @author chenduo

@@ -47,6 +47,15 @@ public interface ElevatorBaseElementService {
      */
     BaseVo findByParam(ElevatorBaseElement elevatorBaseElement);
 
+	/**
+	 * 参数验重
+	 * @param elevatorBaseElement
+	 * @author chenduo
+	 * @since ${date}
+	 * @return List<ElevatorBaseElement>
+	 */
+	BaseVo distinctParam(ElevatorBaseElement elevatorBaseElement);
+
     /**
      * 单查数据
      * @param id

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bit.base.service.BaseService;
 import com.bit.base.vo.BaseVo;
 
+import com.bit.common.wxenum.ResultCode;
 import com.bit.module.manager.bean.ElevatorBaseElement;
 import com.bit.module.manager.dao.ElevatorBaseElementDao;
 import com.bit.module.manager.dao.ElevatorTypeDao;
@@ -12,6 +13,7 @@ import com.bit.module.manager.service.ElevatorBaseElementService;
 import com.bit.module.manager.vo.ElevatorBaseElementPageVO;
 import com.bit.module.manager.vo.ElevatorBaseElementVO;
 import com.bit.module.miniapp.bean.ElevatorType;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -120,6 +122,27 @@ public class ElevatorBaseElementImpl extends BaseService implements ElevatorBase
         List<ElevatorBaseElement> elevatorBaseElementList = elevatorBaseElementDao.findByParam(elevatorBaseElement);
         BaseVo baseVo = new BaseVo();
         baseVo.setData(elevatorBaseElementList);
+        return baseVo;
+    }
+
+    /**
+     * 参数验重
+     * @param elevatorBaseElement
+     * @author chenduo
+     * @since ${date}
+     * @return List<ElevatorBaseElement>
+     */
+    @Override
+    public BaseVo distinctParam(ElevatorBaseElement elevatorBaseElement) {
+        List<ElevatorBaseElement> elevatorBaseElementList = elevatorBaseElementDao.findByParam(elevatorBaseElement);
+        BaseVo baseVo = new BaseVo();
+        if (CollectionUtils.isNotEmpty(elevatorBaseElementList)){
+            baseVo.setData(ResultCode.PARAMS_KEY_EXIST.getCode());
+			baseVo.setMsg(ResultCode.PARAMS_KEY_EXIST.getInfo());
+        }else {
+            baseVo.setData(ResultCode.PARAMS_KEY_NOT_EXIST.getCode());
+			baseVo.setMsg(ResultCode.PARAMS_KEY_NOT_EXIST.getInfo());
+        }
         return baseVo;
     }
 
