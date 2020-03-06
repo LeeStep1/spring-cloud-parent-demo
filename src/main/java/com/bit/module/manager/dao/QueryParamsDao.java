@@ -41,6 +41,13 @@ public interface QueryParamsDao extends BaseMapper<QueryParams>{
 	List<QueryParams> getEleParam(QueryParams queryParams);
 
 	/**
+	 * 校验参数是否重复
+	 * @param queryParams
+	 * @return
+	 */
+	List<QueryParams> checkValue(QueryParams queryParams);
+
+	/**
 	 * 根据id 和 key,value查询
 	 * @param queryParams
 	 * @return
