@@ -18,6 +18,7 @@ import com.bit.module.manager.vo.ElevatorTypePageVO;
 import com.bit.module.manager.vo.ElevatorTypeVO;
 import com.bit.module.miniapp.bean.ElevatorType;
 import com.bit.utils.StringUtil;
+import com.bit.utils.UUIDUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -200,12 +201,16 @@ public class ElevatorTypeServiceImpl extends BaseService implements ElevatorType
 	 */
 	@Override
 	public BaseVo uploadImage(MultipartFile multipartFile,String fileName) {
+		String fileNamenew="";
 		if (multipartFile==null){
 			throw new BusinessException("文件是空");
+		}else{
+			fileNamenew= UUIDUtil.getUUID()+ multipartFile.getOriginalFilename();
 		}
 		OutputStream out =null;
 		OutputStream toClient = null;
-		String filePath = "ele/"+fileName;
+		String filePath = "ele"+File.separator +fileNamenew;
+		//String filePath = "ele/"+fileName;
 		try {
 
 			byte[] buffer = multipartFile.getBytes();
