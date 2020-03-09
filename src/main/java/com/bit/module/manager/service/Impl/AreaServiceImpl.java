@@ -83,6 +83,15 @@ public class AreaServiceImpl extends BaseService implements AreaService {
 	@Override
 	public BaseVo<Area> listPage(Area area) {
 		BaseVo baseVo = new BaseVo();
+		//全部
+		List<Area> all = areaDao.findByParam(null);
+		List<AreaVO> areaVOS = new ArrayList<>();
+		for (Area area1 : all) {
+			AreaVO areaVO = new AreaVO();
+			BeanUtils.copyProperties(area1,areaVO);
+			areaVOS.add(areaVO);
+		}
+
 		List<Area> byParam = areaDao.findByParam(area);
 		for (Area ar : byParam) {
 			if (ar.getArLeavel()<3){
@@ -90,10 +99,7 @@ public class AreaServiceImpl extends BaseService implements AreaService {
 			}
 		}
 
-		if (StringUtil.isEmpty(area.getArName()) && area.getTonsPrice()==null && area.getInstallCoefficient()==null){
-			baseVo.setData(byParam);
-			return baseVo;
-		}
+
 		//找出来最小的等级
 		Set<Integer> set = new HashSet<>();
 		for (Area area1 : byParam) {
@@ -110,14 +116,12 @@ public class AreaServiceImpl extends BaseService implements AreaService {
 
 		//根
 		List<AreaVO> root = new ArrayList<>();
-		List<AreaVO> areaVOS = new ArrayList<>();
+
 		for (Area area1 : byParam) {
 			AreaVO areaVO = new AreaVO();
 			BeanUtils.copyProperties(area1,areaVO);
 			if (area1.getArLeavel().equals(min)){
 				root.add(areaVO);
-			}else {
-				areaVOS.add(areaVO);
 			}
 		}
 
