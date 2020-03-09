@@ -274,7 +274,10 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
             }
 
             vars.put("非标加价",sum );
-            vars.put("不计算下浮率",true );
+
+            if (Boolean.TRUE.equals(vars.get("不计算下浮率"))) {
+                vars.put("不计算下浮率",true );
+            }
             executeCount(vars);
             totalNoDiscount+= (Double)vars.get("小计_合价");
             total += Double.parseDouble(vars.get("小计_设备总价无下浮").toString());
