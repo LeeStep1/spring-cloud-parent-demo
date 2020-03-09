@@ -198,8 +198,8 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         }
         //最大下浮率 = 设备基价与成本差之和 / 设备总价无下浮之和
         projectPrice.setMaxRate(NumberUtil.round(difference/totalNoDiscount, 2).doubleValue());
-        projectPrice.setCostTotalPrice(costTotalPrice.toString());// 总成本
-        projectPrice.setTotalPrice(totalPrice+"");
+        projectPrice.setCostTotalPrice(NumberUtil.round(costTotalPrice,2).toString());// 总成本
+        projectPrice.setTotalPrice(NumberUtil.round(totalPrice,2).toString());
 //        BigDecimal bd = new BigDecimal("0");
 //        List<ProjectEleOrder> projectEleOrderNew = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
 //                .eq("project_id", projectPrice.getProjectId())
