@@ -1436,6 +1436,18 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		//map.put("version",projectPrice.getVersion());
 		map.put("targetPrice", projectPrice.getInquiryPrice());
 		map.put("isUpdate", true);
+		if (projectPriceById.getTransportFlag() == 1){
+			map.put("包括运费",true);
+		}else if (projectPriceById.getTransportFlag() == 0){
+			map.put("包括运费",false);
+		}
+
+		if (projectPriceById.getInstallFlag() == 1){
+			map.put("包括安装",true);
+		}else if (projectPriceById.getInstallFlag() == 0){
+			map.put("包括安装",false);
+		}
+
 
 		equationServiceImpl.countAvgDiscountRate(map);
 
