@@ -504,6 +504,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		} else {
 			//正式版本copy 转成草稿
 			if (projectPrice != null) {
+				standardFlag=projectPrice.getStandard();
+				enquiryApplyStatus=projectPrice.getEnquiryApplyStatus();
 				//删除草稿
 				delELePriceInfo(projectId);
 				p.put("version_id", projectPrice.getId().longValue());
@@ -512,10 +514,9 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 				projectPrice.setId(null);
 				projectPrice.setVersion(-1);
 				projectPrice.setCreateTime(new Date());
-				projectPrice.setTotalPrice(null);
+				//projectPrice.setTotalPrice(null);
 				projectPrice.setPositiveLock(1);
-				standardFlag=projectPrice.getStandard();
-				enquiryApplyStatus=projectPrice.getEnquiryApplyStatus();
+
 				//非标的话，就强制将审批状态置为待提交
 				if (projectPrice.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())) {
 					projectPrice.setNonStandardApplyStatus(NonStandardApplyStatusEnum.DAITIJIAO.getCode());
@@ -527,6 +528,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 					projectPrice.setEnquiryApplyTime(null);
 					projectPrice.setEnquiryAuditUserCompanyId(null);
 					projectPrice.setEnquiryAuditUserId(null);
+					projectPrice.setTotalPrice(null);
 				}
 
 				//1.2版本新增逻辑，将如果是议价则所属字段为空
@@ -539,6 +541,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 					projectPrice.setEnquiryApplyTime(null);
 					projectPrice.setEnquiryAuditUserCompanyId(null);
 					projectPrice.setEnquiryAuditUserId(null);
+					projectPrice.setTotalPrice(null);
 				}
 				//新增一个草稿报价
 				projectPriceDao.insert(projectPrice);
