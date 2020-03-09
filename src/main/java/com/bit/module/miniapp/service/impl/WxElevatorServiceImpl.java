@@ -496,6 +496,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		//订单id集合
 		List<Long> ids = new ArrayList();
 		List<Long> idsNew = new ArrayList();
+		int standardFlag;
+		int enquiryApplyStatus;
 		if (projectPrice.getVersion() == -1) {
 			baseVo.setData(p);
 			return baseVo;
@@ -512,11 +514,21 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 				projectPrice.setCreateTime(new Date());
 				projectPrice.setTotalPrice(null);
 				projectPrice.setPositiveLock(1);
-
+				standardFlag=projectPrice.getStandard();
+				enquiryApplyStatus=projectPrice.getEnquiryApplyStatus();
 				//非标的话，就强制将审批状态置为待提交
 				if (projectPrice.getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())) {
 					projectPrice.setNonStandardApplyStatus(NonStandardApplyStatusEnum.DAITIJIAO.getCode());
+					//新增
+					projectPrice.setInquiryPrice(null);
+					projectPrice.setAverageRate(null);
+					projectPrice.setMaxRate(null);
+					projectPrice.setCostTotalPrice(null);
+					projectPrice.setEnquiryApplyTime(null);
+					projectPrice.setEnquiryAuditUserCompanyId(null);
+					projectPrice.setEnquiryAuditUserId(null);
 				}
+
 				//1.2版本新增逻辑，将如果是议价则所属字段为空
 				if (!projectPrice.getEnquiryApplyStatus().equals(EnquiryApplyStatusEnum.WEITIJIAO.getCode())) {
 					projectPrice.setEnquiryApplyStatus(EnquiryApplyStatusEnum.WEITIJIAO.getCode());
@@ -551,14 +563,26 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 						pro.setCalculateFlag(CalculateFlagEnum.YES.getCode());
 					}
 					//start 1.2 版本新加逻辑，置空之前算的价格
-					pro.setRate(0.0);
-					pro.setCostBasePrice(null);
-					pro.setBasePrice(null);
-					pro.setTotalPrice(null);
-					pro.setSingleTotalPrice(null);
-					pro.setUnitPrice(null);
-					pro.setTransportPrice(null);
-					pro.setInstallPrice(null);
+					if(StandardEnum.STANDARD_ZERO.getCode()==standardFlag){
+						pro.setCostBasePrice(null);
+						pro.setBasePrice(null);
+						pro.setTotalPrice(null);
+						pro.setSingleTotalPrice(null);
+						pro.setUnitPrice(null);
+						pro.setTransportPrice(null);
+						pro.setInstallPrice(null);
+					}
+					if(EnquiryApplyStatusEnum.WEITIJIAO.getCode()!=enquiryApplyStatus){
+						pro.setRate(0.0);
+						pro.setCostBasePrice(null);
+						pro.setBasePrice(null);
+						pro.setTotalPrice(null);
+						pro.setSingleTotalPrice(null);
+						pro.setUnitPrice(null);
+						pro.setTransportPrice(null);
+						pro.setInstallPrice(null);
+					}
+
 					//end
 					projectEleOrderDao.insert(pro);
 
@@ -599,6 +623,8 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 
 					}
 				}
+			}else{
+				throw new BusinessException("无此数据");
 			}
 
 		}
