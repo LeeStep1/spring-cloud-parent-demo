@@ -436,6 +436,22 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 
 			throw new BusinessException("参数不全，操作失败");
 		}
+        //关闭原因如果选为成交则进行非标审批的逻辑判断
+		if(project.getClosedStatus().equals(1)){
+			ProjectPrice old=projectPriceDao.selectById(project.getClosedProjectPriceId());
+
+			if(old.getNonStandardApplyStatus().equals(NonStandardApplyStatusEnum.DAISHENHE.getCode())||old.getNonStandardApplyStatus().equals(NonStandardApplyStatusEnum.DAITIJIAO.getCode())){
+				throw new BusinessException("此报价为非标待审批状态，无法按照此状态进行关闭操作");
+			}else if(old.getNonStandardApplyStatus().equals(NonStandardApplyStatusEnum.TONGGUO.getCode())){
+				          HashMap codOrder=new HashMap();
+				          codOrder.put("project_id",project.getId());
+				          codOrder.put("calculate_flag",0);
+                          List<ProjectEleOrder>list=projectEleOrderDao.selectByMap(codOrder);
+                          if(CollectionUtils.isNotEmpty(list)){
+							  throw new BusinessException("此项目无法按照当前报价进行成交关闭操作");
+						  }
+			}
+		}
 
 		//查询多个非标审批的
 		List  <ProjectPrice>nodStandardList =projectPriceDao.selectList(new QueryWrapper<ProjectPrice>().eq("project_id",project.getId())
@@ -493,6 +509,7 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 			ReasonCustomerChurnTypeEnum c=ReasonCustomerChurnTypeEnum.getReasonCustomerChurnTypeEnum(project.getReasonCustomerChurnId());
 			project.setReasonCustomerChurnName(c.getInfo());
 		}
+
 		project.setClosedTime(new Date());
 		project.setClosedUserId(getCurrentUserInfo().getId());
 		project.setCreateUserName(getCurrentUserInfo().getRealName());
