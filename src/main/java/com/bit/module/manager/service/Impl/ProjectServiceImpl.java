@@ -178,11 +178,12 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 		Page<Project> page = new Page<>(projectPageVO.getPageNum(),projectPageVO.getPageSize());  // 查询第1页，每页返回5条
 		IPage<Project> iPage = projectDao.listPage(page,projectPageVO);
 
+
 		for(Project project:iPage.getRecords()){
-			List<ProjectPrice> latestProjectPrice = new ArrayList<>();
-			if (projectPageVO.getProjectStatus().equals(0)){
-				latestProjectPrice = projectPriceDao.getLatestProjectPrice(project.getClosedProjectPriceId());
-			}else if (projectPageVO.getProjectStatus().equals(1)){
+			List<ProjectPrice> latestProjectPrice =new ArrayList<>();
+			if(projectPageVO.getProjectStatus().equals(ProjectEnum.PROJECT_FAIL.getCode())){
+				latestProjectPrice.add(projectPriceDao.selectById(project.getClosedProjectPriceId()));
+			}else{
 				latestProjectPrice = projectPriceDao.getLatestProjectPrice(project.getId());
 			}
 			if(latestProjectPrice.size()>0){
