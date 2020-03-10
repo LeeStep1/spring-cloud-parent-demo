@@ -236,16 +236,29 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
      * @param map
      * @return
      */
-    public double countAvgDiscountRate (Map map) {
-        logger.info("计算总价时入参:"+map.toString());
+    public double countAvgDiscountRate (ProjectPrice projectPriceInput) {
+
         ProjectPrice projectPrice = projectPriceDao.selectOne(new QueryWrapper<ProjectPrice>()
-                .eq("id", map.get("projectPriceId")));
-               /* .eq("project_id", map.get("projectId"))
-                .eq("version", map.get("version")));*/
+                .eq("id", projectPriceInput.getId()));
         List<ProjectEleOrder> projectEleOrder = projectEleOrderDao.selectList(new QueryWrapper<ProjectEleOrder>()
                 .eq("version_id", projectPrice.getId()));
-               /* .eq("project_id", projectPrice.getProjectId())
-                .eq("version_id", projectPrice.getId()));*/
+
+        // 计算接口
+        Map map = new HashMap();
+        map.put("projectPriceId", projectPrice.getId());
+        map.put("isUpdate", false);
+        if (projectPrice.getTransportFlag() == 1){
+            map.put("包括运费",true);
+        }else if (projectPrice.getTransportFlag() == 0){
+            map.put("包括运费",false);
+        }
+
+        if (projectPrice.getInstallFlag() == 1){
+            map.put("包括安装",true);
+        }else if (projectPrice.getInstallFlag() == 0){
+            map.put("包括安装",false);
+        }
+
         //事前计算平摊费用
         List<Map> eleInputs = new ArrayList(projectEleOrder.size());
         for (ProjectEleOrder eleOrder : projectEleOrder) {
@@ -272,22 +285,17 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
                     sum += Double.parseDouble(projectEleNonstandard.getSignalPrice());
                 }
             }
-
             vars.put("非标加价",sum );
-
-            if (Boolean.TRUE.equals(vars.get("不计算下浮率"))) {
-                vars.put("不计算下浮率",true );
-            }
+            vars.put("不计算下浮率",true );
             executeCount(vars);
             totalNoDiscount+= (Double)vars.get("小计_合价");
             total += Double.parseDouble(vars.get("小计_设备总价无下浮").toString());
         }
-        double targetPrice = Double.parseDouble(map.get("targetPrice").toString());
+        double targetPrice = Double.parseDouble(projectPrice.getInquiryPrice());
         double avgDiscountRate = (totalNoDiscount - targetPrice) / total;
-        if (Boolean.TRUE.equals(map.get("isUpdate"))) {
-            projectPrice.setAverageRate(avgDiscountRate);
-            projectPriceDao.updateById(projectPrice);
-        }
+        //更新平均下浮率
+        projectPrice.setAverageRate(avgDiscountRate);
+        projectPriceDao.updateById(projectPrice);
         return NumberUtil.round(avgDiscountRate, 2).doubleValue();
     }
     /**
@@ -434,7 +442,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         vars.put("小计_设备基价", basePrice);
         int baseCost = getBasePriceEquationCost(vars, "基价");
         vars.put("小计_设备基价成本", baseCost);  //成本
-        vars.put("小计_设备基价与成本差", basePrice-baseCost);//求最大下浮率的分母
+        vars.put("小计_设备基价与成本差", simpleEquation("(小计_设备基价-小计_设备基价成本)*台量", vars));//求最大下浮率的分母
 
         buildBasePriceJson(vars);
         double optionPrice = countOptionPrice(vars) + heightPrice;

@@ -2,6 +2,7 @@ package com.bit.module.manager.controller;
 
 import com.bit.base.vo.BaseVo;
 import com.bit.module.manager.bean.ProjectEleOrder;
+import com.bit.module.manager.bean.ProjectPrice;
 import com.bit.module.manager.bean.User;
 import com.bit.module.manager.bean.UserLogin;
 import com.bit.module.manager.service.Impl.EquationCacheServiceImpl;
@@ -60,10 +61,15 @@ public class TestController {
         return baseVo;
     }
 
+    /**
+     * 计算平均下浮率
+     * @param map
+     * @return
+     */
     @PostMapping(value = "/countAvgDiscountRate")
-    public BaseVo countAvgDiscountRate(@RequestBody Map map){
+    public BaseVo countAvgDiscountRate(@RequestBody ProjectPrice projectPriceInput){
         BaseVo baseVo = new BaseVo();
-        baseVo.setData(equationService.countAvgDiscountRate(map));
+        baseVo.setData(equationService.countAvgDiscountRate(projectPriceInput));
         return baseVo;
     }
 

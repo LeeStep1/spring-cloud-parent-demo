@@ -1467,27 +1467,7 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		enquiryAudit.setAuditTypeName(AuditTypeEnum.SUBMIT.getInfo());
 		enquiryAuditDao.addEnquiryAudit(enquiryAudit);
 
-		// 计算接口
-		Map map = new HashMap();
-		map.put("projectPriceId", projectPrice.getId());
-		//map.put("projectId",projectPrice.getProjectId());
-		//map.put("version",projectPrice.getVersion());
-		map.put("targetPrice", projectPrice.getInquiryPrice());
-		map.put("isUpdate", true);
-		if (projectPriceById.getTransportFlag() == 1){
-			map.put("包括运费",true);
-		}else if (projectPriceById.getTransportFlag() == 0){
-			map.put("包括运费",false);
-		}
-
-		if (projectPriceById.getInstallFlag() == 1){
-			map.put("包括安装",true);
-		}else if (projectPriceById.getInstallFlag() == 0){
-			map.put("包括安装",false);
-		}
-
-
-		equationServiceImpl.countAvgDiscountRate(map);
+		equationServiceImpl.countAvgDiscountRate(projectPrice);
 
 		return successVo();
 	}
