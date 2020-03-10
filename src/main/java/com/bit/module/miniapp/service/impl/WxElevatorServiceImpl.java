@@ -1439,6 +1439,15 @@ public class WxElevatorServiceImpl extends BaseService implements WxElevatorServ
 		projectPrice.setEnquiryApplyTime(new Date());
 		projectPrice.setEnquiryApplyStatus(EnquiryApplyStatusEnum.SHENNPIZHONG.getCode());
 		projectPrice.setEnquiryApplyTime(new Date());
+		//判断该项目下有没有审批中的报价
+		ProjectPrice temp = new ProjectPrice();
+		temp.setEnquiryApplyStatus(EnquiryApplyStatusEnum.SHENNPIZHONG.getCode());
+		temp.setProjectId(projectPriceById.getProjectId());
+		List<ProjectPrice> byParam = projectPriceDao.findByParam(temp);
+		if (CollectionUtils.isNotEmpty(byParam)){
+			throw new BusinessException("项目正在议价中，暂时无法提交新的议价申请");
+		}
+
 		//审批人
 		User auditor = this.auditor();
 		if (auditor == null) {

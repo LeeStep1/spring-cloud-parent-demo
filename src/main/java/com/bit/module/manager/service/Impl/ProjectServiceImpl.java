@@ -179,7 +179,12 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 		IPage<Project> iPage = projectDao.listPage(page,projectPageVO);
 
 		for(Project project:iPage.getRecords()){
-			List<ProjectPrice> latestProjectPrice = projectPriceDao.getLatestProjectPrice(project.getId());
+			List<ProjectPrice> latestProjectPrice = new ArrayList<>();
+			if (projectPageVO.getProjectStatus().equals(0)){
+				latestProjectPrice = projectPriceDao.getLatestProjectPrice(project.getClosedProjectPriceId());
+			}else if (projectPageVO.getProjectStatus().equals(1)){
+				latestProjectPrice = projectPriceDao.getLatestProjectPrice(project.getId());
+			}
 			if(latestProjectPrice.size()>0){
 				if(latestProjectPrice.get(0).getStandard().equals(StandardEnum.STANDARD_ZERO.getCode())){
 					Map cods=new HashMap();
