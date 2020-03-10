@@ -255,6 +255,23 @@ public class UserServiceImpl extends BaseService implements UserService {
 		User portalUser = userDao.findByUsername(user.getUserName(), null);
 
 		if (portalUser == null) {
+			//校验用户身份
+			if (!user.getRoleIds().contains(UserRoleEnum.SALES.getRoleId()) && !user.getRoleIds().contains(UserRoleEnum.SUPPORT.getRoleId())){
+				for (Role role : user.getRoleIds()) {
+					List<User> userByCompanyIdAndRoleId = new ArrayList<>();
+					if (role.getId() > UserRoleEnum.MANAGER.getRoleId()){
+						userByCompanyIdAndRoleId = userDao.getUserByCompanyIdAndRoleId(null, Long.valueOf(role.getId()));
+
+					}else{
+						userByCompanyIdAndRoleId = userDao.getUserByCompanyIdAndRoleId(user.getCompanyId(), Long.valueOf(role.getId()));
+					}
+					if (CollectionUtils.isNotEmpty(userByCompanyIdAndRoleId)){
+						throw new BusinessException("身份重复,不能添加");
+					}
+				}
+
+			}
+
 			//随机密码盐
 			String salt = StringRandom.getStringRandom(Const.RANDOM_PASSWORD_SALT);
 
