@@ -170,7 +170,7 @@ public class ProjectServiceImpl extends BaseService implements ProjectService{
 	@Override
 	public BaseVo historyProject(ProjectPageVO projectPageVO) {
 		if (projectPageVO.getOrderByType().equals(0)){
-			projectPageVO.setOrderBy("closed_status,closed_time desc");
+			projectPageVO.setOrderBy("closed_time desc");
 		}else if (projectPageVO.getOrderByType().equals(1)){
 			projectPageVO.setOrderBy("create_time desc");
 		}
