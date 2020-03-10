@@ -355,6 +355,23 @@ public class UserServiceImpl extends BaseService implements UserService {
 		portalUser.setUpdateTime(new Date());
 		//如果传进来的role集合不为空 就更新角色
 		if (CollectionUtils.isNotEmpty(portalUser.getRoleIds())) {
+
+			//校验用户身份
+			if (!portalUser.getRoleIds().contains(UserRoleEnum.SALES.getRoleId()) && !portalUser.getRoleIds().contains(UserRoleEnum.SUPPORT.getRoleId())){
+				for (Role role : portalUser.getRoleIds()) {
+					List<User> userByCompanyIdAndRoleId = new ArrayList<>();
+					if (role.getId() > UserRoleEnum.MANAGER.getRoleId()){
+						userByCompanyIdAndRoleId = userDao.getUserByCompanyIdAndRoleId(null, Long.valueOf(role.getId()));
+
+					}else{
+						userByCompanyIdAndRoleId = userDao.getUserByCompanyIdAndRoleId(portalUser.getCompanyId(), Long.valueOf(role.getId()));
+					}
+					if (CollectionUtils.isNotEmpty(userByCompanyIdAndRoleId)){
+						throw new BusinessException("身份重复,不能添加");
+					}
+				}
+			}
+
 			userDao.deleteUserRole(portalUser.getId());
 			portalUser.getRoleIds().forEach(c -> {
 				UserRelRole a = new UserRelRole();
