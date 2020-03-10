@@ -442,7 +442,7 @@ public class EquationServiceImpl extends ServiceImpl<EquationDao, Equation> {
         vars.put("小计_设备基价", basePrice);
         int baseCost = getBasePriceEquationCost(vars, "基价");
         vars.put("小计_设备基价成本", baseCost);  //成本
-        vars.put("小计_设备基价与成本差", basePrice-baseCost);//求最大下浮率的分母
+        vars.put("小计_设备基价与成本差", simpleEquation("(小计_设备基价-小计_设备基价成本)*台量", vars));//求最大下浮率的分母
 
         buildBasePriceJson(vars);
         double optionPrice = countOptionPrice(vars) + heightPrice;
