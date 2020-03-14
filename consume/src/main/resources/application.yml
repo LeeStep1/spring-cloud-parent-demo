@@ -1,12 +1,53 @@
 server:
-  port: 9091
+  port: 9094
 spring:
+  rabbitmq:
+    host: 139.129.103.212
+    port: 5672
+    username: guest
+    password: guest
   application:
     name: service-consume
+
 eureka:
   instance:
     prefer-ip-address: true
     instance-id: ${spring.cloud.client.ip-address}:${server.port}
+    ip-address: 60.29.30.190
   client:
     service-url:
-      defaultZone: http://localhost:9090/eureka/
+      defaultZone: http://139.129.103.212:9090/eureka
+
+refresh:
+  name: Lee
+hystrix:
+  metrics:
+    enabled: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+      health:
+        show-details: ALWAYS
+redis:
+   hostName: 139.129.103.212
+   port: 6379
+   timeout: 30
+   maxIdle : 300
+   maxTotal: 1000
+   maxWaitMillis: 1000
+   minEvictableIdleTimeMillis : 300000
+   numTestsPerEvictionRun : 1024
+   timeBetweenEvictionRunsMillis : 30000
+   testOnBorrow : true
+   testWhileIdle : true
+   password: LY395722278jay
+redission:
+  address: redis://139.129.103.212:6379
+
+
+
+
+
