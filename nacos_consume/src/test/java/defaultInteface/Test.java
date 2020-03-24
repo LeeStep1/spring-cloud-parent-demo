@@ -9,7 +9,7 @@ public class Test {
 
     @org.junit.Test
     public void test(){
-        ServiceA servceA  = new ServceAImp();
+        ServiceA servceA  = new ServiceAImp2();
         servceA.a();
         servceA.b();
     }
