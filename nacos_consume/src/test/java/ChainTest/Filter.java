@@ -2,5 +2,5 @@ package ChainTest;
 
 public interface Filter {
 
-    void doFilter();
+    void doFilter(FilterChain fc);
 }

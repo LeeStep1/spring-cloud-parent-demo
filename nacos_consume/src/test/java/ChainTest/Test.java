@@ -7,12 +7,12 @@ public class Test {
         FilterChain fc = new FilterChain();
         fc.add(new AFilter()).add(new BFilter());
 
-        FilterChain fc2 = new FilterChain();
-        fc2.add(new CFilter()).add(new DFilter());
+//        FilterChain fc2 = new FilterChain();
+//        fc2.add(new CFilter()).add(new DFilter());
+//
+//        fc.add(fc2);
 
-        fc.add(fc2);
-
-        fc.doChain();
+        fc.doChain(fc);
 
     }
 }
