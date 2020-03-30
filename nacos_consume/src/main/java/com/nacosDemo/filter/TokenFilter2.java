@@ -1,24 +1,23 @@
 package com.nacosDemo.filter;
 
-import com.nacosDemo.until.CacheUtil;
 import com.nacosDemo.until.RequestThread;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.UUID;
 
 /**
  * @description:
  * @author: liyang
  * @date: 2020-01-03
  **/
-@Order(1)
-@WebFilter(urlPatterns = {"/*"}, filterName = "tokenAuthorFilter")
-public class TokenFilter implements Filter{
+@Order(2)
+@WebFilter(urlPatterns = {"/*"}, filterName = "tokenAuthorFilter2")
+public class TokenFilter2 implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -31,7 +30,7 @@ public class TokenFilter implements Filter{
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String uuid = request.getHeader("testUuid");
         RequestThread.bindThread(uuid);
-        System.out.println(111111+ "    filter");
+        System.out.println(22222222+ "    filter");
 //        System.out.println(Thread.currentThread().getName() + "  插入 UUID.........." + uuid);
         filterChain.doFilter(servletRequest,servletResponse);
         return;
@@ -42,7 +41,7 @@ public class TokenFilter implements Filter{
 //        HttpServletRequest request = (HttpServletRequest) servletRequest;
 //        String uuid = request.getHeader("testUuid");
 //        RequestThread.bindThread(uuid);
-//        System.out.println(1111111111+ "    filter");
+//        System.out.println(22222222+ "    filter");
 ////        System.out.println(Thread.currentThread().getName() + "  插入 UUID.........." + uuid);
 //        filterChain.doFilter(servletRequest,servletResponse);
 //        return;
