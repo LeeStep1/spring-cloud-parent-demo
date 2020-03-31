@@ -15,8 +15,7 @@ import java.io.IOException;
  * @author: liyang
  * @date: 2020-01-03
  **/
-@Order(2)
-@WebFilter(urlPatterns = {"/*"}, filterName = "tokenAuthorFilter2")
+
 public class TokenFilter2 implements Filter {
 
     @Override
@@ -30,9 +29,11 @@ public class TokenFilter2 implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String uuid = request.getHeader("testUuid");
         RequestThread.bindThread(uuid);
-        System.out.println(22222222+ "    filter");
+        System.out.println(22222222+ "    filter 的request链条.......");
 //        System.out.println(Thread.currentThread().getName() + "  插入 UUID.........." + uuid);
         filterChain.doFilter(servletRequest,servletResponse);
+
+        System.out.println("2 的返回链条....");
         return;
     }
 
