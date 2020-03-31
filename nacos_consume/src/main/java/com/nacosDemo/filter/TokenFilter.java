@@ -16,8 +16,7 @@ import java.util.UUID;
  * @author: liyang
  * @date: 2020-01-03
  **/
-@Order(1)
-@WebFilter(urlPatterns = {"/*"}, filterName = "tokenAuthorFilter")
+
 public class TokenFilter implements Filter{
 
     @Override
@@ -31,9 +30,11 @@ public class TokenFilter implements Filter{
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String uuid = request.getHeader("testUuid");
         RequestThread.bindThread(uuid);
-        System.out.println(111111+ "    filter");
+        System.out.println(111111+ "    filter，request 链条.....");
 //        System.out.println(Thread.currentThread().getName() + "  插入 UUID.........." + uuid);
         filterChain.doFilter(servletRequest,servletResponse);
+
+        System.out.println("1 的返回链条....");
         return;
     }
 
