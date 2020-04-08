@@ -1,6 +1,6 @@
-package SpringEvent;
+package SpringEvent.GameTest;
 
-import SpringEvent.GameTest.Game;
+import SpringEvent.ConfigStart;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
@@ -11,8 +11,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class Test {
     public static void main(String[] args) {
         AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(ConfigStart.class);
-//        SendMailSource bean = applicationContext.getBean(SendMailSource.class);
-//        bean.mailEvent();
 
         Game bean = applicationContext.getBean(Game.class);
         bean.gameStart();

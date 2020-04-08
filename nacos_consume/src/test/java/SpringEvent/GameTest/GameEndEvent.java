@@ -1,4 +1,4 @@
-package SpringEvent;
+package SpringEvent.GameTest;
 
 import org.springframework.context.ApplicationEvent;
 
@@ -7,13 +7,10 @@ import org.springframework.context.ApplicationEvent;
  * @author: liyang
  * @date: 2020-04-08
  **/
-public class GameEndEvent extends ApplicationEvent {
-    /**
-     * Create a new ApplicationEvent.
-     *
-     * @param source the object on which the event initially occurred (never {@code null})
-     */
-    public GameEndEvent(Object source) {
+public class GameEndEvent extends GameEvent {
+
+    public GameEndEvent(Object source,Game game) {
         super(source);
+        this.game = game;
     }
 }

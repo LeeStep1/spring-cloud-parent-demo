@@ -1,4 +1,4 @@
-package SpringEvent;
+package SpringEvent.GameTest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  * @date: 2020-04-08
  **/
 @Component
-public class FormalPlayerListener implements ApplicationListener<GameStartEvent> {
+public class FormalPlayerListener implements ApplicationListener<GameEvent> {
 
     /**
      * 正式球员球员类
@@ -23,7 +23,7 @@ public class FormalPlayerListener implements ApplicationListener<GameStartEvent>
      * @param event
      */
     @Override
-    public void onApplicationEvent(GameStartEvent event) {
+    public void onApplicationEvent(GameEvent event) {
         Game game = event.game;
 
         //比赛开始正式球员上场

@@ -1,4 +1,4 @@
-package SpringEvent;
+package SpringEvent.GameTest;
 
 import org.springframework.stereotype.Component;
 

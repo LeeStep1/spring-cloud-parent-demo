@@ -1,4 +1,4 @@
-package SpringEvent;
+package SpringEvent.GameTest;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class Game {
         System.out.println();
         System.out.println("进入中场休息..........");
         gameFlag = 2;
-        applicationEventPublisher.publishEvent(new GameStartEvent(applicationContext,this));
+        applicationEventPublisher.publishEvent(new HalfTimeStartEvent(applicationContext,this));
     };
 
     /**
@@ -52,16 +52,17 @@ public class Game {
         System.out.println();
         System.out.println("下半场比赛正式开始..........");
         gameFlag = 3;
-        applicationEventPublisher.publishEvent(new GameStartEvent(applicationContext,this));
+        applicationEventPublisher.publishEvent(new HalfTimeEndEvent(applicationContext,this));
     };
 
     /**
      * 比赛结束
      */
     public void gameEnd(){
+        System.out.println();
         System.out.println("比赛结束..........");
         gameFlag = 4;
-        applicationEventPublisher.publishEvent(new GameStartEvent(applicationContext,this));
+        applicationEventPublisher.publishEvent(new GameEndEvent(applicationContext,this));
     };
 
 

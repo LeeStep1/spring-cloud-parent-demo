@@ -1,4 +1,4 @@
-package SpringEvent;
+package SpringEvent.GameTest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  * @date: 2020-04-08
  **/
 @Component
-public class BenchPlayerListener implements ApplicationListener<GameStartEvent> {
+public class BenchPlayerListener implements ApplicationListener<GameEvent> {
 
     /**
      * 替补球员球员类
@@ -23,7 +23,7 @@ public class BenchPlayerListener implements ApplicationListener<GameStartEvent> 
      * @param event
      */
     @Override
-    public void onApplicationEvent(GameStartEvent event) {
+    public void onApplicationEvent(GameEvent event) {
         Game game = event.game;
 
         //比赛开始替补球员下场
@@ -47,4 +47,6 @@ public class BenchPlayerListener implements ApplicationListener<GameStartEvent> 
         }
 
     }
+
+
 }
