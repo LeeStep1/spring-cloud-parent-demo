@@ -3,6 +3,6 @@ spring:
     nacos:
       config:
         prefix: dashboard
-        server-addr: 139.129.103.212:8848
+        server-addr: 127.0.0.1:8848
         file-extension: yml
-        namespace: 4fdded16-3c53-4842-a762-fbe956e668f8
+        namespace: 5f942767-e911-4eec-8821-90c30493310c
