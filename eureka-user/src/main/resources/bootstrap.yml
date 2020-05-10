@@ -1,0 +1,8 @@
+spring:
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+        prefix: eureka-user
+        file-extension: yml
+        namespace: 5f942767-e911-4eec-8821-90c30493310c
