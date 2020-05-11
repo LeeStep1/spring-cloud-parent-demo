@@ -42,14 +42,23 @@ public class UserController {
 
 
     @GetMapping("/getAllUser/all")
-    public void getAllUser(){
-        List<Map<String, Object>> maps = userService.listMaps();
-        System.out.println(maps);
+    public Object getAllUser(){
+        return userService.listMaps();
     }
 
     @RequestMapping("/deleteUserById/{id}")
     public void deleteUserById(@PathVariable long id){
         userService.removeById(id);
+    }
+
+
+
+    @GetMapping("/updateUserById/{id}")
+    public void updateUserById(@PathVariable long id){
+        User user = new User();
+        user.setId(id);
+        user.setAge(28);
+        userService.updateById(user);
     }
 
 }

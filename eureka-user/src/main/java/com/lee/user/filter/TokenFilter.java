@@ -28,9 +28,7 @@ public class TokenFilter implements Filter{
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         System.out.println("请求方法......."+request.getMethod());
-        String uuid = request.getHeader("testUuid");
 //        RequestThread.bindThread(uuid);
-        System.out.println(111111+ "    filter，request 链条.....");
 //        System.out.println(Thread.currentThread().getName() + "  插入 UUID.........." + uuid);
         filterChain.doFilter(servletRequest,servletResponse);
 
