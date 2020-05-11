@@ -1,8 +1,0 @@
-spring:
-  cloud:
-    nacos:
-      config:
-        server-addr: 139.129.103.212:8848
-        file-extension: yml
-        prefix: nacos_consume2
-        namespace: 4fdded16-3c53-4842-a762-fbe956e668f8

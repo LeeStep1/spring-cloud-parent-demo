@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserDao{
+public interface UserDao extends BaseMapper<User> {
 
     User selectUserById(@Param("id") Long id);
 }

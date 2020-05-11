@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 public class FormalPlayer {
 
     public void playerGoOn(){
-        System.out.println("正式球员上场........");
+        System.out.println(Thread.currentThread().getName() + "正式球员上场........");
     }
 
     public void playerOut(){
-        System.out.println("正式球员下场........");
+        System.out.println(Thread.currentThread().getName() + "正式球员下场........");
     }
 }

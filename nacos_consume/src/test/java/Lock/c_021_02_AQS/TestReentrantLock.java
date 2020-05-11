@@ -8,12 +8,27 @@ public class TestReentrantLock {
 
     public static void main(String[] args) {
         ReentrantLock lock = new ReentrantLock();
-        lock.lock();
-        //synchronized (TestReentrantLock.class) {
-            i++;
+        for (int j = 0; j < 10; j++) {
+            new Thread(()->{
+                try {
+                    lock.lock();
+                    i++;
+                    System.out.println(Thread.currentThread().getName() + "  "  + i);
+                }finally {
+                    lock.unlock();
+                }
+
+            }).start();
+
+
+
+            //synchronized (TestReentrantLock.class) {
+        }
+
+
         //}
 
-        lock.unlock();
+        while (true){}
 
         //synchronized 程序员的丽春院 JUC
     }

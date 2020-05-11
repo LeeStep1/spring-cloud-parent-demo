@@ -5,7 +5,7 @@ import com.lee.user.bean.User;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 @RefreshScope
-public interface UserService {
+public interface UserService extends IService<User>{
 
     User getUserById(Long id);
 }

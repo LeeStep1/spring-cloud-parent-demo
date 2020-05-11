@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class BenchPlayer {
     public void playerGoOn(){
-        System.out.println("替补球员上场........");
+        System.out.println(Thread.currentThread().getName() + "替补球员上场........");
     }
 
     public void playerOut(){
-        System.out.println("替补球员下场........");
+        System.out.println(Thread.currentThread().getName() + "替补球员下场........");
     }
 }

@@ -13,7 +13,7 @@ import java.util.function.Function;
 
 @Service
 @RefreshScope
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends ServiceImpl<UserDao,User> implements UserService {
 
     @Autowired
     private UserDao userDao;

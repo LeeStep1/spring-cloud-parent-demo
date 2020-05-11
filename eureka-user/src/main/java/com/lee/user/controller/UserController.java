@@ -7,6 +7,8 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("/user")
@@ -21,9 +23,10 @@ public class UserController {
      * @param id
      * @return
      */
-    @GetMapping("/getUser/{id}")
+    @RequestMapping("/getUser/{id}")
     public User getUserById(@PathVariable Long id){
         User user = userService.getUserById(id);
+
         return user ;
     }
 
@@ -36,4 +39,17 @@ public class UserController {
     public boolean batchUser(@RequestBody List<User> userList){
         return userService.saveBatch(userList);
     }
+
+
+    @GetMapping("/getAllUser/all")
+    public void getAllUser(){
+        List<Map<String, Object>> maps = userService.listMaps();
+        System.out.println(maps);
+    }
+
+    @RequestMapping("/deleteUserById/{id}")
+    public void deleteUserById(@PathVariable long id){
+        userService.removeById(id);
+    }
+
 }

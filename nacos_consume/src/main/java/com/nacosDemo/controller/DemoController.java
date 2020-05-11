@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.nacosDemo.bean.DirectMessage;
 import com.nacosDemo.commonEnum.RedisKey;
 import com.nacosDemo.until.*;
+import com.sun.xml.internal.stream.Entity;
 import io.prometheus.client.Collector;
 import org.redisson.api.RLock;
 import org.springframework.amqp.AmqpException;
@@ -11,16 +12,14 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.support.CorrelationData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.nacosDemo.commonEnum.RedisKey.DELAY_INFORMATION;
@@ -156,12 +155,12 @@ public class DemoController {
         direct.setTitle("routing是==============" + routing);
 
         String directStr = JSON.toJSONString(direct);
+        rabbitTemplate.setChannelTransacted(true);
 
         rabbitTemplate.convertAndSend("delayTilExchange",routing,directStr,message -> {
             message.getMessageProperties().setExpiration("20000");
             return message;
         });
-
         return direct.getContent();
     }
 
@@ -290,7 +289,7 @@ public class DemoController {
 //        redissionUntil.lock(key,2);
 
 
-        boolean b = redissionUntil.tryLock(key,1000L,100L);
+        boolean b = redissionUntil.tryLock(key,0L,1000L);
 
 
 //        String uuid = RequestThread.getThread();
@@ -316,5 +315,15 @@ public class DemoController {
 
 
 
+    }
+
+
+    public static void main(String[] args) {
+        Map<String,String> testMap = new HashMap<>();
+        testMap.put(null,"124");
+
+        for (Map.Entry<String,String> map : testMap.entrySet()){
+            System.out.println("key : "+map.getKey() + " value : " + map.getValue());
+        }
     }
 }

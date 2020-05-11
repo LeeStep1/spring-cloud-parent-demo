@@ -14,7 +14,7 @@ public class Test {
 
         Game bean = applicationContext.getBean(Game.class);
         bean.gameStart();
-        System.out.print("比赛中");
+        System.out.print(Thread.currentThread().getName() + "比赛中");
         for (int i = 0; i < 4; i++) {
             try {
                 System.out.print(".");
@@ -33,7 +33,7 @@ public class Test {
             }
         }
         bean.halfTimeEnd();
-        System.out.print("比赛中");
+        System.out.print(Thread.currentThread().getName() + "比赛中");
         for (int i = 0; i < 4; i++) {
             try {
                 System.out.print(".");

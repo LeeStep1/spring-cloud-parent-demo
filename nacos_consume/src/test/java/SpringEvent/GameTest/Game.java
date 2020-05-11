@@ -30,7 +30,7 @@ public class Game {
      * 比赛开始
      */
     public void gameStart(){
-        System.out.println("上半场比赛正式开始..........");
+        System.out.println(Thread.currentThread().getName() + "上半场比赛正式开始..........");
         gameFlag = 1;
         applicationEventPublisher.publishEvent(new GameStartEvent(applicationContext,this));
     };
@@ -40,7 +40,7 @@ public class Game {
      */
     public void halfTimeStart(){
         System.out.println();
-        System.out.println("进入中场休息..........");
+        System.out.println(Thread.currentThread().getName() + "进入中场休息..........");
         gameFlag = 2;
         applicationEventPublisher.publishEvent(new HalfTimeStartEvent(applicationContext,this));
     };
@@ -50,7 +50,7 @@ public class Game {
      */
     public void halfTimeEnd(){
         System.out.println();
-        System.out.println("下半场比赛正式开始..........");
+        System.out.println(Thread.currentThread().getName() + "下半场比赛正式开始..........");
         gameFlag = 3;
         applicationEventPublisher.publishEvent(new HalfTimeEndEvent(applicationContext,this));
     };
@@ -60,7 +60,7 @@ public class Game {
      */
     public void gameEnd(){
         System.out.println();
-        System.out.println("比赛结束..........");
+        System.out.println(Thread.currentThread().getName() + "比赛结束..........");
         gameFlag = 4;
         applicationEventPublisher.publishEvent(new GameEndEvent(applicationContext,this));
     };
