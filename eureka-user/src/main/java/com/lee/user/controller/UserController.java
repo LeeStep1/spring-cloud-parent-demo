@@ -40,19 +40,29 @@ public class UserController {
         return userService.saveBatch(userList);
     }
 
-
+    /**
+     * 获取所有用户
+     * @return
+     */
     @GetMapping("/getAllUser/all")
     public Object getAllUser(){
         return userService.listMaps();
     }
 
+    /**
+     * 根据ID删除某一个用户
+     * @param id
+     */
     @RequestMapping("/deleteUserById/{id}")
     public void deleteUserById(@PathVariable long id){
         userService.removeById(id);
     }
 
 
-
+    /**
+     * 根据ID修改某个用户
+     * @param id
+     */
     @GetMapping("/updateUserById/{id}")
     public void updateUserById(@PathVariable long id){
         User user = new User();
