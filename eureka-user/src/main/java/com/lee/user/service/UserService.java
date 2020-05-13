@@ -8,4 +8,6 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 public interface UserService extends IService<User>{
 
     User getUserById(Long id);
+
+    String chainUpdateUser();
 }

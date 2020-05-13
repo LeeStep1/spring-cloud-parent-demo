@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -71,4 +72,10 @@ public class UserController {
         userService.updateById(user);
     }
 
+    @GetMapping("/chainUpdateUser")
+    public String chainUpdateUser(){
+
+        return userService.chainUpdateUser();
+
+    }
 }
