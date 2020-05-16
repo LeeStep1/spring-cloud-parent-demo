@@ -6,6 +6,7 @@ import com.lee.order.dao.OrderDao;
 import com.lee.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 public class OrderServiceImpl extends ServiceImpl<OrderDao,Order> implements OrderService {
@@ -25,5 +26,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao,Order> implements Ord
         order.setId(id);
         order.setProductName("修改");
         updateById(order);
+    }
+
+    @Override
+    public boolean updateOrderByUserId(@RequestBody Order order) {
+        Boolean b = dao.updateOrderByUserId(order);
+        System.out.println("order 改完了........");
+        return b;
     }
 }

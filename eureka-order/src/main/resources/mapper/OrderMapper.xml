@@ -2,6 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lee.order.dao.OrderDao">
+	<update id="updateOrderByUserId" parameterType="com.lee.order.bean.Order">
+		update t_order t set
+			t.product_name = #{order.productName}
+		where t.user_id = #{order.userId}
+	</update>
 
 
 	<select id="selectOrderById" parameterType="java.lang.Long" resultType="com.lee.order.bean.Order">

@@ -10,4 +10,6 @@ public interface UserService extends IService<User>{
     User getUserById(Long id);
 
     String chainUpdateUser();
+
+    String chainUpdateUserByTransaction();
 }

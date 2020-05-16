@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface OrderDao extends BaseMapper<Order> {
 
     Order selectOrderById(@Param("id") Long id);
+
+    boolean updateOrderByUserId(@Param("order") Order order);
 }

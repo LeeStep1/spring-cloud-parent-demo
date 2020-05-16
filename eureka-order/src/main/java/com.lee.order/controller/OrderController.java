@@ -39,6 +39,17 @@ public class OrderController {
     }
 
     /**
+     * 增加一条
+     * @param order
+     * @return
+     */
+    @PostMapping("/addOne")
+    public boolean addOne(@RequestBody Order order){
+
+        return orderService.save(order);
+    }
+
+    /**
      * 根据ID修改某个订单
      * @param id
      */
@@ -47,5 +58,10 @@ public class OrderController {
 
         orderService.updateOrderById(id);
 
+    }
+
+    @PostMapping("/updateOrderByUserId")
+    public boolean updateOrderByUserId(@RequestBody Order order){
+        return orderService.updateOrderByUserId(order);
     }
 }

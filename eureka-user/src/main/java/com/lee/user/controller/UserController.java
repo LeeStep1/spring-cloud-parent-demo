@@ -72,10 +72,25 @@ public class UserController {
         userService.updateById(user);
     }
 
+    /**
+     * 发送异步消息
+     * @return
+     */
     @GetMapping("/chainUpdateUser")
     public String chainUpdateUser(){
 
         return userService.chainUpdateUser();
+
+    }
+
+    /**
+     * 发送事务消息
+     * @return
+     */
+    @GetMapping("/chainUpdateUserByTransaction")
+    public String chainUpdateUserByTransaction(){
+
+        return userService.chainUpdateUserByTransaction();
 
     }
 }

@@ -4,7 +4,7 @@
 <mapper namespace="com.lee.user.dao.UserDao">
 
 
-	<select id="selectUserById" parameterType="java.lang.Long" resultType="com.lee.user.com.lee.order.bean.User">
+	<select id="selectUserById" parameterType="java.lang.Long" resultType="com.lee.user.bean.User">
 		select * from
 		user t
 		where
