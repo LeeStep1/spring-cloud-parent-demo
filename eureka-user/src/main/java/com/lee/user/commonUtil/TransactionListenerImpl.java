@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * 事务消息的监控 需要实现 RcocketMq 官方的 TransactionListener 接口
+ */
 @Component
 public class TransactionListenerImpl implements TransactionListener {
 
@@ -28,6 +31,7 @@ public class TransactionListenerImpl implements TransactionListener {
 
     /**
      * 执行本地事务方法
+     * 本地事务，消息发送后执行的部分，只有次方法执行成功， HalfMessage 才会真正的提交
      * @param msg 消息
      * @param arg
      * @return
@@ -67,6 +71,7 @@ public class TransactionListenerImpl implements TransactionListener {
 
     /**
      * 事务消息状态查询
+     * 检测消息的状态，RocketMq 会单独开启线程来查询
      * @param msg
      * @return
      */

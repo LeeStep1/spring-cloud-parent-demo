@@ -108,6 +108,9 @@ public class UserServiceImpl extends ServiceImpl<UserDao,User> implements UserSe
 //        });
         try {
             Message message = new Message("updateUserByTransaction",JSON.toJSONBytes(user));
+            /**
+             * 这里的消息不会真正的发送， 只有监控程序执行完毕后，根据监控程序执行的结果，才会真正的决定是否发送
+             */
             TransactionSendResult transactionSendResult = transactionProducer.sendMessageInTransaction(message,null);
             System.out.printf("%s%n", transactionSendResult);
         } catch (MQClientException e) {
