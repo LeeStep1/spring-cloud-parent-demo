@@ -12,4 +12,6 @@ public interface UserService extends IService<User>{
     String chainUpdateUser();
 
     String chainUpdateUserByTransaction();
+
+    boolean seataChainTransaction();
 }

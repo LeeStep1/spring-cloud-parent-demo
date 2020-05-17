@@ -2,6 +2,7 @@ package com.lee.user.controller;
 
 import com.lee.user.bean.User;
 import com.lee.user.service.UserService;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
@@ -92,5 +93,15 @@ public class UserController {
 
         return userService.chainUpdateUserByTransaction();
 
+    }
+
+    /**
+     * 测试seata分布式事务
+     * @return
+     */
+    @GetMapping("/seataChainTransaction")
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public boolean seataChainTransaction(){
+        return userService.seataChainTransaction();
     }
 }

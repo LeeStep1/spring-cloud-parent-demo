@@ -6,6 +6,7 @@ import com.lee.user.bean.Order;
 import com.lee.user.bean.User;
 import com.lee.user.commonUtil.TransactionListenerImpl;
 import com.lee.user.dao.UserDao;
+import com.lee.user.feign.OrderFeign;
 import com.lee.user.service.UserService;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.*;
@@ -30,6 +31,9 @@ public class UserServiceImpl extends ServiceImpl<UserDao,User> implements UserSe
 
     @Autowired
     private TransactionMQProducer transactionProducer;
+
+    @Autowired
+    private OrderFeign orderFeign;
 
 
     @Override
@@ -122,6 +126,19 @@ public class UserServiceImpl extends ServiceImpl<UserDao,User> implements UserSe
 //            e.printStackTrace();
 //        }
         return null;
+    }
+
+    @Override
+    public boolean seataChainTransaction() {
+        User user = new User();
+        user.setName("seata");
+        user.setAge(40);
+        save(user);
+
+        Order order = new Order();
+        order.setUserId(1L);
+        order.setProductName("这是seata");
+        return orderFeign.addOne(order);
     }
 
 }
