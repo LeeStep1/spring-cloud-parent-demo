@@ -30,52 +30,19 @@ transport {
 }
 service {
   #transaction service group mapping
-  vgroupMapping.my_test_tx_group = "Lee-seata"
+  vgroupMapping.lee_test_seata = "lee-seata"
   #only support when registry.type=file, please don't set multiple addresses
-  default.grouplist = "192.168.150.50:8091"
+  lee-seata.grouplist = "192.168.150.50:8091"
   #degrade, current not support
   enableDegrade = false
   #disable seata
   disableGlobalTransaction = false
 }
 
-client {
-  rm {
-    asyncCommitBufferLimit = 10000
-    lock {
-      retryInterval = 10
-      retryTimes = 30
-      retryPolicyBranchRollbackOnConflict = true
-    }
-    reportRetryCount = 5
-    tableMetaCheckEnable = false
-    reportSuccessEnable = false
-  }
-  tm {
-    commitRetryCount = 5
-    rollbackRetryCount = 5
-  }
-  undo {
-    dataValidation = true
-    logSerialization = "jackson"
-    logTable = "undo_log"
-  }
-  log {
-    exceptionRate = 100
-  }
-}
-
 ## transaction log store, only used in seata-server
 store {
   ## store mode: file、db
   mode = "db"
-
-  ## file store property
-  file {
-    ## store location dir
-    dir = "sessionStore"
-  }
-
   ## database store property
   db {
     ## the implement of javax.sql.DataSource, such as DruidDataSource(druid)/BasicDataSource(dbcp) etc.

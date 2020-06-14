@@ -1,0 +1,30 @@
+registry {
+  # file 、nacos 、eureka、redis、zk、consul、etcd3、sofa
+  type = "eureka"
+
+  nacos {
+    application = "seata-server"
+    serverAddr = "localhost"
+    namespace = ""
+    username = ""
+    password = ""
+  }
+  eureka {
+    serviceUrl = "http://127.0.0.1:7070/eureka"
+    weight = "1"
+  }
+}
+
+config {
+  # file、nacos 、apollo、zk、consul、etcd3、springCloudConfig
+  type = "nacos"
+
+  nacos {
+    serverAddr = "192.168.1.240:8848"
+    namespace = "5f942767-e911-4eec-8821-90c30493310c"
+    group = "SEATA_GROUP"
+    username = "nacos"
+    password = "nacos"
+  }
+
+}
