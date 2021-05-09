@@ -5,9 +5,9 @@ package com.lee.order.testScan;
  * @author: liyang
  * @date: 2020-06-02
  **/
-public class TestScan1 {
+public class TestScan2 {
 
-    public TestScan1() {
+    public void TestScan1() {
         System.out.println("........................................");
         System.out.println("........................................");
         System.out.println("........................................");

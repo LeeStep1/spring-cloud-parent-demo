@@ -1,14 +1,22 @@
 package guava.io;
 
+import com.google.common.base.Charsets;
+import com.google.common.base.Stopwatch;
+import com.google.common.collect.FluentIterable;
+import com.google.common.graph.SuccessorsFunction;
+import com.google.common.graph.Traverser;
+import com.google.common.io.CharSink;
+import com.google.common.io.FileWriteMode;
 import com.google.common.io.Files;
+import org.assertj.core.util.Lists;
 import org.junit.After;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -53,6 +61,66 @@ public class FileTest {
 
     }
 
+    @Test
+    public void fileAppendTest() throws IOException {
+        File fileAppend = new File(sourcePath);
+        CharSink charSink = Files.asCharSink(fileAppend, Charsets.UTF_8, FileWriteMode.APPEND);
+        charSink.write(" append Content");
+        String read = Files.asCharSource(fileAppend, Charsets.UTF_8).read();
+        assertThat(read,equalTo("hello  this is guava io test append Content"));
+    }
+
+    /**
+     * guava - files  deque stack 非线程安全的双向队列实现
+     * stopwatch : 22ms   文件数  545
+     * @Author LeeYoung
+     * @Date 2021/5/2
+     **/
+    @Test
+    public void fileRecursionByGuavaTest(){
+//        Stopwatch started = Stopwatch.createStarted();
+        File source = new File("D:\\GitHubSource\\spring-cloud-parent-demo\\nacos_consume");
+        Iterable<File> files = Files.fileTraverser()
+//                .depthFirstPostOrder(source) //根据发现文件倒叙排列
+                .depthFirstPreOrder(source) //根据发现文件顺序排序
+                ;
+//        FluentIterable<File> filter = FluentIterable.concat(files).filter(File::isFile);
+//        filter.stream().forEach(System.out::println);
+
+//        System.out.println(started.stop());
+
+        files.forEach(System.out::println);
+    }
+
+    /**
+     * Java - 文件递归
+     * stopwatch : 100ms  文件数  545
+     * @Author LeeYoung
+     * @Date 2021/5/2
+     **/
+    @Test
+    public void fileRecursionTest(){
+//        Stopwatch started = Stopwatch.createStarted();
+        List<File> files = Lists.newArrayList();
+        File root = new File("D:\\GitHubSource\\spring-cloud-parent-demo\\nacos_consume");
+        this.recursionFile(root,files);
+//        System.out.println(started.stop());
+        files.forEach(System.out::println);
+    }
+
+    private void recursionFile(File root, List<File> files) {
+        if(root.isHidden()) return;
+        if(root.isFile()){
+            files.add(root);
+        }else {
+            File[] files1 = root.listFiles();
+            for (File file : files1) {
+                recursionFile(file,files);
+            }
+        }
+
+
+    }
 
     @After
     public void tearDown(){
