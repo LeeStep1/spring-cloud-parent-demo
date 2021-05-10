@@ -4,6 +4,8 @@ import com.google.common.eventbus.Subscribe;
 import guava.eventBus.events.People;
 import guava.eventBus.events.Resident;
 
+import java.util.concurrent.TimeUnit;
+
 public class SimpleListener {
 
     /**
@@ -15,17 +17,18 @@ public class SimpleListener {
      *          5、如果注册的监听器类中有多个相同类型的监听方法，则消息放入消息总线时，会被多个订阅方法监听到
      *          6、event为子类对象时，父子监听器可以同时接收
      *          7、event为父类对象时，子类监听器无法接收
+     *          8、EventBus 为同步阻塞试消息推送 如果想要用异步消息，利用 AsyncEventBus
      * @param event
      */
     @Subscribe
-    public void simpleListenerString1(String event){
-        System.out.printf("监听器1：收到监听的String类型的消息 {%s}",event);
+    public void simpleListenerString1(String event) throws InterruptedException {
+        System.out.printf(Thread.currentThread().getName() + "  监听器1：收到监听的String类型的消息 {%s}",event);
     }
 
     @Subscribe
     public void simpleListenerString2(String event){
         System.out.println();
-        System.out.printf("监听器2：收到监听的String类型的消息 {%s}",event);
+        System.out.printf(Thread.currentThread().getName() + "   监听器2：收到监听的String类型的消息 {%s}",event);
     }
 
     @Subscribe
