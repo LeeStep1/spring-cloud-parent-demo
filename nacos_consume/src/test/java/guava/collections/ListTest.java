@@ -6,7 +6,9 @@ import com.nacosDemo.bean.User;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -16,6 +18,38 @@ import static org.junit.Assert.assertThat;
  * @Author LeeYoung
  */
 public class ListTest {
+
+    /**
+     * 初始化方法：
+     *          1、带数据初始化
+     *          2、不带数据初始化
+     *          3、带默认空间大小初始化  ** 常用 **
+     *          4、数组初始化 注：必须带一个first,否则数组为空时报错
+     *          5、copyOnWrite 初始化
+     *          6、linkedList 初始化
+     * @Author LeeYoung
+     **/
+    public void createTest(){
+        //1
+        ArrayList<Integer> integers = Lists.newArrayList(1, 2, 3);
+
+        //2
+        ArrayList<Object> objects = Lists.newArrayList();
+
+        //3
+        ArrayList<Object> objects1 = Lists.newArrayListWithCapacity(10);
+
+        //4
+        Integer[] Integer = {2,3};
+        List<java.lang.Integer> list = Lists.asList(1, Integer);
+
+        //5
+        CopyOnWriteArrayList<Object> objects2 = Lists.newCopyOnWriteArrayList();
+
+        //6
+        LinkedList<Object> objects3 = Lists.newLinkedList();
+
+    }
 
     /**
      * Lists.cartesianProduct :
@@ -69,11 +103,12 @@ public class ListTest {
         System.out.println(partition);
 
         List<User> userList = Lists.newArrayList(new User(1L,"lee",20),
-                new User(2L,"lee1",30),
+                new User(2L,"lee 1",30),
                 new User(3L,"lee2",40),
                 new User(4L,"lee3",50));
         List<List<User>> partition1 = Lists.partition(userList, 3);
         System.out.println(partition1);
     }
+
 
 }

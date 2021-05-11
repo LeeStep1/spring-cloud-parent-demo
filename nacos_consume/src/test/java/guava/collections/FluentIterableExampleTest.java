@@ -200,12 +200,16 @@ public class FluentIterableExampleTest {
         assertThat(join,equalTo("commons,guava,hutool,lee"));
     }
 
+    /**
+     * index:
+     *      1、将一个list转成一个 不可变的 map
+     *      2、入参是一个function 此function 作用为定义 key 的值
+     * @Author LeeYoung
+     **/
     @Test
     public void test(){
         FluentIterable<String> fit = build();
-        FluentIterable<String> guava = fit.append("guava");
-        ImmutableListMultimap<Function<Object, String>, String> index = guava.index(e -> toStringFunction());
+        ImmutableListMultimap<String, String> index = fit.index(e -> "key" + e);
         System.out.println(index);
-
     }
 }
