@@ -7,6 +7,13 @@ import java.util.concurrent.TimeUnit;
 
 public class StopWatchTest {
 
+    /**
+     * stopwatch:
+     *          1、计时器
+     *          2、stopwatch.stop() 默认自动转换时间
+     *          3、elapsed(TimeUnit)  强制用某个时间单位计时
+     * @Author LeeYoung
+     **/
     @Test
     public void stopWatch() throws InterruptedException {
         orderProcess("0318");

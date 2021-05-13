@@ -5,6 +5,7 @@ import com.google.common.eventbus.EventBus;
 import guava.eventBus.events.People;
 import guava.eventBus.events.Resident;
 import guava.eventBus.listeners.SimpleListener;
+import guava.eventBus.listeners.SimpleListener2;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -23,6 +24,7 @@ public class SimpleBus {
     public void simpleBus1(){
         EventBus eventBus = new EventBus();
         eventBus.register(new SimpleListener());
+        eventBus.register(new SimpleListener2());
         eventBus.post("假装一个消息...");
 
         eventBus.post(1500);

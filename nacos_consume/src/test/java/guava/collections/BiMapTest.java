@@ -32,10 +32,7 @@ public class BiMapTest {
 
     /**
      * forcePut : 加重复值不报错了，但是会覆盖
-     * @param
-     * @return void
      * @Author LeeYoung
-     * @Date 2021/5/12
      **/
     @Test
     public void forcePutTest(){

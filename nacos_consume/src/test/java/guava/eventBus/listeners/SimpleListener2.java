@@ -4,9 +4,7 @@ import com.google.common.eventbus.Subscribe;
 import guava.eventBus.events.People;
 import guava.eventBus.events.Resident;
 
-import java.util.concurrent.TimeUnit;
-
-public class SimpleListener {
+public class SimpleListener2 {
 
     /**
      * event bus 的监听器
@@ -22,20 +20,19 @@ public class SimpleListener {
      */
     @Subscribe
     public void simpleListenerString1(String event) throws InterruptedException {
-        System.out.println();
-        System.out.printf(Thread.currentThread().getName() + "  监听器1：收到监听的String类型的消息 {%s}",event);
+        System.out.printf(Thread.currentThread().getName() + "  1监听器1：收到监听的String类型的消息 {%s}",event);
     }
 
     @Subscribe
     public void simpleListenerString2(String event){
         System.out.println();
-        System.out.printf(Thread.currentThread().getName() + "   监听器2：收到监听的String类型的消息 {%s}",event);
+        System.out.printf(Thread.currentThread().getName() + "   2监听器2：收到监听的String类型的消息 {%s}",event);
     }
 
     @Subscribe
     public void simpleListenerInt1(Integer event){
         System.out.println();
-        System.out.printf("监听器3：收到监听的int 类型的消息 {%d}",event);
+        System.out.printf("3监听器3：收到监听的int 类型的消息 {%d}",event);
     }
 
     @Subscribe

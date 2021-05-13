@@ -1,6 +1,5 @@
 package guava.collections;
 
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
@@ -12,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.google.common.base.Functions.toStringFunction;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -167,7 +165,7 @@ public class FluentIterableExampleTest {
 
     /**
      * transformAndConcat:
-     *                  1、根据 FluentIterable 批量执行 一个 Iterable的子类(集合)
+     *                  1、根据 FluentIterable 大小批量执行 一个 Iterable的子类(集合)
      *                  2、例子中 FluentIterable 的 size是 4,则执行 4次 simulation()方法
      *                  3、simulation() 返回值必须为 Iterable 子类 即 返回值必须为集合
      *                  4、将4个集合进行合并 类似于union All 或者  Collection.addAll 以及上面列子中的 copyIn

@@ -1,7 +1,5 @@
 package guava.base;
 
-
-
 import com.google.common.base.Strings;
 import org.junit.Test;
 
@@ -11,6 +9,15 @@ import static org.junit.Assert.assertThat;
 
 public class StringsTest {
 
+    /**
+     * 1、emptyToNull 空转null
+     * 2、nullToEmpty null 转 空
+     * 3、commonPrefix 截取相同部分
+     * 4、repeat 重复
+     * 5、padStart 头部填充
+     * 6、padEnd 尾部填充
+     * @Author LeeYoung
+     **/
     @Test
     public void testStringsMethod(){
         assertThat(Strings.emptyToNull(""),nullValue());
