@@ -55,10 +55,10 @@ public class Bucket {
             try {
                 System.out.println(currentThread() + " wait " + limiter.acquire());
 
-                //消费。    container.poll() 拿出来删除掉
+                //消费。
                 consumer.accept(container.poll());
             }finally {
-                //防止多线程冲突
+                //释放
                 pollMonitor.leave();
             }
         }

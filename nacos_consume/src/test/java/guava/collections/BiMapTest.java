@@ -4,6 +4,9 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import org.junit.Test;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
+
 /**
  * @Description: BiMapTest
  * @Author LeeYoung
@@ -20,12 +23,15 @@ public class BiMapTest {
     @Test
     public void createTest(){
         HashBiMap<String,String> biMap = HashBiMap.create();
+//        biMap.put("","");
         biMap.put("1","1");
         biMap.put("1","2");
         System.out.println(biMap);
 
         HashBiMap<String,String> biMap2 = HashBiMap.create();
         biMap2.put("1","2");
+
+
 //        biMap2.put("2","2");
 //        System.out.println(biMap);
     }
@@ -53,5 +59,6 @@ public class BiMapTest {
         biMap.forcePut("2","3");
         BiMap<String, String> inverse = biMap.inverse();
         System.out.println(inverse);
+        assertThat(biMap.inverse().get("3"),equalTo("2"));
     }
 }
